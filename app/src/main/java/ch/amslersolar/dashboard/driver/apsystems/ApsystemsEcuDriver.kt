@@ -29,10 +29,14 @@ import kotlin.math.roundToInt
  * models implement only the line-to-line voltages). The inverter models leave DC power unimplemented, so the PV
  * inputs come from the vendor "DC Data (float)" model 114 (length 48): DCV1–8 at offsets 2–17, DCA1–8 at 18–33,
  * DCW1–8 at 34–49 (float32 each; channels 1–2 "supported", 3–8 "depends on model"). Solar = sum of DCW.
+ * - Model 114 is read at the spec's fixed address ([DC_MODEL_ADDRESS] = 40212, data 40214–40261), not through the
+ *   chain: in the spec's table the chain ends after model 123 (40209), so a chain walk doesn't reach it. A register
+ *   dump of an ECU-R (firmware 1.3.23, published with the ha-sunspec2 project) shows the same: end marker at
+ *   40210, header 40212 reading 0, DC values at 40214 ff. Only if that read fails is model 114 looked for in the
+ *   chain.
  * - No grid meter and no battery: grid and home come from another device of the plant.
- * - UNVERIFIED: what an unimplemented float reads as (NaN as in SunSpec, or 0; both are skipped), and the two
- *   registers 40210–40211 between model 123 (ends 40209) and model 114 (40212) in the spec's table; the chain
- *   walk follows whatever headers the ECU reports.
+ * - UNVERIFIED: what an unimplemented float reads as (NaN as in SunSpec, or 0; both are skipped). The same dump
+ *   suggests WH counts today's energy (reset each night) rather than lifetime; the spec only says "AC Energy".
  */
 class ApsystemsEcuDriver(private val reader: RegisterReader, private val unitId: Int) : DeviceDriver {
     constructor(client: ModbusTcpClient, unitId: Int) : this(RegisterReader { u, r, c -> client.readHoldingRegisters(u, r, c) }, unitId)
@@ -44,13 +48,7 @@ class ApsystemsEcuDriver(private val reader: RegisterReader, private val unitId:
 
     override suspend fun read(): DeviceReading {
         val base = inner.read()
-        val dc = try {
-            device.model(DC_MODEL)
-        } catch (e: CancellationException) {
-            throw e
-        } catch (_: IOException) {
-            null
-        } ?: return base
+        val dc = dcModel() ?: return base
         val inputs = inputs(dc)
         if (inputs.isEmpty()) return base
         return base.copy(
@@ -61,10 +59,26 @@ class ApsystemsEcuDriver(private val reader: RegisterReader, private val unitId:
         )
     }
 
+    /** Model 114 at its fixed address, else from the chain; null if neither answers. */
+    private suspend fun dcModel(): Model? =
+        orNull { Model(reader.read(unitId, DC_MODEL_ADDRESS + 2, DC_LENGTH), DC_MODEL_ADDRESS, DC_LENGTH) }
+            ?: orNull { device.model(DC_MODEL) }
+
+    private suspend fun <T> orNull(read: suspend () -> T?): T? = try {
+        read()
+    } catch (e: CancellationException) {
+        throw e
+    } catch (_: IOException) {
+        null
+    }
+
     internal data class Input(val index: Int, val v: Double?, val a: Double?, val w: Double?)
 
     internal companion object {
         const val DC_MODEL = 114
+        /** Model 114's ID register in the spec's table (its values start 2 registers later). */
+        const val DC_MODEL_ADDRESS = 40212
+        private const val DC_LENGTH = 48
         private const val CHANNELS = 8
 
         /** Channels with at least one implemented value. */

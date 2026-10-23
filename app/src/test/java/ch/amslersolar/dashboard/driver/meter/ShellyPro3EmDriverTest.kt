@@ -3,15 +3,26 @@
 
 package ch.amslersolar.dashboard.driver.meter
 
+import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertThrows
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.IOException
 
 class ShellyPro3EmDriverTest {
+    /**
+     * The device as seen on the wire: the fake holds the documented table numbers (30000 + address), and every
+     * request must use the plain register address, as in Shelly's "i@1000" examples.
+     */
+    private fun wire(fake: MeterRegisterFake) = RegisterReader { unit, register, count ->
+        assertTrue("register $register sent with the table offset", register < ShellyPro3EmDriver.REGISTER_BASE)
+        fake.read(unit, register + ShellyPro3EmDriver.REGISTER_BASE, count)
+    }
+
     /** [w]: phase active powers as the Shelly reports them (+ = consumed from the grid). */
     private fun shelly(w: List<Double>, lowWordFirst: Boolean = true, hz: Double = 50.0) =
         MeterRegisterFake(unitId = 1, lowWordFirst = lowWordFirst, lenient = true).apply {
@@ -32,7 +43,7 @@ class ShellyPro3EmDriverTest {
 
     @Test
     fun identifiesAndReadsImport() = runBlocking {
-        val driver = ShellyPro3EmDriver(shelly(listOf(951.2, 700.0, 348.8)), 1)
+        val driver = ShellyPro3EmDriver(wire(shelly(listOf(951.2, 700.0, 348.8))), 1)
         val info = driver.identify()
         assertEquals("SPEM-003CEBEU", info.model)
         assertEquals("A8032ABE1234", info.serial)
@@ -54,7 +65,7 @@ class ShellyPro3EmDriverTest {
     @Test
     fun exportIsPositive() = runBlocking {
         // As in the EM status example: one phase negative (returning).
-        val r = ShellyPro3EmDriver(shelly(listOf(-1_500.0, -951.1, 200.0)), 1).read()
+        val r = ShellyPro3EmDriver(wire(shelly(listOf(-1_500.0, -951.1, 200.0))), 1).read()
         assertEquals(2_251, r.gridPowerW)
         assertEquals(951, r.phases[1].powerW)
         assertEquals(-200, r.phases[2].powerW)
@@ -64,7 +75,7 @@ class ShellyPro3EmDriverTest {
     fun wordOrderIsDetected() = runBlocking {
         // Documented examples use low word first ("mixed"); a high-word-first image is recognised as well.
         for (order in listOf(true, false)) {
-            val r = ShellyPro3EmDriver(shelly(listOf(100.0, 100.0, 100.0), lowWordFirst = order), 1).read()
+            val r = ShellyPro3EmDriver(wire(shelly(listOf(100.0, 100.0, 100.0), lowWordFirst = order)), 1).read()
             assertEquals(-300, r.gridPowerW)
             assertEquals(232.2, r.phases[0].voltageV, 1e-3)
         }
@@ -75,10 +86,10 @@ class ShellyPro3EmDriverTest {
         assertThrows(IOException::class.java) { runBlocking { ShellyPro3EmDriver(silentDevice, 1).identify() } }
         // Something answering input registers with zeros: no model string.
         val zeros = MeterRegisterFake(unitId = 1, lenient = true)
-        assertThrows(IOException::class.java) { runBlocking { ShellyPro3EmDriver(zeros, 1).identify() } }
+        assertThrows(IOException::class.java) { runBlocking { ShellyPro3EmDriver(wire(zeros), 1).identify() } }
         // A model string but nonsense measurements (999 Hz).
         val odd = shelly(listOf(1.0, 1.0, 1.0), hz = 999.0)
-        assertThrows(IOException::class.java) { runBlocking { ShellyPro3EmDriver(odd, 1).identify() } }
+        assertThrows(IOException::class.java) { runBlocking { ShellyPro3EmDriver(wire(odd), 1).identify() } }
     }
 
     @Test
@@ -86,7 +97,7 @@ class ShellyPro3EmDriverTest {
         val fake = shelly(listOf(100.0, 100.0, 100.0))
         fake.regs.remove(31042); fake.regs.remove(31043) // phase B current: lenient fake answers 0 → 0.0
         fake.f32(31042, Double.NaN) // a NaN float is treated as missing
-        val r = ShellyPro3EmDriver(fake, 1).read()
+        val r = ShellyPro3EmDriver(wire(fake), 1).read()
         assertNull(r.phases[1].currentA)
         assertEquals(-300, r.gridPowerW)
     }
@@ -94,14 +105,14 @@ class ShellyPro3EmDriverTest {
     @Test
     fun errorBooleansAreWarnings() = runBlocking {
         // Phase C overcurrent (alarm threshold flag) is set in the fixture and is not a problem.
-        assertEquals(emptyList<DeviceProblem>(), ShellyPro3EmDriver(shelly(listOf(100.0, 0.0, 0.0)), 1).read().problems)
+        assertEquals(emptyList<DeviceProblem>(), ShellyPro3EmDriver(wire(shelly(listOf(100.0, 0.0, 0.0))), 1).read().problems)
         val fake = shelly(listOf(100.0, 0.0, 0.0)).apply { u16(31003, 1); u16(31006, 1) }
         assertEquals(
             listOf(
                 DeviceProblem(DeviceProblem.Kind.WARNING, "L2 meter error"),
                 DeviceProblem(DeviceProblem.Kind.WARNING, "Phase sequence error"),
             ),
-            ShellyPro3EmDriver(fake, 1).read().problems,
+            ShellyPro3EmDriver(wire(fake), 1).read().problems,
         )
     }
 }

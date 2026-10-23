@@ -7,6 +7,7 @@ import ch.amslersolar.dashboard.driver.DeviceDriver
 import ch.amslersolar.dashboard.driver.Details.fmt
 import ch.amslersolar.dashboard.driver.Details.section
 import ch.amslersolar.dashboard.driver.modbus.ModbusTcpClient
+import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
@@ -22,12 +23,15 @@ import kotlin.math.roundToInt
  *
  * Specs: Shelly Gen2 API docs "Modbus", "EM" and "EMData" (docs/specs/shelly/, HTML, version 1.0). The Modbus
  * server listens on TCP port 502 and must be enabled (Modbus.SetConfig {"enable": true}, or in the web UI).
- * - Registers: device info 30000 (MAC, 6 registers ASCII), 30006 (model, 10), 30016 (name, 32); EM 31000–31079
- *   (status, totals, phase A / B / C blocks of 20); EMData 31160–31229 (energy counters, phase blocks of 20).
+ * - Registers (as numbered in the tables): device info 30000 (MAC, 6 registers ASCII), 30006 (model, 10), 30016
+ *   (name, 32); EM 31000–31079 (status, totals, phase A / B / C blocks of 20); EMData 31160–31229 (energy counters,
+ *   phase blocks of 20).
  *   A second EM / EMData component would sit at +80 / +70 (not used: the Pro 3EM in three-phase mode has one).
  * - Function code: not stated. The doc's modbus_cli examples read "i@1000" / "i@1020", i.e. input registers
  *   (function 04, used here). UNVERIFIED.
- * - Address base: those examples use the table addresses directly, so they are sent as listed. UNVERIFIED.
+ * - Address base: the table numbers are 30000 + the register address: the examples read the EM timestamp
+ *   (table 31000) as "i@1000" and phase A voltage (31020) as "i@1020". The code keeps the table numbers and
+ *   [REGISTER_BASE] is subtracted on the wire. The HA shelly-modbus project reads the same addresses.
  * - Word order: not stated. The examples pass "-B mixed" (big-endian bytes, low word first) and decode a float
  *   and a uint32 correctly, so low word first is the default. It is also checked against the phase frequencies /
  *   voltages on the first readings and switched if only high-word-first gives plausible values. UNVERIFIED.
@@ -41,7 +45,7 @@ import kotlin.math.roundToInt
 class ShellyPro3EmDriver(private val reader: RegisterReader, private val unitId: Int) : DeviceDriver {
     constructor(client: ModbusTcpClient, unitId: Int) : this(RegisterReader { u, r, c -> client.readInputRegisters(u, r, c) }, unitId)
 
-    private val fields = MeterFieldReader(reader, unitId)
+    private val fields = MeterFieldReader(onWire(reader), unitId)
     private var static: Map<Int, Int>? = null
     private var polls = 0
     private var lowWordFirst: Boolean? = null // once detected from plausible values
@@ -68,6 +72,18 @@ class ShellyPro3EmDriver(private val reader: RegisterReader, private val unitId:
 
     internal companion object {
         const val STATIC_REFRESH_POLLS = 12
+
+        /** Table number − this = Modbus register address (see the class doc). */
+        const val REGISTER_BASE = 30000
+
+        /** Reads table-numbered registers at their wire addresses; the block comes back table-numbered. */
+        private fun onWire(reader: RegisterReader) = RegisterReader { unit, register, count ->
+            val block = reader.read(unit, register - REGISTER_BASE, count)
+            RegisterBlock(register, ByteArray(block.count * 2) { i ->
+                val word = block.u16(block.start + i / 2)
+                (if (i % 2 == 0) word shr 8 else word).toByte()
+            })
+        }
         val PHASE_EM = listOf(31020, 31040, 31060) // V +0, I +2, P +4, S +6, PF +8, errors +10..12, f +13
         val PHASE_DATA = listOf(31170, 31190, 31210)
 
