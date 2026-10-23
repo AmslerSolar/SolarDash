@@ -37,7 +37,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
 
-private class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, "history.db", null, 4) {
+private class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, "history.db", null, 5) {
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
             """CREATE TABLE samples (
@@ -60,7 +60,12 @@ private class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, "his
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         if (oldVersion < 2) createChannelTables(db)
         if (oldVersion < 3) createDeviceTable(db)
-        if (oldVersion < 4) createEventTable(db)
+        if (oldVersion < 4) createEventTable(db) // already with the version-5 columns
+        if (oldVersion == 4) {
+            // Fault details for the installer (version 4 had none).
+            db.execSQL("ALTER TABLE events ADD COLUMN details TEXT")
+            db.execSQL("ALTER TABLE events ADD COLUMN end_details TEXT")
+        }
     }
 
     /**
@@ -72,7 +77,7 @@ private class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, "his
             """CREATE TABLE IF NOT EXISTS events (
                 id INTEGER PRIMARY KEY AUTOINCREMENT, plant_id TEXT NOT NULL, key TEXT NOT NULL,
                 kind TEXT NOT NULL, severity TEXT NOT NULL, device_id TEXT, device_name TEXT, detail TEXT,
-                percent INTEGER, started INTEGER NOT NULL, ended INTEGER)""",
+                percent INTEGER, started INTEGER NOT NULL, ended INTEGER, details TEXT, end_details TEXT)""",
         )
         db.execSQL("CREATE INDEX IF NOT EXISTS events_plant ON events (plant_id, started)")
     }
@@ -104,7 +109,7 @@ private class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, "his
     }
 }
 
-private const val EVENT_COLUMNS = "id, plant_id, key, kind, severity, device_id, device_name, detail, percent, started, ended"
+private const val EVENT_COLUMNS = "id, plant_id, key, kind, severity, device_id, device_name, detail, percent, started, ended, details, end_details"
 
 /** All channels of a device, every minute (roughly 300–500 MB per device and year). */
 const val DEVICE_SAMPLE_INTERVAL_S = 60L
@@ -324,17 +329,19 @@ class HistoryRepository(context: Context) : EventStore {
             put("device_id", e.deviceId); put("device_name", e.deviceName); put("detail", e.detail)
             if (e.percent != null) put("percent", e.percent) else putNull("percent")
             put("started", e.started)
+            put("details", e.details)
         })
     }
 
-    override suspend fun closeEvent(id: Long, ended: Long) = write { w ->
-        w.update("events", ContentValues().apply { put("ended", ended) }, "id = ?", arrayOf(id.toString()))
+    override suspend fun closeEvent(id: Long, ended: Long, endDetails: String?) = write { w ->
+        w.update("events", ContentValues().apply { put("ended", ended); put("end_details", endDetails) }, "id = ?", arrayOf(id.toString()))
     }
 
     private fun readEvent(c: Cursor) = LoggedEvent(
         id = c.getLong(0), plantId = c.getString(1), key = c.getString(2), kind = c.getString(3), severity = c.getString(4),
         deviceId = c.getString(5), deviceName = c.getString(6), detail = c.getString(7),
         percent = if (c.isNull(8)) null else c.getInt(8), started = c.getLong(9), ended = if (c.isNull(10)) null else c.getLong(10),
+        details = c.getString(11), endDetails = c.getString(12),
     )
 
     suspend fun samples(plantId: String, fromEpoch: Long, toEpoch: Long): List<Sample> = query {

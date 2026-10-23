@@ -7,6 +7,11 @@ import java.time.Instant
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.junit.Test
 
 class FaultLogTest {
@@ -14,9 +19,9 @@ class FaultLogTest {
         val rows = mutableListOf<LoggedEvent>()
         override suspend fun openEvents(plantId: String) = rows.filter { it.plantId == plantId && it.ended == null }
         override suspend fun openEvent(e: LoggedEvent) { rows += e.copy(id = rows.size + 1L) }
-        override suspend fun closeEvent(id: Long, ended: Long) {
+        override suspend fun closeEvent(id: Long, ended: Long, endDetails: String?) {
             val i = rows.indexOfFirst { it.id == id }
-            rows[i] = rows[i].copy(ended = ended)
+            rows[i] = rows[i].copy(ended = ended, endDetails = endDetails)
         }
     }
 
@@ -48,6 +53,37 @@ class FaultLogTest {
         assertNull(store.rows[0].ended)
         log.update(plant, at(1140), net)
         assertEquals(1100L, store.rows[0].ended) // from when it was first missing
+    }
+
+    @Test
+    fun detailsTellTheInstallerWhatHappened() = runBlocking {
+        val store = MemoryStore()
+        val log = FaultLog(store, appVersion = "0.4.0 (7)")
+        val reading = DeviceReading(
+            status = "Fault mode (F)", problems = listOf(overload),
+            battery = BatteryState(-800, 41, 51.2, "Charging"),
+            details = listOf(DetailSection("Warnings (QPIWS)", listOf("Over load" to "yes"))),
+        )
+        log.update(plant, PlantAggregator.aggregate(listOf(DeviceStatus(hybrid, reading, null)), Instant.ofEpochSecond(1000)), net, continuous = false)
+        val d = Json.parseToJsonElement(store.rows.single().details!!).jsonObject
+        assertEquals("Axpert", d["device"]!!.jsonObject["name"]!!.jsonPrimitive.content)
+        assertEquals("192.168.1.30", d["device"]!!.jsonObject["host"]!!.jsonPrimitive.content)
+        assertEquals("Fault mode (F)", d["reading"]!!.jsonObject["status"]!!.jsonPrimitive.content)
+        assertEquals("Over load (a16)", d["reading"]!!.jsonObject["problems"]!!.jsonArray[0].jsonObject["text"]!!.jsonPrimitive.content)
+        assertEquals("Warnings (QPIWS)", d["reading"]!!.jsonObject["details"]!!.jsonArray[0].jsonObject["title"]!!.jsonPrimitive.content)
+        assertEquals("0.4.0 (7)", d["app"]!!.jsonPrimitive.content)
+        assertTrue("no password in the details", "password" !in store.rows.single().details!!)
+
+        // A failed read records the error kind and message; the end records the device answering again.
+        val failed = DeviceStatus(hybrid, null, "connect timed out", ConnectionError.TIMEOUT)
+        log.update(plant, PlantAggregator.aggregate(listOf(failed), Instant.ofEpochSecond(2000)), net, continuous = false)
+        val timeout = store.rows.first { it.kind == "NOT_ANSWERING" }
+        val e = Json.parseToJsonElement(timeout.details!!).jsonObject["error"]!!.jsonObject
+        assertEquals("TIMEOUT", e["kind"]!!.jsonPrimitive.content)
+        assertEquals("connect timed out", e["message"]!!.jsonPrimitive.content)
+        log.update(plant, at(3000), net, continuous = false)
+        val end = Json.parseToJsonElement(store.rows.first { it.kind == "NOT_ANSWERING" }.endDetails!!).jsonObject
+        assertEquals(true, end["plant"]!!.jsonObject["devices"]!!.jsonArray[0].jsonObject["answered"]!!.jsonPrimitive.content.toBoolean())
     }
 
     @Test

@@ -160,8 +160,12 @@ a problem wakes the screen and keeps it on; a tap on the status line lists the d
 from live polling and from the background recorder. A problem must last 30 s to be logged and be gone 30 s to be
 closed, so a single dropped poll doesn't fill the log; the background recorder (every 15 min) logs and closes at
 once. "No internet", "Asleep" and "Off-grid mode" aren't logged. Open it from the plant screen's overflow menu ⋮
-→ "Fault log"; entries are grouped by day, can be filtered to faults, and link to their
-guide. Logic: `model/FaultLog.kt` (tested in `FaultLogTest`).
+→ "Fault log": a plain list, newest first. Tapping an entry shows what was recorded for the installer
+(`model/FaultDetails.kt`, JSON in history.db version 5), both when the problem started and when it ended: the
+device (type, address, port, unit id, serial; never the password), the kind of failure and the exact error
+message, the device's status, all its fault and warning texts, main values and every detail row (fault registers,
+states), the plant's values and which devices answered, the tablet's network and the app version. "Share" sends it
+as text (e-mail, messenger). Logic: `model/FaultLog.kt` (tested in `FaultLogTest`).
 
 Rules: `model/PlantStatus.kt` (tested in `PlantStatusTest`); failed reads are classified in
 `driver/ConnectionErrors.kt`; guides are `assets/guide/<language>/<id>.md` (a small Markdown subset: `#`, `##`,

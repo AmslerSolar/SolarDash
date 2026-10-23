@@ -17,6 +17,10 @@ data class LoggedEvent(
     val percent: Int?,
     val started: Long,
     val ended: Long? = null,
+    /** The situation when it started, as JSON (see [FaultDetails]). */
+    val details: String? = null,
+    /** The situation when it ended. */
+    val endDetails: String? = null,
 ) {
     val issueKind: IssueKind? get() = IssueKind.entries.find { it.name == kind }
 }
@@ -25,7 +29,7 @@ data class LoggedEvent(
 interface EventStore {
     suspend fun openEvents(plantId: String): List<LoggedEvent>
     suspend fun openEvent(e: LoggedEvent)
-    suspend fun closeEvent(id: Long, ended: Long)
+    suspend fun closeEvent(id: Long, ended: Long, endDetails: String?)
 }
 
 /**
@@ -34,11 +38,14 @@ interface EventStore {
  * it's logged, and be gone for [settleS] before it's closed (the end time is when it was first missing). Single
  * reads (the background recorder, every 15 min) log and close at once.
  */
-class FaultLog(private val store: EventStore, private val settleS: Long = 30) {
+class FaultLog(private val store: EventStore, private val settleS: Long = 30, private val appVersion: String = "") {
     private class Memory {
         val last = LastReadings()
         val firstSeen = HashMap<String, Long>()
+        /** The situation when a pending problem was first seen, stored once it's logged. */
+        val firstDetails = HashMap<String, String>()
         val missingSince = HashMap<String, Long>()
+        val missingDetails = HashMap<String, String>()
     }
 
     private val memory = HashMap<String, Memory>()
@@ -52,27 +59,37 @@ class FaultLog(private val store: EventStore, private val settleS: Long = 30) {
         val open = store.openEvents(plant.id).associateBy { it.key }
 
         mem.firstSeen.keys.retainAll(current.keys)
+        mem.firstDetails.keys.retainAll(current.keys)
         for ((k, issue) in current) {
             mem.missingSince.remove(k)
+            mem.missingDetails.remove(k)
             if (k in open) continue
             val since = mem.firstSeen.getOrPut(k) { now }
+            val details = mem.firstDetails.getOrPut(k) { FaultDetails.build(plant, snapshot, issue, net, appVersion).toString() }
             if (!continuous || now - since >= settleS) {
                 store.openEvent(
                     LoggedEvent(
                         plantId = plant.id, key = k, kind = issue.kind.name, severity = issue.severity.name,
                         deviceId = issue.device?.id, deviceName = issue.device?.name, detail = issue.detail,
-                        percent = issue.percent, started = since,
+                        percent = issue.percent, started = since, details = details,
                     ),
                 )
                 mem.firstSeen.remove(k)
+                mem.firstDetails.remove(k)
             }
         }
         for ((k, e) in open) {
             if (k in current) continue
             val since = mem.missingSince.getOrPut(k) { now }
+            // The device as it was once the problem was gone (e.g. answering again, no fault code).
+            val device = plant.devices.find { it.id == e.deviceId }
+            val details = mem.missingDetails.getOrPut(k) {
+                FaultDetails.build(plant, snapshot, Issue(e.issueKind ?: IssueKind.DEVICE_FAULT, device), net, appVersion).toString()
+            }
             if (!continuous || now - since >= settleS) {
-                store.closeEvent(e.id, since)
+                store.closeEvent(e.id, since, details)
                 mem.missingSince.remove(k)
+                mem.missingDetails.remove(k)
             }
         }
     }

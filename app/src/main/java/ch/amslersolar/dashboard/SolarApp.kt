@@ -23,7 +23,7 @@ class SolarApp : Application() {
     val repository by lazy { PlantRepository(this) }
     val history by lazy { HistoryRepository(this) }
     /** When which problem happened (shared by live polling and background recording). */
-    val faultLog by lazy { FaultLog(history) }
+    val faultLog by lazy { FaultLog(history, appVersion = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}, ${BuildConfig.BUILD_TIME})") }
     /** Device data follows the device (type + serial), across removing and adding it again. */
     val registry by lazy { DeviceRegistry(repository, history) }
     /** Live polling per plant, shared by the screens and the kiosk service. */
