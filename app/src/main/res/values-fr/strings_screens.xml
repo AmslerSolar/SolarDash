@@ -81,4 +81,8 @@
         <item quantity="many">%1$d appareils sur %2$d ne répondent pas</item>
         <item quantity="other">%1$d appareils sur %2$d ne répondent pas</item>
     </plurals>
+    <string name="screens_home_hint_title">Retour après une panne de courant</string>
+    <string name="screens_home_hint_text">Pour que cet affichage revienne de lui-même après une panne de courant ou un redémarrage, choisissez Solar Dashboard comme application d’accueil. Android l’ouvre alors à chaque démarrage. Vous pourrez modifier ce choix dans les paramètres, sous Applications → Applications par défaut.</string>
+    <string name="screens_home_hint_choose">Choisir l’application d’accueil</string>
+    <string name="screens_home_hint_later">Plus tard</string>
 </resources>

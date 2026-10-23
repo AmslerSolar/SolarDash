@@ -9,10 +9,17 @@ import android.content.pm.PackageManager
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import ch.amslersolar.dashboard.R
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -76,6 +83,20 @@ class KioskActivity : ComponentActivity() {
                         applyDim(true)
                     }
                 }
+                var homeHint by remember { mutableStateOf(Kiosk.showHomeHint(this)) }
+                if (homeHint) {
+                    HomeHintDialog(
+                        onChoose = {
+                            Kiosk.homeHintShown(this)
+                            homeHint = false
+                            openHomeSettings()
+                        },
+                        onLater = {
+                            Kiosk.homeHintShown(this)
+                            homeHint = false
+                        },
+                    )
+                }
                 KioskScreen(
                     plantName = plant?.name.orEmpty(),
                     state = state,
@@ -106,6 +127,12 @@ class KioskActivity : ComponentActivity() {
         if (hasFocus) hideSystemBars() // bars swiped in come back hidden
     }
 
+    /** Android's "default home app" page (where the user picks this app), or the settings if it has none. */
+    private fun openHomeSettings() {
+        val intents = listOf(Intent(Settings.ACTION_HOME_SETTINGS), Intent(Settings.ACTION_SETTINGS))
+        intents.firstOrNull { runCatching { startActivity(it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }.isSuccess }
+    }
+
     private fun applyDim(value: Boolean) {
         if (dimmed == value && window.attributes.screenBrightness == brightness(value)) return
         dimmed = value
@@ -130,4 +157,16 @@ class KioskActivity : ComponentActivity() {
             .putExtra(EXTRA_PLANT, plantId)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
     }
+}
+
+/** Asked once on the first kiosk start: being the home app is what brings the display back after a power outage. */
+@Composable
+private fun HomeHintDialog(onChoose: () -> Unit, onLater: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onLater,
+        title = { Text(stringResource(R.string.screens_home_hint_title)) },
+        text = { Text(stringResource(R.string.screens_home_hint_text)) },
+        confirmButton = { TextButton(onClick = onChoose) { Text(stringResource(R.string.screens_home_hint_choose)) } },
+        dismissButton = { TextButton(onClick = onLater) { Text(stringResource(R.string.screens_home_hint_later)) } },
+    )
 }

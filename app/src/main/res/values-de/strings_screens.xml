@@ -79,4 +79,8 @@
         <item quantity="one">%1$d von %2$d Geräten antwortet nicht</item>
         <item quantity="other">%1$d von %2$d Geräten antworten nicht</item>
     </plurals>
+    <string name="screens_home_hint_title">Nach einem Stromausfall wieder da</string>
+    <string name="screens_home_hint_text">Damit diese Anzeige nach einem Stromausfall oder Neustart von selbst wieder erscheint, wähle Solar Dashboard als Startbildschirm-App. Android öffnet sie dann nach jedem Start. Du kannst das später in den Einstellungen unter Apps → Standard-Apps ändern.</string>
+    <string name="screens_home_hint_choose">Startbildschirm wählen</string>
+    <string name="screens_home_hint_later">Später</string>
 </resources>

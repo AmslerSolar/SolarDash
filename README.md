@@ -159,8 +159,16 @@ The full-screen button on a plant's Dashboard tab shows the energy flow full scr
   the screen really goes off (power button). The kiosk screen and the service share one poll, so devices that
   accept only one Modbus client get a single connection.
 - **Lock screen:** if the screen did go off, the kiosk shows over the lock screen when it comes back on.
-- **Restart:** kiosk mode is remembered. Opening the app again (after a reboot or update) goes straight back to
-  it. Android doesn't let apps open themselves after a reboot, so open the app once after the tablet restarts.
+- **Restart (power outage, update):** kiosk mode is remembered. After the tablet starts (and after an app
+  update), `BootReceiver` starts recording again in the kiosk service. Android usually doesn't let an app open
+  its own screen after a start, so the screen comes back by itself only when the app is the tablet's **home
+  app**: `HomeActivity` then opens the kiosk after every start and on the Home button. The first kiosk start
+  asks once to choose it (Settings → Apps → Default apps → Home app; changed back there too). Without it, the
+  "Kiosk mode" notification opens the display with a tap; recording runs either way.
+- **For a restart without anyone there:** set the screen lock to *None* (with a PIN, Android waits for the PIN
+  before any app starts). Many tablets don't switch on by themselves when power comes back after their own
+  battery ran flat: keep the tablet on a supply that stays on (e.g. the inverter's AC output or a 12/24 V → USB
+  converter on the battery), and check the tablet's "power on when charging" behaviour before installing.
 - **Ending it:** the × at the top right, Back, or the notification.
 - **Tips:** keep the tablet on its charger; Android's Doze only restricts apps on battery. To stop passers-by
   from leaving the app, use Android's *App pinning* (Settings → Security). The backlight at its minimum is

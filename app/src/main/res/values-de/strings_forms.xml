@@ -97,5 +97,5 @@
     <string name="forms_about_version">Version %1$s (Build %2$d)</string>
     <string name="forms_about_built">Erstellt am %1$s</string>
     <string name="forms_about_license">Freie Software unter der GNU General Public License, Version 3 oder neuer. Ohne jede Gewährleistung.</string>
-    <string name="forms_about_close">Schliessen</string>
+    <string name="forms_about_close" tools:ignore="Typos">Schliessen</string>
 </resources>
