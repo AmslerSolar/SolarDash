@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard.ui
 
+import ch.amslersolar.dashboard.ui.status.FaultLogActivity
 import ch.amslersolar.dashboard.ui.status.rememberPlantStatus
 import ch.amslersolar.dashboard.ui.status.StatusCard
 import ch.amslersolar.dashboard.ui.status.GuideActivity
@@ -98,6 +99,7 @@ fun PlantScreen(
 ) {
     var renaming by remember { mutableStateOf(false) }
     var menu by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     if (renaming) RenameDialog(stringResource(R.string.screens_rename_plant), plant.name, onRename = { onRename(it); renaming = false }, onDismiss = { renaming = false })
     Scaffold(
         topBar = {
@@ -117,6 +119,10 @@ fun PlantScreen(
                     Box {
                         IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, contentDescription = null) }
                         DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.log_title)) },
+                                onClick = { menu = false; FaultLogActivity.open(context, plant.id) },
+                            )
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.status_off_grid)) },
                                 leadingIcon = { Checkbox(checked = plant.offGrid, onCheckedChange = null) },
@@ -168,7 +174,7 @@ fun DashboardTab(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     StatusLine(state.snapshot, onShowDevices)
-                    StatusCard(status, onGuide)
+                    StatusCard(status, onGuide, onLog = { FaultLogActivity.open(context, plant.id) })
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         PlantEnergyFlow(state.snapshot, flowHeight, Modifier.weight(3f))
                         Column(Modifier.weight(2f), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -183,7 +189,7 @@ fun DashboardTab(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     item { StatusLine(state.snapshot, onShowDevices) }
-                    item { StatusCard(status, onGuide) }
+                    item { StatusCard(status, onGuide, onLog = { FaultLogActivity.open(context, plant.id) }) }
                     item { PlantEnergyFlow(state.snapshot, flowHeight) }
                     item { TodayCard(state.snapshot) }
                     if (state.snapshot.consumers.isNotEmpty()) item { ConsumersCard(state.snapshot) }

@@ -3,6 +3,8 @@
 
 package ch.amslersolar.dashboard.ui
 
+import ch.amslersolar.dashboard.model.NetworkState
+import ch.amslersolar.dashboard.model.FaultLog
 import ch.amslersolar.dashboard.data.DeviceRegistry
 import ch.amslersolar.dashboard.data.HistoryRepository
 import ch.amslersolar.dashboard.data.PlantRepository
@@ -54,6 +56,10 @@ class LivePlants(
     /** mDNS announcements on the local network, listened to for a few seconds. */
     private val announced: suspend () -> List<MdnsService> = { emptyList() },
     private val scanner: DeviceScanner = DeviceScanner(),
+    /** Records when problems start and end (null in tests that don't need it). */
+    private val faultLog: FaultLog? = null,
+    /** The tablet's network, for the fault log's "no Wi-Fi" / "wrong Wi-Fi". */
+    private val network: () -> NetworkState = { NetworkState.UNKNOWN },
 ) {
     private val plants = ConcurrentHashMap<String, StateFlow<PlantState>>()
     /** When each device last answered, and when it was last searched for; by device id. */
@@ -96,6 +102,7 @@ class LivePlants(
                         record(plantId, snapshot)
                         recordedToday = recordedToday(plantId)
                     }
+                    logFaults(plantId, snapshot)
                     emit(PlantState.Live(snapshot.copy(today = withRecorded(snapshot.today, recordedToday))))
                     delay(POLL_INTERVAL_MS)
                 }
@@ -152,6 +159,18 @@ class LivePlants(
         importKwh = devices.importKwh ?: recorded.importKwh,
         loadKwh = devices.loadKwh ?: recorded.loadKwh,
     )
+
+    private suspend fun logFaults(plantId: String, snapshot: PlantSnapshot) {
+        val log = faultLog ?: return
+        try {
+            val plant = repository.plant(plantId).first() ?: return
+            log.update(plant, snapshot, network())
+        } catch (e: CancellationException) {
+            throw e
+        } catch (_: Exception) {
+            // A storage problem shouldn't stop the live view.
+        }
+    }
 
     private suspend fun record(plantId: String, snapshot: PlantSnapshot) {
         try {

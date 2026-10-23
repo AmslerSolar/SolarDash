@@ -7,6 +7,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import androidx.test.core.app.ApplicationProvider
+import ch.amslersolar.dashboard.model.LoggedEvent
 import java.time.LocalDate
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -49,5 +50,12 @@ class HistoryUpgradeTest {
         // Tables added in versions 2 and 3 exist.
         assertEquals(emptyList<Triple<String, String, String>>(), history.channelCatalog("d1"))
         assertNull(history.storedDeviceId("GOODWE_ET", "123", emptySet()))
+        // Version 4: the fault log.
+        history.openEvent(LoggedEvent(plantId = "p1", key = "DEVICE_FAULT|d1|x", kind = "DEVICE_FAULT", severity = "ALARM",
+            deviceId = "d1", deviceName = "Axpert", detail = "x", percent = null, started = 100, ended = null))
+        val open = history.openEvents("p1").single()
+        history.closeEvent(open.id, 160)
+        assertEquals(160L, history.events("p1").single().ended)
+        assertEquals(emptyList<LoggedEvent>(), history.openEvents("p1"))
     }
 }

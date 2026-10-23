@@ -13,6 +13,8 @@ import ch.amslersolar.dashboard.model.Channels
 import ch.amslersolar.dashboard.model.DailyEnergy
 import ch.amslersolar.dashboard.model.EnergyTotals
 import ch.amslersolar.dashboard.model.HistoryMath
+import ch.amslersolar.dashboard.model.EventStore
+import ch.amslersolar.dashboard.model.LoggedEvent
 import ch.amslersolar.dashboard.model.PlantSnapshot
 import ch.amslersolar.dashboard.model.Sample
 import kotlinx.coroutines.Dispatchers
@@ -35,7 +37,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
 
-private class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, "history.db", null, 3) {
+private class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, "history.db", null, 4) {
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
             """CREATE TABLE samples (
@@ -52,11 +54,27 @@ private class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, "his
         )
         createChannelTables(db)
         createDeviceTable(db)
+        createEventTable(db)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         if (oldVersion < 2) createChannelTables(db)
         if (oldVersion < 3) createDeviceTable(db)
+        if (oldVersion < 4) createEventTable(db)
+    }
+
+    /**
+     * The fault log: one row per problem, from when it started to when it ended (null while it lasts). [key]
+     * identifies the problem across polls (see FaultLog); kind and severity are stored by name.
+     */
+    private fun createEventTable(db: SQLiteDatabase) {
+        db.execSQL(
+            """CREATE TABLE IF NOT EXISTS events (
+                id INTEGER PRIMARY KEY AUTOINCREMENT, plant_id TEXT NOT NULL, key TEXT NOT NULL,
+                kind TEXT NOT NULL, severity TEXT NOT NULL, device_id TEXT, device_name TEXT, detail TEXT,
+                percent INTEGER, started INTEGER NOT NULL, ended INTEGER)""",
+        )
+        db.execSQL("CREATE INDEX IF NOT EXISTS events_plant ON events (plant_id, started)")
     }
 
     /**
@@ -86,11 +104,13 @@ private class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, "his
     }
 }
 
+private const val EVENT_COLUMNS = "id, plant_id, key, kind, severity, device_id, device_name, detail, percent, started, ended"
+
 /** All channels of a device, every minute (roughly 300–500 MB per device and year). */
 const val DEVICE_SAMPLE_INTERVAL_S = 60L
 
 /** Plant-level power samples and daily energy totals, kept on the device. */
-class HistoryRepository(context: Context) {
+class HistoryRepository(context: Context) : EventStore {
     private val db = HistoryDatabase(context)
     private val writeLock = Mutex()
     private val _version = MutableStateFlow(0L)
@@ -280,7 +300,42 @@ class HistoryRepository(context: Context) {
     suspend fun deletePlant(plantId: String) = write {
         it.delete("samples", "plant_id = ?", arrayOf(plantId))
         it.delete("daily", "plant_id = ?", arrayOf(plantId))
+        it.delete("events", "plant_id = ?", arrayOf(plantId))
     }
+
+    /** Fault log entries that are still going on. */
+    override suspend fun openEvents(plantId: String): List<LoggedEvent> = query { db ->
+        db.rawQuery("SELECT $EVENT_COLUMNS FROM events WHERE plant_id = ? AND ended IS NULL", arrayOf(plantId)).use { c ->
+            buildList { while (c.moveToNext()) add(readEvent(c)) }
+        }
+    }
+
+    /** The fault log, newest first. */
+    suspend fun events(plantId: String, limit: Int = 1000): List<LoggedEvent> = query { db ->
+        db.rawQuery(
+            "SELECT $EVENT_COLUMNS FROM events WHERE plant_id = ? ORDER BY started DESC, id DESC LIMIT ?",
+            arrayOf(plantId, limit.toString()),
+        ).use { c -> buildList { while (c.moveToNext()) add(readEvent(c)) } }
+    }
+
+    override suspend fun openEvent(e: LoggedEvent) = write { w ->
+        w.insert("events", null, ContentValues().apply {
+            put("plant_id", e.plantId); put("key", e.key); put("kind", e.kind); put("severity", e.severity)
+            put("device_id", e.deviceId); put("device_name", e.deviceName); put("detail", e.detail)
+            if (e.percent != null) put("percent", e.percent) else putNull("percent")
+            put("started", e.started)
+        })
+    }
+
+    override suspend fun closeEvent(id: Long, ended: Long) = write { w ->
+        w.update("events", ContentValues().apply { put("ended", ended) }, "id = ?", arrayOf(id.toString()))
+    }
+
+    private fun readEvent(c: Cursor) = LoggedEvent(
+        id = c.getLong(0), plantId = c.getString(1), key = c.getString(2), kind = c.getString(3), severity = c.getString(4),
+        deviceId = c.getString(5), deviceName = c.getString(6), detail = c.getString(7),
+        percent = if (c.isNull(8)) null else c.getInt(8), started = c.getLong(9), ended = if (c.isNull(10)) null else c.getLong(10),
+    )
 
     suspend fun samples(plantId: String, fromEpoch: Long, toEpoch: Long): List<Sample> = query {
         it.rawQuery(

@@ -74,6 +74,7 @@ fun KioskScreen(
     dimmed: Boolean,
     onTouch: () -> Unit,
     onExit: () -> Unit,
+    onLog: () -> Unit = {},
 ) {
     val isDimmed by rememberUpdatedState(dimmed)
     val touch by rememberUpdatedState(onTouch)
@@ -97,7 +98,7 @@ fun KioskScreen(
                 }
             },
     ) {
-        if (!dimmed) Content(plantName, state, status, onExit)
+        if (!dimmed) Content(plantName, state, status, onExit, onLog)
     }
 }
 
@@ -105,7 +106,7 @@ fun KioskScreen(
 private val KIOSK_MAX_NODE = 360.dp
 
 @Composable
-private fun Content(plantName: String, state: PlantState, status: PlantStatus?, onExit: () -> Unit) {
+private fun Content(plantName: String, state: PlantState, status: PlantStatus?, onExit: () -> Unit, onLog: () -> Unit) {
     val snapshot = (state as? PlantState.Live)?.snapshot
     var showIssues by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -119,6 +120,7 @@ private fun Content(plantName: String, state: PlantState, status: PlantStatus?, 
                 }
             },
             confirmButton = { TextButton(onClick = { showIssues = false }) { Text(stringResource(R.string.forms_about_close), style = MaterialTheme.typography.titleMedium) } },
+            dismissButton = { TextButton(onClick = { showIssues = false; onLog() }) { Text(stringResource(R.string.log_title), style = MaterialTheme.typography.titleMedium) } },
         )
     }
     // Generous margins: wall frames and rounded screen corners cover the edges of the display.

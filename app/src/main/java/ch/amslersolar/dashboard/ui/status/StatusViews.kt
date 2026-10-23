@@ -69,7 +69,7 @@ fun severityColor(severity: Severity?): Color = when (severity) {
     Severity.INFO, null -> OK_GREEN
 }
 
-private fun severityIcon(severity: Severity?): ImageVector = when (severity) {
+internal fun severityIcon(severity: Severity?): ImageVector = when (severity) {
     Severity.ALARM -> Icons.Outlined.Error
     Severity.WARNING -> Icons.Outlined.Warning
     Severity.INFO, null -> Icons.Outlined.CheckCircle
@@ -87,7 +87,7 @@ fun statusHeadline(status: PlantStatus): String = stringResource(
 
 /** Status card on the plant's dashboard: headline, then every issue with a link to its guide. */
 @Composable
-fun StatusCard(status: PlantStatus, onGuide: (Guide) -> Unit, modifier: Modifier = Modifier) {
+fun StatusCard(status: PlantStatus, onGuide: (Guide) -> Unit, modifier: Modifier = Modifier, onLog: (() -> Unit)? = null) {
     val color = severityColor(if (status.ok) null else status.severity)
     Card(
         modifier.fillMaxWidth(),
@@ -104,6 +104,9 @@ fun StatusCard(status: PlantStatus, onGuide: (Guide) -> Unit, modifier: Modifier
                 )
             }
             IssueList(status.issues, onGuide)
+            if (onLog != null) {
+                TextButton(onClick = onLog) { Text(stringResource(R.string.log_open)) }
+            }
         }
     }
 }
@@ -190,25 +193,26 @@ fun issueTitle(issue: Issue): String = stringResource(
 )
 
 @Composable
-fun issueText(issue: Issue): String {
-    val name = issue.device?.name.orEmpty()
-    return when (issue.kind) {
-        IssueKind.NO_LOCAL_NETWORK -> stringResource(R.string.status_no_wifi_text)
-        IssueKind.WRONG_NETWORK -> stringResource(R.string.status_wrong_network_text, name)
-        IssueKind.NOT_ANSWERING -> stringResource(R.string.status_not_answering_text, name)
-        IssueKind.ASLEEP -> stringResource(R.string.status_asleep_text, name)
-        IssueKind.CONNECTION_REFUSED -> stringResource(R.string.status_refused_text, name)
-        IssueKind.LOGIN_FAILED -> stringResource(R.string.status_login_text, name)
-        IssueKind.DEVICE_SETTINGS -> stringResource(R.string.status_device_settings_text, name)
-        IssueKind.NOT_READY -> stringResource(R.string.status_not_ready_text, name)
-        IssueKind.DEVICE_FAULT -> stringResource(R.string.status_fault_text, name)
-        IssueKind.DEVICE_WARNING -> stringResource(R.string.status_device_warning_text, name)
-        IssueKind.MAINS_LOST -> stringResource(R.string.status_mains_lost_text, name)
-        IssueKind.NO_AC_INPUT -> stringResource(R.string.status_no_ac_input_text)
-        IssueKind.BACKUP_MODE -> stringResource(R.string.status_backup_mode_text, name)
-        IssueKind.OFF_GRID_MODE -> stringResource(R.string.status_off_grid_mode_text, name)
-        IssueKind.BATTERY_LOW -> stringResource(R.string.status_battery_low_text, issue.percent ?: 0)
-        IssueKind.BATTERY_EMPTY -> stringResource(R.string.status_battery_empty_text, issue.percent ?: 0)
-        IssueKind.NO_INTERNET -> stringResource(R.string.status_no_internet_text)
-    }
+fun issueText(issue: Issue): String = issueText(issue.kind, issue.device?.name.orEmpty(), issue.percent)
+
+/** The explanation for an issue kind; also for fault log entries, whose device may be gone. */
+@Composable
+fun issueText(kind: IssueKind, name: String, percent: Int?): String = when (kind) {
+    IssueKind.NO_LOCAL_NETWORK -> stringResource(R.string.status_no_wifi_text)
+    IssueKind.WRONG_NETWORK -> stringResource(R.string.status_wrong_network_text, name)
+    IssueKind.NOT_ANSWERING -> stringResource(R.string.status_not_answering_text, name)
+    IssueKind.ASLEEP -> stringResource(R.string.status_asleep_text, name)
+    IssueKind.CONNECTION_REFUSED -> stringResource(R.string.status_refused_text, name)
+    IssueKind.LOGIN_FAILED -> stringResource(R.string.status_login_text, name)
+    IssueKind.DEVICE_SETTINGS -> stringResource(R.string.status_device_settings_text, name)
+    IssueKind.NOT_READY -> stringResource(R.string.status_not_ready_text, name)
+    IssueKind.DEVICE_FAULT -> stringResource(R.string.status_fault_text, name)
+    IssueKind.DEVICE_WARNING -> stringResource(R.string.status_device_warning_text, name)
+    IssueKind.MAINS_LOST -> stringResource(R.string.status_mains_lost_text, name)
+    IssueKind.NO_AC_INPUT -> stringResource(R.string.status_no_ac_input_text)
+    IssueKind.BACKUP_MODE -> stringResource(R.string.status_backup_mode_text, name)
+    IssueKind.OFF_GRID_MODE -> stringResource(R.string.status_off_grid_mode_text, name)
+    IssueKind.BATTERY_LOW -> stringResource(R.string.status_battery_low_text, percent ?: 0)
+    IssueKind.BATTERY_EMPTY -> stringResource(R.string.status_battery_empty_text, percent ?: 0)
+    IssueKind.NO_INTERNET -> stringResource(R.string.status_no_internet_text)
 }

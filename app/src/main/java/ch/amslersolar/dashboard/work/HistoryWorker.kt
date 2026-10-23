@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard.work
 
+import ch.amslersolar.dashboard.net.LocalNetworks
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -26,7 +27,11 @@ class HistoryWorker(context: Context, params: WorkerParameters) : CoroutineWorke
         for (plant in app.repository.plants.first()) {
             if (plant.devices.isEmpty() || ActivePolling.isActive(plant.id)) continue
             try {
-                PlantReader(plant.devices).use { app.history.record(plant.id, it.read()) }
+                PlantReader(plant.devices).use {
+                    val snapshot = it.read()
+                    app.history.record(plant.id, snapshot)
+                    app.faultLog.update(plant, snapshot, LocalNetworks.get(app).state.value, continuous = false)
+                }
             } catch (e: CancellationException) {
                 throw e
             } catch (_: Exception) {
