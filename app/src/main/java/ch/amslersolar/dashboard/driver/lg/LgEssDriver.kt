@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard.driver.lg
 
+import ch.amslersolar.dashboard.driver.net.DeviceNetwork
 import ch.amslersolar.dashboard.driver.DeviceDriver
 import ch.amslersolar.dashboard.model.BatteryState
 import ch.amslersolar.dashboard.model.DetailSection
@@ -145,7 +146,7 @@ class LgEssDriver(host: String, port: Int, private val password: String) : Devic
     }
 
     private fun request(method: String, path: String, body: JsonObject): Pair<Int, JsonObject> {
-        val conn = URL(base + path).openConnection() as HttpsURLConnection
+        val conn = DeviceNetwork.current.openConnection(URL(base + path)) as HttpsURLConnection
         try {
             conn.sslSocketFactory = trustingContext.socketFactory
             conn.setHostnameVerifier { _, _ -> true }

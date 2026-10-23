@@ -3,6 +3,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Keep using the plant's Wi-Fi when it has no internet (LocalNetworks). -->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <!-- mDNS discovery: phones drop multicast traffic unless an app holds a multicast lock. -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
     <!-- Kiosk mode: recording keeps running in a foreground service with the CPU and Wi-Fi kept awake. -->

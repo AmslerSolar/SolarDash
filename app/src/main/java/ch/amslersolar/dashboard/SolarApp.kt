@@ -3,6 +3,8 @@
 
 package ch.amslersolar.dashboard
 
+import ch.amslersolar.dashboard.net.LocalNetworks
+import ch.amslersolar.dashboard.driver.net.DeviceNetwork
 import ch.amslersolar.dashboard.i18n.DetailTexts
 import android.app.Application
 import kotlinx.coroutines.CoroutineScope
@@ -30,6 +32,7 @@ class SolarApp : Application() {
     override fun onCreate() {
         super.onCreate()
         DetailTexts.init(this)
+        DeviceNetwork.current = LocalNetworks.get(this) // devices on Wi-Fi without internet, too
         HistoryWorker.schedule(this)
     }
 }

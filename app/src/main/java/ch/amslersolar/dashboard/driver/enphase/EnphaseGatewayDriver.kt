@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard.driver.enphase
 
+import ch.amslersolar.dashboard.driver.net.DeviceNetwork
 import ch.amslersolar.dashboard.driver.DeviceDriver
 import ch.amslersolar.dashboard.driver.Details
 import ch.amslersolar.dashboard.model.BatteryState
@@ -170,7 +171,7 @@ class EnphaseGatewayDriver internal constructor(
         }
 
         private fun get(base: String, path: String, token: String): String {
-            val conn = URL(base + path).openConnection() as HttpsURLConnection
+            val conn = DeviceNetwork.current.openConnection(URL(base + path)) as HttpsURLConnection
             try {
                 conn.sslSocketFactory = trustingContext.socketFactory
                 conn.setHostnameVerifier { _, _ -> true }

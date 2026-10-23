@@ -3,8 +3,9 @@
 
 package ch.amslersolar.dashboard.discovery
 
+import ch.amslersolar.dashboard.net.LocalNetworks
+import ch.amslersolar.dashboard.driver.net.DeviceNetwork
 import android.content.Context
-import android.net.ConnectivityManager
 import ch.amslersolar.dashboard.driver.fenecon.FeneconFemsDriver
 import ch.amslersolar.dashboard.driver.apsystems.ApsystemsEcuDriver
 import ch.amslersolar.dashboard.driver.fimer.FimerSunSpecDriver
@@ -44,7 +45,6 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import java.net.Inet4Address
 import java.net.InetSocketAddress
-import java.net.Socket
 import java.util.concurrent.atomic.AtomicInteger
 
 /** An inverter found on the network; [type] is null when something answered but wasn't recognised. */
@@ -207,12 +207,8 @@ class DeviceScanner(
         }
 
         /** The phone's IPv4 address and prefix on its active network (normally Wi-Fi), or null. */
-        fun localNetwork(context: Context): Pair<Inet4Address, Int>? {
-            val cm = context.getSystemService(ConnectivityManager::class.java)
-            val props = cm.getLinkProperties(cm.activeNetwork) ?: return null
-            val link = props.linkAddresses.firstOrNull { it.address is Inet4Address && !it.address.isLoopbackAddress } ?: return null
-            return link.address as Inet4Address to link.prefixLength
-        }
+        /** The phone's address on its Wi-Fi or Ethernet (also without internet), not on mobile data. */
+        fun localNetwork(context: Context): Pair<Inet4Address, Int>? = LocalNetworks.get(context).ownIpv4()
 
         /** Addresses of the phone's local network to search, or null when it isn't on one. */
         fun localHosts(context: Context): List<String>? = localNetwork(context)?.let { (own, prefix) -> hosts(own, prefix) }
@@ -226,7 +222,7 @@ class DeviceScanner(
         }
 
         private fun tcpOpen(host: String, port: Int): Boolean = try {
-            Socket().use { it.connect(InetSocketAddress(host, port), CONNECT_TIMEOUT_MS) }
+            DeviceNetwork.current.socket(host).use { it.connect(InetSocketAddress(host, port), CONNECT_TIMEOUT_MS) }
             true
         } catch (_: Exception) {
             false

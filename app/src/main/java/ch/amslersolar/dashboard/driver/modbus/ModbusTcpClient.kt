@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard.driver.modbus
 
+import ch.amslersolar.dashboard.driver.net.DeviceNetwork
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -58,7 +59,7 @@ class ModbusTcpClient(
     }
 
     private fun exchange(unitId: Int, register: Int, count: Int, function: Int): RegisterBlock {
-        val s = socket ?: Socket().also {
+        val s = socket ?: DeviceNetwork.current.socket(host).also {
             it.connect(InetSocketAddress(host, port), timeoutMs)
             it.soTimeout = timeoutMs
             it.tcpNoDelay = true

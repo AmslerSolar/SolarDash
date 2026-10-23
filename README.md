@@ -134,6 +134,19 @@ shown in English, so new driver rows need a dictionary line in each language.
 - History: `history.db` (SQLite) with numbered upgrade steps; `HistoryUpgradeTest` opens a schema-1 database.
 - An update keeps the data only if it's signed with the same key as the installed app (see Build).
 
+## Wi-Fi without internet (off-grid)
+
+Off-grid plants often have Wi-Fi without internet, sometimes only the RS232/RS485 gateway's own access point.
+Android then shows "no internet" and, if the tablet has mobile data, makes that the default network. The app
+requests Wi-Fi and Ethernet without the internet capability (so Android keeps them while the app runs) and binds
+every device connection to the local network whose subnet holds the device's address (`net/LocalNetworks.kt`,
+`driver/net/DeviceNetwork.kt`); addresses outside it, e.g. a remote site over a VPN, use the normal routing.
+
+On the tablet, once per network: when Android asks "This network has no internet access. Stay connected?",
+choose **Yes** and **Don't ask again**. On tablets without a SIM card there's nothing else to set. With a SIM card,
+switching off "Switch to mobile data automatically" / "Adaptive Wi-Fi" (name depends on the maker) avoids
+Android leaving the Wi-Fi when the app isn't running.
+
 ## Kiosk mode (wall-mounted tablet)
 
 The full-screen button on a plant's Dashboard tab shows the energy flow full screen, with today's totals.

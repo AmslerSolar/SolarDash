@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard.driver.voltronic
 
+import ch.amslersolar.dashboard.driver.net.DeviceNetwork
 import ch.amslersolar.dashboard.driver.DeviceDriver
 import ch.amslersolar.dashboard.driver.Details.enum
 import ch.amslersolar.dashboard.driver.Details.fmt
@@ -64,7 +65,7 @@ class TcpAxpertTransport(private val host: String, private val port: Int, privat
     }
 
     private fun exchange(command: String): String {
-        val s = socket ?: Socket().also {
+        val s = socket ?: DeviceNetwork.current.socket(host).also {
             it.connect(InetSocketAddress(host, port), timeoutMs)
             it.tcpNoDelay = true
             socket = it
