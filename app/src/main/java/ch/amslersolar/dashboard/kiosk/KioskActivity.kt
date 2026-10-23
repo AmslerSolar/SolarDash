@@ -3,6 +3,8 @@
 
 package ch.amslersolar.dashboard.kiosk
 
+import ch.amslersolar.dashboard.ui.status.rememberPlantStatus
+import ch.amslersolar.dashboard.ui.PlantState
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
@@ -77,8 +79,12 @@ class KioskActivity : ComponentActivity() {
                 val plant by remember { app.repository.plant(plantId) }.collectAsStateWithLifecycle(initialValue = null)
                 val state by remember { app.live.state(plantId) }.collectAsStateWithLifecycle()
                 var lastTouch by remember { mutableStateOf(0L) }
-                LaunchedEffect(lastTouch, dimmed) {
-                    if (!dimmed) {
+                val status = plant?.let { rememberPlantStatus(it, (state as? PlantState.Live)?.snapshot) }
+                // A problem wakes the screen and keeps it on, so it's seen without touching the tablet.
+                val alarm = status != null && !status.ok
+                LaunchedEffect(alarm) { if (alarm) applyDim(false) }
+                LaunchedEffect(lastTouch, dimmed, alarm) {
+                    if (!dimmed && !alarm) {
                         delay(Kiosk.DIM_AFTER_MS)
                         applyDim(true)
                     }
@@ -100,6 +106,7 @@ class KioskActivity : ComponentActivity() {
                 KioskScreen(
                     plantName = plant?.name.orEmpty(),
                     state = state,
+                    status = status,
                     dimmed = dimmed,
                     onTouch = {
                         lastTouch = System.nanoTime()

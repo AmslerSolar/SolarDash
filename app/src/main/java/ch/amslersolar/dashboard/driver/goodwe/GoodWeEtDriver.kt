@@ -10,6 +10,7 @@ import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.model.BatteryState
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.EnergyTotals
 import ch.amslersolar.dashboard.model.PhaseReading
@@ -126,6 +127,7 @@ class GoodWeEtDriver(private val client: ModbusTcpClient, private val unitId: In
                 loadKwh = r.u16(35205) / 10.0,
             ),
             lifetimePvKwh = r.u32(35191) / 10.0,
+            problems = problems(r, bms),
         )
     }
 
@@ -151,6 +153,63 @@ class GoodWeEtDriver(private val client: ModbusTcpClient, private val unitId: In
             4 to "Firmware update",
             5 to "Self-check",
         )
+
+        /**
+         * Table 8-2 "Error Message", the bits of 35189 (the register row points to table 8-12, the operation modes, in
+         * English and Chinese alike; the bit table is 8-2). Bit 9 "Utility Loss" is the grid loss; "TBD" bits are
+         * reported by number.
+         */
+        private val ERROR_BITS = mapOf(
+            31 to "Internal communication failure", 30 to "EEPROM R/W failure", 29 to "Grid frequency failure (Fac)",
+            28 to "DSP communication failure", 27 to "Phase angle failure", 25 to "Relay check failure",
+            23 to "Vac consistency failure", 22 to "Fac consistency failure", 20 to "Back-up overload",
+            19 to "DC injection high", 18 to "Isolation failure", 17 to "Grid voltage failure (Vac)",
+            16 to "External fan failure", 15 to "PV over-voltage", 14 to "Utility phase failure", 13 to "Over-temperature",
+            12 to "Internal fan failure", 11 to "DC bus high", 10 to "Ground current failure", 9 to "Utility loss",
+            8 to "AC HCT failure", 7 to "Relay device failure", 6 to "GFCI device failure", 4 to "GFCI consistency failure",
+            3 to "DCI consistency failure", 1 to "AC HCT check failure", 0 to "GFCI device check failure",
+        )
+        private const val UTILITY_LOSS_BIT = 9
+
+        /**
+         * 35189 error bits (table 8-2), 35185 warning code (no table: shown as hex), 35187 work mode 3 (fault) and
+         * 2 (off-grid: the inverter is the AC source from PV and battery, table 8-1), 35136 grid mode 2 (fault,
+         * table 8-10), and the BMS error and warning codes 37006/37012 and 37010/37013 (tables 8-7/8-8 are incomplete,
+         * so shown as hex). Grid mode 0 "Loss" isn't used: it also covers the inverter waiting disconnected.
+         * 35213 (CPLD warning) is "仅用于售后", for after-sales use only, and the diagnosis bits 35218/35220 are
+         * explanations of the battery behaviour, not faults: both left out.
+         */
+        internal fun problems(r: RegisterBlock, bms: RegisterBlock?): List<DeviceProblem> {
+            val out = mutableListOf<DeviceProblem>()
+            val errors = r.u32(35189)
+            for (bit in 31 downTo 0) {
+                if ((errors shr bit) and 1L == 0L) continue
+                if (bit == UTILITY_LOSS_BIT) {
+                    out += DeviceProblem(DeviceProblem.Kind.MAINS_LOST, "Utility loss (error bit 9)")
+                } else {
+                    out += DeviceProblem(DeviceProblem.Kind.FAULT, "${ERROR_BITS[bit] ?: "Error"} (error bit $bit)")
+                }
+            }
+            val workMode = r.u16(35187)
+            if (r.u16(35136) == 2 && out.none { it.kind == DeviceProblem.Kind.FAULT }) {
+                out += DeviceProblem(DeviceProblem.Kind.FAULT, "Grid fault (grid mode 2)")
+            }
+            if (workMode == 3 && out.none { it.kind == DeviceProblem.Kind.FAULT }) {
+                out += DeviceProblem(DeviceProblem.Kind.FAULT, "Fault mode (work mode 3)")
+            }
+            if (workMode == 2) {
+                out += DeviceProblem(DeviceProblem.Kind.BACKUP_MODE, "Off-grid mode (work mode 2)")
+            }
+            val warning = r.u16(35185)
+            if (warning != 0) out += DeviceProblem(DeviceProblem.Kind.WARNING, "Warning code 0x%04X".format(warning))
+            if (bms != null) {
+                val bmsError = (bms.u16(37012).toLong() shl 16) or bms.u16(37006).toLong()
+                if (bmsError != 0L) out += DeviceProblem(DeviceProblem.Kind.FAULT, "BMS error code 0x%08X".format(bmsError))
+                val bmsWarning = (bms.u16(37013).toLong() shl 16) or bms.u16(37010).toLong()
+                if (bmsWarning != 0L) out += DeviceProblem(DeviceProblem.Kind.WARNING, "BMS warning code 0x%08X".format(bmsWarning))
+            }
+            return out
+        }
 
         // Spec table 8-9 (0 = no battery)
         internal val BATTERY_MODES = mapOf(

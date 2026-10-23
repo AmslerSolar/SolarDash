@@ -7,6 +7,7 @@ import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DeviceConfig
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceStatus
 import ch.amslersolar.dashboard.model.DeviceType
 import ch.amslersolar.dashboard.model.PlantAggregator
@@ -152,5 +153,25 @@ class KostalPlenticoreDriverTest {
     fun blocksStayWithinModbusLimits() {
         val blocks = KostalPlenticoreDriver.blocks(KostalPlenticoreDriver.STATIC_FIELDS + KostalPlenticoreDriver.LIVE_FIELDS)
         for (b in blocks) assertTrue(b.last().first + b.last().second - b.first().first <= 125)
+    }
+
+    @Test
+    fun noProblemsWhileFeedingIn() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), KostalPlenticoreDriver(master(), 71).read().problems)
+    }
+
+    @Test
+    fun emergencyPowerIsMainsLostAndABlownBatteryFuseIsAFault() = runBlocking {
+        val r = KostalPlenticoreDriver(master().u32(56, 17).f32(202, 0.0), 71).read()
+        assertEquals(
+            listOf(
+                DeviceProblem(DeviceProblem.Kind.BACKUP_MODE, "Emergency power mode (state 17)"),
+                DeviceProblem(DeviceProblem.Kind.FAULT, "Battery fuse failed (PSSB)"),
+            ),
+            r.problems,
+        )
+        assertEquals("ESB", r.status)
+        val hot = KostalPlenticoreDriver(master().u32(56, 14), 71).read()
+        assertEquals(listOf(DeviceProblem(DeviceProblem.Kind.WARNING, "Overheating (state 14)")), hot.problems)
     }
 }

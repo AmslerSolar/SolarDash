@@ -3,6 +3,15 @@
 
 package ch.amslersolar.dashboard.ui
 
+import ch.amslersolar.dashboard.ui.status.rememberPlantStatus
+import ch.amslersolar.dashboard.ui.status.StatusCard
+import ch.amslersolar.dashboard.ui.status.GuideActivity
+import ch.amslersolar.dashboard.model.Guide
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.Checkbox
+import androidx.compose.material.icons.filled.MoreVert
 import ch.amslersolar.dashboard.i18n.DetailTexts
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
@@ -84,9 +93,11 @@ fun PlantScreen(
     onAddDevice: () -> Unit,
     onRename: (String) -> Unit,
     onKiosk: () -> Unit,
+    onOffGrid: (Boolean) -> Unit,
     content: @Composable (Modifier) -> Unit,
 ) {
     var renaming by remember { mutableStateOf(false) }
+    var menu by remember { mutableStateOf(false) }
     if (renaming) RenameDialog(stringResource(R.string.screens_rename_plant), plant.name, onRename = { onRename(it); renaming = false }, onDismiss = { renaming = false })
     Scaffold(
         topBar = {
@@ -102,6 +113,16 @@ fun PlantScreen(
                     IconButton(onClick = { renaming = true }) { Icon(Icons.Outlined.Edit, contentDescription = stringResource(R.string.screens_rename_plant)) }
                     if (tab == PlantTab.DEVICES) {
                         IconButton(onClick = onAddDevice) { Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.screens_add_device)) }
+                    }
+                    Box {
+                        IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, contentDescription = null) }
+                        DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.status_off_grid)) },
+                                leadingIcon = { Checkbox(checked = plant.offGrid, onCheckedChange = null) },
+                                onClick = { menu = false; onOffGrid(!plant.offGrid) },
+                            )
+                        }
                     }
                 },
             )
@@ -125,6 +146,7 @@ fun PlantScreen(
 
 @Composable
 fun DashboardTab(
+    plant: Plant,
     state: PlantState,
     onAddDevice: () -> Unit,
     onShowDevices: () -> Unit,
@@ -134,6 +156,9 @@ fun DashboardTab(
         PlantState.Loading -> Box(modifier.fillMaxSize(), Alignment.Center) { CircularProgressIndicator() }
         PlantState.NoDevices -> NoDevices(onAddDevice, modifier)
         is PlantState.Live -> BoxWithConstraints(modifier) {
+            val status = rememberPlantStatus(plant, state.snapshot)
+            val context = LocalContext.current
+            val onGuide: (Guide) -> Unit = { GuideActivity.open(context, it) }
             // Room left for the diagram after the status line and padding.
             val flowHeight = maxHeight - 112.dp
             if (maxWidth >= WIDE_LAYOUT && maxWidth > maxHeight) {
@@ -143,6 +168,7 @@ fun DashboardTab(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     StatusLine(state.snapshot, onShowDevices)
+                    StatusCard(status, onGuide)
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         PlantEnergyFlow(state.snapshot, flowHeight, Modifier.weight(3f))
                         Column(Modifier.weight(2f), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -157,6 +183,7 @@ fun DashboardTab(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     item { StatusLine(state.snapshot, onShowDevices) }
+                    item { StatusCard(status, onGuide) }
                     item { PlantEnergyFlow(state.snapshot, flowHeight) }
                     item { TodayCard(state.snapshot) }
                     if (state.snapshot.consumers.isNotEmpty()) item { ConsumersCard(state.snapshot) }

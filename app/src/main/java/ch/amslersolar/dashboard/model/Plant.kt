@@ -120,6 +120,8 @@ data class Plant(
     val name: String,
     val devices: List<DeviceConfig> = emptyList(),
     val chartChannels: List<ChartChannel> = emptyList(),
+    /** No grid connection: a missing AC input means the generator is off, not a power cut. */
+    val offGrid: Boolean = false,
     /**
      * Saved devices this version can't read (e.g. a device type from a newer version), kept as they were and
      * written back unchanged by [ch.amslersolar.dashboard.data.PlantStore], so going back to an older APK loses nothing.

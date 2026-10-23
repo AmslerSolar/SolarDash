@@ -6,6 +6,8 @@ package ch.amslersolar.dashboard.driver.sungrow
 import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
+import ch.amslersolar.dashboard.model.DeviceProblem
+import ch.amslersolar.dashboard.model.DeviceProblem.Kind
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -306,6 +308,62 @@ class SungrowDriverTest {
         assertEquals("2026-10-21 12:30:05", inverter["Fault/alarm time"])
         assertEquals("System fault", SungrowDriver.faultName(1100))
         assertEquals("Unknown code", SungrowDriver.faultName(9999))
+    }
+
+    @Test
+    fun problemsAreEmptyWhenAllIsFine() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), sh10rt().driver().read().problems)
+        assertEquals(emptyList<DeviceProblem>(), sh10rt().apply { u16(13000, 0x1400) }.driver().read().problems) // standby
+        assertEquals(emptyList<DeviceProblem>(), sg10rt().driver().read().problems)
+    }
+
+    @Test
+    fun hybridFaultBitsAndRunningStateAreReported() = runBlocking {
+        val dev = sh10rt().apply {
+            u16(13000, 0x5500)
+            u32(13052, (1L shl 8) or (1L shl 0)) // grid power outage, grid overvoltage
+            u32(13050, 1L shl 0)                 // fan alarm
+            u32(13066, 1L shl 1)                 // reserved bit
+        }
+        assertEquals(
+            listOf(
+                DeviceProblem(Kind.WARNING, "Fan alarm (inverter alarm bit 0)"),
+                DeviceProblem(Kind.FAULT, "Grid overvoltage (grid-side fault bit 0)"),
+                DeviceProblem(Kind.MAINS_LOST, "Grid power outage (grid-side fault bit 8)"),
+                DeviceProblem(Kind.FAULT, "Code (battery fault bit 1)"),
+            ),
+            dev.driver().read().problems,
+        )
+        assertEquals(
+            listOf(DeviceProblem(Kind.FAULT, "Fault (0x5500)")),
+            sh10rt().apply { u16(13000, 0x5500) }.driver().read().problems,
+        )
+        assertEquals(
+            listOf(DeviceProblem(Kind.BACKUP_MODE, "Running (off-grid) (0x1000)")),
+            sh10rt().apply { u16(13000, 0x1000) }.driver().read().problems,
+        )
+        assertEquals(
+            listOf(DeviceProblem(Kind.WARNING, "Derating running (0x8100)")),
+            sh10rt().apply { u16(13000, 0x8100) }.driver().read().problems,
+        )
+    }
+
+    @Test
+    fun stringInverterFaultAlarmAndOutageCodesAreReported() = runBlocking {
+        assertEquals(
+            listOf(DeviceProblem(Kind.FAULT, "Grid overvoltage (2)")),
+            sg10rt().apply { u16(5038, 0x5500); u16(5045, 2) }.driver().read().problems,
+        )
+        assertEquals(
+            listOf(DeviceProblem(Kind.MAINS_LOST, "Grid power outage (10)")),
+            sg10rt().apply { u16(5038, 0x5500); u16(5045, 10) }.driver().read().problems,
+        )
+        assertEquals(
+            listOf(DeviceProblem(Kind.WARNING, "Alarm code 9999"), DeviceProblem(Kind.WARNING, "PID impedance abnormity (432)")),
+            sg10rt().apply { u16(5038, 0x9100); u16(5045, 9999); u16(5151, 432) }.driver().read().problems,
+        )
+        // The fault code is only valid in the fault and alarm states.
+        assertEquals(emptyList<DeviceProblem>(), sg10rt().apply { u16(5045, 2) }.driver().read().problems)
     }
 
     @Test

@@ -6,6 +6,8 @@ package ch.amslersolar.dashboard.driver.fenecon
 import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
+import ch.amslersolar.dashboard.model.DeviceProblem
+import ch.amslersolar.dashboard.model.DeviceProblem.Kind
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -129,6 +131,17 @@ class FeneconFemsDriverTest {
     fun batteryFallsBackToAcSideMinusDcPv() = runBlocking {
         val fake = chargingExport().f32(415, Double.NaN)
         assertEquals(-2_000, FeneconFemsDriver(fake, 1).read().battery?.powerW)
+    }
+
+    @Test
+    fun problemsFromStateAndGridMode() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), FeneconFemsDriver(chargingExport(), 1).read().problems)
+        assertEquals(emptyList<DeviceProblem>(), FeneconFemsDriver(chargingExport().u16(222, 1), 1).read().problems) // info
+        assertEquals(
+            listOf(DeviceProblem(Kind.FAULT, "Fault (state 3)"), DeviceProblem(Kind.BACKUP_MODE, "Off-grid (grid mode 2)")),
+            FeneconFemsDriver(chargingExport().u16(222, 3).u16(417, 2), 1).read().problems,
+        )
+        assertEquals(listOf(DeviceProblem(Kind.WARNING, "Warning (state 2)")), FeneconFemsDriver(chargingExport().u16(222, 2), 1).read().problems)
     }
 
     @Test

@@ -9,6 +9,7 @@ import ch.amslersolar.dashboard.driver.Details
 import ch.amslersolar.dashboard.model.BatteryState
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.PhaseReading
 import kotlinx.coroutines.CancellationException
@@ -67,6 +68,9 @@ class EnphaseNotAvailableException(path: String) : IOException("$path not availa
  *   with it: the net meter has received 1.24 MWh of the 1.61 MWh produced), the CT energy unit (Wh),
  *   the "total-consumption" / "storage" measurement types, and the storage sign in livedata (- = charging,
  *   inferred from the sample: pv 329.5 W = load 108.7 W + 220.8 W into storage).
+ * - Problems: the brief documents no fault or grid-status fields for the microinverters or the gateway (livedata's
+ *   `main_relay_state` has no value table), so only the CT meters are checked: an enabled meter whose
+ *   `meteringStatus` isn't "normal" or that has `statusFlags` → WARNING.
  */
 class EnphaseGatewayDriver internal constructor(
     private val fetch: HttpFetch,
@@ -254,6 +258,10 @@ object EnphaseParser {
             }
 
         val abnormal = meters.filter { it.str("state") == "enabled" && it.str("meteringStatus") != "normal" }
+        val flagged = meters.filter {
+            val ms = it.str("meteringStatus")
+            it.str("state") == "enabled" && ((ms != null && ms != "normal") || (it["statusFlags"] as? JsonArray).orEmpty().isNotEmpty())
+        }
         val status = when {
             abnormal.isNotEmpty() -> abnormal.joinToString { "${it.str("measurementType")} meter ${it.str("meteringStatus")}" }
             pvW != null && pvW > 0 -> "Producing"
@@ -270,6 +278,11 @@ object EnphaseParser {
             // No daily counters are documented, so `today` stays empty.
             lifetimePvKwh = production?.num("actEnergyDlvd")?.div(1000), // UNVERIFIED unit: Wh
             details = details(meters, byType, invList, live),
+            problems = flagged.map { m ->
+                val flags = (m["statusFlags"] as? JsonArray).orEmpty().map { it.str() }
+                val what = listOfNotNull(m.str("meteringStatus")?.takeIf { it != "normal" }, flags.joinToString().ifEmpty { null }).joinToString(", ")
+                DeviceProblem(DeviceProblem.Kind.WARNING, "${m.str("measurementType")} meter: $what")
+            }.distinct(),
         )
     }
 

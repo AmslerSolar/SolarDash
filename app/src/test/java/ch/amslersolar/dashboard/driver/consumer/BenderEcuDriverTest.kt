@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard.driver.consumer
 
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -91,5 +92,29 @@ class BenderEcuDriverTest {
             } catch (_: IOException) {
             }
         }
+    }
+
+    @Test
+    fun problemsFromErrorBitsAndOcppStatus() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), BenderEcuDriver(ecu(), 1).read().problems)
+        assertEquals(emptyList<DeviceProblem>(), BenderEcuDriver(ecu(ocpp = 7, vehicle = 2, power = 0), 1).read().problems)
+        // 0x41 = RCM + contactor welded; 0x80 (byte 2 of 111) = backend disconnected.
+        val fault = ecu(ocpp = 4, vehicle = 1, power = 0).u16(111, 0x4100).u16(112, 0)
+        assertEquals(
+            listOf(
+                DeviceProblem(DeviceProblem.Kind.FAULT, "RCM triggered (error bit 0)"),
+                DeviceProblem(DeviceProblem.Kind.FAULT, "Contactor welded (error bit 6)"),
+            ),
+            BenderEcuDriver(fault, 1).read().problems,
+        )
+        val backend = ecu(ocpp = 0, vehicle = 1, power = 0).u16(111, 0x8000).u16(112, 0)
+        assertEquals(
+            listOf(DeviceProblem(DeviceProblem.Kind.WARNING, "Backend disconnected (error bit 7)")),
+            BenderEcuDriver(backend, 1).read().problems,
+        )
+        assertEquals(
+            listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Charge point faulted (OCPP status 4)")),
+            BenderEcuDriver(ecu(ocpp = 4, vehicle = 1, power = 0), 1).read().problems,
+        )
     }
 }

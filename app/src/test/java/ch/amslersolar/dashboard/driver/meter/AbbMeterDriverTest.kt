@@ -4,6 +4,7 @@
 package ch.amslersolar.dashboard.driver.meter
 
 import ch.amslersolar.dashboard.model.EnergyTotals
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -96,5 +97,17 @@ class AbbMeterDriverTest {
         assertThrows(IOException::class.java) { runBlocking { AbbMeterDriver(other, 1).identify() } }
         val nothing = FakeMeterImage(1, 125)
         assertThrows(IOException::class.java) { runBlocking { AbbMeterDriver(nothing, 1).identify() } }
+    }
+
+    @Test
+    fun errorFlagsAreAFault() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), AbbMeterDriver(b2x("B23 312-100", listOf(100, 0, 0)), 1).read().problems)
+        val zero = b2x("B23 312-100", listOf(100, 0, 0)).u64(0x8A13, 0L).u64(0x8A1F, 0x10L) // warning flags not reported
+        assertEquals(emptyList<DeviceProblem>(), AbbMeterDriver(zero, 1).read().problems)
+        val err = b2x("B23 312-100", listOf(100, 0, 0)).u64(0x8A13, 0x0000_0000_0001_0002L)
+        assertEquals(
+            listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Meter error (error flags 0x10002)")),
+            AbbMeterDriver(err, 1).read().problems,
+        )
     }
 }

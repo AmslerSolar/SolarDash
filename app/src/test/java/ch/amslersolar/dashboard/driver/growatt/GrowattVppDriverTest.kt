@@ -6,6 +6,8 @@ package ch.amslersolar.dashboard.driver.growatt
 import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
+import ch.amslersolar.dashboard.model.DeviceProblem
+import ch.amslersolar.dashboard.model.DeviceProblem.Kind
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -192,6 +194,29 @@ class GrowattVppDriverTest {
         assertEquals("SA_EN50438 (11)", inv["Country / grid code"])
         val st = r.details.first { it.title.startsWith("Status") }.rows.toMap()
         assertEquals("Load first (0)", st["Priority"])
+    }
+
+    @Test
+    fun problemsAreEmptyWhenAllIsFine() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), FakeGrowatt().driver().read().problems)
+    }
+
+    @Test
+    fun faultAlarmBatteryFaultAndOffGridAreReported() = runBlocking {
+        val f = FakeGrowatt()
+        with(f.input.regs) { this[31000] = 3; this[31005] = 102; this[31006] = 3; this[31007] = 205; this[31008] = 1; this[31001] = 4 }
+        assertEquals(
+            listOf(
+                DeviceProblem(Kind.FAULT, "Fault code 102/3"),
+                DeviceProblem(Kind.WARNING, "Alarm code 205/1"),
+                DeviceProblem(Kind.FAULT, "Battery fault (battery state 4)"),
+            ),
+            f.driver().read().problems,
+        )
+        val offGrid = FakeGrowatt().apply { input.regs[31000] = 7 }
+        assertEquals(listOf(DeviceProblem(Kind.BACKUP_MODE, "Off-grid operation (state 7)")), offGrid.driver().read().problems)
+        val faultNoCode = FakeGrowatt().apply { input.regs[31000] = 3 }
+        assertEquals(listOf(DeviceProblem(Kind.FAULT, "Fault (state 3)")), faultNoCode.driver().read().problems)
     }
 
     @Test

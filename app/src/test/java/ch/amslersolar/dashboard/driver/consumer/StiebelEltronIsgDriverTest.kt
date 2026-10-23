@@ -6,6 +6,7 @@ package ch.amslersolar.dashboard.driver.consumer
 import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -181,5 +182,19 @@ class StiebelEltronIsgDriverTest {
             fail("Expected IOException")
         } catch (_: IOException) {
         }
+    }
+
+    @Test
+    fun problemsFromFatalErrorAndBusStatus() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), wpm3().driver().read().problems)
+        assertEquals(emptyList<DeviceProblem>(), wpm3(status = 1 shl 9).inp(2506, 1).driver().read().problems) // defrost
+        val r = wpm3().inp(2504, 1).inp(2505, -3).driver().read()
+        assertEquals(
+            listOf(
+                DeviceProblem(DeviceProblem.Kind.FAULT, "System fault (fatal error)"),
+                DeviceProblem(DeviceProblem.Kind.WARNING, "CAN bus error (bus status -3)"),
+            ),
+            r.problems,
+        )
     }
 }

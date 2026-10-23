@@ -15,6 +15,7 @@ import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.BatteryState
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.EnergyTotals
 import ch.amslersolar.dashboard.model.PhaseReading
@@ -274,6 +275,7 @@ class SungrowDriver(private val input: RegisterReader, private val holding: Regi
             ),
             lifetimePvKwh = r.u32(13003)?.times(0.1),
             details = hybridDetails(m, r, s, flow),
+            problems = hybridProblems(r),
         )
     }
 
@@ -451,6 +453,7 @@ class SungrowDriver(private val input: RegisterReader, private val holding: Regi
             ),
             lifetimePvKwh = r.u32(5144)?.times(0.1) ?: r.u32(5004)?.toDouble(),
             details = stringDetails(m, r, s),
+            problems = stringProblems(r),
         )
     }
 
@@ -805,6 +808,180 @@ class SungrowDriver(private val input: RegisterReader, private val holding: Regi
                 a..b
             } to name
         }
+
+        /**
+         * Hybrid Appendix 4: bit names of the U32 fault/alarm fields 13050–13078 (index = bit, "" = reserved), the
+         * register's display name and whether its bits are warnings (the "alarm" fields) or faults.
+         */
+        private class FaultField(val reg: Int, val label: String, val warning: Boolean, val bits: List<String>)
+
+        private fun names(vararg n: String) = n.toList()
+        private fun same(name: String, n: Int) = List(n) { name }
+        private val DEVICE_ABNORMALITY = "Device abnormality"
+
+        private val HYBRID_FAULT_BITS = listOf(
+            FaultField(13050, "inverter alarm", true, names(
+                "Fan alarm", "Lightning protection alarm on AC side", "Lightning protection alarm on DC side",
+                "Bypass switch abnormal", "Communication alarm", "Parallel communication alarm", DEVICE_ABNORMALITY,
+                "Junction box leakage protector alarm", "PV1 abnormal warning", "PV2 abnormal warning", "PV3 abnormal warning",
+                "PV4 abnormal warning", "Fan 2 low speed alarm", "Fan 2 stall alarm", "Meter ports reversed or wrongly connected",
+                "Software version mismatch", "SPD or fuse alarm", "FRAM read alarm", "SPI communication alarm",
+                "Ambient temperature sensor open circuit", "Ambient temperature sensor short circuit",
+                "Inversion temperature sensor open circuit", "Inversion temperature sensor short circuit",
+                "Boost temperature sensor open circuit", "Boost temperature sensor short circuit",
+                "Input configuration alarm in DC source mode or clock reset abnormal", "PV high-voltage fault",
+                "Ambient low temperature sensor open circuit", "Fan 1 low speed alarm", "Fan 1 stall alarm",
+                "Meter communication alarm", "Boost short circuit alarm",
+            )),
+            FaultField(13052, "grid-side fault", false, names(
+                "Grid overvoltage", "Grid transient overvoltage", "Grid undervoltage", "Grid low voltage", "", "AC overcurrent",
+                "Grid overfrequency", "Grid underfrequency", "Grid power outage", DEVICE_ABNORMALITY, "Excessive leakage current",
+                "Grid abnormal", "10-minute grid overvoltage", "High grid voltage", "Output overload", "Grid voltage imbalance",
+                "Inversion overcurrent hardware fault", "High grid frequency", "Grid low frequency", "Grid voltage consistency fault",
+                "Grid frequency consistency fault", "Grid protection self-test failed", "Grounding cable fault",
+                "Inversion DC injection overvoltage fault", "AC side undervoltage", "AC side overvoltage",
+                "AC side underfrequency", "AC side overfrequency", "AC voltage unbalance", "Bypass instantaneous overcurrent",
+                "Bypass switch overcurrent", "",
+            )),
+            FaultField(13054, "system fault 1", false, names(
+                "Inversion switch over-temperature", "Boost switch over-temperature", "PV insulation fault", "Bypass switch fault",
+                "EPS relay failure", "Junction box relay fault", "Input and output mismatch fault", "PV high-voltage overpower",
+                "Redundancy fault", "R-phase inverter voltage sampling abnormal", "S-phase inverter voltage sampling abnormal",
+                "T-phase inverter voltage sampling abnormal", "R-phase DC component sampling abnormal",
+                "S-phase DC component sampling abnormal", "T-phase DC component sampling abnormal", "PV1 current sampling abnormal",
+                "PV2 current sampling abnormal", "PV1 MPPT current sampling abnormal", "PV2 MPPT current sampling abnormal",
+                "Control board power supply undervoltage", "Leakage current CT self-detection fault", "SPI communication fault",
+                "LCD and main DSP communication fault", "", "PV3 current sampling failure", "N-wire current sampling abnormal",
+                "Balance bridge current sampling abnormal",
+            )),
+            FaultField(13056, "system fault 2", false, names(
+                "Module over-temperature", "Excessively high ambient temperature", DEVICE_ABNORMALITY,
+                "Low system insulation resistance",
+            ) + same(DEVICE_ABNORMALITY, 3) + names("Low ambient temperature") + same(DEVICE_ABNORMALITY, 3) +
+                names("Input configuration abnormality") + same(DEVICE_ABNORMALITY, 3) + names("Backup load overpower fault")),
+            FaultField(13058, "DC-side fault", false, same(DEVICE_ABNORMALITY, 4) + names("PV access failure") +
+                same(DEVICE_ABNORMALITY, 2) + names("", "", "PV1 reverse connection fault", "PV2 reverse connection fault") +
+                same(DEVICE_ABNORMALITY, 5) + names(
+                    "Bus overvoltage hardware fault", "Bus average undervoltage", "PV hardware overcurrent fault",
+                    "PV voltage exceeds bus voltage", "Boost1 short circuit fault", "Boost2 short circuit fault", "DC overcurrent",
+                    "PV3 overcurrent", "PV3 reverse connection fault", "Boost3 short circuit fault",
+                    "Half-bus overvoltage hardware fault", "Balance bridge overcurrent hardware fault", "PV4 reverse connection fault",
+                )),
+            FaultField(13060, "permanent fault", false, names(
+                "PV overcurrent permanent fault", "Inversion overcurrent permanent fault", "High DC injection permanent fault",
+                "Bus overvoltage permanent fault", "Relay permanent fault", "PV1 self-check permanent fault",
+                "PV2 self-check permanent fault", "Inversion open-loop self-detection permanent fault", "Temperature sensor failure",
+                "Boost3 open-loop self-check permanent fault", "Balance bridge overcurrent permanent fault",
+                "Half-bus overvoltage permanent fault",
+            )),
+            FaultField(13062, "BDC-side fault", false, names(
+                "BDC charge transient overcurrent", "BDC discharge transient overcurrent", "Clamping capacitance low voltage",
+                "Clamping capacitance transient overvoltage", "", "Battery pre-charge relay failure", "", "", "BDC self-detect fault",
+                "", "", "", "BDC over-temperature fault", "", "", "", "BDC hardware overcurrent", "", "", "",
+                "BDC current sampling abnormal", "", "Leakage current sampling abnormal", "Secondary DSP communication fault",
+                "BDC soft start fault",
+            )),
+            FaultField(13064, "BDC-side permanent fault", false, names(
+                "BDC overcurrent permanent fault", "", "Battery overvoltage permanent fault", "", "BDC self-detect permanent fault",
+                "", "", "BDC soft start permanent fault",
+            )),
+            FaultField(13066, "battery fault", false, names(
+                "", "", "", "Battery average undervoltage fault", "", "", "", "Battery over-temperature fault",
+                "Battery low temperature fault", "", "", "Battery transient overvoltage", "Battery average overvoltage fault", "",
+                "BMS communication fault", "Battery hardware overvoltage", "Battery reversed polarity", "BMS and battery fault",
+            )),
+            FaultField(13068, "battery alarm", true, names("BDC temperature sensor open circuit", "BDC temperature sensor short circuit")),
+            FaultField(13070, "BMS alarm", true, names(
+                "Battery overvoltage alarm", "Battery over-temperature alarm", "Battery low temperature alarm",
+                "Battery charge/discharge overcurrent alarm", "", "Battery voltage unbalance", "", "Battery undervoltage alarm",
+                "Abnormal SD card", "Cell voltage imbalance alarm", "Cell temperature difference alarm",
+                "Battery module inconsistency alarm", "Mixed cell alarm",
+            )),
+            FaultField(13072, "BMS protection", false, names(
+                "Battery overvoltage protection", "Battery over-temperature protection", "Battery low temperature protection",
+                "Battery charge/discharge overcurrent protection", "Over charge power limit fault", "Over discharge power limit fault",
+                "", "Battery low voltage protection", "Slave battery fault", "Battery pre-charge failed",
+                "Abnormal external power line status", "Battery current sampling fault", "Battery temperature sampling fault",
+                "Battery voltage sampling fault", "Battery internal communication failure", "Battery DC contactor failure",
+            )),
+            FaultField(13074, "BMS fault 1", false, names(
+                "Battery FET or switch failure", "Battery internal hardware failure", "Battery overcurrent fault",
+                "Battery short circuit fault", "Battery internal communication fault", "Battery input overvoltage", "",
+                "Battery software version mismatch", "Battery heating alarm", "Battery heating circuit abnormal", "", "",
+                "Battery self-test fault",
+            )),
+            FaultField(13076, "BMS fault 2", false, emptyList()),
+            FaultField(13078, "BMS alarm 2", true, names("BMS internal alarm")),
+        )
+
+        /** Bit 8 of the grid-side fault field: "Grid Power Outage". */
+        private const val GRID_OUTAGE_BIT = 8
+
+        /**
+         * Hybrid: the Appendix 4 bit fields 13050–13078 (reserved bits by number) and running state 13000 (Appendix 2):
+         * fault, communicate fault, warn/derating running, update failed, off-grid running and off-grid charge.
+         */
+        internal fun hybridProblems(r: Regs): List<DeviceProblem> {
+            val out = mutableListOf<DeviceProblem>()
+            for (f in HYBRID_FAULT_BITS) {
+                val v = r.u32(f.reg) ?: continue
+                for (bit in 0 until 32) {
+                    if ((v shr bit) and 1L == 0L) continue
+                    val name = f.bits.getOrNull(bit)?.takeIf { it.isNotEmpty() } ?: "Code"
+                    val kind = when {
+                        f.reg == 13052 && bit == GRID_OUTAGE_BIT -> DeviceProblem.Kind.MAINS_LOST
+                        f.warning -> DeviceProblem.Kind.WARNING
+                        else -> DeviceProblem.Kind.FAULT
+                    }
+                    out += DeviceProblem(kind, "$name (${f.label} bit $bit)")
+                }
+            }
+            fun none(kind: DeviceProblem.Kind) = out.none { it.kind == kind }
+            val state = r.u16(13000) ?: return out
+            val text = "${RUNNING_STATES[state]} (${hex(state)})"
+            when (state) {
+                0x5500, 0x0100, 0x2500 -> if (none(DeviceProblem.Kind.FAULT)) out += DeviceProblem(DeviceProblem.Kind.FAULT, text)
+                0x9100 -> if (none(DeviceProblem.Kind.WARNING)) out += DeviceProblem(DeviceProblem.Kind.WARNING, text)
+                0x8100, 0x0080, 0x0200 -> out += DeviceProblem(DeviceProblem.Kind.WARNING, text)
+                0x1000, 0x0041 -> out += DeviceProblem(DeviceProblem.Kind.BACKUP_MODE, text)
+            }
+            return out
+        }
+
+        /**
+         * String inverter: work state 5038 (Appendix 2) with the fault/alarm code 5045 (Appendix 4, valid only in
+         * fault 0x5500 or alarm 0x9100; code 10 is the grid power outage), derating run, communicate fault, and the
+         * PID alarm code 5151.
+         */
+        internal fun stringProblems(r: Regs): List<DeviceProblem> {
+            val out = mutableListOf<DeviceProblem>()
+            val state = r.u16(5038)
+            val code = r.u16(5045)?.takeIf { it != 0 }
+            when (state) {
+                0x5500, 0x9100 -> {
+                    val fault = state == 0x5500
+                    val kind = when {
+                        code == GRID_POWER_OUTAGE_CODE -> DeviceProblem.Kind.MAINS_LOST
+                        fault -> DeviceProblem.Kind.FAULT
+                        else -> DeviceProblem.Kind.WARNING
+                    }
+                    val text = when {
+                        code == null -> "${WORK_STATES[state]} (${hex(state)})"
+                        FAULT_CODES.any { (ranges, _) -> ranges.any { code in it } } -> "${faultName(code)} ($code)"
+                        else -> "${if (fault) "Fault" else "Alarm"} code $code"
+                    }
+                    out += DeviceProblem(kind, text)
+                }
+                0x8100 -> out += DeviceProblem(DeviceProblem.Kind.WARNING, "Derating run (0x8100)")
+                0x2500 -> out += DeviceProblem(DeviceProblem.Kind.FAULT, "Communicate fault (0x2500)")
+            }
+            r.u16(5151)?.takeIf { it != 0 }?.let {
+                out += DeviceProblem(DeviceProblem.Kind.WARNING, "${PID_ALARMS[it] ?: "PID alarm"} ($it)")
+            }
+            return out
+        }
+
+        private const val GRID_POWER_OUTAGE_CODE = 10
 
         fun faultName(code: Int): String = FAULT_CODES.firstOrNull { (ranges, _) -> ranges.any { code in it } }?.second ?: "Unknown code"
     }

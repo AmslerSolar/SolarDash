@@ -14,6 +14,7 @@ import ch.amslersolar.dashboard.driver.voltronic.AxpertProtocol.Qpiri
 import ch.amslersolar.dashboard.model.BatteryState
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.EnergyTotals
 import ch.amslersolar.dashboard.model.PhaseReading
@@ -166,6 +167,7 @@ class VoltronicAxpertDriver(
     private var modelName: String? = null
     private var rated: Qpiri? = null
     private var warnings: List<String>? = null
+    private var warningProblems: List<DeviceProblem> = emptyList()
     private var energy = Energy()
     private val disabled = mutableSetOf<String>() // command prefixes that answered NAK or kept failing
     private val failures = HashMap<String, Int>()
@@ -211,7 +213,10 @@ class VoltronicAxpertDriver(
 
     private suspend fun refreshStatic() {
         optional("QPIRI")?.let { runCatching { AxpertProtocol.parseQpiri(it) }.getOrNull() }?.let { rated = it }
-        optional("QPIWS")?.let { runCatching { AxpertProtocol.parseWarnings(it) }.getOrNull() }?.let { warnings = it }
+        optional("QPIWS")?.let { reply ->
+            runCatching { AxpertProtocol.parseWarnings(reply) }.getOrNull()?.let { warnings = it }
+            runCatching { AxpertProtocol.parseWarningProblems(reply) }.getOrNull()?.let { warningProblems = it }
+        }
         if (firmware == null) firmware = optional("QVFW")?.let { AxpertProtocol.parseFirmware(it) }
         val day = today()
         energy = Energy(
@@ -265,7 +270,23 @@ class VoltronicAxpertDriver(
             today = EnergyTotals(pvKwh = energy.pvTodayWh?.let { it / 1000.0 }, loadKwh = energy.loadTodayWh?.let { it / 1000.0 }),
             lifetimePvKwh = energy.pvTotalWh?.let { it / 1000.0 },
             details = details(g, pv2, mode),
+            problems = problems(g, mode),
         )
+    }
+
+    /**
+     * QPIWS bits (refreshed with the ratings), QMOD fault mode, and no AC input: LINE_FAIL, or the grid voltage
+     * near 0 V (QPIGS field 1; these units have an AC input).
+     */
+    private fun problems(g: Qpigs, mode: String?): List<DeviceProblem> {
+        val list = warningProblems.toMutableList()
+        if (mode == AxpertProtocol.MODES['F'] && list.none { it.kind == DeviceProblem.Kind.FAULT }) {
+            list += DeviceProblem(DeviceProblem.Kind.FAULT, "Fault mode (F)")
+        }
+        if (g.gridVoltageV < NO_AC_INPUT_V && list.none { it.kind == DeviceProblem.Kind.MAINS_LOST }) {
+            list += DeviceProblem(DeviceProblem.Kind.MAINS_LOST, "No AC input (${fmt(g.gridVoltageV, "V", 0)})")
+        }
+        return list.distinct()
     }
 
     private fun chargeSource(g: Qpigs) = when {
@@ -387,5 +408,7 @@ class VoltronicAxpertDriver(
         /** Ratings, warnings and energy counters: about once a minute at the 5 s poll interval. */
         const val STATIC_REFRESH_POLLS = 12
         const val MAX_FAILURES = 3
+        /** Below this the AC input counts as absent. */
+        const val NO_AC_INPUT_V = 30.0
     }
 }

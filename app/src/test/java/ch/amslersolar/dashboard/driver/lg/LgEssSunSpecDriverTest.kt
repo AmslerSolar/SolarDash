@@ -6,6 +6,8 @@ package ch.amslersolar.dashboard.driver.lg
 import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
+import ch.amslersolar.dashboard.model.DeviceProblem
+import ch.amslersolar.dashboard.model.DeviceProblem.Kind
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -105,5 +107,25 @@ class LgEssSunSpecDriverTest {
         assertEquals("6.1 W", meter["Active power (+ purchase, − feed-in)"])
         assertEquals("234.2 V", meter["L1 voltage"])
         assertEquals("25.9 kWh", meter["PV generation (today)"])
+    }
+
+    @Test
+    fun problemsFromEventsAndStates() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), LgEssSunSpecDriver(FakeLg(), 1).read().problems)
+        val fake = FakeLg().apply {
+            val inv = addr.getValue(113); val bat = addr.getValue(802)
+            regs[inv + 48] = 7; regs[inv + 50] = 0; regs[inv + 51] = (1 shl 4) or (1 shl 7) // grid disconnect, over-temperature
+            regs[bat + 22] = 99; regs[bat + 26] = 0; regs[bat + 27] = 1 shl 2 // over-temperature warning
+        }
+        assertEquals(
+            listOf(
+                DeviceProblem(Kind.MAINS_LOST, "Grid disconnect (event bit 4)"),
+                DeviceProblem(Kind.WARNING, "Over-temperature (event bit 7)"),
+                DeviceProblem(Kind.FAULT, "Fault (state 7)"),
+                DeviceProblem(Kind.WARNING, "Battery over-temperature warning (event bit 2)"),
+                DeviceProblem(Kind.FAULT, "Battery fault (bank state 99)"),
+            ),
+            LgEssSunSpecDriver(fake, 1).read().problems,
+        )
     }
 }

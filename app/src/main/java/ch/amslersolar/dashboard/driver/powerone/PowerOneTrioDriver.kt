@@ -13,6 +13,8 @@ import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
+import ch.amslersolar.dashboard.model.DeviceProblem.Kind
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.EnergyTotals
 import ch.amslersolar.dashboard.model.PhaseReading
@@ -35,6 +37,12 @@ import kotlin.math.roundToInt
  *   first value tells which numbering the gateway uses, so both work.
  * - Solar: the inverter's AC output, i.e. what it delivers to the house (DC inputs are in the strings and
  *   details). No grid or home figures: a TRIO doesn't measure the grid.
+ * - Problems: GT map: global state (124, note 6 of the maps) fault states → FAULT, inverter state 125 43 "Grid not
+ *   present" / 46 "Grid fail" → MAINS_LOST, alarm (128, note 9): Exxx → FAULT, Wxxx → WARNING, grid OV/UV/OF/UF,
+ *   grid fail and df/dt → MAINS_LOST. Gt03 map: global state (1050, annex 3) fault states → FAULT, alarm state
+ *   (1051, annex 4) likewise (W015 "Island detected" → MAINS_LOST), derating bits (1054, annex 7) → WARNING except
+ *   the user's curtailment, the nameplate current limit and the storage zero-injection setting. Not problems: sun
+ *   low / input or bulk under-voltage / zero power (low light) and remote off (an operator command).
  * - The inverter is powered by its panels and stops answering after sunset. No answer after a low-power reading
  *   is shown as sleeping (0 W) and retried once a minute; no answer without any earlier reading is an error.
  */
@@ -171,6 +179,7 @@ class PowerOneTrioDriver(private val reader: RegisterReader, private val unitId:
                 today = EnergyTotals(pvKwh = f(132)?.div(1000)),
                 lifetimePvKwh = f(134),
                 details = gtDetails(),
+                problems = gtProblems(),
             )
         }
 
@@ -186,7 +195,32 @@ class PowerOneTrioDriver(private val reader: RegisterReader, private val unitId:
                 today = EnergyTotals(pvKwh = u32(1070)?.div(1000.0)),
                 lifetimePvKwh = u32(1072)?.div(1000.0),
                 details = gt03Details(),
+                problems = gt03Problems(),
             )
+        }
+
+        private fun gtProblems(): List<DeviceProblem> = listOfNotNull(
+            u16(124)?.takeIf { it in GT_FAULT_STATES }?.let { DeviceProblem(Kind.FAULT, "${GT_GLOBAL_STATES[it]} (state $it)") },
+            u16(125)?.takeIf { it in GT_NO_GRID_STATES }?.let { DeviceProblem(Kind.MAINS_LOST, "${GT_INVERTER_STATES[it]} (inverter state $it)") },
+            u16(128)?.let { a -> alarm(a, GT_ALARMS[a], GT_GRID_ALARMS, GT_IGNORED_ALARMS) },
+        ).distinct()
+
+        private fun gt03Problems(): List<DeviceProblem> {
+            val out = mutableListOf<DeviceProblem>()
+            u16(1050)?.takeIf { it in GT03_FAULT_STATES }?.let { out += DeviceProblem(Kind.FAULT, "${GT03_GLOBAL_STATES[it]} (state $it)") }
+            u16(1051)?.let { a -> alarm(a, GT03_ALARMS[a], GT03_GRID_ALARMS, GT03_IGNORED_ALARMS) }?.let { out += it }
+            val derating = u16(1054)?.takeIf { it != 0xFFFF } ?: 0
+            for ((bit, text) in GT03_DERATING) if (derating and (1 shl bit) != 0) out += DeviceProblem(Kind.WARNING, "$text (derating bit $bit)")
+            return out.distinct()
+        }
+
+        /** An alarm state: "… (Exxx)" → FAULT, "… (Wxxx)" → WARNING, grid alarms → MAINS_LOST, unknown → FAULT. */
+        private fun alarm(code: Int, text: String?, grid: Set<Int>, ignored: Set<Int>): DeviceProblem? = when {
+            code == 0 || code == 0xFFFF || code in ignored -> null
+            text == null -> DeviceProblem(Kind.FAULT, "Alarm code $code")
+            code in grid -> DeviceProblem(Kind.MAINS_LOST, text)
+            text.contains("(W") -> DeviceProblem(Kind.WARNING, text)
+            else -> DeviceProblem(Kind.FAULT, text)
         }
 
         private fun w(r: Int) = fmt(f(r), "W", 0)
@@ -337,6 +371,41 @@ class PowerOneTrioDriver(private val reader: RegisterReader, private val unitId:
             63 to "Den switch open (W016)", 64 to "Jbox fail (W017)", 65 to "DC door open (E044)", 66 to "AC door open (E045)",
             79 to "Arc fault (E050)", 82 to "Arc fault self-test fail (E053)", 83 to "Communication loss with communication board (E054)",
         )
+        /** GT global states that are faults (note 6); the rest are normal operation, start-up or tests. */
+        val GT_FAULT_STATES = setOf(9, 10, 13, 15, 16, 17, 18, 19, 20, 21, 23, 24, 26, 31, 32, 33, 35, 36, 51, 53, 115, 118)
+        val GT_NO_GRID_STATES = setOf(43, 46)
+        /** Grid fail (W003), grid OV / UV / OF / UF (W004–W007), grid df/dt (W015). */
+        val GT_GRID_ALARMS = setOf(13, 32, 33, 34, 35, 62)
+        /** Sun low (W001), input UV (W002), bulk UV (W011), remote off (E035), input UC (E037), zero power (W014). */
+        val GT_IGNORED_ALARMS = setOf(1, 3, 5, 11, 50, 54, 55)
+
+        /** Gt03 global states that are faults (annex 3); 25 / 26 interlocks are remote off / emergency stop. */
+        val GT03_FAULT_STATES = setOf(9, 10, 13, 15, 24, 29, 30, 41, 42, 51, 53, 116, 118, 120, 124, 150, 151)
+        /** Gt03 annex 4: alarm state → "name (code)". */
+        val GT03_ALARMS = mapOf(
+            2 to "Input OC (E001)", 4 to "Input OV (E002)", 6 to "No parameters (E003)", 7 to "Bulk OV (E004)",
+            8 to "Internal error (E005)", 9 to "Output OC (E006)", 10 to "IGBT sat (E007)", 14 to "Bulk UV (E010)",
+            15 to "Ramp fault (E011)", 16 to "Internal error (E012)", 17 to "Wrong input mode (E013)", 19 to "Over-temperature (E014)",
+            20 to "Capacitor fault (E015)", 21 to "Internal error (E016)", 22 to "Internal error (E017)", 23 to "Leak fault (E018)",
+            24 to "Internal error (E049)", 25 to "Internal error (E019)", 26 to "Internal error (E012)", 27 to "Internal error (E020)",
+            28 to "Internal error (E021)", 29 to "Internal error (E019)", 30 to "Internal error (E022)", 31 to "DC injection (E023)",
+            38 to "Riso low (E025)", 42 to "Mid bulk OV (E029)", 44 to "Internal error (E031)", 45 to "Internal error (E032)",
+            48 to "Under-temperature (E033)", 49 to "IGBT not ready (E034)", 51 to "Internal error (E036)", 54 to "Riso low (E037)",
+            62 to "Island detected (W015)", 78 to "Riso test fail (E078)", 79 to "Arc fault detected (E050)", 82 to "Arc detector fault (E053)",
+            85 to "Arc detector wrong configuration (E055)", 90 to "Periodic grid off (W048)", 91 to "Internal error (E077)",
+            95 to "Grid connection fault (W046)", 96 to "Latch, manual reset needed (E075)", 150 to "Update incomplete (W047)",
+            152 to "Wrong sequence (E079)", 156 to "Back-feed OC (E084)", 167 to "Aux. bulk feed connection error (E098)",
+            170 to "Ground kit self-test error (E099)",
+        )
+        val GT03_GRID_ALARMS = setOf(62)
+        /** Input UV (W002), bulk UV (W011): low light; remote off (E035): an operator command. */
+        val GT03_IGNORED_ALARMS = setOf(3, 11, 50)
+        /** Annex 7 derating bits that are problems (0 user setpoint, 4 nameplate current, 7 storage zero-injection aren't). */
+        val GT03_DERATING = mapOf(
+            1 to "Grid over-frequency derating", 2 to "Average grid over-voltage derating", 3 to "Anti-islanding derating",
+            5 to "Over-temperature derating", 6 to "DC over-voltage derating",
+        )
+
         val GT03_GLOBAL_STATES = mapOf(
             0 to "Initializing (configuring power control)", 1 to "Waiting for sun or grid", 2 to "Connecting (checking grid)",
             3 to "Initializing (system start-up)", 4 to "Connecting (switching on DC/DC)", 5 to "Connecting (switching on DC/AC)",

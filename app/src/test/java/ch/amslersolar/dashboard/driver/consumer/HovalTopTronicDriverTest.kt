@@ -6,6 +6,7 @@ package ch.amslersolar.dashboard.driver.consumer
 import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -141,5 +142,33 @@ class HovalTopTronicDriverTest {
             fail("Expected IOException")
         } catch (_: IOException) {
         }
+    }
+
+    @Test
+    fun problemsFromStatusAndErrorCode() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), HovalTopTronicDriver(ultraSource(), 1).read().problems)
+        assertEquals(emptyList<DeviceProblem>(), HovalTopTronicDriver(ultraSource(wfa = 8), 1).read().problems) // defrost
+        val lowPressure = ultraSource(wfa = 12, generator = 16).u16(1534, 203).u16(1504, 7)
+        assertEquals(
+            listOf(
+                DeviceProblem(DeviceProblem.Kind.FAULT, "Low-pressure fault (WFA status 12)"),
+                DeviceProblem(DeviceProblem.Kind.WARNING, "Hot water warning (status 7)"),
+                DeviceProblem(DeviceProblem.Kind.FAULT, "Heat pump error E12 (code 203)"),
+            ),
+            HovalTopTronicDriver(lowPressure, 1).read().problems,
+        )
+        val warning = ultraSource().u16(1534, 74)
+        assertEquals(
+            listOf(DeviceProblem(DeviceProblem.Kind.WARNING, "Heat pump error W11 (code 74)")),
+            HovalTopTronicDriver(warning, 1).read().problems,
+        )
+        val generatorFault = ultraSource(wfa = 0, generator = 16).u16(1534, 77)
+        assertEquals(
+            listOf(
+                DeviceProblem(DeviceProblem.Kind.FAULT, "Heat generator fault (status 16)"),
+                DeviceProblem(DeviceProblem.Kind.FAULT, "Heat pump error code 77"),
+            ),
+            HovalTopTronicDriver(generatorFault, 1).read().problems,
+        )
     }
 }

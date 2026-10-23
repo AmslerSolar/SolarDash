@@ -13,6 +13,7 @@ import ch.amslersolar.dashboard.driver.modbus.ModbusTcpClient
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.PhaseReading
 import java.io.IOException
@@ -195,7 +196,28 @@ class BenderEcuDriver(
                 phases = phases,
                 status = status(r),
                 details = details(r),
+                problems = problems(r),
             )
+        }
+
+        /** Error bits that don't stop the charge point: backend link, firmware update, USB stick, phase rotation. */
+        private val WARNING_BITS = setOf(7, 12, 19, 20)
+
+        /**
+         * The ERROR_CODES bits 0–21 ("Error states mask mappings"; bits 22–31 of 111–112 are reserved and shown as
+         * "Error bit n"), plus OCPP status 4 "Faulted" and vehicle state E when no error bit explains them.
+         */
+        fun problems(r: Regs): List<DeviceProblem> {
+            val bits = errorBits(r) ?: 0L
+            val out = (0 until 32).filter { bits and (1L shl it) != 0L }.map { b ->
+                val kind = if (b in WARNING_BITS) DeviceProblem.Kind.WARNING else DeviceProblem.Kind.FAULT
+                DeviceProblem(kind, if (b < ERRORS.size) "${ERRORS[b]} (error bit $b)" else "Error bit $b")
+            }.toMutableList()
+            if (out.none { it.kind == DeviceProblem.Kind.FAULT }) {
+                if (r.u16n(104) == 4) out += DeviceProblem(DeviceProblem.Kind.FAULT, "Charge point faulted (OCPP status 4)")
+                else if (r.u16n(122) == 5) out += DeviceProblem(DeviceProblem.Kind.FAULT, "Vehicle state E (error)")
+            }
+            return out
         }
 
         fun sessionWh(r: Regs): Long? = r.m(716) ?: r.u16n(705)?.toLong()

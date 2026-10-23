@@ -14,6 +14,7 @@ import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.BatteryState
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.EnergyTotals
 import ch.amslersolar.dashboard.model.PhaseReading
@@ -272,7 +273,27 @@ class GrowattVppDriver(private val input: RegisterReader, private val holding: R
                 temperatureC = l.tenth(l.s16(31114)),
                 status = status,
                 today = EnergyTotals(exportKwh = l.tenth(l.u32(31122)), importKwh = l.tenth(l.u32(31118))),
+                problems = problems(s, l, batteries),
             )
+        }
+
+        /**
+         * 31000 state 3 (fault) and 31005/31006 fault code, 31007/31008 alarm code (Tables 3-3/3-4 are empty, so codes
+         * stay numbers), 31001 battery state 4 (fault), 31000 state 7 "PV & cell on line off grid operation".
+         */
+        fun problems(s: Registers, l: Registers, batteries: List<Battery>): List<DeviceProblem> = buildList {
+            val state = l.u16(31000)
+            val fault = l.u16(31005) ?: 0
+            val alarm = l.u16(31007) ?: 0
+            when {
+                fault != 0 -> add(DeviceProblem(DeviceProblem.Kind.FAULT, "Fault code $fault/${l.u16(31006) ?: 0}"))
+                state == 3 -> add(DeviceProblem(DeviceProblem.Kind.FAULT, "Fault (state 3)"))
+            }
+            if (alarm != 0) add(DeviceProblem(DeviceProblem.Kind.WARNING, "Alarm code $alarm/${l.u16(31008) ?: 0}"))
+            if (s.u16(30000) !in NO_BATTERY_DTC && batteries.isNotEmpty() && l.u16(31001) == 4) {
+                add(DeviceProblem(DeviceProblem.Kind.FAULT, "Battery fault (battery state 4)"))
+            }
+            if (state == 7) add(DeviceProblem(DeviceProblem.Kind.BACKUP_MODE, "Off-grid operation (state 7)"))
         }
 
         fun details(s: Registers, l: Registers, batteries: List<Battery>): List<DetailSection> {

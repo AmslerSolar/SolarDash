@@ -4,6 +4,7 @@
 package ch.amslersolar.dashboard.driver.kostal
 
 import ch.amslersolar.dashboard.driver.sunspec.FakeRegisterImage
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -85,5 +86,28 @@ class KostalPikoCiDriverTest {
         val r = KostalPlenticoreDriver(piko(wordSwapped = true), 71).read()
         assertNull(r.pvPowerW) // no 1066, and the inputs are only in the 0x7000 block
         assertNull(r.loadPowerW) // no 106 (home consumption from battery)
+    }
+
+    @Test
+    fun noProblemsWithoutErrorBits() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), KostalPikoCiDriver(piko(wordSwapped = true), 71).read().problems)
+    }
+
+    @Test
+    fun errorMessageBitsBecomeProblems() = runBlocking {
+        val img = piko(wordSwapped = true).apply {
+            u16(4126, (1 shl 3) or (1 shl 2)) // over-temperature; remote off isn't a problem
+            u16(4127, (1 shl 2) or (1 shl 6) or (1 shl 11)) // grid absent, insulation; PV under-voltage isn't one
+            u16(4128, 1 shl 6) // meter lost
+        }
+        assertEquals(
+            listOf(
+                DeviceProblem(DeviceProblem.Kind.WARNING, "Over-temperature (4126 bit 3)"),
+                DeviceProblem(DeviceProblem.Kind.MAINS_LOST, "Grid absent (4127 bit 2)"),
+                DeviceProblem(DeviceProblem.Kind.FAULT, "PV insulation abnormal (4127 bit 6)"),
+                DeviceProblem(DeviceProblem.Kind.WARNING, "Meter lost (4128 bit 6)"),
+            ),
+            KostalPikoCiDriver(img, 71).read().problems,
+        )
     }
 }

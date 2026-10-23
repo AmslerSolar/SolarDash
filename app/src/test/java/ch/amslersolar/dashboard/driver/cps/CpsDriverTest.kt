@@ -6,6 +6,7 @@ package ch.amslersolar.dashboard.driver.cps
 import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -186,5 +187,28 @@ class CpsDriverTest {
         val r = CpsDriver(cps(0x403A, "SC25KTL-DO/US-208").apply { u16(0x0045, 200) }, 1).read()
         assertEquals(20_000, r.pvPowerW)
         assertTrue(r.details.first().rows.contains("Family" to "403X"))
+    }
+
+    @Test
+    fun fiftySixtyKwEventBitsAreDecoded() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), CpsDriver(sixty().apply { u16(0x0035, 0) }, 1).read().problems)
+        assertEquals(listOf(DeviceProblem(DeviceProblem.Kind.WARNING, "Internal fan alarm (IntFanErr)")), CpsDriver(sixty(), 1).read().problems)
+        val r = CpsDriver(sixty().apply { u16(0x0035, 0); u16(0x002F, 0x8000); u16(0x0036, 1 shl 11); u16(0x0037, 1 shl 3) }, 1).read()
+        assertEquals(
+            listOf(
+                DeviceProblem(DeviceProblem.Kind.MAINS_LOST, "Grid frequency low (GridF.OutLim)"),
+                DeviceProblem(DeviceProblem.Kind.FAULT, "Insulation resistance too low (IsolationErr)"),
+            ),
+            r.problems,
+        )
+        val modeOnly = CpsDriver(sixty().apply { u16(0x0035, 0); u16(0x002F, 0x8000) }, 1).read()
+        assertEquals(listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Fault (mode 0x8000)")), modeOnly.problems)
+    }
+
+    @Test
+    fun otherFamiliesReportTheRawFaultWords() = runBlocking {
+        val r = CpsDriver(cps(0x4035, "SCA125KTL-DO/US-600").apply { u16(0x002F, 0x8000); u16(0x0036, 0x0400) }, 1).read()
+        assertEquals(listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Fault0 0x0400")), r.problems)
+        assertEquals(emptyList<DeviceProblem>(), CpsDriver(cps(0x4035, "SCA125KTL-DO/US-600").apply { u16(0x002F, 0x1000) }, 1).read().problems)
     }
 }

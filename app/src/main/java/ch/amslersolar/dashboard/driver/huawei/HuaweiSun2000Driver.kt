@@ -15,6 +15,7 @@ import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.BatteryState
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.EnergyTotals
 import ch.amslersolar.dashboard.model.PhaseReading
@@ -85,7 +86,8 @@ class HuaweiSun2000Driver(private val reader: RegisterReader, private val unitId
         if (polls % DETAIL_REFRESH_POLLS == 0) detail = read(DETAIL, optional = true)
         polls++
         val ident = identity ?: Registers(emptyList())
-        return parse(ident, live, meter, battery).copy(details = details(ident, live, meter, battery, detail))
+        return parse(ident, live, meter, battery)
+            .copy(details = details(ident, live, meter, battery, detail), problems = problems(live, battery, detail))
     }
 
     /** Several register blocks read in one poll, addressed by absolute register number. */
@@ -181,6 +183,70 @@ class HuaweiSun2000Driver(private val reader: RegisterReader, private val unitId
                 today = EnergyTotals(pvKwh = live.scaled(live.u32(32114), 100)),
                 lifetimePvKwh = live.scaled(live.u32(32106), 100),
             )
+        }
+
+        private val F = DeviceProblem.Kind.FAULT
+        private val W = DeviceProblem.Kind.WARNING
+
+        /**
+         * Table 5-1 "Alarm information": (register, bit) → name, alarm ID, kind (level Major → fault, Minor and
+         * Warning → warning). Alarm 1 bit 7 "Grid Loss" (2032) is the mains loss.
+         */
+        private val ALARMS: Map<Pair<Int, Int>, Triple<String, Int, DeviceProblem.Kind>> = mapOf(
+            (32008 to 0) to Triple("High string input voltage", 2001, F), (32008 to 1) to Triple("DC arc fault", 2002, F),
+            (32008 to 2) to Triple("String reverse connection", 2011, F), (32008 to 3) to Triple("String current backfeed", 2012, W),
+            (32008 to 4) to Triple("Abnormal string power", 2013, W), (32008 to 5) to Triple("AFCI self-check failed", 2021, F),
+            (32008 to 6) to Triple("Phase wire short-circuited to PE", 2031, F),
+            (32008 to 7) to Triple("Grid loss", 2032, DeviceProblem.Kind.MAINS_LOST),
+            (32008 to 8) to Triple("Grid undervoltage", 2033, F), (32008 to 9) to Triple("Grid overvoltage", 2034, F),
+            (32008 to 10) to Triple("Grid voltage imbalance", 2035, F), (32008 to 11) to Triple("Grid overfrequency", 2036, F),
+            (32008 to 12) to Triple("Grid underfrequency", 2037, F), (32008 to 13) to Triple("Unstable grid frequency", 2038, F),
+            (32008 to 14) to Triple("Output overcurrent", 2039, F), (32008 to 15) to Triple("Output DC component overhigh", 2040, F),
+            (32009 to 0) to Triple("Abnormal residual current", 2051, F), (32009 to 1) to Triple("Abnormal grounding", 2061, F),
+            (32009 to 2) to Triple("Low insulation resistance", 2062, F), (32009 to 3) to Triple("Overtemperature", 2063, W),
+            (32009 to 4) to Triple("Device fault", 2064, F), (32009 to 5) to Triple("Upgrade failed or version mismatch", 2065, W),
+            (32009 to 6) to Triple("License expired", 2066, W), (32009 to 7) to Triple("Faulty monitoring unit", 61440, W),
+            (32009 to 8) to Triple("Faulty power collector", 2067, F), (32009 to 9) to Triple("Battery abnormal", 2068, W),
+            (32009 to 10) to Triple("Active islanding", 2070, F), (32009 to 11) to Triple("Passive islanding", 2071, F),
+            (32009 to 12) to Triple("Transient AC overvoltage", 2072, F), (32009 to 13) to Triple("Peripheral port short circuit", 2075, W),
+            (32009 to 14) to Triple("Churn output overload", 2077, F), (32009 to 15) to Triple("Abnormal PV module configuration", 2080, F),
+            (32010 to 0) to Triple("Optimizer fault", 2081, W), (32010 to 1) to Triple("Built-in PID operation abnormal", 2085, W),
+            (32010 to 2) to Triple("High input string voltage to ground", 2014, F), (32010 to 3) to Triple("External fan abnormal", 2086, F),
+            (32010 to 4) to Triple("Battery reverse connection", 2069, F),
+            (32010 to 5) to Triple("On-grid/off-grid controller abnormal", 2082, F), (32010 to 6) to Triple("PV string loss", 2015, W),
+            (32010 to 7) to Triple("Internal fan abnormal", 2087, F), (32010 to 8) to Triple("DC protection unit abnormal", 2088, F),
+        )
+
+        /**
+         * Alarm 1–3 (32008–32010, table 5-1; refreshed with the details), device status 0x0300 (shutdown: fault),
+         * 0x0202 (self-derating), 0x0203 / 0x0A00 (off-grid), battery status 3 (fault, 37762) and the battery unit's
+         * fault ID (37014, no table in the document).
+         */
+        fun problems(live: Registers, bat: Registers, alarms: Registers): List<DeviceProblem> {
+            val out = mutableListOf<DeviceProblem>()
+            for (reg in 32008..32010) {
+                val v = alarms.u16(reg) ?: continue
+                for (bit in 0 until 16) {
+                    if ((v shr bit) and 1 == 0) continue
+                    val (name, id, kind) = ALARMS[reg to bit] ?: Triple("Alarm ${reg - 32007} bit $bit", null, W)
+                    out += DeviceProblem(kind, if (id != null) "$name ($id)" else name)
+                }
+            }
+            fun none(kind: DeviceProblem.Kind) = out.none { it.kind == kind }
+            val status = live.u16(32089)
+            when (status) {
+                0x0300 -> if (none(F)) out += DeviceProblem(F, "Shutdown: fault (0x0300)")
+                0x0202 -> out += DeviceProblem(W, "Self-derating (0x0202)")
+                0x0203, 0x0A00 -> out += DeviceProblem(DeviceProblem.Kind.BACKUP_MODE, "${DEVICE_STATUS[status]} (${hex(status)})")
+            }
+            if ((bat.u32(37758) ?: 0L) > 0) {
+                val faultId = alarms.u16(37014) ?: 0
+                when {
+                    faultId != 0 -> out += DeviceProblem(F, "Battery fault (ID $faultId)")
+                    bat.u16(37762) == 3 -> out += DeviceProblem(F, "Battery fault (status 3)")
+                }
+            }
+            return out
         }
 
         private fun time(epoch: Long?): String? =

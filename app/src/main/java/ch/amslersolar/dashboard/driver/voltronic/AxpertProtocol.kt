@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard.driver.voltronic
 
+import ch.amslersolar.dashboard.model.DeviceProblem
 import java.io.IOException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -308,6 +309,43 @@ object AxpertProtocol {
         return bits.indices.filter { bits[it] == '1' }.map { i ->
             val name = names.getOrNull(i) ?: "Bit a$i"
             if (i in FAULT_IF_A1) "$name (${if (fault) "fault" else "warning"})" else name
+        }
+    }
+
+    /** QPIWS bits whose "Description" column says Fault (KS §2.10, MAX §2.13). a22 Bat Open has no class in MAX: Fault as in KS. */
+    private val FAULT_BITS_KS = setOf(1, 2, 3, 4, 7, 8, 13, 18, 19, 20, 21, 22, 23, 24)
+    private val FAULT_BITS_MAX = setOf(1, 2, 3, 4, 6, 7, 8, 18, 19, 20, 21, 22, 23)
+
+    /**
+     * QPIWS bits whose class is Warning. a0 "PV loss" is left out (it's set every night), a5 LINE_FAIL is the mains
+     * loss, and a31…a35 of the MAX table are left out (they carry a fault code on MAXII/MKSIV/VMIV, and which model
+     * answers isn't known).
+     */
+    private val WARNING_BITS_KS = setOf(6, 12, 14, 15, 17, 25, 26, 27, 28, 29)
+    private val WARNING_BITS_MAX = setOf(12, 14, 15, 17)
+
+    /** Bit a5 (both documents): LINE_FAIL, the utility input is gone. */
+    const val LINE_FAIL_BIT = 5
+
+    /** The QPIWS bits as [DeviceProblem]s, classed like the documents' "Description" column; same table choice as [parseWarnings]. */
+    fun parseWarningProblems(data: String): List<DeviceProblem> {
+        val bits = data.trim()
+        if (!Regex("^[01]{8,40}$").matches(bits)) throw AxpertFrameException("QPIWS: unexpected reply '$data'")
+        val max = bits.length > 32
+        val names = if (max) WARNINGS_MAX else WARNINGS_KS
+        val faults = if (max) FAULT_BITS_MAX else FAULT_BITS_KS
+        val warnings = if (max) WARNING_BITS_MAX else WARNING_BITS_KS
+        val a1 = bits.getOrNull(1) == '1'
+        return bits.indices.filter { bits[it] == '1' }.mapNotNull { i ->
+            val name = names.getOrNull(i) ?: return@mapNotNull null
+            val kind = when {
+                i == LINE_FAIL_BIT -> DeviceProblem.Kind.MAINS_LOST
+                i in faults -> DeviceProblem.Kind.FAULT
+                i in FAULT_IF_A1 -> if (a1) DeviceProblem.Kind.FAULT else DeviceProblem.Kind.WARNING
+                i in warnings -> DeviceProblem.Kind.WARNING
+                else -> return@mapNotNull null
+            }
+            DeviceProblem(kind, "$name (a$i)")
         }
     }
 }

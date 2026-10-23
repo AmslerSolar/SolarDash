@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard.driver.consumer
 
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -96,5 +97,19 @@ class AlfenEveDriverTest {
             } catch (_: IOException) {
             }
         }
+    }
+
+    @Test
+    fun problemsFromMode3StateAndMeterState() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), AlfenEveDriver(alfen(), 1).read().problems)
+        assertEquals(emptyList<DeviceProblem>(), AlfenEveDriver(alfen(mode3 = "B1", power = 0.0), 1).read().problems)
+        val fault = AlfenEveDriver(alfen(mode3 = "F", power = 0.0).on(1).u16(300, 0x0B), 1).read()
+        assertEquals(
+            listOf(
+                DeviceProblem(DeviceProblem.Kind.FAULT, "Charging error (Mode 3 state F)"),
+                DeviceProblem(DeviceProblem.Kind.WARNING, "Energy meter error (meter state 0x08)"),
+            ),
+            fault.problems,
+        )
     }
 }

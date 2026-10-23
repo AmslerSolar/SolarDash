@@ -1870,3 +1870,651 @@ Lifetime yield	Production totale
 Consumption today	Consommation aujourd'hui
 Active faults: {n}	Défauts actifs : {n}
 Active warnings: {n}	Avertissements actifs : {n}
+AC HCT check failure	Échec du contrôle HCT AC
+AC HCT failure	Défaut HCT AC
+AC current sensor fault	Défaut du capteur de courant AC
+AC disconnect open	Sectionneur AC ouvert
+AC initialisation fault	Défaut d'initialisation AC
+AC input not connected	Entrée AC non connectée
+AC internal communication error	Erreur de communication interne AC
+AC internal configuration fault	Défaut de configuration interne AC
+AC low temperature	Température basse AC
+AC module over-temperature derating	Réduction de puissance pour surchauffe module AC
+AC modules over-temperature	Surchauffe des modules AC
+AC over-current	Surintensité AC
+AC overcurrent	Surintensité AC
+AC overvoltage	Surtension AC
+AC relay fault	Défaut du relais AC
+AC self-test fault	Défaut d'autotest AC
+AC side MOV abnormal (Warn{n})	MOV côté AC anormal (Warn{n})
+AC side lightning arrester abnormal (Warn{n})	Parafoudre côté AC anormal (Warn{n})
+AC side overfrequency	Surfréquence côté AC
+AC side overvoltage	Surtension côté AC
+AC side underfrequency	Sous-fréquence côté AC
+AC side undervoltage	Sous-tension côté AC
+AC surge protection fault	Défaut de la protection parafoudre AC
+AC surge protection needs service	Protection parafoudre AC à entretenir
+AC temperature sensor fault	Défaut du capteur de température AC
+AC undervoltage	Sous-tension AC
+AC voltage sensor fault	Défaut du capteur de tension AC
+AC voltage unbalance	Déséquilibre de tension AC
+AC-DC inverter fault	Défaut de l'onduleur AC-DC
+AFCI module lost	Module AFCI perdu
+AFCI self-check failed	Échec de l'autotest AFCI
+Abnormal PV module configuration	Configuration des modules PV anormale
+Abnormal SD card	Carte SD anormale
+Abnormal external power line status	État anormal de la ligne d'alimentation externe
+Abnormal frequency selection (Protect{n})	Sélection de fréquence anormale (Protect{n})
+Abnormal grid power	Puissance réseau anormale
+Abnormal grounding	Mise à la terre anormale
+Abnormal product model (Protect{n})	Modèle de produit anormal (Protect{n})
+Abnormal residual current	Courant de fuite anormal
+Abnormal string power	Puissance de string anormale
+Active alarm	Alarme active
+Active islanding	Îlotage actif
+Alarm code {x}/{x}	Code d'alarme {x}/{x}
+Alarm code {x}: {x}	Code d'alarme {x} : {x}
+Alarm information	Informations d'alarme
+Alarm {x} bit {x}	Alarme {x} bit {x}
+Ambient low temperature sensor open circuit	Capteur de température ambiante basse en circuit ouvert
+Ambient over-temperature derating	Réduction de puissance pour surchauffe ambiante
+Ambient temperature high	Température ambiante élevée
+Ambient temperature low	Température ambiante basse
+Ambient temperature sensor open circuit	Capteur de température ambiante en circuit ouvert
+Ambient temperature sensor short circuit	Capteur de température ambiante en court-circuit
+Anti-islanding derating	Réduction de puissance anti-îlotage
+Arc board failure (Arcboard Err)	Défaillance de la carte arc (Arcboard Err)
+Arc detection disabled	Détection d'arc désactivée
+Arc detection module abnormal	Module de détection d'arc anormal
+Arc detector fault (E{n})	Défaut du détecteur d'arc (E{n})
+Arc detector wrong configuration (E{n})	Détecteur d'arc mal configuré (E{n})
+Arc fault (AFCI)	Défaut d'arc (AFCI)
+Arc fault detected	Arc électrique détecté
+Arc fault detected (E{n})	Arc électrique détecté (E{n})
+Arc fault self-test failed	Échec de l'autotest arc
+Arc protection (ARC Protect)	Protection contre les arcs (ARC Protect)
+Aux. bulk feed connection error (E{n})	Erreur de connexion alimentation bulk auxiliaire (E{n})
+Average grid over-voltage derating	Réduction de puissance pour surtension réseau moyenne
+BDC charge transient overcurrent	Surintensité transitoire de charge BDC
+BDC current sampling abnormal	Mesure de courant BDC anormale
+BDC discharge transient overcurrent	Surintensité transitoire de décharge BDC
+BDC hardware overcurrent	Surintensité matérielle BDC
+BDC over-temperature fault	Défaut de surchauffe BDC
+BDC overcurrent permanent fault	Défaut permanent de surintensité BDC
+BDC self-detect fault	Défaut d'autodétection BDC
+BDC self-detect permanent fault	Défaut permanent d'autodétection BDC
+BDC soft start fault	Défaut de démarrage progressif BDC
+BDC soft start permanent fault	Défaut permanent de démarrage progressif BDC
+BDC temperature sensor open circuit	Capteur de température BDC en circuit ouvert
+BDC temperature sensor short circuit	Capteur de température BDC en court-circuit
+BMS and battery fault	Défaut BMS et batterie
+BMS communication fault	Défaut de communication BMS
+BMS error code {n}x%{n}X	Code d'erreur BMS {n}x%{n}X
+BMS internal alarm	Alarme interne BMS
+BMS warning code {n}x%{n}X	Code d'avertissement BMS {n}x%{n}X
+Back-feed OC (E{n})	Réinjection OC (E{n})
+Back-up overload	Surcharge backup
+Backup (off-grid) mode ({x})	Mode backup (hors réseau) ({x})
+Backup load overpower fault	Défaut de surpuissance de la charge backup
+Backup: separate network mode ({n})	Backup : mode réseau séparé ({n})
+Balance bridge current sampling abnormal	Mesure de courant du pont d'équilibrage anormale
+Balance bridge overcurrent hardware fault	Défaut matériel de surintensité du pont d'équilibrage
+Balance bridge overcurrent permanent fault	Défaut permanent de surintensité du pont d'équilibrage
+Battery DC contactor failure	Défaillance du contacteur DC de la batterie
+Battery FET or switch failure	Défaillance FET ou interrupteur batterie
+Battery abnormal	Batterie anormale
+Battery above max. SoC alarm	Alarme batterie au-dessus du SoC maximal
+Battery above max. SoC warning	Avertissement batterie au-dessus du SoC maximal
+Battery average overvoltage fault	Défaut de surtension moyenne batterie
+Battery average undervoltage fault	Défaut de sous-tension moyenne batterie
+Battery below min. SoC alarm	Alarme batterie en dessous du SoC minimal
+Battery below min. SoC warning	Avertissement batterie en dessous du SoC minimal
+Battery charge/discharge overcurrent alarm	Alarme surintensité charge/décharge batterie
+Battery charge/discharge overcurrent protection	Protection surintensité charge/décharge batterie
+Battery communication error	Erreur de communication batterie
+Battery configuration alarm	Alarme configuration batterie
+Battery configuration warning	Avertissement configuration batterie
+Battery contactor error	Erreur du contacteur batterie
+Battery current imbalance warning	Avertissement déséquilibre de courant batterie
+Battery current sampling fault	Défaut de mesure de courant batterie
+Battery error ({n})	Erreur batterie ({n})
+Battery fan error	Erreur ventilateur batterie
+Battery fault (ID {x})	Défaut batterie (ID {x})
+Battery fault (bank state {n})	Défaut batterie (état du banc {n})
+Battery fault (battery state {n})	Défaut batterie (état batterie {n})
+Battery fault (status {n})	Défaut batterie (état {n})
+Battery fuse failed (PSSB)	Fusible batterie défaillant (PSSB)
+Battery ground fault	Défaut de terre batterie
+Battery hardware overvoltage	Surtension matérielle batterie
+Battery heating alarm	Alarme chauffage batterie
+Battery heating circuit abnormal	Circuit de chauffage batterie anormal
+Battery input overvoltage	Surtension d'entrée batterie
+Battery internal communication failure	Défaillance de la communication interne batterie
+Battery internal communication fault	Défaut de communication interne batterie
+Battery internal hardware failure	Défaillance matérielle interne batterie
+Battery low temperature alarm	Alarme température basse batterie
+Battery low temperature fault	Défaut température basse batterie
+Battery low temperature protection	Protection température basse batterie
+Battery low voltage protection	Protection tension basse batterie
+Battery module inconsistency alarm	Alarme incohérence des modules batterie
+Battery open door error	Erreur porte batterie ouverte
+Battery other alarm	Autre alarme batterie
+Battery other warning	Autre avertissement batterie
+Battery over charge current alarm	Alarme surintensité de charge batterie
+Battery over charge current warning	Avertissement surintensité de charge batterie
+Battery over discharge current alarm	Alarme surintensité de décharge batterie
+Battery over discharge current warning	Avertissement surintensité de décharge batterie
+Battery over-temperature alarm	Alarme surchauffe batterie
+Battery over-temperature fault	Défaut surchauffe batterie
+Battery over-temperature protection	Protection surchauffe batterie
+Battery over-temperature warning	Avertissement surchauffe batterie
+Battery overboard (Protect{n})	Batterie en surcharge (Protect{n})
+Battery overcurrent fault	Défaut surintensité batterie
+Battery overvoltage alarm	Alarme surtension batterie
+Battery overvoltage permanent fault	Défaut permanent de surtension batterie
+Battery overvoltage protection	Protection surtension batterie
+Battery overvoltage warning	Avertissement surtension batterie
+Battery pre-charge failed	Échec de la précharge batterie
+Battery pre-charge relay failure	Défaillance du relais de précharge batterie
+Battery reverse connection	Batterie connectée à l'envers
+Battery reversed polarity	Polarité batterie inversée
+Battery self-test fault	Défaut d'autotest batterie
+Battery short circuit fault	Défaut de court-circuit batterie
+Battery software version mismatch	Version logicielle batterie incompatible
+Battery temperature imbalance alarm	Alarme déséquilibre de température batterie
+Battery temperature imbalance warning	Avertissement déséquilibre de température batterie
+Battery temperature sampling fault	Défaut de mesure de température batterie
+Battery transient overvoltage	Surtension transitoire batterie
+Battery under-temperature alarm	Alarme sous-température batterie
+Battery under-temperature warning	Avertissement sous-température batterie
+Battery undervoltage alarm	Alarme sous-tension batterie
+Battery undervoltage warning	Avertissement sous-tension batterie
+Battery voltage imbalance warning	Avertissement déséquilibre de tension batterie
+Battery voltage sampling fault	Défaut de mesure de tension batterie
+Battery voltage unbalance	Déséquilibre de tension batterie
+Battery warning ({n})	Avertissement batterie ({n})
+Blown string fuse	Fusible de string grillé
+Boost abnormal	Boost anormal
+Boost hardware over-current (Fault{n})	Surintensité matérielle boost (Fault{n})
+Boost hardware over-current (Protect{n})	Surintensité matérielle boost (Protect{n})
+Boost short circuit alarm	Alarme court-circuit boost
+Boost switch over-temperature	Surchauffe de l'interrupteur boost
+Boost temperature sensor open circuit	Capteur de température boost en circuit ouvert
+Boost temperature sensor short circuit	Capteur de température boost en court-circuit
+Boost{n} open-loop self-check permanent fault	Défaut permanent d'autotest en boucle ouverte Boost{n}
+Boost{n} short circuit fault	Défaut de court-circuit Boost{n}
+Built-in PID operation abnormal	Fonctionnement PID intégré anormal
+Bus average undervoltage	Sous-tension moyenne du bus
+Bus fault	Défaut du bus
+Bus hardware over-voltage (Fault{n})	Surtension matérielle du bus (Fault{n})
+Bus hardware over-voltage (Protect{n})	Surtension matérielle du bus (Protect{n})
+Bus high failure (Fault{n})	Défaillance bus haute tension (Fault{n})
+Bus high fault (Fault{n})	Défaut bus haute tension (Fault{n})
+Bus line fault	Défaut de la ligne bus
+Bus overvoltage hardware fault	Défaut matériel de surtension du bus
+Bus overvoltage permanent fault	Défaut permanent de surtension du bus
+Bus soft start timeout (Protect{n})	Délai de démarrage progressif du bus dépassé (Protect{n})
+Bus voltage difference high (Protect{n})	Différence de tension du bus élevée (Protect{n})
+Bus voltage fluctuation	Fluctuation de tension du bus
+Bus voltage high (Protect{n})	Tension du bus élevée (Protect{n})
+Bypass instantaneous overcurrent	Surintensité instantanée du bypass
+Bypass switch abnormal	Interrupteur de bypass anormal
+Bypass switch fault	Défaut de l'interrupteur de bypass
+Bypass switch overcurrent	Surintensité de l'interrupteur de bypass
+CAN bus error	Erreur bus CAN
+CPLD clock abnormal (Protect{n})	Horloge CPLD anormale (Protect{n})
+CPLD clock fault (Fault{n})	Défaut d'horloge CPLD (Fault{n})
+CPLD program version abnormal (Protect{n})	Version de programme CPLD anormale (Protect{n})
+Cabinet open	Armoire ouverte
+Capacitor fault (E{n})	Défaut de condensateur (E{n})
+Cell temperature difference alarm	Alarme écart de température des cellules
+Cell voltage imbalance alarm	Alarme déséquilibre de tension des cellules
+Charge point faulted (OCPP status {n})	Point de charge en défaut (état OCPP {n})
+Charging error (Mode {n} state {x})	Erreur de charge (mode {n} état {x})
+Charging station defective (car state {n})	Borne de recharge défectueuse (état véhicule {n})
+Charging station error (code {n}x{x})	Erreur de la borne de recharge (code {n}x{x})
+Charging station error (state {n})	Erreur de la borne de recharge (état {n})
+Churn output overload	Surcharge de la sortie churn
+Clamping capacitance low voltage	Tension basse du condensateur de clampage
+Clamping capacitance transient overvoltage	Surtension transitoire du condensateur de clampage
+Communicate fault ({n}x{n})	Défaut de communication ({n}x{n})
+Communication alarm	Alarme de communication
+Communication failure (state {n}x{n})	Échec de communication (état {n}x{n})
+Control board power supply undervoltage	Sous-tension de l'alimentation de la carte de commande
+Control board voltage / drive power failure (Fault{n})	Défaillance tension carte de commande / alimentation driver (Fault{n})
+Control board {n} V low (Protect{n})	Carte de commande {n} V basse (Protect{n})
+Control board {n}.{n} V low (Protect{n})	Carte de commande {n}.{n} V basse (Protect{n})
+Current out of range	Courant hors plage
+Current unbalance	Déséquilibre de courant
+DC arc fault	Défaut d'arc DC
+DC bus high	Bus DC élevé
+DC bus midpoint imbalance	Déséquilibre du point milieu du bus DC
+DC bus voltage high	Tension du bus DC élevée
+DC bus voltage imbalance	Déséquilibre de tension du bus DC
+DC current high	Courant DC élevé
+DC disconnect open	Sectionneur DC ouvert
+DC initialisation fault	Défaut d'initialisation DC
+DC injection (E{n})	Injection DC (E{n})
+DC injection fault	Défaut d'injection DC
+DC injection high	Injection DC élevée
+DC injection high current	Courant d'injection DC élevé
+DC internal communication error	Erreur de communication interne DC
+DC internal configuration fault	Défaut de configuration interne DC
+DC link over-voltage	Surtension du circuit intermédiaire DC
+DC link unbalance or under-voltage	Déséquilibre ou sous-tension du circuit intermédiaire DC
+DC module {n} over-temperature derating	Réduction de puissance pour surchauffe module DC {n}
+DC module {n} over-temperature, PV {n} off	Surchauffe module DC {n}, PV {n} désactivé
+DC modules over-temperature	Surchauffe des modules DC
+DC over-voltage	Surtension DC
+DC over-voltage derating	Réduction de puissance pour surtension DC
+DC overcurrent	Surintensité DC
+DC overvoltage	Surtension DC
+DC protection unit abnormal	Unité de protection DC anormale
+DC self-test fault	Défaut d'autotest DC
+DC side lightning protection abnormal (Warn{n})	Protection foudre côté DC anormale (Warn{n})
+DC surge protection fault	Défaut de la protection parafoudre DC
+DC temperature sensor fault	Défaut du capteur de température DC
+DC-AC communication error	Erreur de communication DC-AC
+DC-bias over-current	Surintensité de polarisation DC
+DCI consistency failure	Échec de cohérence DCI
+DCI current bias (Protect{n})	Décalage de courant DCI (Protect{n})
+DCI current too high (Protect{n})	Courant DCI trop élevé (Protect{n})
+DCI too high (Fault{n})	DCI trop élevé (Fault{n})
+DSP communication failure	Échec de communication DSP
+Data inconsistency	Incohérence des données
+Derating (state {n}x{n})	Réduction de puissance (état {n}x{n})
+Derating run ({n}x{n})	Fonctionnement en réduction de puissance ({n}x{n})
+Device abnormality	Anomalie de l'appareil
+EEPROM R/W failure	Échec de lecture/écriture EEPROM
+EEPROM problem (Warn{n})	Problème EEPROM (Warn{n})
+EPS relay failure	Défaillance du relais EPS
+Emergency power mode (state {x})	Mode alimentation de secours (état {x})
+Energy meter error (meter state {n}x{n})	Erreur du compteur d'énergie (état compteur {n}x{n})
+Energy meter warning (meter state {n}x{n})	Avertissement compteur d'énergie (état compteur {n}x{n})
+Error Message	Message d'erreur
+Error bit n	Bit d'erreur n
+Error bit {x}	Bit d'erreur {x}
+Error states mask mappings	Correspondances des masques d'états d'erreur
+Excessive leakage current	Courant de fuite excessif
+Excessively high ambient temperature	Température ambiante excessive
+External communication failed (Warn{n})	Échec de la communication externe (Warn{n})
+External fan abnormal	Ventilateur externe anormal
+External fan alarm (ExtFanErr)	Alarme ventilateur externe (ExtFanErr)
+External fan failure	Défaillance du ventilateur externe
+FRAM read alarm	Alarme de lecture FRAM
+Fac consistency failure	Échec de cohérence Fac
+Fan abnormal	Ventilateur anormal
+Fan alarm	Alarme ventilateur
+Fan failure	Défaillance du ventilateur
+Fan {n} low speed alarm	Alarme vitesse basse ventilateur {n}
+Fan {n} stall alarm	Alarme ventilateur {n} bloqué
+Fault (mode {n}x{n})	Défaut (mode {n}x{n})
+Fault (state {n})	Défaut (état {n})
+Fault (state {n}x{n})	Défaut (état {n}x{n})
+Fault ({x})	Défaut ({x})
+Fault Codes	Codes de défaut
+Fault code {x}/{x}	Code de défaut {x}/{x}
+Fault mode (F)	Mode défaut (F)
+Fault mode (work mode {n})	Mode défaut (mode de fonctionnement {n})
+Faulty monitoring unit	Unité de surveillance défectueuse
+Faulty power collector	Collecteur de puissance défectueux
+Fuse error (Warn{n})	Erreur de fusible (Warn{n})
+GFCI abnormal	GFCI anormal
+GFCI consistency failure	Échec de cohérence GFCI
+GFCI device check failure	Échec du contrôle de l'appareil GFCI
+GFCI device failure	Défaillance de l'appareil GFCI
+Grid AC voltage out of range	Tension AC du réseau hors plage
+Grid Loss	Perte du réseau
+Grid N abnormal	Neutre réseau anormal
+Grid Power Outage	Perte du réseau
+Grid abnormal	Réseau anormal
+Grid absent	Réseau absent
+Grid average voltage high	Tension moyenne du réseau élevée
+Grid connection fault (W{n})	Défaut de raccordement au réseau (W{n})
+Grid disconnect	Déconnexion du réseau
+Grid disconnected	Réseau déconnecté
+Grid fault (grid mode {n})	Défaut réseau (mode réseau {n})
+Grid frequency consistency fault	Défaut de cohérence de la fréquence réseau
+Grid frequency failure (Fac)	Défaut de fréquence réseau (Fac)
+Grid frequency high	Fréquence réseau élevée
+Grid frequency high (GridF.OutLim)	Fréquence réseau élevée (GridF.OutLim)
+Grid frequency low	Fréquence réseau basse
+Grid frequency low (GridF.OutLim)	Fréquence réseau basse (GridF.OutLim)
+Grid line voltage out of range (GridV.OutLim)	Tension composée du réseau hors plage (GridV.OutLim)
+Grid loss	Perte du réseau
+Grid low frequency	Fréquence réseau basse
+Grid low voltage	Tension réseau basse
+Grid not available	Réseau indisponible
+Grid out of phase (GridV.OutLim)	Réseau déphasé (GridV.OutLim)
+Grid over-frequency	Surfréquence réseau
+Grid over-frequency (fast)	Surfréquence réseau (rapide)
+Grid over-frequency (slow)	Surfréquence réseau (lente)
+Grid over-frequency derating	Réduction de puissance pour surfréquence réseau
+Grid over-voltage	Surtension réseau
+Grid over-voltage (fast)	Surtension réseau (rapide)
+Grid over-voltage (instantaneous)	Surtension réseau (instantanée)
+Grid over-voltage (slow)	Surtension réseau (lente)
+Grid over-voltage ({n} min average)	Surtension réseau (moyenne sur {n} min)
+Grid overfrequency	Surfréquence réseau
+Grid overvoltage	Surtension réseau
+Grid phase voltage out of range (GridV.OutLim)	Tension simple du réseau hors plage (GridV.OutLim)
+Grid power outage	Perte du réseau
+Grid protection self-test failed	Échec de l'autotest de protection réseau
+Grid relay protection (Protect{n})	Protection relais réseau (Protect{n})
+Grid transient overvoltage	Surtension transitoire réseau
+Grid under-frequency	Sous-fréquence réseau
+Grid under-frequency (fast)	Sous-fréquence réseau (rapide)
+Grid under-frequency (slow)	Sous-fréquence réseau (lente)
+Grid under-voltage	Sous-tension réseau
+Grid under-voltage (fast)	Sous-tension réseau (rapide)
+Grid under-voltage (instantaneous)	Sous-tension réseau (instantanée)
+Grid under-voltage (slow)	Sous-tension réseau (lente)
+Grid underfrequency	Sous-fréquence réseau
+Grid undervoltage	Sous-tension réseau
+Grid voltage consistency fault	Défaut de cohérence de la tension réseau
+Grid voltage failure (Vac)	Défaut de tension réseau (Vac)
+Grid voltage high	Tension réseau élevée
+Grid voltage imbalance	Déséquilibre de tension réseau
+Grid voltage low	Tension réseau basse
+Grid voltage unbalanced (GridV.OutLim)	Tension réseau déséquilibrée (GridV.OutLim)
+Ground current failure	Défaut de courant de terre
+Ground kit self-test error (E{n})	Erreur d'autotest du kit de mise à la terre (E{n})
+Grounding cable fault	Défaut du câble de terre
+HP fault	Défaut pompe à chaleur
+Half-bus overvoltage hardware fault	Défaut matériel de surtension du demi-bus
+Half-bus overvoltage permanent fault	Défaut permanent de surtension du demi-bus
+Hardware driver power supply abnormal (Protect{n})	Alimentation driver matériel anormale (Protect{n})
+Hardware test failure	Échec du test matériel
+Hardware voltage/current high	Tension/courant matériel élevé
+Heat generator alarm (status {x})	Alarme générateur de chaleur (état {x})
+Heat generator fault (status {x})	Défaut générateur de chaleur (état {x})
+Heat pump alarm	Alarme pompe à chaleur
+Heat pump error code {x}	Code d'erreur pompe à chaleur {x}
+Heat pump error {x} (code {x})	Erreur pompe à chaleur {x} (code {x})
+Heat pump fault (sensor or switch)	Défaut pompe à chaleur (capteur ou interrupteur)
+Heating circuit {n} fault (status {n})	Défaut circuit de chauffage {n} (état {n})
+High DC injection permanent fault	Défaut permanent d'injection DC élevée
+High input string voltage to ground	Tension d'entrée de string élevée par rapport à la terre
+High inverter current (Protect{n})	Courant onduleur élevé (Protect{n})
+High string input voltage	Tension d'entrée de string élevée
+Hot water fault (status {n})	Défaut eau chaude (état {n})
+Hot water warning (status {n})	Avertissement eau chaude (état {n})
+IGBT not ready (E{n})	IGBT non prêt (E{n})
+IGBT sat (E{n})	Saturation IGBT (E{n})
+Incorrect PV input configuration	Configuration d'entrée PV incorrecte
+Input OC (E{n})	Entrée OC (E{n})
+Input OV (E{n})	Entrée OV (E{n})
+Input and output mismatch fault	Défaut d'incohérence entrée/sortie
+Input configuration abnormality	Anomalie de configuration d'entrée
+Input configuration alarm in DC source mode or clock reset abnormal	Alarme de configuration d'entrée en mode source DC ou réinitialisation d'horloge anormale
+Input {x}	Entrée {x}
+Insulation fault	Défaut d'isolement
+Insulation resistance too low (IsolationErr)	Résistance d'isolement trop faible (IsolationErr)
+Internal communication error	Erreur de communication interne
+Internal communication failed (CommErr)	Échec de la communication interne (CommErr)
+Internal communication failure	Défaillance de la communication interne
+Internal error (E{n})	Erreur interne (E{n})
+Internal error (error {x})	Erreur interne (erreur {x})
+Internal fan abnormal	Ventilateur interne anormal
+Internal fan alarm (IntFanErr)	Alarme ventilateur interne (IntFanErr)
+Internal fan failure	Défaillance du ventilateur interne
+Internal hardware error (Protect{n})	Erreur matérielle interne (Protect{n})
+Internal hardware failure (Fault{n})	Défaillance matérielle interne (Fault{n})
+Internal power supply abnormal	Alimentation interne anormale
+Internal storage error	Erreur de mémoire interne
+Invalid date	Date non valide
+Inversion DC injection overvoltage fault	Défaut de surtension d'injection DC de l'onduleur
+Inversion open-loop self-detection permanent fault	Défaut permanent d'autodétection en boucle ouverte de l'onduleur
+Inversion overcurrent hardware fault	Défaut matériel de surintensité de l'onduleur
+Inversion overcurrent permanent fault	Défaut permanent de surintensité de l'onduleur
+Inversion switch over-temperature	Surchauffe de l'interrupteur de l'onduleur
+Inversion temperature sensor open circuit	Capteur de température onduleur en circuit ouvert
+Inversion temperature sensor short circuit	Capteur de température onduleur en court-circuit
+Inverter Events Descriptor	Descripteur des événements de l'onduleur
+Inverter abnormal	Onduleur anormal
+Inverter current bias (Protect{n})	Décalage de courant onduleur (Protect{n})
+Inverter current imbalance (Protect{n})	Déséquilibre de courant onduleur (Protect{n})
+Inverter fault (St {x})	Défaut onduleur (St {x})
+Inverter fault (vendor state {x})	Défaut onduleur (état fabricant {x})
+Inverter fault / Modbus communication	Défaut onduleur / communication Modbus
+Inverter hardware over-current (Fault{n})	Surintensité matérielle onduleur (Fault{n})
+Inverter hardware over-current (Protect{n})	Surintensité matérielle onduleur (Protect{n})
+Inverter soft start timeout (Protect{n})	Délai de démarrage progressif de l'onduleur dépassé (Protect{n})
+Island detected	Îlotage détecté
+Island detected (W{n})	Îlotage détecté (W{n})
+Islanding (grid outage)	Îlotage (perte du réseau)
+Isolation failure	Défaut d'isolement
+Junction box leakage protector alarm	Alarme protection courant de fuite du boîtier de raccordement
+Junction box relay fault	Défaut relais du boîtier de raccordement
+LCD and main DSP communication fault	Défaut de communication LCD et DSP principal
+LCD communication failure	Échec de communication LCD
+Latch, manual reset needed (E{n})	Verrouillé, réarmement manuel requis (E{n})
+Leak fault (E{n})	Défaut de fuite (E{n})
+Leakage current CT self-detection fault	Défaut d'autodétection du TC de courant de fuite
+Leakage current abnormal	Courant de fuite anormal
+Leakage current fault	Défaut de courant de fuite
+Leakage current sampling abnormal	Mesure du courant de fuite anormale
+Leakage current sensor abnormal (Protect{n})	Capteur de courant de fuite anormal (Protect{n})
+Leakage current too high (GFCIErr)	Courant de fuite trop élevé (GFCIErr)
+License expired	Licence expirée
+Lightning protection alarm on AC side	Alarme protection foudre côté AC
+Lightning protection alarm on DC side	Alarme protection foudre côté DC
+Loss	Perte
+Loss of cooling	Perte du refroidissement
+Low ambient temperature	Température ambiante basse
+Low efficiency error	Erreur de faible rendement
+Low efficiency fault	Défaut de faible rendement
+Low insulation resistance	Résistance d'isolement faible
+Low system insulation resistance	Résistance d'isolement du système faible
+L{x} meter error	Erreur compteur L{x}
+MCU protection (Protect{n})	Protection MCU (Protect{n})
+Manual shutdown	Arrêt manuel
+Master lost	Maître perdu
+Maximum pulse rate exceeded	Fréquence d'impulsions maximale dépassée
+Memory loss	Perte de mémoire
+Meter communication alarm	Alarme de communication compteur
+Meter lost	Compteur perdu
+Meter ports reversed or wrongly connected	Ports du compteur inversés ou mal raccordés
+Mixed cell alarm	Alarme cellules mixtes
+Modbus registers	Registres Modbus
+Module over-temperature	Surchauffe du module
+Module temperature high	Température du module élevée
+N-wire current sampling abnormal	Mesure du courant du neutre anormale
+Negative total power	Puissance totale négative
+No ground detected (error {n})	Aucune terre détectée (erreur {n})
+No parameters (E{n})	Aucun paramètre (E{n})
+No-Grid	Pas de réseau
+Off-grid (grid mode {n})	Hors réseau (mode réseau {n})
+Off-grid mode (work mode {n})	Mode hors réseau (mode de fonctionnement {n})
+Off-grid operation (state {n})	Fonctionnement hors réseau (état {n})
+On-grid/off-grid controller abnormal	Contrôleur réseau/hors réseau anormal
+Open-loop self-test failed (Fault{n})	Échec de l'autotest en boucle ouverte (Fault{n})
+Optimizer fault	Défaut de l'optimiseur
+Output DC component overhigh	Composante DC de sortie trop élevée
+Output OC (E{n})	Sortie OC (E{n})
+Output overcurrent	Surintensité de sortie
+Output overload	Surcharge de sortie
+Over charge power limit fault	Défaut de dépassement de la limite de puissance de charge
+Over discharge power limit fault	Défaut de dépassement de la limite de puissance de décharge
+Over-current protection	Protection contre les surintensités
+Over-temperature (E{n})	Surchauffe (E{n})
+Over-temperature derating	Réduction de puissance pour surchauffe
+Over-temperature protection (TempOver)	Protection contre la surchauffe (TempOver)
+Overheating (state {x})	Surchauffe (état {x})
+Overload fault	Défaut de surcharge
+Overload fault ({x})	Défaut de surcharge ({x})
+Overtemperature	Surchauffe
+PCS fault ({x})	Défaut PCS ({x})
+PID box communication failed	Échec de communication du boîtier PID
+PID box failure	Défaillance du boîtier PID
+PID device abnormal	Appareil PID anormal
+PLL lock exception (Protect{n})	Exception de verrouillage PLL (Protect{n})
+PV & cell on line off grid operation	Fonctionnement hors réseau avec PV et batterie
+PV access failure	Échec de raccordement PV
+PV hardware overcurrent fault	Défaut matériel de surintensité PV
+PV high-voltage fault	Défaut haute tension PV
+PV high-voltage overpower	Surpuissance haute tension PV
+PV input over-current	Surintensité d'entrée PV
+PV input reversed	Entrée PV inversée
+PV insulation abnormal	Isolement PV anormal
+PV insulation error	Erreur d'isolement PV
+PV insulation fault	Défaut d'isolement PV
+PV loss	Perte PV
+PV over-voltage	Surtension PV
+PV overcurrent permanent fault	Défaut permanent de surintensité PV
+PV power overload	Surcharge de puissance PV
+PV source input abnormal (Protect{n})	Entrée source PV anormale (Protect{n})
+PV string abnormal	String PV anormal
+PV string configuration changed	Configuration des strings PV modifiée
+PV string error (PVStrErr)	Erreur de string PV (PVStrErr)
+PV string fuse blown	Fusible de string PV grillé
+PV string loss	Perte de string PV
+PV string reversed	String PV inversé
+PV under voltage	Sous-tension PV
+PV voltage exceeds bus voltage	Tension PV supérieure à la tension du bus
+PV {n} and {n} over-current	Surintensité PV {n} et {n}
+PV {n} over-current	Surintensité PV {n}
+PV {n} over-voltage	Surtension PV {n}
+PV {n} surge protection needs service	Protection parafoudre PV {n} à entretenir
+PV{n} MPPT current sampling abnormal	Mesure de courant MPPT PV{n} anormale
+PV{n} abnormal warning	Avertissement anomalie PV{n}
+PV{n} current sampling abnormal	Mesure de courant PV{n} anormale
+PV{n} current sampling failure	Défaillance de la mesure de courant PV{n}
+PV{n} high current (Protect{n})	Courant PV{n} élevé (Protect{n})
+PV{n} input over-current (Protect{n})	Surintensité d'entrée PV{n} (Protect{n})
+PV{n} input reversed (PV{n}Reverse)	Entrée PV{n} inversée (PV{n}Reverse)
+PV{n} overcurrent	Surintensité PV{n}
+PV{n} power abnormal	Puissance PV{n} anormale
+PV{n} reverse connection fault	Défaut d'inversion de polarité PV{n}
+PV{n} self-check permanent fault	Défaut permanent d'autotest PV{n}
+PV{n} voltage too high (PV{n}VoltOver)	Tension PV{n} trop élevée (PV{n}VoltOver)
+Parallel communication alarm	Alarme de communication parallèle
+Park controller lost	Contrôleur de parc perdu
+Passive islanding	Îlotage passif
+Periodic grid off (W{n})	Déconnexion périodique du réseau (W{n})
+Peripheral port short circuit	Court-circuit du port périphérique
+Permanent power module failure (Fault{n})	Défaillance permanente du module de puissance (Fault{n})
+Phase angle failure	Défaut d'angle de phase
+Phase disturbance (error {n})	Perturbation de phase (erreur {n})
+Phase wire short-circuited to PE	Conducteur de phase en court-circuit avec PE
+Phase-to-ground voltage anomaly (Protect{n})	Anomalie de tension phase-terre (Protect{n})
+Power inverter open-loop self-test (Protect{n})	Autotest en boucle ouverte de l'onduleur de puissance (Protect{n})
+Power module overload	Surcharge du module de puissance
+Power module protection (Protect{n})	Protection du module de puissance (Protect{n})
+Power stage error (status {x})	Erreur de l'étage de puissance (état {x})
+QPIWS: unexpected reply '{x}'	QPIWS : réponse inattendue '{x}'
+R-phase DC component sampling abnormal	Mesure de la composante DC phase R anormale
+R-phase inverter voltage sampling abnormal	Mesure de tension onduleur phase R anormale
+RCMU error	Erreur RCMU
+RCMU fault	Défaut RCMU
+RPO power module error	Erreur du module de puissance RPO
+Ramp fault (E{n})	Défaut de rampe (E{n})
+Redundancy fault	Défaut de redondance
+Relay abnormal	Relais anormal
+Relay check failure	Échec du contrôle du relais
+Relay device failure	Défaillance du relais
+Relay failure (Fault{n})	Défaillance du relais (Fault{n})
+Relay permanent fault	Défaut permanent du relais
+Replace fan	Remplacer le ventilateur
+Residual current breaker (RCCB) tripped (error {n})	Disjoncteur différentiel (RCCB) déclenché (erreur {n})
+Riso low (E{n})	Riso faible (E{n})
+Riso test fail (E{n})	Échec du test Riso (E{n})
+S-phase DC component sampling abnormal	Mesure de la composante DC phase S anormale
+S-phase inverter voltage sampling abnormal	Mesure de tension onduleur phase S anormale
+SPD or fuse alarm	Alarme parafoudre ou fusible
+SPI communication alarm	Alarme de communication SPI
+SPI communication fault	Défaut de communication SPI
+Secondary DSP communication fault	Défaut de communication DSP secondaire
+Self-derating ({n}x{n})	Autoréduction de puissance ({n}x{n})
+Shared system configuration fault	Défaut de configuration système partagée
+Shutdown: fault ({n}x{n})	Arrêt : défaut ({n}x{n})
+Slave battery fault	Défaut batterie esclave
+Software incompatibility	Incompatibilité logicielle
+Software version mismatch	Version logicielle incompatible
+Steady-state GFCI failure (Fault{n})	Défaillance GFCI en régime permanent (Fault{n})
+Steady-state GFCI protection (Protect{n})	Protection GFCI en régime permanent (Protect{n})
+String current backfeed	Courant de retour de string
+String reverse connection	String connecté à l'envers
+String {x} abnormal	String {x} anormal
+String {x} reversed polarity	Polarité inversée string {x}
+Surge protection module defective	Module parafoudre défectueux
+System Wide Number of Active Faults	Nombre de défauts actifs dans le système
+System configuration fault	Défaut de configuration système
+System fault (fatal error)	Défaut système (erreur fatale)
+System type error	Erreur de type de système
+T-phase DC component sampling abnormal	Mesure de la composante DC phase T anormale
+T-phase inverter voltage sampling abnormal	Mesure de tension onduleur phase T anormale
+Temperature derating (reason {x})	Réduction de puissance liée à la température (raison {x})
+Temperature sensor abnormal (Warn{n})	Capteur de température anormal (Warn{n})
+Temperature sensor failure	Défaillance du capteur de température
+Transient AC over-current	Surintensité AC transitoire
+Transient AC overvoltage	Surtension AC transitoire
+Transient grid voltage high	Tension réseau transitoire élevée
+Transient grid voltage low	Tension réseau transitoire basse
+Unbalanced grid voltage	Tension réseau déséquilibrée
+Under-temperature	Sous-température
+Under-temperature (E{n})	Sous-température (E{n})
+Unstable grid frequency	Fréquence réseau instable
+Unsupported device	Appareil non pris en charge
+Update incomplete (W{n})	Mise à jour incomplète (W{n})
+Upgrade failed or version mismatch	Échec de la mise à niveau ou version incompatible
+Utility Loss	Perte du réseau
+Utility loss	Perte du réseau
+Utility loss (error bit {n})	Perte du réseau (bit d'erreur {n})
+Utility phase failure	Perte de phase du réseau
+VE.Bus Fault condition	État de défaut VE.Bus
+VE.Bus fault condition (state {n})	État de défaut VE.Bus (état {n})
+Vac consistency failure	Échec de cohérence Vac
+Vehicle state E (error)	État du véhicule E (erreur)
+Voltage out of range	Tension hors plage
+Warn	Avertissement
+Warning (state {n})	Avertissement (état {n})
+Warning ({x})	Avertissement ({x})
+Warning code {n}x%{n}X	Code d'avertissement {n}x%{n}X
+Warning code {x}	Code d'avertissement {x}
+Wrong input mode (E{n})	Mode d'entrée incorrect (E{n})
+Wrong sequence (E{n})	Séquence incorrecte (E{n})
+Wrong wiring: {x} (bit {x})	Câblage incorrect : {x} (bit {x})
+an error has occurred	Une erreur s'est produite
+arc detected	Arc électrique détecté
+battery alarm	Alarme batterie
+battery fault	Défaut batterie
+blown fuse	Fusible grillé
+cabinet open	Armoire ouverte
+error states	États d'erreur
+event {x}	Événement {x}
+events and status	Événements et état
+grid-side fault	Défaut côté réseau
+ground fault	Défaut de terre
+input over-current	Surintensité d'entrée
+input over-voltage	Surtension d'entrée
+instantaneous alarm code n bits	Code d'alarme instantanée n bits
+inverter alarm	Alarme onduleur
+manual shutdown	Arrêt manuel
+memory loss	Perte de mémoire
+name (code)	Nom (code)
+operation is halted	Fonctionnement arrêté
+over-temperature	Surchauffe
+permanent fault	Défaut permanent
+reserved for future use	Réservé pour une utilisation future
+system fault {n}	Défaut système {n}
+test failed	Échec du test
+under-temperature	Sous-température
+warning code	Code d'avertissement
+{n} active fault	{n} défaut actif
+{n} active warning	{n} avertissement actif
+{n}-minute grid overvoltage	Surtension réseau sur {n} minutes
+{x} (WFA status {x})	{x} (état WFA {x})
+{x} (alarm {x} bit {x})	{x} (alarme {x} bit {x})
+{x} (bus status {x})	{x} (état du bus {x})
+{x} (derating bit {x})	{x} (bit de réduction de puissance {x})
+{x} (error bit {x})	{x} (bit d'erreur {x})
+{x} (event bit {x})	{x} (bit d'événement {x})
+{x} (inverter state {x})	{x} (état onduleur {x})
+{x} (reduction bit {x})	{x} (bit de réduction {x})
+{x} (state {x})	{x} (état {x})
+{x} (status {x})	{x} (état {x})
+{x} active faults	{x} défauts actifs
+{x} active warnings	{x} avertissements actifs
+{x}: fault (DCSt {x})	{x} : défaut (DCSt {x})
+{x}: {x} (DCEvt bit {x})	{x} : {x} (bit DCEvt {x})

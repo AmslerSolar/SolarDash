@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard.driver.consumer
 
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -89,5 +90,23 @@ class GoEChargerDriverTest {
             } catch (_: IOException) {
             }
         }
+    }
+
+    @Test
+    fun problemsFromErrorRegisterAndCarState() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), GoEChargerDriver(goe(), 1).read().problems)
+        assertEquals(emptyList<DeviceProblem>(), GoEChargerDriver(goe(car = 3, powerCw = 0), 1).read().problems)
+        assertEquals(
+            listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "No ground detected (error 8)")),
+            GoEChargerDriver(goe(car = 1, powerCw = 0).u16(107, 8), 1).read().problems,
+        )
+        assertEquals(
+            listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Internal error (error 12)")),
+            GoEChargerDriver(goe(car = 1, powerCw = 0).u16(107, 12), 1).read().problems,
+        )
+        assertEquals(
+            listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Charging station defective (car state 0)")),
+            GoEChargerDriver(goe(car = 0, powerCw = 0), 1).read().problems,
+        )
     }
 }

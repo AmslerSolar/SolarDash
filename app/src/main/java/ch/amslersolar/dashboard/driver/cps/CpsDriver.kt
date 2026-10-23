@@ -14,6 +14,8 @@ import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
+import ch.amslersolar.dashboard.model.DeviceProblem.Kind
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.EnergyTotals
 import ch.amslersolar.dashboard.model.PvString
@@ -53,6 +55,12 @@ import kotlin.math.roundToInt
  * and phase currents Ia/Ib/Ic are in the details. Grid: null (the inverter doesn't measure the grid connection). Mode (0x002F) values: Fault, Check,
  * Standby, Running, Derate (all maps), Soft shutdown (250/275 kW), Power off (100/125 kW). Fault / warning words
  * are shown raw (bit meanings differ between families).
+ *
+ * Problems: for the 50/60 kW 480 V family the fault words are decoded with that map's "Inverter Events
+ * Descriptor" (section 6.0, pages 48–53): PFault 0x0034 and Fault0–4 0x0036–0x003A → FAULT ("GridV/F.OutLim" bits
+ * → MAINS_LOST), Warn 0x0035 → WARNING. For the other families a non-zero word is reported with its raw value
+ * ("Fault0 0x0400"). Mode 0x8000 (Fault) without any fault bit → FAULT. Mode Derating isn't reported: the map
+ * doesn't say whether it's the operator's limit or a protection.
  */
 class CpsDriver(private val reader: RegisterReader, private val unitId: Int) : DeviceDriver {
     constructor(client: ModbusTcpClient, unitId: Int) : this(RegisterReader { u, r, c -> client.readInputRegisters(u, r, c) }, unitId)
@@ -193,7 +201,29 @@ class CpsDriver(private val reader: RegisterReader, private val unitId: Int) : D
                 today = EnergyTotals(pvKwh = tenth(u16(0x0018))),
                 lifetimePvKwh = u32(0x0016)?.toDouble(),
                 details = details(pac, pdc, strings),
+                problems = problems(),
             )
+        }
+
+        fun problems(): List<DeviceProblem> {
+            val out = mutableListOf<DeviceProblem>()
+            val decoded = f == FIFTY_SIXTY
+            for ((reg, name) in FAULT_WORDS) {
+                val v = u16(reg)?.takeIf { it != 0 } ?: continue
+                val kind = if (reg == WARN) Kind.WARNING else Kind.FAULT
+                if (!decoded) {
+                    out += DeviceProblem(kind, "$name ${bits(v.toLong(), 4)}")
+                    continue
+                }
+                val table = EVENTS_50_60[reg].orEmpty()
+                for (bit in 15 downTo 0) {
+                    if (v and (1 shl bit) == 0) continue
+                    val e = table[bit]
+                    out += if (e == null) DeviceProblem(kind, "$name bit $bit") else DeviceProblem(e.first, e.second)
+                }
+            }
+            if (out.none { it.kind != Kind.WARNING } && u16(0x002F) == MODE_FAULT) out += DeviceProblem(Kind.FAULT, "Fault (mode 0x8000)")
+            return out.distinct()
         }
 
         private fun version(a: Int) = u16(a)?.let { String.format(Locale.ROOT, "%02X.%02X", it shr 8, it and 0xFF) }
@@ -268,6 +298,69 @@ class CpsDriver(private val reader: RegisterReader, private val unitId: Int) : D
         val LIVE_PARTS = listOf(
             0x0016..0x0024, 0x0025..0x002A, 0x002B..0x002D, 0x002E..0x002E, 0x002F..0x003B,
             0x003C..0x0040, 0x0041..0x0041, 0x0042..0x0042, 0x0043..0x0048,
+        )
+
+        private const val MODE_FAULT = 0x8000
+        private const val WARN = 0x0035
+        val FAULT_WORDS = listOf(0x0034 to "PFault", 0x0036 to "Fault0", 0x0037 to "Fault1", 0x0038 to "Fault2", 0x0039 to "Fault3", 0x003A to "Fault4", WARN to "Warn")
+
+        private fun f(vararg e: Pair<Int, String>) = e.associate { (bit, text) -> bit to (Kind.FAULT to text) }
+        private fun g(vararg e: Pair<Int, String>) = e.associate { (bit, text) -> bit to (Kind.MAINS_LOST to text) }
+        private fun w(vararg e: Pair<Int, String>) = e.associate { (bit, text) -> bit to (Kind.WARNING to text) }
+
+        /** 50/60 kW 480 V map FW V15.00, section 6.0 "Inverter Events Descriptor": register → bit → (kind, text with LCD code). */
+        val EVENTS_50_60: Map<Int, Map<Int, Pair<Kind, String>>> = mapOf(
+            0x0034 to f(
+                15 to "Control board voltage / drive power failure (Fault0160)", 14 to "Open-loop self-test failed (Fault0150)",
+                13 to "Internal hardware failure (Fault0140)", 12 to "Permanent power module failure (Fault0010)",
+                11 to "Bus hardware over-voltage (Fault0020)", 8 to "Inverter hardware over-current (Fault0050)",
+                7 to "CPLD clock fault (Fault0060)", 6 to "DCI too high (Fault0070)", 5 to "Boost hardware over-current (Fault0080)",
+                4 to "Steady-state GFCI failure (Fault0090)", 3 to "Relay failure (Fault0100)", 2 to "Bus high failure (Fault0110)",
+                0 to "Bus high fault (Fault0130)",
+            ),
+            WARN to w(
+                15 to "External communication failed (Warn0150)", 13 to "PV string error (PVStrErr)",
+                12 to "PID box communication failed", 11 to "PID box failure", 10 to "AC side MOV abnormal (Warn0100)",
+                7 to "AC side lightning arrester abnormal (Warn0070)", 6 to "Fuse error (Warn0060)",
+                5 to "Temperature sensor abnormal (Warn0050)", 4 to "DC side lightning protection abnormal (Warn0040)",
+                3 to "EEPROM problem (Warn0030)", 2 to "Internal communication failed (CommErr)",
+                1 to "Internal fan alarm (IntFanErr)", 0 to "External fan alarm (ExtFanErr)",
+            ),
+            0x0036 to f(
+                15 to "Inverter current bias (Protect0010)", 14 to "Over-temperature protection (TempOver)",
+                13 to "Grid relay protection (Protect0020)", 9 to "High inverter current (Protect0030)",
+                6 to "PV1 high current (Protect0040)", 4 to "Inverter soft start timeout (Protect0050)",
+                3 to "Bus soft start timeout (Protect0060)", 2 to "Bus voltage difference high (Protect0070)",
+                0 to "Bus voltage high (Protect0090)",
+            ) + g(
+                12 to "Grid out of phase (GridV.OutLim)", 11 to "Grid frequency low (GridF.OutLim)",
+                10 to "Grid frequency high (GridF.OutLim)", 8 to "Grid phase voltage out of range (GridV.OutLim)",
+                7 to "Grid line voltage out of range (GridV.OutLim)",
+            ),
+            0x0037 to f(
+                15 to "Leakage current sensor abnormal (Protect0100)", 14 to "Bus hardware over-voltage (Protect0110)",
+                12 to "Power module protection (Protect0120)", 11 to "Inverter current imbalance (Protect0130)",
+                8 to "Inverter hardware over-current (Protect0140)", 7 to "MCU protection (Protect0150)",
+                5 to "Abnormal frequency selection (Protect0160)", 4 to "Leakage current too high (GFCIErr)",
+                3 to "Insulation resistance too low (IsolationErr)", 2 to "DCI current too high (Protect0170)",
+                1 to "DCI current bias (Protect0180)",
+            ) + g(9 to "Grid voltage unbalanced (GridV.OutLim)"),
+            0x0038 to f(
+                12 to "PV3 voltage too high (PV3VoltOver)", 11 to "PV3 input reversed (PV3Reverse)",
+                10 to "PV1 voltage too high (PV1VoltOver)", 9 to "PV1 input reversed (PV1Reverse)",
+                7 to "Power inverter open-loop self-test (Protect0230)", 6 to "PV source input abnormal (Protect0260)",
+                5 to "PV2 voltage too high (PV2VoltOver)", 4 to "PV2 input over-current (Protect0240)",
+                3 to "PV2 input reversed (PV2Reverse)", 1 to "Internal hardware error (Protect0210)",
+            ),
+            0x0039 to f(15 to "Arc protection (ARC Protect)", 13 to "Hardware driver power supply abnormal (Protect0330)"),
+            0x003A to f(
+                15 to "Phase-to-ground voltage anomaly (Protect0470)", 10 to "CPLD clock abnormal (Protect0520)",
+                9 to "CPLD program version abnormal (Protect0530)", 8 to "Abnormal product model (Protect0540)",
+                7 to "Boost hardware over-current (Protect0550)", 6 to "Control board 3.3 V low (Protect0560)",
+                5 to "PLL lock exception (Protect0570)", 4 to "PV3 input over-current (Protect0580)",
+                3 to "Battery overboard (Protect0590)", 2 to "Arc board failure (Arcboard Err)",
+                1 to "Steady-state GFCI protection (Protect0610)", 0 to "Control board 5 V low (Protect0620)",
+            ),
         )
 
         val MODES = mapOf(

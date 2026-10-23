@@ -10,6 +10,7 @@ import ch.amslersolar.dashboard.driver.modbus.ModbusTcpClient
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.PhaseReading
 import java.io.IOException
@@ -103,7 +104,21 @@ class ShellyPro3EmDriver(private val reader: RegisterReader, private val unitId:
                 val v = img.f32(b) ?: return@mapIndexedNotNull null
                 PhaseReading("L${i + 1}", v, img.f32(b + 2), img.f32(b + 13) ?: 0.0, w(img, b + 4))
             }
-            return DeviceReading(gridPowerW = w(img, 31013), phases = phases)
+            return DeviceReading(gridPowerW = w(img, 31013), phases = phases, problems = problems(img))
+        }
+
+        /**
+         * The EM error booleans (Gen2-EM "Modbus registers"): phase meter errors 31002–31004, neutral meter error
+         * 31005, phase sequence 31006, neutral current mismatch 31009 and neutral overcurrent 31010. The per-phase
+         * overpower / overvoltage / overcurrent registers follow the user's alarm thresholds and aren't reported.
+         */
+        fun problems(img: MeterRegs): List<DeviceProblem> {
+            val flags = (0 until 3).map { 31002 + it to "L${it + 1} meter error" } + listOf(
+                31005 to "Neutral meter error", 31006 to "Phase sequence error", 31009 to "Neutral current mismatch",
+                31010 to "Neutral overcurrent",
+            )
+            return flags.filter { (a, _) -> img.u16(a)?.let { it != 0 } == true }
+                .map { DeviceProblem(DeviceProblem.Kind.WARNING, it.second) }
         }
 
         private fun kwh(img: MeterRegs, a: Int, unit: String = "kWh") = fmt(img.f32(a)?.div(1000), unit, 1)

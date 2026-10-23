@@ -14,6 +14,7 @@ import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.BatteryState
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import java.io.IOException
 import kotlin.math.roundToInt
@@ -188,7 +189,17 @@ class FeneconFemsDriver(private val reader: RegisterReader, private val unitId: 
                 loadPowerW = img.f32(CONSUMPTION_ACTIVE_POWER)?.roundToInt(),
                 status = status,
                 lifetimePvKwh = img.f64(PRODUCTION_ACTIVE_ENERGY)?.div(1000),
+                problems = problems(img),
             )
+        }
+
+        /** State 222 (2 Warning, 3 Fault) and GridMode 417 (2 Off-Grid), table 2. The `_sum` table has no fault codes. */
+        fun problems(img: Image): List<DeviceProblem> = buildList {
+            when (img.u16(STATE)) {
+                2 -> add(DeviceProblem(DeviceProblem.Kind.WARNING, "Warning (state 2)"))
+                3 -> add(DeviceProblem(DeviceProblem.Kind.FAULT, "Fault (state 3)"))
+            }
+            if (img.u16(GRID_MODE) == 2) add(DeviceProblem(DeviceProblem.Kind.BACKUP_MODE, "Off-grid (grid mode 2)"))
         }
 
         private fun w(img: Image, a: Int) = fmt(img.f32(a), "W", 0)

@@ -4,6 +4,7 @@
 package ch.amslersolar.dashboard.driver.schneider
 
 import ch.amslersolar.dashboard.driver.sunspec.FakeRegisterImage
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -73,5 +74,22 @@ class ConextCl60DriverTest {
         assertTrue(wrongCode is IOException)
         val nothing = runCatching { ConextCl60Driver(FakeRegisterImage(unitId = 1), 1).identify() }.exceptionOrNull()
         assertTrue(nothing is IOException)
+    }
+
+    @Test
+    fun noProblemsWhileRunning() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), ConextCl60Driver(cl60(), 1).read().problems)
+    }
+
+    @Test
+    fun faultAndAlarmCodesBecomeProblems() = runBlocking {
+        suspend fun problems(state: Int, code: Int) = ConextCl60Driver(cl60().apply { u16(0x13AD, state); u16(0x13B4, code) }, 1).read().problems
+        assertEquals(listOf(DeviceProblem(DeviceProblem.Kind.MAINS_LOST, "Islanding (grid outage) (10)")), problems(0x5500, 10))
+        assertEquals(listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Insulation fault (39)")), problems(0x5500, 39))
+        assertEquals(listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Fault code 999")), problems(0x5500, 999))
+        assertEquals(listOf(DeviceProblem(DeviceProblem.Kind.WARNING, "Fan failure (70)")), problems(0x9100, 70))
+        assertEquals(listOf(DeviceProblem(DeviceProblem.Kind.WARNING, "Derating (state 0x8100)")), problems(0x8100, 0))
+        assertEquals(emptyList<DeviceProblem>(), problems(0x5500, 75)) // low irradiance
+        assertEquals(emptyList<DeviceProblem>(), problems(0x1400, 0)) // standby
     }
 }

@@ -5,6 +5,7 @@ package ch.amslersolar.dashboard.driver.sunspec
 
 import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -107,5 +108,56 @@ class SunSpecInverterDriverTest {
         assertEquals("Charging", r.battery?.mode)
         assertNull(r.gridPowerW) // no meter model in the chain
         assertTrue(r.details.any { it.title == "Battery bank (SunSpec 802)" })
+    }
+
+    @Test
+    fun noProblemsWhileProducing() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), SunSpecInverterDriver(solarEdge(), 1, SunSpecProfiles.SOLAREDGE).read().problems)
+    }
+
+    @Test
+    fun faultStateAndEventBitsOfTheIntModel() = runBlocking {
+        val chain = Chain()
+            .model(1, 65) { b -> text(b + 2, 16, "Acme"); text(b + 18, 16, "Inv 10") }
+            .model(103, 50) { b ->
+                u16(b + 38, 7); u16(b + 39, 43) // St FAULT, vendor state 43
+                u16(b + 40, 0); u16(b + 41, 0x0801) // Evt1: GROUND_FAULT, AC_UNDER_VOLT
+            }
+            .end()
+        val r = SunSpecInverterDriver(chain, 1, SunSpecProfiles.GENERIC).read()
+        assertEquals("Fault", r.status)
+        assertEquals(
+            listOf(
+                DeviceProblem(DeviceProblem.Kind.FAULT, "Inverter fault (vendor state 43)"),
+                DeviceProblem(DeviceProblem.Kind.FAULT, "Ground fault (Evt1 bit 0)"),
+                DeviceProblem(DeviceProblem.Kind.MAINS_LOST, "Grid under-voltage (Evt1 bit 11)"),
+            ),
+            r.problems,
+        )
+    }
+
+    @Test
+    fun eventBitsOfTheFloatModelAndOfTheMpptInputs() = runBlocking {
+        val chain = Chain()
+            .model(1, 65) { b -> text(b + 2, 16, "Acme"); text(b + 18, 16, "Inv 10") }
+            .model(113, 60) { b ->
+                u16(b + 48, 4) // MPPT: running
+                u16(b + 50, 0); u16(b + 51, 0x0080) // Evt1: OVER_TEMP
+            }
+            .model(160, 48) { b ->
+                u16(b + 8, 2)
+                u16(b + 10, 1); u16(b + 27, 4); u16(b + 28, 0x0000); u16(b + 29, 0x8000) // input 1: ARC_DETECTION
+                u16(b + 30, 2); u16(b + 47, 7) // input 2: DCSt FAULT
+            }
+            .end()
+        val r = SunSpecInverterDriver(chain, 1, SunSpecProfiles.GENERIC).read()
+        assertEquals(
+            listOf(
+                DeviceProblem(DeviceProblem.Kind.WARNING, "Over-temperature (Evt1 bit 7)"),
+                DeviceProblem(DeviceProblem.Kind.FAULT, "Input 1: arc detected (DCEvt bit 15)"),
+                DeviceProblem(DeviceProblem.Kind.FAULT, "Input 2: fault (DCSt 7)"),
+            ),
+            r.problems,
+        )
     }
 }

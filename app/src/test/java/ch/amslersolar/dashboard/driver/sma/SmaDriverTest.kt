@@ -6,6 +6,8 @@ package ch.amslersolar.dashboard.driver.sma
 import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
+import ch.amslersolar.dashboard.model.DeviceProblem
+import ch.amslersolar.dashboard.model.DeviceProblem.Kind
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -261,6 +263,32 @@ class SmaDriverTest {
         assertNull(status["Condition"])
         assertEquals("Open (311)", status["Grid relay"])
         assertTrue(r.details.none { it.title == "Energy" })
+    }
+
+    @Test
+    fun problemsAreEmptyWhenAllIsFine() = runBlocking {
+        for (fake in listOf(tripower(), smartEnergy(), sunnyIsland())) {
+            assertEquals(emptyList<DeviceProblem>(), SmaDriver(fake, 3).read().problems)
+        }
+    }
+
+    @Test
+    fun conditionDeratingBackupAndBatteryStateAreReported() = runBlocking {
+        val fault = tripower().u32(30201, 35).u32(30197, 3501).u32(40029, 1392).u32(30219, 557)
+        assertEquals(
+            listOf(DeviceProblem(Kind.FAULT, "Fault (event 3501)"), DeviceProblem(Kind.WARNING, "Temperature derating")),
+            SmaDriver(fault, 3).read().problems,
+        )
+        val warning = smartEnergy().u32(30201, 455).u32(30235, 1441).u32(31391, 455)
+        assertEquals(
+            listOf(
+                DeviceProblem(Kind.WARNING, "Warning (455)"),
+                DeviceProblem(Kind.BACKUP_MODE, "Backup: separate network mode (1441)"),
+                DeviceProblem(Kind.WARNING, "Battery warning (455)"),
+            ),
+            SmaDriver(warning, 3).read().problems,
+        )
+        assertEquals(listOf(DeviceProblem(Kind.FAULT, "Fault (1392)")), SmaDriver(tripower().u32(40029, 1392), 3).read().problems)
     }
 
     @Test

@@ -11,6 +11,7 @@ import ch.amslersolar.dashboard.driver.modbus.ModbusTcpClient
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.PhaseReading
 import java.io.IOException
@@ -112,7 +113,20 @@ class SiemensPacDriver(private val reader: RegisterReader, private val unitId: I
                 val v = img.f32(U1N + 2 * i) ?: return@mapNotNull null
                 PhaseReading("L${i + 1}", v, img.f32(I1 + 2 * i), hz, w(img, P1 + 2 * i))
             }
-            return DeviceReading(gridPowerW = w(img, P_TOTAL), phases = phases)
+            return DeviceReading(gridPowerW = w(img, P_TOTAL), phases = phases, problems = problems(img))
+        }
+
+        /** Device status bits of offset 205 (table A-5) that point at a measuring problem. */
+        private val STATUS_WARNINGS = listOf(
+            0x04000000L to "Voltage out of range", 0x08000000L to "Current out of range",
+            0x00020000L to "Maximum pulse rate exceeded",
+        )
+
+        fun problems(img: MeterRegs): List<DeviceProblem> {
+            val v = img.u32(DIAGNOSTICS) ?: return emptyList()
+            return STATUS_WARNINGS.filter { v and it.first != 0L }.map { (mask, text) ->
+                DeviceProblem(DeviceProblem.Kind.WARNING, "$text (status 0x" + mask.toString(16).uppercase().padStart(8, '0') + ")")
+            }
         }
 
         private fun kwh(img: MeterRegs, a: Int, unit: String = "kWh") = fmt(img.f64(a)?.div(1000), unit, 1)

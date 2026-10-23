@@ -12,6 +12,7 @@ import ch.amslersolar.dashboard.driver.enphase.EnphaseFixtures.METERS_PRODUCTION
 import ch.amslersolar.dashboard.driver.enphase.EnphaseFixtures.READINGS_BRIEF
 import ch.amslersolar.dashboard.driver.enphase.EnphaseFixtures.READINGS_EXPORTING
 import ch.amslersolar.dashboard.driver.enphase.EnphaseFixtures.READINGS_PRODUCTION_ONLY
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -172,5 +173,20 @@ class EnphaseGatewayDriverTest {
 
     private companion object {
         val EnergyTotalsEmpty = ch.amslersolar.dashboard.model.EnergyTotals()
+    }
+
+    @Test
+    fun meteringProblemsAreWarnings() = runBlocking {
+        val ok = EnphaseGatewayDriver(gateway("/ivp/meters" to METERS_BRIEF, "/ivp/meters/readings" to READINGS_BRIEF)).read()
+        assertEquals(emptyList<DeviceProblem>(), ok.problems)
+        // Test values: the brief only shows "normal" and an empty flag list.
+        val meters = METERS_BRIEF.replace(
+            """"measurementType": "net-consumption", "phaseMode": "split",
+  "phaseCount": 2, "meteringStatus": "normal", "statusFlags": [ ]""",
+            """"measurementType": "net-consumption", "phaseMode": "split",
+  "phaseCount": 2, "meteringStatus": "not-metering", "statusFlags": ["test-flag"]""",
+        )
+        val r = EnphaseGatewayDriver(gateway("/ivp/meters" to meters, "/ivp/meters/readings" to READINGS_BRIEF)).read()
+        assertEquals(listOf(DeviceProblem(DeviceProblem.Kind.WARNING, "net-consumption meter: not-metering, test-flag")), r.problems)
     }
 }

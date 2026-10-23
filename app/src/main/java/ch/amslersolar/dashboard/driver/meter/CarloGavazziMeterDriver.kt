@@ -25,6 +25,7 @@ import ch.amslersolar.dashboard.driver.modbus.ModbusTcpClient
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import java.io.IOException
 
@@ -360,7 +361,12 @@ class CarloGavazziMeterDriver(private val reader: RegisterReader, private val un
                     "Framing" to "8N1 (fixed)",
                 )
             }
-            return DeviceReading(gridPowerW = exportW(wSys), phases = phases, status = status, details = details)
+            // Wrong connection status 1105h (EM300 table 2.8-2, EM210 table 2.8-4): one warning per bit set.
+            val problems = r.u16(0x1105)?.takeIf { f == Family.EM300 || f == Family.EM210 }?.let { bitsSet ->
+                WIRING.indices.filter { bitsSet and (1 shl it) != 0 }
+                    .map { DeviceProblem(DeviceProblem.Kind.WARNING, "Wrong wiring: ${WIRING[it]} (bit $it)") }
+            }.orEmpty()
+            return DeviceReading(gridPowerW = exportW(wSys), phases = phases, status = status, details = details, problems = problems)
         }
 
         /** E1 version word: MSB bits 4–7 major, 0–3 minor; LSB revision (101Eh = 1.0.30). */

@@ -14,6 +14,8 @@ import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
+import ch.amslersolar.dashboard.model.DeviceProblem.Kind
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.EnergyTotals
 import ch.amslersolar.dashboard.model.PhaseReading
@@ -44,6 +46,9 @@ import kotlin.math.roundToInt
  *   position the 252 note means). 609 "digital meter power direction" is shown, not applied (UNVERIFIED effect).
  * - Home (meter at the grid): 116 own consumption from PV + 108 from grid.
  * - Today: 322 daily yield (Wh); lifetime 320 total yield (Wh). State 56: 1 init, 6 feed-in, 10 standby, 15 shutdown.
+ * - Problems: the error message bits 4126–4128 (note 5, pages 32–33). Grid voltage / frequency / absent / abnormal
+ *   → MAINS_LOST; losses of a peer device, fan, surge protection, over-temperature → WARNING; the rest → FAULT.
+ *   Not reported: 4126 bit 2 "Remote off" (an operator command), 4127 bit 11 "PV under voltage" (low light).
  */
 class KostalPikoCiDriver(private val reader: RegisterReader, private val unitId: Int) : DeviceDriver {
     constructor(client: ModbusTcpClient, unitId: Int) : this(RegisterReader { u, r, c -> client.readHoldingRegisters(u, r, c) }, unitId)
@@ -166,6 +171,51 @@ class KostalPikoCiDriver(private val reader: RegisterReader, private val unitId:
             return (0 until count).mapNotNull { input(img, it) }
         }
 
+        /** Error message bits (register, bit) → (kind, text), note 5 of the map. Reserved bits aren't listed. */
+        private val ERRORS: Map<Pair<Int, Int>, Pair<Kind, String>> = mapOf(
+            (4126 to 0) to (Kind.FAULT to "DC-bias over-current"),
+            (4126 to 1) to (Kind.FAULT to "Relay abnormal"),
+            (4126 to 3) to (Kind.WARNING to "Over-temperature"),
+            (4126 to 4) to (Kind.FAULT to "GFCI abnormal"),
+            (4126 to 5) to (Kind.FAULT to "PV string reversed"),
+            (4126 to 6) to (Kind.FAULT to "System type error"),
+            (4126 to 7) to (Kind.WARNING to "Fan abnormal"),
+            (4126 to 8) to (Kind.FAULT to "DC link unbalance or under-voltage"),
+            (4126 to 9) to (Kind.FAULT to "DC link over-voltage"),
+            (4126 to 10) to (Kind.FAULT to "Internal communication error"),
+            (4126 to 11) to (Kind.FAULT to "Software incompatibility"),
+            (4126 to 12) to (Kind.FAULT to "Internal storage error"),
+            (4126 to 13) to (Kind.FAULT to "Data inconsistency"),
+            (4126 to 14) to (Kind.FAULT to "Inverter abnormal"),
+            (4126 to 15) to (Kind.FAULT to "Boost abnormal"),
+            (4127 to 0) to (Kind.MAINS_LOST to "Grid over-voltage"),
+            (4127 to 1) to (Kind.MAINS_LOST to "Grid under-voltage"),
+            (4127 to 2) to (Kind.MAINS_LOST to "Grid absent"),
+            (4127 to 3) to (Kind.MAINS_LOST to "Grid over-frequency"),
+            (4127 to 4) to (Kind.MAINS_LOST to "Grid under-frequency"),
+            (4127 to 5) to (Kind.FAULT to "PV over-voltage"),
+            (4127 to 6) to (Kind.FAULT to "PV insulation abnormal"),
+            (4127 to 7) to (Kind.FAULT to "Leakage current abnormal"),
+            (4127 to 9) to (Kind.FAULT to "Internal power supply abnormal"),
+            (4127 to 10) to (Kind.FAULT to "PV string abnormal"),
+            (4127 to 12) to (Kind.WARNING to "Surge protection module defective"),
+            (4127 to 13) to (Kind.MAINS_LOST to "Grid abnormal"),
+            (4127 to 14) to (Kind.FAULT to "Arc fault detected"),
+            (4127 to 15) to (Kind.MAINS_LOST to "Grid average voltage high"),
+            (4128 to 3) to (Kind.WARNING to "PID device abnormal"),
+            (4128 to 4) to (Kind.WARNING to "AFCI module lost"),
+            (4128 to 5) to (Kind.WARNING to "Master lost"),
+            (4128 to 6) to (Kind.WARNING to "Meter lost"),
+            (4128 to 7) to (Kind.WARNING to "Park controller lost"),
+            (4128 to 8) to (Kind.FAULT to "Grid N abnormal"),
+        )
+
+        fun problems(img: Image): List<DeviceProblem> = ERRORS.mapNotNull { (at, p) ->
+            val (reg, bit) = at
+            val v = img.u16(reg)?.takeIf { it != 0xFFFF } ?: 0
+            if (v and (1 shl bit) != 0) DeviceProblem(p.first, "${p.second} ($reg bit $bit)") else null
+        }
+
         fun hasMeter(img: Image) = (img.f32(220) ?: 0.0) > 0
         fun meterOnLoad(img: Image) = img.u16(611) == 1
 
@@ -197,6 +247,7 @@ class KostalPikoCiDriver(private val reader: RegisterReader, private val unitId:
                 status = img.u32(56)?.toInt()?.let { STATES[it] ?: "State $it" },
                 today = EnergyTotals(pvKwh = img.f32(322)?.div(1000)),
                 lifetimePvKwh = img.f32(320)?.div(1000),
+                problems = problems(img),
             )
         }
 

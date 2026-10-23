@@ -14,6 +14,7 @@ import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.BatteryState
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import java.io.IOException
 import java.time.Instant
@@ -250,7 +251,22 @@ class VictronGxDriver(private val reader: RegisterReader, private val unitId: In
                 gridPowerW = grid,
                 loadPowerW = load,
                 status = img.u16(930)?.let { SYSTEM_STATES[it] ?: "State $it" },
+                problems = problems(img),
             )
+        }
+
+        /**
+         * 930 state 2 "VE.Bus Fault condition", 826 active input 240 "Not connected" (the inverter/charger runs
+         * without AC input), and a Dynamic ESS error (5404) while Dynamic ESS is active (5400). The system service has
+         * no alarm registers; those are per device under other unit ids.
+         */
+        fun problems(img: Image): List<DeviceProblem> = buildList {
+            if (img.u16(930) == 2) add(DeviceProblem(DeviceProblem.Kind.FAULT, "VE.Bus fault condition (state 2)"))
+            if (img.s16(826) == 240) add(DeviceProblem(DeviceProblem.Kind.MAINS_LOST, "AC input not connected"))
+            val dessError = img.u16(5404)
+            if (img.u16(5400) == 1 && dessError != null && dessError != 0) {
+                add(DeviceProblem(DeviceProblem.Kind.WARNING, "Dynamic ESS: ${DESS_ERRORS[dessError] ?: "Error code"} ($dessError)"))
+            }
         }
 
         private fun w(v: Int?) = fmt(v, "W")

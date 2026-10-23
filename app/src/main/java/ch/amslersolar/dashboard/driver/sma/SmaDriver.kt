@@ -14,6 +14,7 @@ import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.BatteryState
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.EnergyTotals
 import ch.amslersolar.dashboard.model.PhaseReading
@@ -331,7 +332,42 @@ class SmaDriver(
                     EnergyTotals(pvKwh = (img.u64(30517) ?: img.u32(30535))?.div(1000.0))
                 },
                 lifetimePvKwh = if (batteryInverter) null else (img.u64(30513) ?: img.u32(30529))?.div(1000.0),
+                problems = problems(img),
             )
+        }
+
+        private const val CONDITION_FAULT = 35
+        private const val CONDITION_WARNING = 455
+        private const val OPERATING_FAULT = 1392
+        private const val TEMPERATURE_DERATING = 557
+        private const val SEPARATE_NETWORK_MODE = 1441
+
+        /**
+         * Condition 30201 (35 fault, 455 warning; with the current event number 30197 as the code), operating status
+         * 40029 1392 (fault), derating 30219 557 (temperature derating), backup mode status 30235 1441 (separate
+         * network mode, i.e. running as an island without the grid) and Storage X battery state 31391 (35 error, 455
+         * warning, STPS X TI 3.6).
+         */
+        fun problems(img: Image): List<DeviceProblem> {
+            val out = mutableListOf<DeviceProblem>()
+            val event = img.u32(30197)?.takeIf { it > 0 }
+            fun code(tag: Int) = if (event != null) "event $event" else "$tag"
+            when (img.tag(30201)) {
+                CONDITION_FAULT -> out += DeviceProblem(DeviceProblem.Kind.FAULT, "Fault (${code(CONDITION_FAULT)})")
+                CONDITION_WARNING -> out += DeviceProblem(DeviceProblem.Kind.WARNING, "Warning (${code(CONDITION_WARNING)})")
+            }
+            if (img.tag(40029) == OPERATING_FAULT && out.none { it.kind == DeviceProblem.Kind.FAULT }) {
+                out += DeviceProblem(DeviceProblem.Kind.FAULT, "Fault (${code(OPERATING_FAULT)})")
+            }
+            if (img.tag(30219) == TEMPERATURE_DERATING) out += DeviceProblem(DeviceProblem.Kind.WARNING, "Temperature derating")
+            if (img.tag(30235) == SEPARATE_NETWORK_MODE) {
+                out += DeviceProblem(DeviceProblem.Kind.BACKUP_MODE, "Backup: separate network mode (1441)")
+            }
+            when (img.tag(31391)) {
+                CONDITION_FAULT -> out += DeviceProblem(DeviceProblem.Kind.FAULT, "Battery error (35)")
+                CONDITION_WARNING -> out += DeviceProblem(DeviceProblem.Kind.WARNING, "Battery warning (455)")
+            }
+            return out
         }
 
         private fun w(v: Number?) = fmt(v, "W", 0)

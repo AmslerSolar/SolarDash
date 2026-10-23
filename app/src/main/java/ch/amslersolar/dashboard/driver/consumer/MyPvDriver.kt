@@ -10,6 +10,7 @@ import ch.amslersolar.dashboard.driver.modbus.ModbusTcpClient
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.PhaseReading
 import java.io.IOException
@@ -187,7 +188,23 @@ class MyPvDriver(private val reader: RegisterReader, private val unitId: Int) : 
                 status = status(r, m, p),
                 phases = phases(r, m),
                 details = details(r, m),
+                problems = problems(r, m),
             )
+        }
+
+        /**
+         * Status 1003: the documented error codes of the ELWA-E / ELWA 2 status lists, and "≥ 200 error states power
+         * stage" of the AC•THOR. Other models (unknown status list) report none.
+         */
+        fun problems(r: Regs, m: Model): List<DeviceProblem> {
+            val code = r.u16(1003) ?: return emptyList()
+            val text = when (m) {
+                Model.THOR, Model.THOR_9S -> if (code >= 200) "Power stage error (status $code)" else null
+                Model.ELWA_E -> ELWA_E_ERRORS[code]?.let { "$it (status $code)" }
+                Model.ELWA_2 -> ELWA_2_ERRORS[code]?.let { "$it (status $code)" }
+                Model.OTHER -> null
+            }
+            return listOfNotNull(text?.let { DeviceProblem(DeviceProblem.Kind.FAULT, it) })
         }
 
         private fun temp(r: Regs, a: Int) = fmt(r.tenth(a), "°C", 1)

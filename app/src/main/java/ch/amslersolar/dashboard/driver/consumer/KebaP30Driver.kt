@@ -12,6 +12,7 @@ import ch.amslersolar.dashboard.driver.modbus.ModbusTcpClient
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.PhaseReading
 import kotlinx.coroutines.delay
@@ -141,7 +142,18 @@ class KebaP30Driver(
                 status = status(v),
                 phases = phases,
                 details = details(v),
+                problems = problems(v),
             )
+        }
+
+        /** State 4 ("an error has occurred") and the EVSE error code 1006 (guide 3.1, 3.3: shown in hex). */
+        fun problems(v: Map<Int, Long>): List<DeviceProblem> {
+            val code = v[1006]?.takeIf { it != 0L }
+            return when {
+                code != null -> listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Charging station error (code 0x${code.toString(16).uppercase()})"))
+                v[1000] == 4L -> listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Charging station error (state 4)"))
+                else -> emptyList()
+            }
         }
 
         private fun ma(v: Long?) = fmt(v?.div(1000.0), "A", 1)

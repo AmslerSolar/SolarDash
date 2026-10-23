@@ -5,6 +5,7 @@ package ch.amslersolar.dashboard.driver
 
 import ch.amslersolar.dashboard.driver.modbus.ModbusConnections
 import ch.amslersolar.dashboard.model.DeviceConfig
+import ch.amslersolar.dashboard.model.ConnectionError
 import ch.amslersolar.dashboard.model.DeviceStatus
 import ch.amslersolar.dashboard.model.PlantAggregator
 import ch.amslersolar.dashboard.model.PlantSnapshot
@@ -49,13 +50,13 @@ class PlantReader(devices: List<DeviceConfig>) : Closeable {
     }
 
     private suspend fun readDevice(device: DeviceConfig, driver: Result<DeviceDriver>): DeviceStatus {
-        val d = driver.getOrElse { return DeviceStatus(device, null, it.message ?: "Unsupported device") }
+        val d = driver.getOrElse { return DeviceStatus(device, null, it.message ?: "Unsupported device", ConnectionError.UNSUPPORTED) }
         return try {
             DeviceStatus(device, d.read(), null)
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            DeviceStatus(device, null, e.message ?: e::class.simpleName.orEmpty())
+            DeviceStatus(device, null, e.message ?: e::class.simpleName.orEmpty(), classifyConnectionError(e))
         }
     }
 

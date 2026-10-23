@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard.driver.consumer
 
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -94,5 +95,23 @@ class MyPvDriverTest {
             } catch (_: IOException) {
             }
         }
+    }
+
+    @Test
+    fun problemsFromStatusCodes() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), MyPvDriver(mypv("2001001234567890", status = 9, power = 2_100), 1).read().problems)
+        assertEquals(emptyList<DeviceProblem>(), MyPvDriver(mypv("1601501234567890", status = 3, power = 0), 1).read().problems)
+        assertEquals(
+            listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Power stage error (status 201)")),
+            MyPvDriver(mypv("2001001234567890", status = 201, power = 0), 1).read().problems,
+        )
+        assertEquals(
+            listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Safety thermostat triggered (status 201)")),
+            MyPvDriver(mypv("1601501234567890", status = 201, power = 0), 1).read().problems,
+        )
+        assertEquals(
+            listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Temperature sensor fault (status 205)")),
+            MyPvDriver(mypv("1601241234567890", status = 205, power = 0), 1).read().problems,
+        )
     }
 }

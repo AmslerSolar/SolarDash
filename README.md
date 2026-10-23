@@ -134,6 +134,32 @@ shown in English, so new driver rows need a dictionary line in each language.
 - History: `history.db` (SQLite) with numbered upgrade steps; `HistoryUpgradeTest` opens a schema-1 database.
 - An update keeps the data only if it's signed with the same key as the installed app (see Build).
 
+## Plant status and help guides
+
+The dashboard and the kiosk show the plant's status in plain words: a green "Everything OK", or what's wrong,
+each with **How to fix** opening a built-in help page (works offline, in the tablet's language). On the kiosk,
+a problem wakes the screen and keeps it on; a tap on the status line lists the details.
+
+| Status | When | Severity |
+|---|---|---|
+| No Wi-Fi | The tablet has no Wi-Fi/Ethernet and the plant has network devices (one alarm, not one per device) | alarm |
+| Wrong Wi-Fi | A device doesn't answer and its address is outside the tablet's network | alarm |
+| No connection | A device doesn't answer (timeout) | alarm |
+| Asleep | A PV inverter without battery stopped answering after its power fell below 50 W (night) | info |
+| Connection refused | Port closed, Modbus TCP off, or another client connected (single-client dongles) | alarm |
+| Login failed | LG ESS password, Enphase token | alarm |
+| Check device settings | The device answered with an error or unexpected data (unit id, type) | alarm |
+| Starting up | E.g. an invalid SunSpec map while the device boots | warning |
+| Fault / Warning | The device's own fault and warning codes (`DeviceReading.problems`) | alarm / warning |
+| No mains power | A device reports grid loss; on an **off-grid plant** (plant menu ⋮) it's "No AC input" (generator off), info | warning |
+| Backup mode / Off-grid mode | The inverter runs in off-grid / backup / island / emergency-power mode (`DeviceProblem.Kind.BACKUP_MODE`): "Backup mode" on a grid-tied plant, "Off-grid mode" on an off-grid plant | warning / info |
+| Battery low / almost empty | Plant battery below 20 % / 10 % | warning / alarm |
+| No internet | Not needed; shown as information | info |
+
+Rules: `model/PlantStatus.kt` (tested in `PlantStatusTest`); failed reads are classified in
+`driver/ConnectionErrors.kt`; guides are `assets/guide/<language>/<id>.md` (a small Markdown subset: `#`, `##`,
+`1.`, `-`, `!` for safety notes, `**bold**`).
+
 ## Wi-Fi without internet (off-grid)
 
 Off-grid plants often have Wi-Fi without internet, sometimes only the RS232/RS485 gateway's own access point.

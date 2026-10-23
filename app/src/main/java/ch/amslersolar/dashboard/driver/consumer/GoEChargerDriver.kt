@@ -11,6 +11,7 @@ import ch.amslersolar.dashboard.driver.modbus.ModbusTcpClient
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.PhaseReading
 import java.io.IOException
@@ -138,7 +139,23 @@ class GoEChargerDriver(
                 phases = phases,
                 status = status(r),
                 details = details(r),
+                problems = problems(r),
             )
+        }
+
+        /** ERROR 107 (1 RCCB, 3 phase, 8 no ground, 10 and any other value internal) and car state 0 "defective". */
+        fun problems(r: Regs): List<DeviceProblem> {
+            val err = r.u16(107)
+            val text = when (err) {
+                null, 0 -> null
+                1 -> "Residual current breaker (RCCB) tripped (error 1)"
+                3 -> "Phase disturbance (error 3)"
+                8 -> "No ground detected (error 8)"
+                else -> "Internal error (error $err)"
+            }
+            if (text != null) return listOf(DeviceProblem(DeviceProblem.Kind.FAULT, text))
+            if (r.u16(100) == 0) return listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Charging station defective (car state 0)"))
+            return emptyList()
         }
 
         private fun phaseFlags(v: Int): String {

@@ -13,6 +13,8 @@ import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
+import ch.amslersolar.dashboard.model.DeviceProblem.Kind
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.EnergyTotals
 import ch.amslersolar.dashboard.model.PhaseReading
@@ -43,6 +45,8 @@ import kotlin.math.roundToInt
  *   status flags; the table header says "1÷6") and bit numbering (bit 1 = least significant); the meaning of
  *   Mode (register 35, no value table in the document — shown as a number); default unit id (not stated, 1) and
  *   TCP port (not stated, 502); signedness of Temp (read as signed) and Pac (read as unsigned).
+ * - Problems: every alarm bit of registers 7 and 8 → FAULT, except grid voltage / frequency out of range and
+ *   "No grid" → MAINS_LOST and over-temperature → WARNING. The status flags (register 9) aren't problems.
  * - The String Box (separate RTU device with its own map, mappatura-modbus-sb-en) isn't supported.
  */
 class RielloCentralDriver(private val reader: RegisterReader, private val unitId: Int) : DeviceDriver {
@@ -173,7 +177,15 @@ class RielloCentralDriver(private val reader: RegisterReader, private val unitId
                 today = EnergyTotals(pvKwh = u32(49)?.div(10.0)),
                 lifetimePvKwh = u32(31)?.div(10.0),
                 details = details(ac, dc, alarms),
+                problems = problems(),
             )
+        }
+
+        fun problems(): List<DeviceProblem> = listOf(7 to ALARMS_7, 8 to ALARMS_8).flatMap { (r, table) ->
+            val v = u16(r) ?: 0
+            table.entries.sortedBy { it.key }.filter { (bit, _) -> v and (1 shl (bit - 1)) != 0 }.map { (bit, text) ->
+                DeviceProblem(ALARM_KINDS[r to bit] ?: Kind.FAULT, "$text (alarm $r bit $bit)")
+            }
         }
 
         private fun names(r: Int, table: Map<Int, String>): List<String> {
@@ -259,6 +271,11 @@ class RielloCentralDriver(private val reader: RegisterReader, private val unitId
             11 to "Leakage current too high", 10 to "No grid", 9 to "Grid impedance change (ΔZ)", 8 to "Device fault",
             7 to "DC bus voltage too high", 6 to "DC bus voltage too low", 5 to "ENS GFCI mismatch", 4 to "ENS DC injection mismatch",
             3 to "2.5 V reference fault", 2 to "DC injection sensor fault", 1 to "GFCI sensor failure",
+        )
+
+        /** Alarms that aren't device faults: grid out of range / missing, over-temperature. */
+        val ALARM_KINDS = mapOf(
+            (7 to 14) to Kind.MAINS_LOST, (7 to 2) to Kind.MAINS_LOST, (8 to 10) to Kind.MAINS_LOST, (8 to 14) to Kind.WARNING,
         )
 
         /** Register 9, bit number (1 = LSB) → status flag. */

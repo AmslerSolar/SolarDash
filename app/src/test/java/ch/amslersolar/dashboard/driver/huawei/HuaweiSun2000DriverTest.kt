@@ -6,6 +6,8 @@ package ch.amslersolar.dashboard.driver.huawei
 import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
+import ch.amslersolar.dashboard.model.DeviceProblem
+import ch.amslersolar.dashboard.model.DeviceProblem.Kind
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -115,6 +117,45 @@ class HuaweiSun2000DriverTest {
         assertFalse(labels.any { "Phase A" in it || "A-B" in it })
         val meter = r.details.first { it.title.startsWith("Power meter") }.rows.toMap()
         assertEquals("5123.00 kWh", meter["Exported energy (positive active)"])
+    }
+
+    @Test
+    fun problemsAreEmptyWhenAllIsFine() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), HuaweiSun2000Driver(FakeSun2000(), 1).read().problems)
+        assertEquals(emptyList<DeviceProblem>(), HuaweiSun2000Driver(FakeSun2000(status = 0xA000), 1).read().problems) // night
+    }
+
+    @Test
+    fun alarmBitsStatusAndBatteryFaultAreReported() = runBlocking {
+        val fake = FakeSun2000(status = 0x0203).apply {
+            regs[32008] = (1 shl 7) or (1 shl 9) // grid loss, grid overvoltage
+            regs[32009] = 1 shl 3                // overtemperature (minor)
+            regs[32010] = 1 shl 12               // not in table 5-1
+            regs[37762] = 3; regs[37014] = 17
+        }
+        assertEquals(
+            listOf(
+                DeviceProblem(Kind.MAINS_LOST, "Grid loss (2032)"),
+                DeviceProblem(Kind.FAULT, "Grid overvoltage (2034)"),
+                DeviceProblem(Kind.WARNING, "Overtemperature (2063)"),
+                DeviceProblem(Kind.WARNING, "Alarm 3 bit 12"),
+                DeviceProblem(Kind.BACKUP_MODE, "Off-grid (0x0203)"),
+                DeviceProblem(Kind.FAULT, "Battery fault (ID 17)"),
+            ),
+            HuaweiSun2000Driver(fake, 1).read().problems,
+        )
+        assertEquals(
+            listOf(DeviceProblem(Kind.FAULT, "Shutdown: fault (0x0300)")),
+            HuaweiSun2000Driver(FakeSun2000(status = 0x0300), 1).read().problems,
+        )
+        assertEquals(
+            listOf(DeviceProblem(Kind.BACKUP_MODE, "Off-grid (0x0203)")),
+            HuaweiSun2000Driver(FakeSun2000(status = 0x0203), 1).read().problems,
+        )
+        assertEquals(
+            listOf(DeviceProblem(Kind.WARNING, "Self-derating (0x0202)")),
+            HuaweiSun2000Driver(FakeSun2000(status = 0x0202), 1).read().problems,
+        )
     }
 
     @Test

@@ -3,6 +3,8 @@
 
 package ch.amslersolar.dashboard.driver.lg
 
+import ch.amslersolar.dashboard.model.DeviceProblem
+import ch.amslersolar.dashboard.model.DeviceProblem.Kind
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import org.junit.Assert.assertEquals
@@ -65,5 +67,21 @@ class LgEssParserTest {
         assertNull(r.battery)
         assertNull(r.pvPowerW)
         assertTrue(r.status!!.startsWith("Fault"))
+    }
+
+    @Test
+    fun problems() {
+        assertEquals(emptyList<DeviceProblem>(), LgEssParser.parse(home, common).problems)
+        val r = LgEssParser.parse(json("""{"pcs_fault":{"pcs_status":"pcs_fault_3"},"wintermode":{"backupmode":"on"}}"""), null)
+        assertEquals(
+            listOf(DeviceProblem(Kind.FAULT, "PCS fault (pcs_fault_3)"), DeviceProblem(Kind.BACKUP_MODE, "Backup (off-grid) mode (on)")),
+            r.problems,
+        )
+        assertEquals(emptyList<DeviceProblem>(), LgEssParser.parse(json("""{"wintermode":{"backupmode":""}}"""), null).problems)
+        assertEquals(
+            listOf(DeviceProblem(Kind.FAULT, "Overload fault (backup)")),
+            LgEssParser.overloadProblems(json("""{"mustViewOverLoadFaultPopUp":"1","overLoadFaultKind":"backup"}""")),
+        )
+        assertEquals(emptyList<DeviceProblem>(), LgEssParser.overloadProblems(json("""{"mustViewOverLoadFaultPopUp":"0"}""")))
     }
 }

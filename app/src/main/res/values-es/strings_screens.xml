@@ -76,11 +76,6 @@
         <item quantity="many">%1$d de %2$d dispositivos no responden. Los totales están incompletos.</item>
         <item quantity="other">%1$d de %2$d dispositivos no responden. Los totales están incompletos.</item>
     </plurals>
-    <plurals name="screens_not_responding">
-        <item quantity="one">%1$d de %2$d dispositivos no responde</item>
-        <item quantity="many">%1$d de %2$d dispositivos no responden</item>
-        <item quantity="other">%1$d de %2$d dispositivos no responden</item>
-    </plurals>
     <string name="screens_home_hint_title">Vuelve tras un corte de luz</string>
     <string name="screens_home_hint_text">Para que esta pantalla vuelva sola tras un corte de luz o un reinicio, elige Solar Dashboard como aplicación de inicio. Android la abrirá en cada arranque. Puedes cambiarlo más tarde en los ajustes, en Aplicaciones → Aplicaciones predeterminadas.</string>
     <string name="screens_home_hint_choose">Elegir aplicación de inicio</string>

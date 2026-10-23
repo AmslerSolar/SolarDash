@@ -35,6 +35,9 @@
             android:exported="false"
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden" />
+        <activity
+            android:name=".ui.status.GuideActivity"
+            android:exported="false" />
         <!-- Home app (optional, chosen in Android's settings): opens the kiosk after every start. -->
         <activity
             android:name=".kiosk.HomeActivity"

@@ -6,6 +6,7 @@ package ch.amslersolar.dashboard.driver.riello
 import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -142,5 +143,19 @@ class RielloCentralDriverTest {
         // Right marker but no identification text.
         val blank = FakeRiello().apply { u16(80, 0x0033) }
         assertThrows(IOException::class.java) { runBlocking { RielloCentralDriver(blank, 1).identify() } }
+    }
+
+    @Test
+    fun alarmBitsBecomeProblems() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), RielloCentralDriver(central(), 1).read().problems)
+        val r = RielloCentralDriver(central().apply { u16(7, 1 shl 2); u16(8, (1 shl 9) or (1 shl 13)) }, 1).read()
+        assertEquals(
+            listOf(
+                DeviceProblem(DeviceProblem.Kind.FAULT, "PV isolation failure (alarm 7 bit 3)"),
+                DeviceProblem(DeviceProblem.Kind.MAINS_LOST, "No grid (alarm 8 bit 10)"),
+                DeviceProblem(DeviceProblem.Kind.WARNING, "Over-temperature (alarm 8 bit 14)"),
+            ),
+            r.problems,
+        )
     }
 }

@@ -3,6 +3,19 @@
 
 package ch.amslersolar.dashboard.kiosk
 
+import ch.amslersolar.dashboard.ui.status.statusHeadline
+import ch.amslersolar.dashboard.ui.status.KioskStatusLine
+import ch.amslersolar.dashboard.ui.status.IssueList
+import ch.amslersolar.dashboard.ui.status.GuideActivity
+import ch.amslersolar.dashboard.model.PlantStatus
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.AlertDialog
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -35,7 +48,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -58,6 +70,7 @@ private val TIME = DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDe
 fun KioskScreen(
     plantName: String,
     state: PlantState,
+    status: PlantStatus?,
     dimmed: Boolean,
     onTouch: () -> Unit,
     onExit: () -> Unit,
@@ -84,7 +97,7 @@ fun KioskScreen(
                 }
             },
     ) {
-        if (!dimmed) Content(plantName, state, onExit)
+        if (!dimmed) Content(plantName, state, status, onExit)
     }
 }
 
@@ -92,8 +105,22 @@ fun KioskScreen(
 private val KIOSK_MAX_NODE = 360.dp
 
 @Composable
-private fun Content(plantName: String, state: PlantState, onExit: () -> Unit) {
+private fun Content(plantName: String, state: PlantState, status: PlantStatus?, onExit: () -> Unit) {
     val snapshot = (state as? PlantState.Live)?.snapshot
+    var showIssues by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    if (showIssues && status != null) {
+        AlertDialog(
+            onDismissRequest = { showIssues = false },
+            title = { Text(statusHeadline(status), style = MaterialTheme.typography.headlineSmall) },
+            text = {
+                Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    IssueList(status.issues, onGuide = { GuideActivity.open(context, it) }, large = true)
+                }
+            },
+            confirmButton = { TextButton(onClick = { showIssues = false }) { Text(stringResource(R.string.forms_about_close), style = MaterialTheme.typography.titleMedium) } },
+        )
+    }
     // Generous margins: wall frames and rounded screen corners cover the edges of the display.
     BoxWithConstraints(
         Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.displayCutout).padding(horizontal = 40.dp, vertical = 32.dp),
@@ -102,7 +129,7 @@ private fun Content(plantName: String, state: PlantState, onExit: () -> Unit) {
         val landscape = maxWidth > maxHeight * 1.2f
         val sideWidth = maxWidth * 0.22f
         Column(Modifier.fillMaxSize()) {
-            Header(plantName, snapshot, onExit)
+            Header(plantName, snapshot, status, onExit, onStatus = { showIssues = true })
             if (landscape) {
                 Row(Modifier.weight(1f).fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     Flow(state, Modifier.weight(1f).fillMaxSize())
@@ -132,19 +159,22 @@ private fun Content(plantName: String, state: PlantState, onExit: () -> Unit) {
 }
 
 @Composable
-private fun Header(plantName: String, s: PlantSnapshot?, onExit: () -> Unit) {
+private fun Header(plantName: String, s: PlantSnapshot?, status: PlantStatus?, onExit: () -> Unit, onStatus: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Column(Modifier.weight(1f)) {
-            Text(plantName, style = MaterialTheme.typography.headlineMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            if (s != null) {
-                val failed = s.failedDevices.size
-                Text(
-                    stringResource(R.string.screens_updated, TIME.format(s.readAt)) +
-                        if (failed > 0) " · " + pluralStringResource(R.plurals.screens_not_responding, failed, failed, s.devices.size) else "",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = if (failed > 0) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+            Row(verticalAlignment = Alignment.Bottom) {
+                Text(plantName, style = MaterialTheme.typography.headlineMedium, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
+                if (s != null) {
+                    Text(
+                        "  " + stringResource(R.string.screens_updated, TIME.format(s.readAt)),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                    )
+                }
             }
+            // Large and in plain words: what's wrong, if anything; a tap shows the details and the guides.
+            if (status != null) KioskStatusLine(status, onStatus)
         }
         IconButton(onClick = onExit, modifier = Modifier.size(56.dp)) {
             Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.screens_end_kiosk_mode), modifier = Modifier.size(32.dp))

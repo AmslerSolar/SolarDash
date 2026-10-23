@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard.driver.consumer
 
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -84,5 +85,15 @@ class KebaP30DriverTest {
             } catch (_: IOException) {
             }
         }
+    }
+
+    @Test
+    fun problemsFromStateAndErrorCode() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), KebaP30Driver(keba(), 255).read().problems)
+        assertEquals(emptyList<DeviceProblem>(), KebaP30Driver(keba(state = 5, powerMw = 0), 255).read().problems) // suspended
+        val error = KebaP30Driver(keba(state = 4).u32(1006, 262_144), 255).read()
+        assertEquals(listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Charging station error (code 0x40000)")), error.problems)
+        val noCode = KebaP30Driver(keba(state = 4), 255).read()
+        assertEquals(listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Charging station error (state 4)")), noCode.problems)
     }
 }

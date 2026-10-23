@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard.driver.meter
 
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -94,5 +95,16 @@ class SiemensPacDriverTest {
         assertEquals(-100, r.phases[1].powerW)
         assertNull(rows(r, "Energy (lifetime)")["Active export (MID)"])
         assertTrue(rows(r, "Energy (lifetime)").containsKey("Active import (MID)"))
+    }
+
+    @Test
+    fun deviceStatusRangeBitsAreWarnings() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), SiemensPacDriver(pac2200(listOf(100.0, 0.0, 0.0)), 1).read().problems)
+        // Configuration menu (0x02000000) and restart (stored, 0x00000800) are not problems.
+        val fake = pac2200(listOf(100.0, 0.0, 0.0)).apply { u32(205, 0x0A000800L) }
+        assertEquals(
+            listOf(DeviceProblem(DeviceProblem.Kind.WARNING, "Current out of range (status 0x08000000)")),
+            SiemensPacDriver(fake, 1).read().problems,
+        )
     }
 }

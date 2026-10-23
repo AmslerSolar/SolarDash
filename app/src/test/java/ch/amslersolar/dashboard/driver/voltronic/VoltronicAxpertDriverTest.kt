@@ -3,6 +3,8 @@
 
 package ch.amslersolar.dashboard.driver.voltronic
 
+import ch.amslersolar.dashboard.model.DeviceProblem
+import ch.amslersolar.dashboard.model.DeviceProblem.Kind
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -139,6 +141,57 @@ class VoltronicAxpertDriverTest {
         ks.asked.clear()
         driver.read()
         assertEquals(listOf("QPIRI", "QPIWS", "QPIGS", "QMOD"), ks.asked)
+    }
+
+    @Test
+    fun problemsAreEmptyWhenAllIsFine() = runBlocking {
+        val fake = maxII().apply { replies["QPIWS"] = "0".repeat(36) }
+        assertEquals(emptyList<DeviceProblem>(), VoltronicAxpertDriver(fake) { day }.read().problems)
+    }
+
+    @Test
+    fun lineFailIsMainsLostOnce() = runBlocking {
+        // MAXII fixture: a5 LINE_FAIL with the grid still measured.
+        assertEquals(listOf(DeviceProblem(Kind.MAINS_LOST, "Line fail (a5)")), VoltronicAxpertDriver(maxII()) { day }.read().problems)
+        // KS unit on battery with 0 V input and a5 set: one entry, not two.
+        val ks = FakeAxpert(
+            "QPIGS" to "000.0 00.0 230.0 50.0 1150 1100 022 360 50.40 000 064 0040 0000 000.0 00.00 00023 00010000",
+            "QMOD" to "B",
+            "QPIWS" to "00000100000000000000000000000000",
+        )
+        assertEquals(listOf(DeviceProblem(Kind.MAINS_LOST, "Line fail (a5)")), VoltronicAxpertDriver(ks) { day }.read().problems)
+        // Without QPIWS the 0 V AC input alone tells.
+        ks.replies.remove("QPIWS")
+        assertEquals(listOf(DeviceProblem(Kind.MAINS_LOST, "No AC input (0 V)")), VoltronicAxpertDriver(ks) { day }.read().problems)
+    }
+
+    @Test
+    fun qpiwsFaultsAndWarningsAreClassedLikeTheDocument() = runBlocking {
+        val ks = FakeAxpert(
+            "QPIGS" to "230.0 50.0 230.0 50.0 0000 0000 000 360 50.40 000 064 0090 0000 000.0 00.00 00000 00000000",
+            "QMOD" to "F",
+            // a1 inverter fault, a9 over temperature (fault because a1), a0 reserved, a15 battery derating (warning).
+            "QPIWS" to "11000000010000010000000000000000",
+        )
+        assertEquals(
+            listOf(
+                DeviceProblem(Kind.FAULT, "Inverter fault (a1)"),
+                DeviceProblem(Kind.FAULT, "Over temperature (a9)"),
+                DeviceProblem(Kind.WARNING, "Battery derating (a15)"),
+            ),
+            VoltronicAxpertDriver(ks) { day }.read().problems,
+        )
+        // Over temperature alone is a warning; fault mode without a QPIWS fault bit still reports a fault.
+        ks.replies["QPIWS"] = "00000000010000000000000000000000"
+        assertEquals(
+            listOf(DeviceProblem(Kind.WARNING, "Over temperature (a9)"), DeviceProblem(Kind.FAULT, "Fault mode (F)")),
+            VoltronicAxpertDriver(ks) { day }.read().problems,
+        )
+        // MAX table (36 bits): a0 PV loss isn't a problem, a6 OPV short is a fault there.
+        assertEquals(
+            listOf(DeviceProblem(Kind.FAULT, "OPV short (a6)")),
+            AxpertProtocol.parseWarningProblems("100000100000000000000000000000000000"),
+        )
     }
 
     @Test

@@ -13,6 +13,7 @@ import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import kotlinx.coroutines.delay
 import java.io.IOException
@@ -143,6 +144,7 @@ class NibeSDriver(
         loadPowerW = img.u32(2166)?.let { (it / 10.0).roundToInt() },
         temperatureC = img.temp(1) ?: img.temp(1621),
         status = img.status(),
+        problems = img.problems(),
     )
 
     private fun details(img: Image): List<DetailSection> {
@@ -226,6 +228,13 @@ class NibeSDriver(
             if (priority !in PRIORITIES) return false
             val alarm = u16(2195) ?: return false
             return alarm in 0..1
+        }
+
+        /** 2195 "Active alarm" with the alarm number 1975 (the spec lists no alarm texts). */
+        fun problems(): List<DeviceProblem> {
+            if (u16(2195) != 1) return emptyList()
+            val number = u16(1975)?.takeIf { it != 0 }
+            return listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Heat pump alarm" + (number?.let { " (alarm $it)" } ?: "")))
         }
 
         fun status(): String? {

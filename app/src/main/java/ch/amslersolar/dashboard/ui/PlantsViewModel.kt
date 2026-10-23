@@ -44,6 +44,8 @@ class PlantsViewModel(
 
     fun renamePlant(id: String, name: String) = viewModelScope.launch { repository.renamePlant(id, name) }
 
+    fun setOffGrid(id: String, offGrid: Boolean) = viewModelScope.launch { repository.setOffGrid(id, offGrid) }
+
     fun updateDevice(plantId: String, device: DeviceConfig) = viewModelScope.launch { registry.update(plantId, device) }
 
     /** Connects once and identifies the device; the serial (when there is one) is kept with the device. */

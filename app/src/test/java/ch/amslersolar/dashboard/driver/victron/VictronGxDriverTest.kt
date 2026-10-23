@@ -6,6 +6,8 @@ package ch.amslersolar.dashboard.driver.victron
 import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
+import ch.amslersolar.dashboard.model.DeviceProblem
+import ch.amslersolar.dashboard.model.DeviceProblem.Kind
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -105,6 +107,27 @@ class VictronGxDriverTest {
         assertEquals("Grid (1)", rows["GX device"]!!["Active AC input"])
         assertEquals("Self-consumption (1)", rows["Dynamic ESS"]!!["Strategy"])
         assertNull(rows["Generator"])
+    }
+
+    @Test
+    fun problemsAreEmptyWhenAllIsFine() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), VictronGxDriver(threePhase(), 100).read().problems)
+    }
+
+    @Test
+    fun veBusFaultNoAcInputAndDynamicEssErrorAreReported() = runBlocking {
+        val fake = threePhase().u16(930, 2).u16(826, 240).u16(5404, 4)
+        assertEquals(
+            listOf(
+                DeviceProblem(Kind.FAULT, "VE.Bus fault condition (state 2)"),
+                DeviceProblem(Kind.MAINS_LOST, "AC input not connected"),
+                DeviceProblem(Kind.WARNING, "Dynamic ESS: SOC low (4)"),
+            ),
+            VictronGxDriver(fake, 100).read().problems,
+        )
+        // Inverting from battery while the grid is connected isn't a problem; a Dynamic ESS error while it's off neither.
+        val inverting = threePhase().u16(930, 9).u16(5400, 0).u16(5404, 3)
+        assertEquals(emptyList<DeviceProblem>(), VictronGxDriver(inverting, 100).read().problems)
     }
 
     @Test

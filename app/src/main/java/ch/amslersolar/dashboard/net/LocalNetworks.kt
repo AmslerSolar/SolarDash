@@ -13,6 +13,10 @@ import ch.amslersolar.dashboard.driver.net.DeviceNetwork
 import ch.amslersolar.dashboard.driver.net.Subnet
 import ch.amslersolar.dashboard.driver.net.ipLiteral
 import ch.amslersolar.dashboard.driver.net.networkFor
+import ch.amslersolar.dashboard.model.NetworkState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.net.Inet4Address
 import java.net.InetAddress
 import java.net.Socket
@@ -34,6 +38,15 @@ import java.util.concurrent.ConcurrentHashMap
 class LocalNetworks(context: Context) : DeviceNetwork {
     private val cm = context.getSystemService(ConnectivityManager::class.java)
     private val links = ConcurrentHashMap<Network, LinkProperties>()
+    @Volatile private var internet = true
+    private val _state = MutableStateFlow(NetworkState.UNKNOWN)
+
+    /** Local network and internet, for the plant status ("no Wi-Fi", "no internet"). */
+    val state: StateFlow<NetworkState> = _state.asStateFlow()
+
+    private fun publish() {
+        _state.value = NetworkState(localNetwork = links.isNotEmpty(), internet = internet, subnets = subnets().values.flatten())
+    }
 
     init {
         for (transport in listOf(NetworkCapabilities.TRANSPORT_WIFI, NetworkCapabilities.TRANSPORT_ETHERNET)) {
@@ -43,17 +56,35 @@ class LocalNetworks(context: Context) : DeviceNetwork {
                 .build()
             runCatching { cm.requestNetwork(request, Tracker()) }
         }
+        runCatching {
+            cm.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
+                override fun onCapabilitiesChanged(network: Network, caps: NetworkCapabilities) {
+                    internet = caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+                    publish()
+                }
+                override fun onLost(network: Network) {
+                    internet = false
+                    publish()
+                }
+            })
+        }
+        // No callback comes when there's no network at all.
+        internet = cm.getNetworkCapabilities(cm.activeNetwork)?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) == true
+        publish()
     }
 
     private inner class Tracker : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
             cm.getLinkProperties(network)?.let { links[network] = it }
+            publish()
         }
         override fun onLinkPropertiesChanged(network: Network, linkProperties: LinkProperties) {
             links[network] = linkProperties
+            publish()
         }
         override fun onLost(network: Network) {
             links.remove(network)
+            publish()
         }
     }
 

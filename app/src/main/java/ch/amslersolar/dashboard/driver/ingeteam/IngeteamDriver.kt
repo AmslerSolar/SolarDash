@@ -14,6 +14,8 @@ import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
+import ch.amslersolar.dashboard.model.DeviceProblem.Kind
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.EnergyTotals
 import ch.amslersolar.dashboard.model.PhaseReading
@@ -61,6 +63,12 @@ import kotlin.math.roundToInt
  * (shown in the details only, not used as grid power).
  *
  * Solar is the DC power (sum of the PV inputs). Grid: null — the inverters don't measure the grid connection.
+ *
+ * Problems: the alarm / event bit meanings are in documents not in docs/specs (ACL2010IMC01, AAA0030IMB07).
+ * - Current map: the event codes 0x101E–0x1020 ("events and status") aren't reported; the active power reduction
+ *   bits 0x1036 (note 4) bit 0 over-temperature and bit 2 fan locked → WARNING.
+ * - Older maps: a non-zero "instantaneous alarm code n bits" register → FAULT with the raw bits, a non-zero
+ *   "warning code" → WARNING; 1Play power reduction reason 2–4 (temperature) → WARNING.
  */
 class IngeteamDriver(
     private val holding: RegisterReader,
@@ -237,6 +245,10 @@ class IngeteamDriver(
                 today = EnergyTotals(pvKwh = u32(0x1027)?.div(1000.0)),
                 lifetimePvKwh = u32(0x1021)?.toDouble(),
                 details = currentDetails(phases),
+                problems = u16(0x1036)?.let { mask ->
+                    CURRENT_REDUCTION_PROBLEMS.filterKeys { mask and (1 shl it) != 0 }
+                        .map { (bit, text) -> DeviceProblem(Kind.WARNING, "$text (reduction bit $bit)") }
+                }.orEmpty(),
             )
         }
 
@@ -312,6 +324,7 @@ class IngeteamDriver(
                     "Stop event" to if (hf) null else u16(52)?.toString(),
                 ),
                 alarms = 18..22,
+                temperatureDerating = u16(47)?.takeIf { it in 2..4 },
             )
         }
 
@@ -386,7 +399,7 @@ class IngeteamDriver(
 
         private fun legacyReading(
             l: Layout, pvW: Int?, strings: List<PvString>, phases: List<PhaseReading>, status: Int?, daily: Long?, total: Long?,
-            extra: List<Pair<String, String?>>, alarms: IntRange, warning: Int = alarms.last,
+            extra: List<Pair<String, String?>>, alarms: IntRange, warning: Int = alarms.last, temperatureDerating: Int? = null,
         ): DeviceReading = DeviceReading(
             pvPowerW = pvW?.coerceAtLeast(0),
             pvStrings = strings,
@@ -394,6 +407,12 @@ class IngeteamDriver(
             status = status?.let { LEGACY_STATES[it] ?: "State $it" },
             today = EnergyTotals(pvKwh = daily?.div(100.0)),
             lifetimePvKwh = total?.toDouble(),
+            problems = alarms.filter { it != warning }.mapIndexedNotNull { i, a ->
+                u16(a)?.takeIf { it != 0 }?.let { DeviceProblem(Kind.FAULT, "Alarm code ${i + 1}: ${bits(it.toLong(), 4)}") }
+            } + listOfNotNull(
+                u16(warning)?.takeIf { it != 0 }?.let { DeviceProblem(Kind.WARNING, "Warning code ${bits(it.toLong(), 4)}") },
+                temperatureDerating?.let { DeviceProblem(Kind.WARNING, "Temperature derating (reason $it)") },
+            ),
             details = listOf(
                 section(
                     "Inverter",
@@ -449,6 +468,8 @@ class IngeteamDriver(
             9 to "Communications (wattmeter or master)", 10 to "High grid voltage", 11 to "Low grid frequency",
             12 to "Remote off power gradient", 13 to "Configuration", 15 to "P(f) algorithm",
         )
+        /** Reduction reasons that are problems; the others are grid support, ramps, settings or communication. */
+        val CURRENT_REDUCTION_PROBLEMS = mapOf(0 to "Over-temperature derating", 2 to "Fan locked")
         val LEGACY_STATES = mapOf(0 to "Not ready to connect", 1 to "Waiting to connect", 2 to "Connected to the grid")
         val LEGACY_REDUCTION = mapOf(
             0 to "No reduction", 1 to "No reduction", 2 to "Temperature", 3 to "Temperature", 4 to "Temperature",

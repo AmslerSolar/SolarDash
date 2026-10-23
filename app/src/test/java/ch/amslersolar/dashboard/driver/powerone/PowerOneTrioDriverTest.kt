@@ -6,6 +6,7 @@ package ch.amslersolar.dashboard.driver.powerone
 import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -137,5 +138,44 @@ class PowerOneTrioDriverTest {
         val fake = FakeTrio().apply { u16(100, 1); u16(1000, 7) }
         val e = runCatching { runBlocking { PowerOneTrioDriver(fake, 2).identify() } }.exceptionOrNull()
         assertTrue(e?.message.orEmpty().contains("No Power-One"))
+    }
+
+    @Test
+    fun gtMapProblems() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), PowerOneTrioDriver(trio20(), 2).read().problems)
+        assertEquals(emptyList<DeviceProblem>(), PowerOneTrioDriver(trio20().apply { u16(124, 30); u16(128, 1) }, 2).read().problems) // waiting sun, sun low
+        val bad = PowerOneTrioDriver(trio20().apply { u16(124, 9); u16(125, 43); u16(128, 32) }, 2).read()
+        assertEquals(
+            listOf(
+                DeviceProblem(DeviceProblem.Kind.FAULT, "Ground fault (state 9)"),
+                DeviceProblem(DeviceProblem.Kind.MAINS_LOST, "Grid not present (inverter state 43)"),
+                DeviceProblem(DeviceProblem.Kind.MAINS_LOST, "Grid OV (W004)"),
+            ),
+            bad.problems,
+        )
+        assertEquals(
+            listOf(DeviceProblem(DeviceProblem.Kind.WARNING, "Fan fail (W010)")),
+            PowerOneTrioDriver(trio20().apply { u16(128, 47) }, 2).read().problems,
+        )
+    }
+
+    @Test
+    fun gt03MapProblems() = runBlocking {
+        fun trio60(state: Int, alarm: Int, derating: Int) = FakeTrio().apply {
+            u16(1000, 261); u16(1001, 132); u16(1002, 1); chars(1003, "-3N63-"); chars(1009, "654321")
+            for (r in 1015..1022) regs.putIfAbsent(r, 0)
+            u16(1022, 0x2F)
+            for (r in 1050..1135) regs.putIfAbsent(r, 0)
+            u16(1050, state); u16(1051, alarm); u16(1054, derating)
+        }
+        assertEquals(emptyList<DeviceProblem>(), PowerOneTrioDriver(trio60(6, 0, 1), 2).read().problems) // user curtailment
+        assertEquals(
+            listOf(
+                DeviceProblem(DeviceProblem.Kind.FAULT, "Over-temperature fault (state 10)"),
+                DeviceProblem(DeviceProblem.Kind.MAINS_LOST, "Island detected (W015)"),
+                DeviceProblem(DeviceProblem.Kind.WARNING, "Over-temperature derating (derating bit 5)"),
+            ),
+            PowerOneTrioDriver(trio60(10, 62, 0x21), 2).read().problems,
+        )
     }
 }

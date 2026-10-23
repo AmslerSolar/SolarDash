@@ -6,6 +6,7 @@ package ch.amslersolar.dashboard.driver.ingeteam
 import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -232,5 +233,25 @@ class IngeteamDriverTest {
         d.read() // three requests: detection + two blocks
         val ms = (System.nanoTime() - t0) / 1_000_000
         assertTrue("took $ms ms", ms >= 600)
+    }
+
+    @Test
+    fun currentGenerationProblemsFromThePowerReductionReasons() = runBlocking {
+        assertEquals(
+            listOf(DeviceProblem(DeviceProblem.Kind.WARNING, "Over-temperature derating (reduction bit 0)")),
+            driver(play3Current()).read().problems,
+        )
+        // Initial ramp only, and the event codes aren't decoded: no problem.
+        assertEquals(emptyList<DeviceProblem>(), driver(play3Current().apply { u16(0x1036, 0b1000) }).read().problems)
+    }
+
+    @Test
+    fun legacyAlarmAndWarningCodes() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), driver(Regs(), legacy3Play()).read().problems)
+        val r = driver(Regs(), legacy3Play().apply { u16(18, 0x0004); u16(19, 0); u16(22, 0x0010) }).read()
+        assertEquals(
+            listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Alarm code 1: 0x0004"), DeviceProblem(DeviceProblem.Kind.WARNING, "Warning code 0x0010")),
+            r.problems,
+        )
     }
 }

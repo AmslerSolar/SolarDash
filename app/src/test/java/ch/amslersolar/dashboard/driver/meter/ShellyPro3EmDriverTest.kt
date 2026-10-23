@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard.driver.meter
 
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -88,5 +89,19 @@ class ShellyPro3EmDriverTest {
         val r = ShellyPro3EmDriver(fake, 1).read()
         assertNull(r.phases[1].currentA)
         assertEquals(-300, r.gridPowerW)
+    }
+
+    @Test
+    fun errorBooleansAreWarnings() = runBlocking {
+        // Phase C overcurrent (alarm threshold flag) is set in the fixture and is not a problem.
+        assertEquals(emptyList<DeviceProblem>(), ShellyPro3EmDriver(shelly(listOf(100.0, 0.0, 0.0)), 1).read().problems)
+        val fake = shelly(listOf(100.0, 0.0, 0.0)).apply { u16(31003, 1); u16(31006, 1) }
+        assertEquals(
+            listOf(
+                DeviceProblem(DeviceProblem.Kind.WARNING, "L2 meter error"),
+                DeviceProblem(DeviceProblem.Kind.WARNING, "Phase sequence error"),
+            ),
+            ShellyPro3EmDriver(fake, 1).read().problems,
+        )
     }
 }

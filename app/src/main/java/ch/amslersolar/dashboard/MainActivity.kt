@@ -150,9 +150,11 @@ class MainActivity : ComponentActivity() {
                                 onAddDevice = addDevice,
                                 onRename = { plantsVm.renamePlant(plant.id, it) },
                                 onKiosk = { Kiosk.start(this@MainActivity, plant.id) },
+                                onOffGrid = { plantsVm.setOffGrid(plant.id, it) },
                             ) { modifier ->
                                 when (tab) {
                                     PlantTab.DASHBOARD -> DashboardTab(
+                                        plant = plant,
                                         state = state,
                                         onAddDevice = addDevice,
                                         onShowDevices = { route = tabRoute(plant.id, PlantTab.DEVICES) },

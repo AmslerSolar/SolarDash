@@ -12,6 +12,7 @@ import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.BatteryState
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.EnergyTotals
 import ch.amslersolar.dashboard.model.PhaseReading
@@ -41,6 +42,8 @@ import kotlin.math.roundToInt
  * - Home: 0x0066 load power (W); today 0x0104 AC load energy today.
  * - Grid phases: 0x03A8 / 0x03AC / 0x03B0 voltage L1–L3 (×0.001 V), 0x03AA / 0x03AE / 0x03B2 current (sint32
  *   ×0.001 A), frequency 0x004E (×0.01 Hz). Lines without voltage are left out (split-phase systems have two).
+ * - Problems: 0x0041 "System Wide Number of Active Faults" > 0 → FAULT, 0x0043 "… Active Warnings" > 0 → WARNING.
+ *   The gateway map has only these counts (the codes are in each XW / MPPT unit's own map) and no grid-loss flag.
  * - The server answers 02 to reads that cross a "blank row" of the map, start or end inside a 32-bit value or touch
  *   an undefined register; such blocks are read field by field (fields always whole).
  * UNVERIFIED: the function code (03 holding registers assumed; the spec doesn't name it), the word order of 32-bit
@@ -146,6 +149,10 @@ class ConextGatewayDriver(reader: RegisterReader, unitId: Int) : DeviceDriver {
                     loadKwh = img.kwh(0x0104),
                 ),
                 lifetimePvKwh = img.kwh(0x041C) ?: img.kwh(0x0144),
+                problems = listOfNotNull(
+                    DeviceProblem(DeviceProblem.Kind.FAULT, if (faults == 1) "1 active fault" else "$faults active faults").takeIf { faults > 0 },
+                    DeviceProblem(DeviceProblem.Kind.WARNING, if (warnings == 1) "1 active warning" else "$warnings active warnings").takeIf { warnings > 0 },
+                ),
             )
         }
 

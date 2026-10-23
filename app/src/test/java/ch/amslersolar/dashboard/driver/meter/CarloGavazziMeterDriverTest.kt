@@ -4,6 +4,7 @@
 package ch.amslersolar.dashboard.driver.meter
 
 import ch.amslersolar.dashboard.model.EnergyTotals
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -151,5 +152,21 @@ class CarloGavazziMeterDriverTest {
         assertTrue(CarloGavazziMeterDriver(f, 1).read().status!!.startsWith("Easy connection"))
         val g = newMap(341, 50, listOf(100, 0, 0)).u16(0x1103, 1).u16(0x1105, 0b100)
         assertEquals("Wiring: phase 2 inverted", CarloGavazziMeterDriver(g, 1).read().status)
+    }
+
+    @Test
+    fun wrongConnectionBitsAreWarnings() = runBlocking {
+        val ok = newMap(341, 50, listOf(100, 0, 0)).u16(0x1103, 1).u16(0x1105, 0)
+        assertEquals(emptyList<DeviceProblem>(), CarloGavazziMeterDriver(ok, 1).read().problems)
+        val easy = newMap(341, 50, listOf(100, 0, 0)).u16(0x1103, 0)
+        assertEquals(emptyList<DeviceProblem>(), CarloGavazziMeterDriver(easy, 1).read().problems)
+        val wrong = newMap(341, 50, listOf(100, 0, 0)).u16(0x1103, 1).u16(0x1105, 0b1_0001)
+        assertEquals(
+            listOf(
+                DeviceProblem(DeviceProblem.Kind.WARNING, "Wrong wiring: wrong voltage sequence (bit 0)"),
+                DeviceProblem(DeviceProblem.Kind.WARNING, "Wrong wiring: phases 1 and 2 exchanged (bit 4)"),
+            ),
+            CarloGavazziMeterDriver(wrong, 1).read().problems,
+        )
     }
 }

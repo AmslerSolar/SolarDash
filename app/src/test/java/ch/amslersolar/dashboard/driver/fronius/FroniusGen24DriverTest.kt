@@ -6,6 +6,7 @@ package ch.amslersolar.dashboard.driver.fronius
 import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -163,5 +164,28 @@ class FroniusGen24DriverTest {
         val fake = FakeGen24().apply { Map(1).model(1, 66) { text(2, 16, "LG Electronics"); text(18, 16, "ELEC") }.end() }
         val error = runCatching { FroniusGen24Driver(fake, 1).identify() }.exceptionOrNull()
         assertTrue(error?.message.orEmpty().contains("Not a Fronius"))
+    }
+
+    @Test
+    fun noProblemsInNormalOperation() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), FroniusGen24Driver(float(), 1).read().problems)
+        assertEquals(emptyList<DeviceProblem>(), FroniusGen24Driver(intSf(), 1).read().problems)
+    }
+
+    @Test
+    fun gridDisconnectEventIsMainsLost() = runBlocking {
+        val fake = FakeGen24().apply {
+            Map(1)
+                .model(1, 66) { common(this, "Primo GEN24 10.0 Plus", "34567890") }
+                .model(113, 60) { u16(48, 7); u16(49, 0); u32(50, 1L shl 4) } // FAULT, Evt1 GRID_DISCONNECT
+                .end()
+        }
+        assertEquals(
+            listOf(
+                DeviceProblem(DeviceProblem.Kind.FAULT, "Inverter fault (St 7)"),
+                DeviceProblem(DeviceProblem.Kind.MAINS_LOST, "Grid disconnected (Evt1 bit 4)"),
+            ),
+            FroniusGen24Driver(fake, 1).read().problems,
+        )
     }
 }

@@ -6,7 +6,34 @@ package ch.amslersolar.dashboard.model
 import java.time.Instant
 import kotlin.math.roundToInt
 
-data class DeviceStatus(val device: DeviceConfig, val reading: DeviceReading?, val error: String?)
+data class DeviceStatus(
+    val device: DeviceConfig,
+    val reading: DeviceReading?,
+    val error: String?,
+    /** Why the read failed, when it did. */
+    val errorKind: ConnectionError? = null,
+)
+
+/** Kinds of failed device reads (see driver/ConnectionErrors.kt). */
+enum class ConnectionError {
+    /** No answer in time: device off, asleep, or not on this network. */
+    TIMEOUT,
+    /** The device or gateway turned the connection down: port closed, Modbus TCP off, or another client connected. */
+    REFUSED,
+    /** The connection dropped right away, typically because the device only serves one client at a time. */
+    CLOSED,
+    /** The address can't be reached from this network. */
+    UNREACHABLE,
+    /** Wrong password or access token. */
+    LOGIN,
+    /** The device answered, but with an error or unexpected data: wrong unit id, type or setting. */
+    DEVICE_REPLY,
+    /** The device is still starting up. */
+    NOT_READY,
+    /** The device type isn't supported. */
+    UNSUPPORTED,
+    OTHER,
+}
 
 enum class GridSource { METERS, INVERTERS }
 

@@ -8,6 +8,7 @@ import ch.amslersolar.dashboard.driver.DeviceDriver
 import ch.amslersolar.dashboard.model.BatteryState
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.EnergyTotals
 import ch.amslersolar.dashboard.model.PhaseReading
@@ -84,7 +85,11 @@ class LgEssDriver(host: String, port: Int, private val password: String) : Devic
             extras = EXTRA_READS.mapNotNull { (title, path) -> optional(path)?.let { title to it } }.toMap()
         }
         polls++
-        return LgEssParser.parse(home, common).copy(details = LgEssParser.details(home, common, systemInfo, extras))
+        val reading = LgEssParser.parse(home, common)
+        return reading.copy(
+            details = LgEssParser.details(home, common, systemInfo, extras),
+            problems = reading.problems + LgEssParser.overloadProblems(extras["Overload"]),
+        )
     }
 
     /** End the session; the unit may not have the endpoint (404), which is fine. */
@@ -230,6 +235,24 @@ object LgEssParser {
     private fun JsonObject?.kwh(key: String): Double? = num(key)?.div(1000)
     private fun JsonObject?.flag(key: String): Boolean = this?.str(key) == "1"
 
+    /**
+     * `pcs_fault.pcs_status` other than `pcs_ok`, and `backupmode` ("Backup (off-grid) mode, empty when not in
+     * backup"; listed under wintermode, also looked up at the top level) from the `home` response.
+     */
+    fun problems(home: JsonObject): List<DeviceProblem> = buildList {
+        val fault = home.obj("pcs_fault")?.str("pcs_status")
+        if (fault != null && fault != "pcs_ok") add(DeviceProblem(DeviceProblem.Kind.FAULT, "PCS fault ($fault)"))
+        val backup = (home.obj("wintermode")?.str("backupmode") ?: home.str("backupmode"))?.trim()
+        if (!backup.isNullOrEmpty()) add(DeviceProblem(DeviceProblem.Kind.BACKUP_MODE, "Backup (off-grid) mode ($backup)"))
+    }
+
+    /** `/v1/user/essinfo/overloadfaultview`: `mustViewOverLoadFaultPopUp` set means an overload fault to show. */
+    fun overloadProblems(overload: JsonObject?): List<DeviceProblem> {
+        if (overload?.str("mustViewOverLoadFaultPopUp") !in setOf("1", "true")) return emptyList()
+        val kind = overload?.str("overLoadFaultKind")?.trim()?.takeIf { it.isNotEmpty() }
+        return listOf(DeviceProblem(DeviceProblem.Kind.FAULT, if (kind != null) "Overload fault ($kind)" else "Overload fault"))
+    }
+
     fun parse(home: JsonObject, common: JsonObject?): DeviceReading {
         val stats = home.obj("statistics")
         val direction = home.obj("direction")
@@ -279,6 +302,7 @@ object LgEssParser {
         val phases = if (volts != null && volts > 0) listOf(PhaseReading("L1", volts, null, g.num("freq") ?: 0.0, null)) else emptyList()
 
         return DeviceReading(
+            problems = problems(home),
             pvPowerW = stats.int("pcs_pv_total_power"),
             pvStrings = strings,
             battery = battery,

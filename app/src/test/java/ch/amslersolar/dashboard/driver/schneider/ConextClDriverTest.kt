@@ -6,6 +6,7 @@ package ch.amslersolar.dashboard.driver.schneider
 import ch.amslersolar.dashboard.driver.sunspec.FakeRegisterImage
 import ch.amslersolar.dashboard.driver.sunspec.MoreSunSpecProfiles
 import ch.amslersolar.dashboard.driver.sunspec.SunSpecInverterDriver
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -70,5 +71,28 @@ class ConextClDriverTest {
         val error = runCatching { ConextClDriver(cl(maker = "Delta"), 10).identify() }.exceptionOrNull()
         assertTrue(error is IOException)
         assertTrue(error!!.message.orEmpty().contains("Not a Schneider"))
+    }
+
+    @Test
+    fun noProblemsWithoutAnAlarm() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), ConextClDriver(cl(), 10).read().problems) // 0x1828 reads 0xFFFF filler
+        assertEquals(emptyList<DeviceProblem>(), ConextClDriver(cl().apply { u16(0x1828, 0) }, 10).read().problems)
+    }
+
+    @Test
+    fun alarmCodeBecomesAProblem() = runBlocking {
+        assertEquals(
+            listOf(DeviceProblem(DeviceProblem.Kind.MAINS_LOST, "Grid not available (2450)")),
+            ConextClDriver(cl().apply { u16(0x1828, 2450) }, 10).read().problems,
+        )
+        assertEquals(
+            listOf(DeviceProblem(DeviceProblem.Kind.WARNING, "Ambient over-temperature derating (4061)")),
+            ConextClDriver(cl().apply { u16(0x1828, 4061) }, 10).read().problems,
+        )
+        assertEquals(
+            listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Inverter fault (St 7)"), DeviceProblem(DeviceProblem.Kind.FAULT, "PV insulation error (2616)")),
+            ConextClDriver(cl().apply { u16(0x9CAC, 7); u16(0x9CAD, 0); u16(0x1828, 2616) }, 10).read().problems,
+        )
+        assertEquals(emptyList<DeviceProblem>(), ConextClDriver(cl().apply { u16(0x1828, 9000) }, 10).read().problems) // internal event
     }
 }

@@ -13,6 +13,7 @@ import ch.amslersolar.dashboard.driver.modbus.ModbusTcpClient
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.PhaseReading
 import java.io.IOException
@@ -155,7 +156,24 @@ class AlfenEveDriver(private val reader: RegisterReader, private val unitId: Int
                 status = status(r),
                 temperatureC = r.f32(1102),
                 details = details(r),
+                problems = problems(r),
             )
+        }
+
+        /**
+         * Mode 3 states E and F ("error states", appendix F) and the socket meter state bits 0x04 warning /
+         * 0x08 error (register 300).
+         */
+        fun problems(r: Regs): List<DeviceProblem> {
+            val out = mutableListOf<DeviceProblem>()
+            val mode3 = r.text(1201, 5)?.uppercase()
+            if (mode3 == "E" || mode3 == "F") out += DeviceProblem(DeviceProblem.Kind.FAULT, "Charging error (Mode 3 state $mode3)")
+            val meter = r.u16n(300)
+            if (meter != null) {
+                if (meter and 0x08 != 0) out += DeviceProblem(DeviceProblem.Kind.WARNING, "Energy meter error (meter state 0x08)")
+                if (meter and 0x04 != 0) out += DeviceProblem(DeviceProblem.Kind.WARNING, "Energy meter warning (meter state 0x04)")
+            }
+            return out
         }
 
         private fun a(r: Regs, addr: Int) = fmt(r.f32(addr), "A", 1)

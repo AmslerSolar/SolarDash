@@ -15,6 +15,8 @@ import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.BatteryState
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
+import ch.amslersolar.dashboard.model.DeviceProblem.Kind
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.EnergyTotals
 import ch.amslersolar.dashboard.model.PhaseReading
@@ -44,6 +46,9 @@ import kotlin.math.sign
  *   (200, charge − / discharge +), which matches our sign convention.
  * - Solar: 1066 total DC power of all PV inputs, else the PV strings (34 says how many: a battery uses DC3).
  * - Home: own consumption from PV + battery + grid (116 + 106 + 108).
+ * - Problems: the map has no error registers, only the inverter state (56, note 2): 14 Overheating → WARNING,
+ *   17 ESB (emergency power from the battery) → BACKUP_MODE; with a battery, PSSB fuse state (202) 0 "Fuse fail"
+ *   → FAULT. 13 GridSwitchOff and 16 ImproperDcVoltage aren't explained by the map and are left out.
  */
 class KostalPlenticoreDriver(private val reader: RegisterReader, private val unitId: Int) : DeviceDriver {
     constructor(client: ModbusTcpClient, unitId: Int) : this(RegisterReader { u, r, c -> client.readHoldingRegisters(u, r, c) }, unitId)
@@ -232,8 +237,21 @@ class KostalPlenticoreDriver(private val reader: RegisterReader, private val uni
                 status = img.u32(56)?.toInt()?.let { INVERTER_STATES[it] ?: "State $it" },
                 today = EnergyTotals(pvKwh = img.f32(322)?.div(1000)),
                 lifetimePvKwh = img.f32(320)?.div(1000),
+                problems = problems(img),
             )
         }
+
+        private const val ST_OVERHEATING = 14
+        private const val ST_ESB = 17
+
+        fun problems(img: Image): List<DeviceProblem> = listOfNotNull(
+            when (img.u32(56)?.toInt()) {
+                ST_OVERHEATING -> DeviceProblem(Kind.WARNING, "Overheating (state $ST_OVERHEATING)")
+                ST_ESB -> DeviceProblem(Kind.BACKUP_MODE, "Emergency power mode (state $ST_ESB)")
+                else -> null
+            },
+            DeviceProblem(Kind.FAULT, "Battery fuse failed (PSSB)").takeIf { hasBattery(img) && img.f32(202)?.roundToInt() == 0 },
+        )
 
         private fun kwh(img: Image, a: Int) = fmt(img.f32(a)?.div(1000), "kWh", 1)
         private fun w(img: Image, a: Int) = fmt(img.f32(a), "W", 0)

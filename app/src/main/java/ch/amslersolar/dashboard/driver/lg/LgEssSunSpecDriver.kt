@@ -15,6 +15,7 @@ import ch.amslersolar.dashboard.driver.sunspec.SunSpecDevice
 import ch.amslersolar.dashboard.model.BatteryState
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.EnergyTotals
 import ch.amslersolar.dashboard.model.PhaseReading
@@ -156,7 +157,64 @@ class LgEssSunSpecDriver(reader: RegisterReader, unitId: Int) : DeviceDriver {
                 temperatureC = temp,
                 status = state?.let { INVERTER_STATES[it] ?: "State $it" },
                 today = EnergyTotals(pvKwh = pvToday),
+                problems = problems(m103, m113, m802),
             )
+        }
+
+        private val F = DeviceProblem.Kind.FAULT
+        private val W = DeviceProblem.Kind.WARNING
+
+        /**
+         * Inverter Evt1 (113 offset 50 / 103 offset 40), the SunSpec bits (models workbook, sheet 103; LG's map lists
+         * the field without its own table). The workbook gives no severity: protective trips are faults, switches,
+         * temperatures and memory loss warnings, GRID_DISCONNECT the mains loss. MANUAL_SHUTDOWN (6) is left out.
+         */
+        private val INVERTER_EVENTS = mapOf(
+            0 to ("Ground fault" to F), 1 to ("DC overvoltage" to F), 2 to ("AC disconnect open" to W),
+            3 to ("DC disconnect open" to W), 4 to ("Grid disconnect" to DeviceProblem.Kind.MAINS_LOST),
+            5 to ("Cabinet open" to W), 7 to ("Over-temperature" to W), 8 to ("Grid overfrequency" to F),
+            9 to ("Grid underfrequency" to F), 10 to ("AC overvoltage" to F), 11 to ("AC undervoltage" to F),
+            12 to ("Blown string fuse" to F), 13 to ("Under-temperature" to W), 14 to ("Memory loss" to W),
+            15 to ("Hardware test failure" to F),
+        )
+
+        /** Battery Evt1 (802 offset 26), sheet 802 of the models workbook: alarms and errors → fault, warnings → warning. */
+        private val BATTERY_EVENTS = mapOf(
+            0 to ("Battery communication error" to F), 1 to ("Battery over-temperature alarm" to F),
+            2 to ("Battery over-temperature warning" to W), 3 to ("Battery under-temperature alarm" to F),
+            4 to ("Battery under-temperature warning" to W), 5 to ("Battery over charge current alarm" to F),
+            6 to ("Battery over charge current warning" to W), 7 to ("Battery over discharge current alarm" to F),
+            8 to ("Battery over discharge current warning" to W), 9 to ("Battery overvoltage alarm" to F),
+            10 to ("Battery overvoltage warning" to W), 11 to ("Battery undervoltage alarm" to F),
+            12 to ("Battery undervoltage warning" to W), 13 to ("Battery below min. SoC alarm" to F),
+            14 to ("Battery below min. SoC warning" to W), 15 to ("Battery above max. SoC alarm" to F),
+            16 to ("Battery above max. SoC warning" to W), 17 to ("Battery voltage imbalance warning" to W),
+            18 to ("Battery temperature imbalance alarm" to F), 19 to ("Battery temperature imbalance warning" to W),
+            20 to ("Battery contactor error" to F), 21 to ("Battery fan error" to F), 22 to ("Battery ground fault" to F),
+            23 to ("Battery open door error" to F), 24 to ("Battery current imbalance warning" to W),
+            25 to ("Battery other alarm" to F), 26 to ("Battery other warning" to W),
+            28 to ("Battery configuration alarm" to F), 29 to ("Battery configuration warning" to W),
+        )
+
+        /** Inverter events and operating state 7 (fault); battery events and bank state 99 (fault). */
+        fun problems(m103: Model?, m113: Model?, m802: Model?): List<DeviceProblem> {
+            val out = mutableListOf<DeviceProblem>()
+            val events = m113?.u32(50) ?: m103?.u32(40)
+            val state = m113?.u16(48) ?: m103?.u16(38)
+            fun bits(value: Long?, table: Map<Int, Pair<String, DeviceProblem.Kind>>) {
+                value ?: return
+                for (bit in 0 until 32) {
+                    if ((value shr bit) and 1L == 0L) continue
+                    val (name, kind) = table[bit] ?: continue
+                    out += DeviceProblem(kind, "$name (event bit $bit)")
+                }
+            }
+            bits(events, INVERTER_EVENTS)
+            if (state == 7 && out.none { it.kind == F }) out += DeviceProblem(F, "Fault (state 7)")
+            val batteryStart = out.size
+            bits(m802?.u32(26), BATTERY_EVENTS)
+            if (m802?.u16(22) == 99 && out.drop(batteryStart).none { it.kind == F }) out += DeviceProblem(F, "Battery fault (bank state 99)")
+            return out
         }
 
         // --- detail view: every point of LG's map -------------------------------------------------------------

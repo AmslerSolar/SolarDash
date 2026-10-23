@@ -4,6 +4,7 @@
 package ch.amslersolar.dashboard.driver.schneider
 
 import ch.amslersolar.dashboard.driver.sunspec.FakeRegisterImage
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -85,5 +86,16 @@ class ConextGatewayDriverTest {
     fun withoutBatteryRegistersThereIsNoBattery() = runBlocking {
         val image = gateway().apply { listOf(0x03C8, 0x03FC, 0x03FE, 0x0046, 0x004A).forEach { regs.remove(it); regs.remove(it + 1) } }
         assertNull(ConextGatewayDriver(image, 1).read().battery)
+    }
+
+    @Test
+    fun activeFaultAndWarningCountsBecomeProblems() = runBlocking {
+        val ok = ConextGatewayDriver(gateway().apply { u16(0x0043, 0) }, 1).read()
+        assertEquals(emptyList<DeviceProblem>(), ok.problems)
+        val bad = ConextGatewayDriver(gateway().apply { u16(0x0041, 2) }, 1).read()
+        assertEquals(
+            listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "2 active faults"), DeviceProblem(DeviceProblem.Kind.WARNING, "1 active warning")),
+            bad.problems,
+        )
     }
 }

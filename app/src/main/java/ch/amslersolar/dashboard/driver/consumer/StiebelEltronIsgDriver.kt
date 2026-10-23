@@ -14,6 +14,7 @@ import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.EnergyTotals
 import java.io.IOException
@@ -142,6 +143,7 @@ class StiebelEltronIsgDriver(
         temperatureC = img.temp(507),
         status = img.status(),
         today = EnergyTotals(loadKwh = img.sumOrNull(img.u(3511), img.u(3514))?.toDouble()),
+        problems = img.problems(),
     )
 
     private fun details(img: Image): List<DetailSection> {
@@ -244,6 +246,18 @@ class StiebelEltronIsgDriver(
             val bus = regs[2505]
             if (bus != null && bus != NA && bus.toShort() !in -4..0) return false
             return listOf(507, 515, 516, 522, 536).any { a -> temp(a)?.let { it in -60.0..120.0 } == true }
+        }
+
+        /** 2504 FATAL ERROR (system fault, acknowledged in SERVICEWELT) and 2505 BUS STATUS −1…−4. */
+        fun problems(): List<DeviceProblem> {
+            val out = mutableListOf<DeviceProblem>()
+            if (u(2504) == 1) out += DeviceProblem(DeviceProblem.Kind.FAULT, "System fault (fatal error)")
+            val bus = s(2505)
+            if (bus != null && bus < 0) {
+                val name = when (bus) { -3 -> "CAN bus error"; -4 -> "Bus line fault"; else -> "Bus fault" }
+                out += DeviceProblem(DeviceProblem.Kind.WARNING, "$name (bus status $bus)")
+            }
+            return out
         }
 
         fun status(): String? {

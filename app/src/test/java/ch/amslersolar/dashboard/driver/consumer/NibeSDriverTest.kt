@@ -6,6 +6,7 @@ package ch.amslersolar.dashboard.driver.consumer
 import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
+import ch.amslersolar.dashboard.model.DeviceProblem
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -175,5 +176,15 @@ class NibeSDriverTest {
             fail("Expected IOException")
         } catch (_: IOException) {
         }
+    }
+
+    @Test
+    fun problemsFromActiveAlarm() = runBlocking {
+        assertEquals(emptyList<DeviceProblem>(), s1255().driver().read().problems)
+        assertEquals(emptyList<DeviceProblem>(), s1255().inp(1805, 1).driver().read().problems) // defrost
+        assertEquals(
+            listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Heat pump alarm (alarm 183)")),
+            s1255().inp(2195, 1).inp(1975, 183).driver().read().problems,
+        )
     }
 }

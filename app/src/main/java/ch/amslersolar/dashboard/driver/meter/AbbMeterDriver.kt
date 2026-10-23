@@ -22,6 +22,7 @@ import ch.amslersolar.dashboard.driver.modbus.ModbusTcpClient
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import java.io.IOException
 
@@ -172,7 +173,16 @@ class AbbMeterDriver(private val reader: RegisterReader, private val unitId: Int
                 "Resettable imported" to kwh(r.uns64(0x552C)),
                 "Resettable exported" to kwh(r.uns64(0x5530)),
             )
-            return DeviceReading(gridPowerW = exportW(totalW), phases = phases, details = details)
+            return DeviceReading(gridPowerW = exportW(totalW), phases = phases, details = details, problems = problems(r))
+        }
+
+        /**
+         * Error flags 8A13h (64 flags; the manual doesn't name the bits, so the raw value is shown). Warning flags
+         * aren't reported: they include "Negative total power", i.e. normal export.
+         */
+        fun problems(r: RegImage): List<DeviceProblem> {
+            val e = r.u64(0x8A13)?.takeIf { it != 0L && it != -1L } ?: return emptyList()
+            return listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Meter error (error flags 0x" + java.lang.Long.toHexString(e).uppercase() + ")"))
         }
 
         /** 64 flags in 4 registers; "none" when no flag is set. */

@@ -13,6 +13,7 @@ import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
 import ch.amslersolar.dashboard.model.DeviceReading
 import java.io.IOException
 import java.net.SocketTimeoutException
@@ -122,6 +123,7 @@ class HovalTopTronicDriver(private val reader: RegisterReader, private val unitI
         loadPowerW = img.s16(25611)?.let { it * 10 },
         temperatureC = img.tenths(1477),
         status = img.status(),
+        problems = img.problems(),
     )
 
     private fun details(img: Image): List<DetailSection> {
@@ -203,6 +205,39 @@ class HovalTopTronicDriver(private val reader: RegisterReader, private val unitI
             return status in GENERATOR_STATUS && wfa <= 99 && modulation <= 100 && (message == null || message in 0..1)
         }
 
+        /**
+         * WFA status faults (11, 12, 49, 55, 99), else heat generator status 15 Alarm / 16 Fault; heating circuit 1
+         * status 12 Fault; hot water status 5 Fault / 7 Warning; and the WFA error code 1534 (255 = no error). Error
+         * codes are shown with their W/B/E name from the guideline; E codes count as faults, W and B codes as
+         * warnings (the guideline gives no texts or severities, the letters are Hoval's message classes).
+         */
+        fun problems(): List<DeviceProblem> {
+            val out = mutableListOf<DeviceProblem>()
+            val wfa = u16(18723)
+            WFA_FAULTS[wfa]?.let { out += DeviceProblem(DeviceProblem.Kind.FAULT, "$it (WFA status $wfa)") }
+            if (out.isEmpty()) {
+                when (val gen = u16(18722)) {
+                    15 -> out += DeviceProblem(DeviceProblem.Kind.FAULT, "Heat generator alarm (status $gen)")
+                    16 -> out += DeviceProblem(DeviceProblem.Kind.FAULT, "Heat generator fault (status $gen)")
+                }
+            }
+            if (u16(1501) == 12) out += DeviceProblem(DeviceProblem.Kind.FAULT, "Heating circuit 1 fault (status 12)")
+            when (u16(1504)) {
+                5 -> out += DeviceProblem(DeviceProblem.Kind.FAULT, "Hot water fault (status 5)")
+                7 -> out += DeviceProblem(DeviceProblem.Kind.WARNING, "Hot water warning (status 7)")
+            }
+            val code = u16(1534)
+            if (code != null && code != 255 && code != 0) {
+                val name = ERROR_CODES[code]
+                out += when {
+                    name == null -> DeviceProblem(DeviceProblem.Kind.FAULT, "Heat pump error code $code")
+                    name.startsWith("E") -> DeviceProblem(DeviceProblem.Kind.FAULT, "Heat pump error $name (code $code)")
+                    else -> DeviceProblem(DeviceProblem.Kind.WARNING, "Heat pump error $name (code $code)")
+                }
+            }
+            return out
+        }
+
         fun status(): String? {
             val wfa = u16(18723)
             when (wfa) {
@@ -260,6 +295,28 @@ class HovalTopTronicDriver(private val reader: RegisterReader, private val unitI
             77 to "Limitation compressor", 96 to "Electrical power limit", 97 to "Preheat compressor oil", 98 to "Coldstart",
             99 to "Machine not configured",
         )
+        /** WFA status values that are faults ("HP fault", "Low-pressure fault", …), with display texts. */
+        val WFA_FAULTS = mapOf(
+            11 to "Heat pump fault (sensor or switch)", 12 to "Low-pressure fault", 49 to "Unsuccessful defrosting",
+            55 to "Inverter fault / Modbus communication", 99 to "Machine not configured",
+        )
+
+        /**
+         * Every code of the guideline's 1534 list (sheet 7), named as there: W = code − 63, B = code − 127,
+         * E = code − 191.
+         */
+        val ERROR_CODES: Map<Int, String> =
+            listOf(74, 76, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 100, 101, 102, 103, 104, 106, 121, 122, 126)
+                .associateWith { "W" + (it - 63).toString().padStart(2, '0') } +
+                listOf(
+                    128, 129, 130, 131, 132, 134, 135, 136, 137, 138, 139, 140, 142, 147, 148, 149, 150, 151, 152, 153, 159,
+                    160, 161, 162, 163, 164, 171, 172, 173, 174, 175, 176, 177, 178, 181, 182, 183, 184, 185, 188, 189, 190,
+                ).associateWith { "B" + (it - 127).toString().padStart(2, '0') } +
+                listOf(
+                    192, 193, 194, 195, 198, 199, 200, 202, 203, 204, 206, 207, 213, 216, 217, 218, 219, 220, 221, 222, 230,
+                    231, 234, 235, 236, 247, 252, 253,
+                ).associateWith { "E" + (it - 191).toString().padStart(2, '0') }
+
         val OPERATION_CHOICE = mapOf(0 to "Heat generator off", 1 to "Automatic", 4 to "Manual heating", 5 to "Manual cooling", 8 to "Manual DHW")
         val CIRCUIT_STATUS = mapOf(
             0 to "Switched off", 1 to "Normal heating", 2 to "Comfort heating", 3 to "Economy heating", 4 to "Frost operation",

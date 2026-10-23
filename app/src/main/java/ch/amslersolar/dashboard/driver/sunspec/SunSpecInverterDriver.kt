@@ -11,6 +11,8 @@ import ch.amslersolar.dashboard.driver.modbus.ModbusTcpClient
 import ch.amslersolar.dashboard.model.BatteryState
 import ch.amslersolar.dashboard.model.DetailSection
 import ch.amslersolar.dashboard.model.DeviceInfo
+import ch.amslersolar.dashboard.model.DeviceProblem
+import ch.amslersolar.dashboard.model.DeviceProblem.Kind
 import ch.amslersolar.dashboard.model.DeviceReading
 import ch.amslersolar.dashboard.model.PhaseReading
 import ch.amslersolar.dashboard.model.PvString
@@ -33,6 +35,8 @@ import kotlin.math.roundToInt
  * - Grid: meter model W. SunSpec doesn't define its sign: [Profile.meterImportPositive] says whether + means drawing
  *   from the grid; the device form can invert it per device.
  * - Home: inverter AC power − grid (+ export). SunSpec has no daily energy counters: the history integrates.
+ * - Problems: St 7 (FAULT) of the inverter model, its Evt1 bits (0–15; Evt2 is "reserved for future use", the
+ *   EvtVnd fields are vendor-defined and not decoded), and per model-160 input DCSt 7 and the DCEvt bits.
  */
 open class SunSpecInverterDriver(reader: RegisterReader, unitId: Int, private val profile: Profile) : DeviceDriver {
     constructor(client: ModbusTcpClient, unitId: Int, profile: Profile) :
@@ -132,6 +136,7 @@ open class SunSpecInverterDriver(reader: RegisterReader, unitId: Int, private va
     internal class Inverter(id: Int, m: Model) : Values(id, m) {
         val state: Int? get() = m.u16(if (float) 48 else 38)
         val vendorState: Int? get() = m.u16(if (float) 49 else 39)
+        val evt1: Long? get() = m.u32(if (float) 50 else 40)
     }
 
     /** Meter model 201–203 (int+SF) / 211–213 (float). */
@@ -173,7 +178,17 @@ open class SunSpecInverterDriver(reader: RegisterReader, unitId: Int, private va
         private val MPPT_STATES = mapOf(1 to "Off", 2 to "Sleeping", 3 to "Starting", 4 to "MPPT", 5 to "Throttled", 6 to "Shutting down", 7 to "Fault", 8 to "Standby", 9 to "Test", 10 to "Reserved")
 
         /** One DC input of model 160. */
-        data class Module(val index: Int, val name: String, val a: Double?, val v: Double?, val w: Double?, val wh: Double?, val tmp: Int?, val state: Int?) {
+        data class Module(
+            val index: Int,
+            val name: String,
+            val a: Double?,
+            val v: Double?,
+            val w: Double?,
+            val wh: Double?,
+            val tmp: Int?,
+            val state: Int?,
+            val events: Long? = null,
+        ) {
             val charging get() = name.contains("StCha", ignoreCase = true)
             val discharging get() = name.contains("StDisCha", ignoreCase = true)
             val storage get() = charging || discharging
@@ -193,6 +208,7 @@ open class SunSpecInverterDriver(reader: RegisterReader, unitId: Int, private va
                     wh = m.scaled(m.u32(o + 12), 5),
                     tmp = m.s16(o + 16),
                     state = m.u16(o + 17),
+                    events = m.u32(o + 18),
                 )
             }
         }
@@ -249,7 +265,62 @@ open class SunSpecInverterDriver(reader: RegisterReader, unitId: Int, private va
                 temperatureC = inv[INV_TMP_CAB] ?: inv[INV_TMP_SNK],
                 status = inv.state?.let { STATES[it] ?: "State $it" },
                 lifetimePvKwh = inv[INV_WH]?.div(1000), // AC energy of the inverter
+                problems = problems(inv, modules),
             )
+        }
+
+        /** Inverter model Evt1 bits (SunSpec models workbook, models 101–103 / 111–113). */
+        private val EVT1 = mapOf(
+            0 to (Kind.FAULT to "Ground fault"),
+            1 to (Kind.FAULT to "DC over-voltage"),
+            2 to (Kind.FAULT to "AC disconnect open"),
+            3 to (Kind.FAULT to "DC disconnect open"),
+            4 to (Kind.MAINS_LOST to "Grid disconnected"),
+            5 to (Kind.WARNING to "Cabinet open"),
+            6 to (Kind.WARNING to "Manual shutdown"),
+            7 to (Kind.WARNING to "Over-temperature"),
+            8 to (Kind.MAINS_LOST to "Grid over-frequency"),
+            9 to (Kind.MAINS_LOST to "Grid under-frequency"),
+            10 to (Kind.MAINS_LOST to "Grid over-voltage"),
+            11 to (Kind.MAINS_LOST to "Grid under-voltage"),
+            12 to (Kind.FAULT to "Blown string fuse"),
+            13 to (Kind.WARNING to "Under-temperature"),
+            14 to (Kind.FAULT to "Memory loss"),
+            15 to (Kind.FAULT to "Hardware test failure"),
+        )
+
+        /** Model 160 DCEvt bits (workbook); reserved bits and INPUT_UNDER_VOLTAGE (normal at dusk) are left out. */
+        private val DC_EVT = mapOf(
+            0 to (Kind.FAULT to "ground fault"),
+            1 to (Kind.FAULT to "input over-voltage"),
+            3 to (Kind.FAULT to "DC disconnect open"),
+            5 to (Kind.WARNING to "cabinet open"),
+            6 to (Kind.WARNING to "manual shutdown"),
+            7 to (Kind.WARNING to "over-temperature"),
+            12 to (Kind.FAULT to "blown fuse"),
+            13 to (Kind.WARNING to "under-temperature"),
+            14 to (Kind.FAULT to "memory loss"),
+            15 to (Kind.FAULT to "arc detected"),
+            20 to (Kind.FAULT to "test failed"),
+            22 to (Kind.FAULT to "input over-current"),
+        )
+
+        private const val ST_FAULT = 7
+
+        fun problems(inv: Inverter, modules: List<Module>): List<DeviceProblem> {
+            val out = mutableListOf<DeviceProblem>()
+            if (inv.state == ST_FAULT) {
+                out += DeviceProblem(Kind.FAULT, inv.vendorState?.takeIf { it != 0 }?.let { "Inverter fault (vendor state $it)" } ?: "Inverter fault (St $ST_FAULT)")
+            }
+            val evt1 = inv.evt1 ?: 0L
+            for ((bit, p) in EVT1) if (evt1 and (1L shl bit) != 0L) out += DeviceProblem(p.first, "${p.second} (Evt1 bit $bit)")
+            for (m in modules) {
+                val n = m.name.ifEmpty { "Input ${m.index}" }
+                if (m.state == ST_FAULT) out += DeviceProblem(Kind.FAULT, "$n: fault (DCSt $ST_FAULT)")
+                val evt = m.events ?: 0L
+                for ((bit, p) in DC_EVT) if (evt and (1L shl bit) != 0L) out += DeviceProblem(p.first, "$n: ${p.second} (DCEvt bit $bit)")
+            }
+            return out.distinct()
         }
 
         private fun w(v: Double?) = fmt(v, "W", 0)

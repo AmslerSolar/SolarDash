@@ -40,6 +40,8 @@ class PlantRepository(private val context: Context) {
 
     suspend fun renamePlant(id: String, name: String) = updatePlant(id) { it.copy(name = name) }
 
+    suspend fun setOffGrid(id: String, offGrid: Boolean) = updatePlant(id) { it.copy(offGrid = offGrid) }
+
     /** Replaces a device's settings, keeping its id (and so its history and chart channels). */
     suspend fun updateDevice(plantId: String, device: DeviceConfig) = updatePlant(plantId) { plant ->
         plant.copy(devices = plant.devices.map { if (it.id == device.id) device else it })
