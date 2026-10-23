@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard.driver.goodwe
 
+import kotlin.math.roundToInt
 import ch.amslersolar.dashboard.driver.DeviceDriver
 import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.ModbusTcpClient
@@ -61,15 +62,19 @@ class GoodWeEtDriver(private val client: ModbusTcpClient, private val unitId: In
         val pvExt = readOptional(PV_EXTENDED, PV_EXTENDED_COUNT)
         val battery2 = readOptional(BATTERY2, BATTERY2_COUNT)
 
-        // PV1–PV4 have per-string power; PV5+ (35304…) only voltage and current.
+        // String power is voltage × current. The spec calls 35105/35109/35113/35117 "PV1–PV4 Power", but on models
+        // with two strings per MPPT they hold the power per MPPT: a GoodWe ET 30 kW (6 strings, "PV channel" 3)
+        // showed PV2 power 628 W at 0.0 A (= PV3 704.8 V × 0.9 A) and PV3 power 4761 W (= PV5 439.5 V × 10.8 A).
+        // On one-string-per-MPPT models both readings agree. PV5+ (35304…) have only voltage and current.
         val strings = (0 until 4).map { i ->
             val base = 35103 + i * 4
-            PvString(i + 1, r.u16(base) / 10.0, r.u16(base + 1) / 10.0, r.u32(base + 2).toInt())
+            stringOf(i + 1, r.u16(base) / 10.0, r.u16(base + 1) / 10.0)
         } + (pvExt?.let { ext ->
-            (0 until 2).map { i -> PvString(5 + i, ext.u16(35304 + i * 2) / 10.0, ext.u16(35305 + i * 2) / 10.0, null) }
+            (0 until 2).map { i -> stringOf(5 + i, ext.u16(35304 + i * 2) / 10.0, ext.u16(35305 + i * 2) / 10.0) }
         } ?: emptyList())
         val activeStrings = strings.filter { it.voltageV > 0 || (it.powerW ?: 0) > 0 }
-        val pvPower = pvExt?.u32(35301)?.toInt() ?: strings.sumOf { it.powerW ?: 0 }
+        // Total: 35301 where it exists, else the four power registers (per string or per MPPT, the sum is the same).
+        val pvPower = pvExt?.u32(35301)?.toInt() ?: (0 until 4).sumOf { r.u32(35105 + it * 4).toInt() }
 
         val phases = listOf("L1" to 35121, "L2" to 35126, "L3" to 35131).map { (name, base) ->
             PhaseReading(
@@ -130,6 +135,9 @@ class GoodWeEtDriver(private val client: ModbusTcpClient, private val unitId: In
             problems = problems(r, bms),
         )
     }
+
+    private fun stringOf(index: Int, volts: Double, amps: Double) =
+        PvString(index, volts, amps, (volts * amps).roundToInt())
 
     internal companion object {
         const val DEVICE_INFO = 35000
