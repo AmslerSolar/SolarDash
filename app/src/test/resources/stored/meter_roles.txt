@@ -1,0 +1,4 @@
+# Every MeterRole name ever saved. Never remove a line.
+GRID
+PV
+CONSUMER

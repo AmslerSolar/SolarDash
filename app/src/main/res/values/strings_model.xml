@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="kind_inverters">Inverters</string>
+    <string name="kind_batteries">Batteries</string>
+    <string name="kind_meters">Power meters</string>
+    <string name="kind_consumers">Consumers</string>
+    <string name="meter_role_grid">Grid connection</string>
+    <string name="meter_role_pv">PV production (e.g. an inverter without communication)</string>
+    <string name="meter_role_consumer">Consumer sub-meter (e.g. a heat pump)</string>
+    <string name="period_day">Day</string>
+    <string name="period_week">Week</string>
+    <string name="period_month">Month</string>
+    <string name="period_year">Year</string>
+    <string name="period_lifetime">Lifetime</string>
+    <string name="range_all_time">All time</string>
+</resources>

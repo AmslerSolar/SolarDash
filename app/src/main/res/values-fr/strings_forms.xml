@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="forms_remove_title">Supprimer %1$s&#160;?</string>
+    <string name="forms_remove">Supprimer</string>
+    <string name="forms_cancel">Annuler</string>
+    <string name="forms_name">Nom</string>
+    <string name="forms_rename">Renommer</string>
+    <string name="forms_plants_title">Installations</string>
+    <string name="forms_add_plant">Ajouter une installation</string>
+    <string name="forms_plants_empty">Aucune installation pour l\'instant. Appuyez sur + pour en ajouter une, puis ajoutez ses onduleurs, batteries et compteurs.</string>
+    <string name="forms_rename_item">Renommer %1$s</string>
+    <string name="forms_remove_item">Supprimer %1$s</string>
+    <string name="forms_rename_plant">Renommer l\'installation</string>
+    <string name="forms_remove_plant_detail">L\'installation, ses appareils et son historique (solaire, maison, batterie, réseau) seront supprimés de l\'app. Rien ne change sur les appareils. Les données enregistrées de chaque appareil sont conservées&#160;: ajoutez à nouveau le même appareil, dans n\'importe quelle installation, et elles réapparaissent.</string>
+    <string name="forms_remove_plant_delete_data">Supprimer aussi les données enregistrées des appareils</string>
+    <string name="forms_new_plant">Nouvelle installation</string>
+    <string name="forms_plant_name_placeholder">p. ex. Toit de l\'atelier</string>
+    <string name="forms_add">Ajouter</string>
+    <string name="forms_test_connected">Connecté&#160;: %1$s, N° de série %2$s</string>
+    <string name="forms_test_failed">Échec&#160;: %1$s</string>
+    <string name="forms_edit_device_title">Modifier %1$s</string>
+    <string name="forms_add_device_title">Ajouter un appareil à %1$s</string>
+    <string name="forms_back">Retour</string>
+    <string name="forms_device_name_placeholder">p. ex. Onduleur 1 (toit est)</string>
+    <string name="forms_ip_address">Adresse IP</string>
+    <string name="forms_port">Port</string>
+    <string name="forms_unit_id">ID d\'unité Modbus</string>
+    <string name="forms_access_token">Jeton d\'accès</string>
+    <string name="forms_device_password">Mot de passe de l\'appareil</string>
+    <string name="forms_meter_measures">Que mesure ce compteur&#160;?</string>
+    <string name="forms_invert_meter">Inverser le sens du compteur</string>
+    <string name="forms_invert_grid">Inverser le signe du réseau</string>
+    <string name="forms_testing">Test en cours…</string>
+    <string name="forms_test_connection">Tester la connexion</string>
+    <string name="forms_save">Enregistrer</string>
+    <string name="forms_type_coming_soon">%1$s (bientôt)</string>
+    <string name="forms_stop_search">Arrêter la recherche</string>
+    <string name="forms_search_network">Rechercher sur le réseau</string>
+    <string name="forms_scan_progress">%1$d sur %2$d</string>
+    <string name="forms_found_already_in">déjà dans %1$s</string>
+    <string name="forms_found_unit">ID d\'unité %1$d</string>
+    <string name="forms_found_serial">N° de série %1$s</string>
+    <string name="forms_found_via_mdns">trouvé via mDNS</string>
+    <string name="forms_hint_scan">Recherche sur ce réseau Wi-Fi les onduleurs et contrôleurs système (Fronius, GoodWe, Growatt, Huawei, KACO, KOSTAL, LG, SMA, SolarEdge, Sungrow, Victron, Schneider, FENECON et autres appareils SunSpec) sur les ports Modbus TCP 502, 503, 1502 et 6502. Les compteurs, pompes à chaleur et bornes de recharge s\'ajoutent à la main.</string>
+    <string name="forms_hint_kind_battery">N\'ajoutez ici que des batteries autonomes. Une batterie raccordée à un onduleur hybride est déjà lue via l\'onduleur&#160;: l\'ajouter une seconde fois la compterait deux fois.</string>
+    <string name="forms_hint_kind_meter">Un compteur au raccordement réseau remplace les valeurs réseau des onduleurs. Un compteur PV ajoute de la production (p. ex. un onduleur sans communication)&#160;; un sous-compteur de consommateur affiche une seule charge.</string>
+    <string name="forms_hint_kind_consumer">Les consommateurs apparaissent comme une partie de la consommation de la maison. Ils ne modifient pas les totaux de l\'installation&#160;: le compteur réseau ou le bilan les inclut déjà.</string>
+    <string name="forms_hint_shared_gateway">Plusieurs appareils derrière la même passerelle partagent son adresse IP et son port, et se distinguent par l\'ID d\'unité.</string>
+    <string name="forms_hint_enphase_token">À partir du logiciel 7, la passerelle nécessite un jeton&#160;: créez un jeton propriétaire (valable un an) sur entrez.enphaseenergy.com pour le numéro de série de cette passerelle et collez-le ici. Une fois expiré, l\'appareil signale un jeton expiré ou manquant.</string>
+    <string name="forms_hint_mac_password">Le mot de passe utilisateur est l\'adresse MAC de l\'appareil, en minuscules et sans deux-points (p. ex. 001122aabbcc). Vous la trouverez dans la liste des appareils connectés de votre routeur, ou sur un ordinateur avec `ip neigh` après un ping vers l\'appareil. Android ne permet pas aux apps de la lire.</string>
+    <string name="forms_hint_invert_meter">Si le compteur est câblé à l\'envers (injection affichée comme soutirage, ou compteur PV qui indique 0 pendant la production), cochez cette case.</string>
+    <string name="forms_hint_invert_grid">SunSpec ne définit pas le sens de comptage du compteur. Si le tableau de bord affiche une injection alors que vous soutirez du réseau (ou l\'inverse), cochez cette case.</string>
+    <string name="forms_hint_huawei">ID d\'unité 1 pour un onduleur derrière un SDongle ou un SmartLogger (son adresse sur celui-ci)&#160;; 0 en cas de connexion au WLAN ou au port FE de l\'onduleur lui-même. Modbus TCP doit être activé sur le SDongle (app FusionSolar&#160;: Communication Configuration).</string>
+    <string name="forms_hint_power_one">Les onduleurs TRIO n\'ont que le RS485. Raccordez-les via une passerelle RS485-Ethernet réglée sur «&#160;Modbus TCP to RTU&#160;» (19200 bauds, 8N1 par défaut)&#160;; saisissez l\'IP et le port de la passerelle, et l\'adresse RS485 de l\'onduleur comme ID d\'unité. Plusieurs TRIO sur un même bus partagent la passerelle. La nuit, l\'onduleur s\'éteint et apparaît en veille.</string>
+    <string name="forms_hint_sungrow">Utilisez le port LAN de l\'onduleur ou un WiNet-S / WiNet-S2 / Logger1000 en Ethernet (pas l\'iHomeManager). Port 502, ID d\'unité = adresse Modbus de l\'onduleur (1 par défaut&#160;; derrière un WiNet, l\'adresse indiquée sur sa page web). Le modèle hybride ou string est détecté. Les valeurs réseau et maison nécessitent un smart meter Sungrow.</string>
+    <string name="forms_hint_sma">Modbus est désactivé par défaut&#160;: dans l\'interface web de l\'onduleur (en tant qu\'installateur), réglez Device Parameters → External Communication → Modbus → TCP Server sur Yes, port 502. ID d\'unité 3. Ajoutez chaque onduleur avec sa propre IP. La puissance réseau nécessite un SMA Energy Meter sur l\'appareil&#160;; un Sunny Island indique la consommation de la maison mais pas le solaire, ajoutez donc aussi les onduleurs PV.</string>
+    <string name="forms_hint_voltronic" tools:ignore="Typos">Ces onduleurs-chargeurs ont un port RS232 (RJ45 ou DB9), pas de Modbus. Reliez-le à une passerelle RS232-TCP (p. ex. Elfin EW11) avec le câble fourni avec l\'onduleur&#160;: série 2400 bauds, 8N1, sans contrôle de flux&#160;; côté réseau, serveur TCP, port 8899, mode transparent (pas Modbus). L\'app n\'envoie que des commandes de lecture. Ces appareils ne mesurent pas la puissance réseau.</string>
+    <string name="forms_hint_kaco_nx3">SunSpec Modbus TCP, port 502, ID d\'unité 1 (activez Modbus/SunSpec dans l\'onduleur).</string>
+    <string name="forms_hint_fimer">Via un logger VSN300 / VSN700 ou un onduleur SunSpec natif&#160;: port 502&#160;; ID d\'unité 247 pour le logger, sinon l\'adresse Aurora de l\'onduleur (souvent 2).</string>
+    <string name="forms_hint_apsystems_ecu">Activez Modbus dans EMA Manager (firmware ECU-R 1.3.7 / 2.0.2, ECU-C C1.1.3 ou plus récent). Ajoutez un appareil par micro-onduleur&#160;: ID d\'unité = son adresse Modbus dans EMA Manager. Port 502.</string>
+    <string name="forms_hint_conext_cl">SunSpec Modbus TCP, port 502, ID d\'unité 10 (réglage d\'usine). Via SunSpec, la puissance varie par pas de 100 W.</string>
+    <string name="forms_hint_conext_cl60">Modbus TCP port 502, ID d\'unité 1.</string>
+    <string name="forms_hint_conext_gateway">Lit tout le système XW via la Conext Gateway / Insight Home&#160;: port 503, ID d\'unité 1.</string>
+    <string name="forms_hint_kostal_piko_ci">Modbus TCP port 1502, ID d\'unité 71 (activez Modbus dans l\'interface web de l\'onduleur).</string>
+    <string name="forms_hint_ingeteam">Modbus TCP via le dongle de l\'onduleur&#160;: port 502, ID d\'unité 1. Ingeteam n\'accepte qu\'un client et demande au moins 1 s entre les requêtes.</string>
+    <string name="forms_hint_cps">Les onduleurs CPS parlent Modbus RTU (9600 8N1)&#160;: utilisez une passerelle RS485-Ethernet en mode «&#160;Modbus TCP to RTU&#160;». Les modèles 275 / 350 kW ont aussi Modbus TCP sur le port 502. ID d\'unité = adresse RS485 (1 par défaut).</string>
+    <string name="forms_hint_riello_central">Modbus TCP, ou RTU (9600 bauds) via une passerelle. Port 502, ID d\'unité 1.</string>
+    <string name="forms_hint_carlo_gavazzi">EM24 Ethernet&#160;: l\'IP du compteur, port 502. EM300 / EM210 / EM24-DIN&#160;: une passerelle RS485 (9600 8N1&#160;; anciens EM24-DIN 4800 ou 9600), ID d\'unité = adresse du compteur (1 par défaut). Le modèle est détecté.</string>
+    <string name="forms_hint_eastron">Passerelle RS485 en mode Modbus TCP to RTU&#160;: SDM630 9600 8N1, SDM120 2400 8N1 (réglages d\'usine)&#160;; ID d\'unité = adresse du compteur (1 par défaut).</string>
+    <string name="forms_hint_inepro_pro380">Passerelle RS485 en mode Modbus TCP to RTU, 9600 8E1&#160;; ID d\'unité = adresse du compteur (1 par défaut).</string>
+    <string name="forms_hint_abb_b2x">Réglez d\'abord le protocole RS485 du compteur sur Modbus&#160;; puis une passerelle RS485 au débit et à la parité du compteur, ID d\'unité = son adresse Modbus.</string>
+    <string name="forms_hint_janitza_umg">Modbus TCP port 502, ID d\'unité = adresse Modbus de l\'appareil (1 par défaut). Un 96RM sans Ethernet nécessite une passerelle RS485.</string>
+    <string name="forms_hint_schneider_iem">RS485 Modbus RTU via une passerelle Modbus TCP&#160;; ID d\'unité = l\'adresse réglée sur l\'écran du compteur.</string>
+    <string name="forms_hint_siemens_pac">Modbus TCP port 502 (ou le port réglé sur l\'appareil), ID d\'unité 1.</string>
+    <string name="forms_hint_kostal_ksem">Dans l\'interface web du KSEM, activez l\'esclave Modbus TCP sans TLS. Port 502, ID d\'unité 1.</string>
+    <string name="forms_hint_shelly_pro_3em">Activez Modbus dans l\'interface web du Shelly. Port 502, ID d\'unité 1.</string>
+    <string name="forms_hint_keba_p30">Mettez le commutateur DIP DSW1.3 sur ON (firmware c-series 3.10.16 / x-series 1.11 ou plus récent)&#160;; n\'utilisez pas l\'interface UDP en même temps. Port 502, ID d\'unité 255. Lecture seule.</string>
+    <string name="forms_hint_alfen_eve">Nécessite la licence Active Load Balancing&#160;; dans ACE Service Installer, réglez la source de données sur Energy Management System, Modbus TCP/IP, et activez «&#160;Allow reading&#160;». Port 502&#160;; ID d\'unité 1 ou 2 = prise.</string>
+    <string name="forms_hint_mennekes_amtron">Dans l\'interface web de la borne de recharge, activez «&#160;Modbus TCP Server&#160;» (logiciel ECU 5.12 ou plus récent). Port 502&#160;; une seconde prise répond sur le port 503&#160;: ajoutez-la comme appareil distinct.</string>
+    <string name="forms_hint_go_e">Activez Modbus dans l\'app go-e&#160;: Internet → Advanced settings → Modbus. Port 502, ID d\'unité 1.</string>
+    <string name="forms_hint_my_pv">Dans l\'interface web du thermoplongeur, réglez le type de commande sur Modbus TCP. Port 502, ID d\'unité 1. Lecture seule.</string>
+    <string name="forms_hint_stiebel_eltron_isg">Nécessite un ISG web / plus / Connect avec l\'extension logicielle Modbus TCP/IP. Port 502, ID d\'unité 1. Lecture seule&#160;: températures, état et énergie électrique du jour et totale (l\'ISG n\'indique pas la puissance instantanée).</string>
+    <string name="forms_hint_nibe_s">Activez le menu 7.5.9 «&#160;Modbus TCP/IP&#160;» sur la pompe à chaleur (logiciel 2.2.1 ou plus récent)&#160;; «&#160;Reading Modbus only&#160;» est recommandé. Port 502. La pompe à chaleur n\'accepte que des clients sur des réseaux privés.</string>
+    <string name="forms_hint_hoval_toptronic">Nécessite la passerelle Modbus TopTronic E (logiciel V2.38 ou plus récent), pour les pompes à chaleur avec WFA (UltraSource, Belaria pro). Lecture lente, toutes les 30 s. Port 502, ID d\'unité 1.</string>
+    <string name="forms_hint_fenecon">Lit tout le système (PV, batterie, réseau, consommation) via l\'app FEMS préinstallée «&#160;Modbus/TCP Read Access&#160;»&#160;: port 502, ID d\'unité 1.</string>
+    <string name="forms_hint_victron">Sur le GX, activez Settings → Integrations → Modbus TCP server (anciens Venus OS&#160;: Settings → Services → Modbus TCP). Port 502, ID d\'unité 100 = toute l\'installation (PV, consommation, réseau, batterie).</string>
+    <string name="forms_hint_growatt">Les hybrides Growatt parlent Modbus RTU sur RS485&#160;: utilisez une passerelle RS485-Ethernet en mode «&#160;Modbus TCP to RTU&#160;» (9600 bauds, 8N1). ID d\'unité = adresse de communication de l\'onduleur (1 par défaut). Les valeurs réseau et maison nécessitent le smart meter Growatt&#160;; Growatt ne transmet pas la production solaire du jour via ce protocole.</string>
+    <string name="forms_hint_solaredge">Activez Modbus TCP dans SetApp (ou le menu LCD)&#160;: LAN filaire uniquement, port 1502, ID d\'appareil 1. SolarEdge n\'accepte qu\'un seul client Modbus. Les compteurs raccordés à l\'onduleur sont lus aussi.</string>
+    <string name="forms_hint_sunspec">Pour tout onduleur parlant SunSpec via Modbus TCP (p. ex. SMA avec SunSpec activé&#160;: ID d\'unité 126). Lit les modèles onduleur, MPPT, batterie et compteur proposés par l\'appareil.</string>
+    <string name="forms_hint_fronius">Activez Modbus TCP dans l\'interface web de l\'onduleur (Communication → Modbus&#160;: «&#160;SunSpec Model Type&#160;» float ou int + SF, les deux fonctionnent)&#160;; port 502, ID d\'unité 1. Un Fronius Smart Meter au raccordement réseau est lu via l\'onduleur (ID d\'unité 200).</string>
+    <string name="forms_hint_kostal_plenticore">Activez Modbus TCP dans l\'interface web de l\'onduleur (Settings → Modbus / SunSpec (TCP))&#160;; port 1502, ID d\'unité 71. Avec un maître et un esclave (hôte et client), ajoutez chaque onduleur comme appareil distinct de cette installation&#160;: l\'app détermine lequel a la batterie et le compteur d\'énergie.</string>
+    <plurals name="forms_scan_found">
+        <item quantity="one">%d trouvé</item>
+        <item quantity="many">%d trouvés</item>
+        <item quantity="other">%d trouvés</item>
+    </plurals>
+    <string name="forms_about">À propos</string>
+    <string name="forms_about_version">Version %1$s (build %2$d)</string>
+    <string name="forms_about_built">Compilée le %1$s</string>
+    <string name="forms_about_license">Logiciel libre sous licence GNU General Public License, version 3 ou ultérieure. Fourni sans aucune garantie.</string>
+    <string name="forms_about_close">Fermer</string>
+</resources>

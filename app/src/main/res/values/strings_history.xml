@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- History tab: chart, totals, tables and channel picker. -->
+<resources>
+    <string name="history_metric_solar">Solar</string>
+    <string name="history_metric_consumption">Consumption</string>
+    <string name="history_metric_battery">Battery</string>
+    <string name="history_metric_grid">Grid</string>
+    <string name="history_metric_exported">Exported</string>
+    <string name="history_metric_imported">Imported</string>
+    <string name="history_soc">Battery charge</string>
+    <string name="history_previous">Previous</string>
+    <string name="history_next">Next</string>
+    <string name="history_show_chart">Show chart</string>
+    <string name="history_show_table">Show table</string>
+    <string name="history_refused_title">Can\'t add channel</string>
+    <string name="history_ok">OK</string>
+    <string name="history_generating">Generating…</string>
+    <string name="history_fill_demo">Fill with two years of demo history</string>
+    <string name="history_empty">No history yet. The app records once a minute while a plant is open, and about every 15 minutes in the background.</string>
+    <string name="history_tap_chart">Tap the chart for values</string>
+    <string name="history_tap_bar">Tap a bar for values</string>
+    <string name="history_no_samples_week">No samples recorded in this week.</string>
+    <string name="history_no_samples_day">No samples recorded on this day.</string>
+    <string name="history_remove_channel">Remove %1$s</string>
+    <string name="history_add_channel">Add channel…</string>
+    <string name="history_chart_hint">Pinch to zoom, drag to pan, double-tap to reset</string>
+    <string name="history_totals">Totals</string>
+    <string name="history_solar_yield">Solar yield</string>
+    <string name="history_self_sufficiency">Self-sufficiency</string>
+    <string name="history_self_consumption">Self-consumption</string>
+    <string name="history_hourly_power">Hourly average power</string>
+    <string name="history_consumption_short">Cons.</string>
+    <string name="history_energy">Energy</string>
+    <string name="history_picker_title">Add channels</string>
+    <string name="history_picker_search">Search</string>
+    <string name="history_picker_loading">Loading…</string>
+    <string name="history_picker_empty">Nothing recorded for this device yet. Channels appear after the plant has been open for a minute.</string>
+    <string name="history_section_live">Live values</string>
+    <string name="history_add">Add</string>
+    <string name="history_cancel">Cancel</string>
+    <plurals name="history_picker_status">
+        <item quantity="one">%1$d selected · %2$d of %3$d free</item>
+        <item quantity="other">%1$d selected · %2$d of %3$d free</item>
+    </plurals>
+    <plurals name="history_refused_channels">
+        <item quantity="one">At most %1$d added channel at a time, so the chart stays readable. Remove it first.</item>
+        <item quantity="other">At most %1$d added channels at a time, so the chart stays readable. Remove one first.</item>
+    </plurals>
+    <plurals name="history_refused_units">
+        <item quantity="one">The chart shows at most %1$d unit at once (%2$s). Remove a series with another unit first.</item>
+        <item quantity="other">The chart shows at most %1$d different units at once (%2$s). Remove a series with another unit first.</item>
+    </plurals>
+</resources>

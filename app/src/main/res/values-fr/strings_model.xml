@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="kind_inverters">Onduleurs</string>
+    <string name="kind_batteries">Batteries</string>
+    <string name="kind_meters">Compteurs électriques</string>
+    <string name="kind_consumers">Consommateurs</string>
+    <string name="meter_role_grid">Raccordement au réseau</string>
+    <string name="meter_role_pv">Production PV (p. ex. un onduleur sans communication)</string>
+    <string name="meter_role_consumer">Sous-compteur d\'un consommateur (p. ex. une pompe à chaleur)</string>
+    <string name="period_day">Jour</string>
+    <string name="period_week">Semaine</string>
+    <string name="period_month">Mois</string>
+    <string name="period_year">Année</string>
+    <string name="period_lifetime">Total</string>
+    <string name="range_all_time">Depuis la mise en service</string>
+</resources>

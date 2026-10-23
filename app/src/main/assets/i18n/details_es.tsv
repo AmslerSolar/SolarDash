@@ -1,0 +1,1895 @@
+ (grid)	(red)
+ (solar + grid)	(solar + red)
+A (easy connection)	A (conexión fácil)
+A (no car)	A (sin vehículo)
+AC Battery SoC	SoC batería AC
+AC Battery energy	Energía batería AC
+AC active power (meter)	Potencia activa AC (contador)
+AC apparent power	Potencia aparente AC
+AC charging	Carga AC
+AC current offset failure	Fallo de offset de corriente AC
+AC door open (E045)	Puerta AC abierta (E045)
+AC energy (lifetime)	Energía AC (total)
+AC grid	Red AC
+AC output	Salida AC
+AC output and meter ({n}–{n})	Salida AC y contador ({n}–{n})
+AC phases	Fases AC
+AC power	Potencia AC
+AC reactive power	Potencia reactiva AC
+AC side to grid	Lado AC a red
+AC switch open (E041)	Interruptor AC abierto (E041)
+AC total	Total AC
+AFCI self-check	Autocomprobación AFCI
+AFCI self-test shutdown	Apagado por autotest AFCI
+ARM certification version	Versión de certificación ARM
+ARM software	Software ARM
+AUX relay current	Corriente relé AUX
+AUX relay voltage	Tensión relé AUX
+Absent cooling	Refrigeración ausente
+Absent heating	Calefacción ausente
+Absolute max current	Corriente máx. absoluta
+Absorption charging	Carga de absorción
+Active	Activo
+Active AC input	Entrada AC activa
+Active charging mode	Modo de carga activo
+Active cooling	Refrigeración activa
+Active energy	Energía activa
+Active energy (import)	Energía activa (importada)
+Active energy drawn ({n}.{n}.{n})	Energía activa importada ({n}.{n}.{n})
+Active energy fed in ({n}.{n}.{n})	Energía activa inyectada ({n}.{n}.{n})
+Active export	Exportación activa
+Active export (MID)	Exportación activa (MID)
+Active export T{n}	Exportación activa T{n}
+Active faults	Fallos activos
+Active import	Importación activa
+Active import (MID)	Importación activa (MID)
+Active import T{n}	Importación activa T{n}
+Active max current	Corriente máx. activa
+Active power	Potencia activa
+Active power (+ export)	Potencia activa (+ exportación)
+Active power (+ from grid)	Potencia activa (+ desde la red)
+Active power (+ import)	Potencia activa (+ importación)
+Active power (+ purchase, − feed-in)	Potencia activa (+ consumo de red, − inyección)
+Active power (AC)	Potencia activa (AC)
+Active power (meter, + consumed)	Potencia activa (contador, + consumida)
+Active power (meter, + drawn)	Potencia activa (contador, + importada)
+Active power (meter, + import)	Potencia activa (contador, + importación)
+Active power AC side (+ discharge)	Potencia activa lado AC (+ descarga)
+Active power drawn (+)	Potencia activa importada (+)
+Active power fed in (−)	Potencia activa inyectada (−)
+Active power limit ratio	Ratio de limitación de potencia activa
+Active power limitation	Limitación de potencia activa
+Active power limitation (%)	Limitación de potencia activa (%)
+Active power limitation P in W	Limitación de potencia activa P en W
+Active power limitation as % of Pmax	Limitación de potencia activa en % de Pmax
+Active power limitation via PV system control	Limitación de potencia activa por control de la instalación FV
+Active power overload	Sobrecarga de potencia activa
+Active power reduction	Reducción de potencia activa
+Active power setpoint	Consigna de potencia activa
+Active returned energy	Energía activa devuelta
+Active returned energy (export)	Energía activa devuelta (exportada)
+Active status word	Palabra de estado activa
+Active tariff	Tarifa activa
+Active warnings	Avisos activos
+Actual applied max current	Corriente máx. aplicada real
+Adapter	Adaptador
+Add. heat only	Solo calor adicional
+Add. heat operating time	Tiempo de funcionamiento calor adicional
+Add. heat steps	Etapas de calor adicional
+Address	Dirección
+Address offset	Offset de dirección
+Address setting	Ajuste de dirección
+Air temperature	Temperatura del aire
+Alarm	Alarma
+Alarm code	Código de alarma
+Alarm code {x}	Código de alarma {x}
+Alarm flags	Indicadores de alarma
+Alarm run	Funcionamiento en alarma
+Alarm state	Estado de alarma
+Alarm sub-code	Subcódigo de alarma
+Alarm word {n}	Palabra de alarma {n}
+Alarm {x}	Alarma {x}
+Alarms	Alarmas
+Alarms ({n}–{n})	Alarmas ({n}–{n})
+Alkaline	Alcalina
+Allowed	Permitido
+Ambient temperature	Temperatura ambiente
+Anti-PID operation	Funcionamiento anti-PID
+Apparent	Aparente
+Apparent energy	Energía aparente
+Apparent energy +	Energía aparente +
+Apparent energy −	Energía aparente −
+Apparent exported	Aparente exportada
+Apparent imported	Aparente importada
+Apparent power	Potencia aparente
+Apparent power +	Potencia aparente +
+Apparent power −	Potencia aparente −
+Appliance	Aparato
+Application	Aplicación
+Arc detector self-test	Autotest del detector de arco
+Arc detector self-test fault	Fallo en autotest del detector de arco
+Arc detector wrong configuration	Configuración errónea del detector de arco
+Arc fault	Fallo de arco
+Arc fault (E050)	Fallo de arco (E050)
+Arc fault self-test fail	Autotest de fallo de arco fallido
+Arc fault self-test fail (E053)	Autotest de fallo de arco fallido (E053)
+Arc fault wrong configuration	Configuración errónea de fallo de arco
+Array insulation resistance	Resistencia de aislamiento del generador
+Article number	Número de artículo
+Assisting	Asistiendo
+Auto exclusion	Autoexclusión
+Autoexclusion (E043)	Autoexclusión (E043)
+Automatic	Automático
+Availability	Disponibilidad
+Available	Disponible
+Available energy	Energía disponible
+Average current	Corriente media
+Average current THD	THD de corriente media
+Average voltage L-L	Tensión media L-L
+Average voltage L-N	Tensión media L-N
+Average voltage THD	THD de tensión media
+B (bidirectional)	B (bidireccional)
+B (car connected)	B (vehículo conectado)
+BDC rated power	Potencia nominal BDC
+BDC-side fault	Fallo en lado BDC
+BDC-side permanent fault	Fallo permanente en lado BDC
+BMS alarm	Alarma BMS
+BMS alarm {n}	Alarma BMS {n}
+BMS fault {n}	Fallo BMS {n}
+BMS protection	Protección BMS
+BMS software version	Versión de software BMS
+BMS status	Estado BMS
+Back-up output ({n}–{n})	Salida de respaldo ({n}–{n})
+Backup (EPS)	Respaldo (EPS)
+Backup mode	Modo de respaldo
+Bank state	Estado del banco
+Bank {n} power (sign not documented)	Potencia banco {n} (signo no documentado)
+Battery	Batería
+Battery (ESS)	Batería (ESS)
+Battery (SunSpec model {n})	Batería (modelo SunSpec {n})
+Battery ({n}–{n})	Batería ({n}–{n})
+Battery BCU firmware	Firmware BCU de batería
+Battery DSP2 firmware	Firmware DSP2 de batería
+Battery M3 firmware	Firmware M3 de batería
+Battery alarm	Alarma de batería
+Battery bank (SunSpec {n})	Banco de baterías (SunSpec {n})
+Battery bulk voltage	Tensión de carga bulk de batería
+Battery capacity not configured	Capacidad de batería no configurada
+Battery charge (AC side)	Carga de batería (lado AC)
+Battery charge (DC)	Carga de batería (DC)
+Battery charged today	Batería cargada hoy
+Battery charged total	Batería cargada total
+Battery charging	Cargando batería
+Battery discharge (AC side)	Descarga de batería (lado AC)
+Battery discharge (DC)	Descarga de batería (DC)
+Battery discharged today	Batería descargada hoy
+Battery discharged total	Batería descargada total
+Battery discharging	Descargando batería
+Battery fault	Fallo de batería
+Battery firmware	Firmware de batería
+Battery first	Prioridad batería
+Battery float voltage	Tensión de flotación de batería
+Battery hardware version	Versión de hardware de batería
+Battery low (W012)	Batería baja (W012)
+Battery management	Gestión de batería
+Battery management ({n}–{n})	Gestión de batería ({n}–{n})
+Battery online, PV offline	Batería en línea, FV fuera de línea
+Battery online, PV online/offline	Batería en línea, FV en/fuera de línea
+Battery protocol	Protocolo de batería
+Battery rated voltage	Tensión nominal de batería
+Battery re-charge voltage	Tensión de reinicio de carga
+Battery re-discharge voltage	Tensión de reinicio de descarga
+Battery settings	Ajustes de batería
+Battery standby	Batería en espera
+Battery state	Estado de batería
+Battery strings	Strings de batería
+Battery sustain	Mantenimiento de batería
+Battery to grid	Batería a red
+Battery to grid (AC)	Batería a red (AC)
+Battery to load	Batería a carga
+Battery type	Tipo de batería
+Battery type index	Índice de tipo de batería
+Battery under voltage	Subtensión de batería
+Battery unit {n} ({n}–{n})	Unidad de batería {n} ({n}–{n})
+Battery voltage	Tensión de batería
+Battery voltage steady while charging	Tensión de batería constante durante la carga
+Battery {n} ({n}–{n})	Batería {n} ({n}–{n})
+Battery {x} ({x}–{x})	Batería {x} ({x}–{x})
+BatteryLife active	BatteryLife activo
+Baud rate	Velocidad en baudios
+Bidirectional converters	Convertidores bidireccionales
+Bivalence deactivation	Desactivación de bivalencia
+Block (bivalence, DHW, etc.)	Bloqueo (bivalencia, ACS, etc.)
+Blocked	Bloqueado
+Board temperature	Temperatura de la placa
+Boost / min. temperature	Boost / temperatura mín.
+Boost heating	Calefacción boost
+Boost mode	Modo boost
+Boost time {n}	Tiempo boost {n}
+Booster heat heating total	Total resistencia de apoyo calefacción
+Booster heat hot water total	Total resistencia de apoyo ACS
+Booster heater	Resistencia de apoyo
+Booster temperature	Temperatura de apoyo
+Bought (lifetime)	Comprado (total)
+Bought today	Comprado hoy
+Brine in (BT10)	Entrada salmuera (BT10)
+Brine out (BT11)	Salida salmuera (BT11)
+Buffer	Depósito de inercia
+Buffer (WPF)	Depósito de inercia (WPF)
+Buffer set	Consigna depósito de inercia
+Bulk OV	Sobretensión bus
+Bulk OV (E004)	Sobretensión bus (E004)
+Bulk UV	Subtensión bus
+Bulk UV (E042)	Subtensión bus (E042)
+Bulk UV (W011)	Subtensión bus (W011)
+Bulk cap fail	Fallo condensador bus
+Bulk cap fail (E015)	Fallo condensador bus (E015)
+Bulk charging	Carga bulk
+Bulk low	Bus bajo
+Bulk low (E010)	Bus bajo (E010)
+Bus current	Corriente del bus
+Bus status	Estado del bus
+Bus voltage	Tensión del bus
+Buying (grid input)	Compra (entrada de red)
+Byte order	Orden de bytes
+C (charging)	C (cargando)
+CAN error	Error CAN
+COP today (calculated)	COP hoy (calculado)
+COP total (calculated)	COP total (calculado)
+CP availability (raw)	Disponibilidad CP (bruto)
+CPLD warning code	Código de aviso CPLD
+CT mode	Modo CT
+CT ratio	Relación CT
+Cabinet temperature	Temperatura del armario
+Cable at station	Cable en la estación
+Cable at station and car	Cable en la estación y en el vehículo
+Cable at station and car, locked	Cable en la estación y en el vehículo, bloqueado
+Cable at station, locked	Cable en la estación, bloqueado
+Cable coding	Codificación del cable
+Calculated supply	Impulsión calculada
+Calibratable (MID)	Calibrable (MID)
+Calibratable, national certification	Calibrable, certificación nacional
+Capacity	Capacidad
+Capacity (state of health)	Capacidad (estado de salud)
+Car connected	Vehículo conectado
+Car connected, paused	Vehículo conectado, en pausa
+Car state	Estado del vehículo
+Carbon-zinc	Zinc-carbono
+Channel {n} total power	Potencia total canal {n}
+Characterisation updated	Caracterización actualizada
+Charge	Carga
+Charge current	Corriente de carga
+Charge disabled	Carga desactivada
+Charge duration	Duración de carga
+Charge limit (InWRte)	Límite de carga (InWRte)
+Charge status	Estado de carga
+Charge throughputs	Volúmenes de carga
+Charge/discharge command	Comando de carga/descarga
+Charge/discharge power	Potencia de carga/descarga
+Charge/discharge power (+ charging)	Potencia de carga/descarga (+ carga)
+Charge/discharge rate	Tasa de carga/descarga
+Charged Ah	Ah cargados
+Charged energy	Energía cargada
+Charged from PV today	Cargado desde FV hoy
+Charged from PV total	Cargado desde FV total
+Charged today	Cargado hoy
+Charged total	Cargado total
+Charger power	Potencia del cargador
+Charger source priority	Prioridad de fuente del cargador
+Charging	Cargando
+Charging allowed	Carga permitida
+Charging current	Corriente de carga
+Charging finished, car connected	Carga finalizada, vehículo conectado
+Charging from grid	Cargando desde la red
+Charging power	Potencia de carga
+Charging set voltage	Tensión de carga ajustada
+Charging to float	Cargando hasta flotación
+Checking	Comprobando
+Checking grid	Comprobando red
+Circuits	Circuitos
+Client (slave)	Cliente (esclavo)
+Clk fail (W013)	Fallo de reloj (W013)
+Clock	Reloj
+Closed	Cerrado
+Clusters	Clústeres
+Co-controller firmware	Firmware del co-controlador
+Coldstart	Arranque en frío
+Combination code	Código de combinación
+Comfort	Confort
+Comfort charging	Carga confort
+Comfort cooling	Refrigeración confort
+Comfort heating	Calefacción confort
+Comm. error (E005)	Error de comunicación (E005)
+Commands via Ethernet	Comandos vía Ethernet
+Commands via RS232-{n}	Comandos vía RS232-{n}
+Commands via slot {n}	Comandos vía ranura {n}
+Communicate fault	Fallo de comunicación
+Communication board firmware	Firmware de la placa de comunicación
+Communication error	Error de comunicación
+Communication failure	Fallo de comunicación
+Communication impaired	Comunicación degradada
+Communication loss with communication board	Pérdida de comunicación con la placa de comunicación
+Communication loss with communication board (E054)	Pérdida de comunicación con la placa de comunicación (E054)
+Communication module firmware	Firmware del módulo de comunicación
+Communication timeout	Tiempo de espera de comunicación
+Communications	Comunicaciones
+Communications (wattmeter or master)	Comunicaciones (vatímetro o maestro)
+Compressor	Compresor
+Compressor frequency	Frecuencia del compresor
+Compressor operating time	Tiempo de funcionamiento del compresor
+Compressor starts	Arranques del compresor
+Compulsory	Obligatorio
+Condenser supply (BT12)	Impulsión condensador (BT12)
+Condition	Condición
+Configuration	Configuración
+Configuration changed	Configuración modificada
+Configuration fault (bad global settings)	Fallo de configuración (ajustes globales erróneos)
+Configuration fault (bad model)	Fallo de configuración (modelo erróneo)
+Connected	Conectado
+Connected to grid	Conectado a la red
+Connected to the grid	Conectado a la red
+Connecting (checking grid)	Conectando (comprobando red)
+Connecting (grid protection self-test)	Conectando (autotest protección de red)
+Connecting (safety checks)	Conectando (comprobaciones de seguridad)
+Connecting (switching on DC/AC)	Conectando (activando DC/AC)
+Connecting (switching on DC/DC)	Conectando (activando DC/DC)
+Connection	Conexión
+Connection initial ramp	Rampa inicial de conexión
+Constant voltage	Tensión constante
+Consumed	Consumido
+Consumption	Consumo
+Consumption meter	Contador de consumo
+Contact installer	Contacte con el instalador
+Contact manufacturer	Contacte con el fabricante
+Control board firmware	Firmware de la placa de control
+Control mode	Modo de control
+Control mode (StorCtl_Mod)	Modo de control (StorCtl_Mod)
+Control type	Tipo de control
+Controller	Controlador
+Controller code	Código del controlador
+Controller temperature	Temperatura del controlador
+Cooling	Refrigeración
+Cooling external/constant request	Solicitud de refrigeración externa/constante
+Cooling mode	Modo de refrigeración
+Cooling operation	Funcionamiento en refrigeración
+Counting EEPROM	EEPROM de contaje
+Country / grid code	País / código de red
+Country setting	Ajuste de país
+Country standard	Norma del país
+Current	Corriente
+Current (+ charging)	Corriente (+ carga)
+Current (as reported)	Corriente (según informe)
+Current (charge − / discharge +)	Corriente (carga − / descarga +)
+Current L{n}	Corriente L{n}
+Current L{x}	Corriente L{x}
+Current N	Corriente N
+Current THD	THD de corriente
+Current average	Corriente media
+Current demand	Demanda de corriente
+Current direction L{n} / L{n} / L{n}	Sentido de corriente L{n} / L{n} / L{n}
+Current event number	Número de evento actual
+Current output heating	Potencia actual calefacción
+Current tariff	Tarifa actual
+Current {x}	Corriente {x}
+Cycles	Ciclos
+D (charging, ventilation)	D (cargando, ventilación)
+DC area	Zona DC
+DC box active	Caja DC activa
+DC bus failure	Fallo del bus DC
+DC bus voltage too high	Tensión del bus DC demasiado alta
+DC bus voltage too low	Tensión del bus DC demasiado baja
+DC current	Corriente DC
+DC door open (E044)	Puerta DC abierta (E044)
+DC inj error (E023)	Error inyección DC (E023)
+DC injection sensor fault	Fallo del sensor de inyección DC
+DC input detection	Detección de entrada DC
+DC inputs	Entradas DC
+DC inputs (APsystems model {n})	Entradas DC (modelo APsystems {n})
+DC inputs (MPPT)	Entradas DC (MPPT)
+DC power	Potencia DC
+DC switch open	Interruptor DC abierto
+DC switch open (E039)	Interruptor DC abierto (E039)
+DC system (+ from battery)	Sistema DC (+ desde batería)
+DC voltage	Tensión DC
+DC-coupled (solar chargers)	Acoplado en DC (cargadores solares)
+DC-coupled current	Corriente acoplada en DC
+DC-side fault	Fallo en lado DC
+DC/DC DSP not programmed	DSP DC/DC no programado
+DC/DC IGBT sat	Saturación IGBT DC/DC
+DC/DC ILEAK fail	Fallo ILEAK DC/DC
+DC/DC channel {n} state	Estado canal DC/DC {n}
+DC/DC comm. error	Error de comunicación DC/DC
+DC/DC fail	Fallo DC/DC
+DC/DC fail (E012)	Fallo DC/DC (E012)
+DC/DC grid fail	Fallo de red DC/DC
+DC/DC off	DC/DC apagado
+DC/DC start	Arranque DC/DC
+DC{x} current	Corriente DC{x}
+DC{x} power	Potencia DC{x}
+DC{x} voltage	Tensión DC{x}
+DHW charging block	Bloqueo carga ACS
+DHW draw-off	Extracción de ACS
+DHW heating	Calentamiento ACS
+DHW mode	Modo ACS
+DLM applied L{n} / L{n} / L{n}	DLM aplicado L{n} / L{n} / L{n}
+DLM available L{n} / L{n} / L{n}	DLM disponible L{n} / L{n} / L{n}
+DLM external meter	Contador externo DLM
+DLM limit L{n} / L{n} / L{n}	Límite DLM L{n} / L{n} / L{n}
+DLM mode	Modo DLM
+DLM slaves connected	Esclavos DLM conectados
+DRM state	Estado DRM
+DRM status	Estado DRM
+DSP certification version	Versión de certificación DSP
+DSP firmware	Firmware DSP
+DSP programming	Programación DSP
+DSP software	Software DSP
+Daily yield	Producción diaria
+Defrost	Desescarche
+Defrosting	Desescarchando
+Degauss error	Error de desmagnetización
+Degaussing	Desmagnetizando
+Degree minutes	Grados-minuto
+Delay sequence H-Gen	Secuencia de retardo H-Gen
+Demand period	Periodo de demanda
+Den switch open (W016)	Interruptor den abierto (W016)
+Depth of discharge	Profundidad de descarga
+Derating	Reducción de potencia
+Derating run	Funcionamiento con reducción de potencia
+Derating running	Reducción de potencia en curso
+Derating state	Estado de reducción de potencia
+Description	Descripción
+Device	Dispositivo
+Device blocked	Dispositivo bloqueado
+Device class	Clase de dispositivo
+Device disabled	Dispositivo desactivado
+Device fault	Fallo del dispositivo
+Device info ({n})	Información del dispositivo ({n})
+Device name	Nombre del dispositivo
+Device number	Número de dispositivo
+Device state	Estado del dispositivo
+Device status	Estado del dispositivo
+Device time (UTC)	Hora del dispositivo (UTC)
+Device type	Tipo de dispositivo
+Device type code (DTC)	Código de tipo de dispositivo (DTC)
+Device type code ({n})	Código de tipo de dispositivo ({n})
+Diagnosis status high	Estado de diagnóstico alto
+Diagnosis status low	Estado de diagnóstico bajo
+Diagnostics / status	Diagnóstico / estado
+Digital inputs	Entradas digitales
+Digital outputs	Salidas digitales
+Direction (power flow bits)	Sentido (bits de flujo de potencia)
+Disabled	Desactivado
+Discharge	Descarga
+Discharge (BT14)	Descarga (BT14)
+Discharge current	Corriente de descarga
+Discharge disabled	Descarga desactivada
+Discharge limit (OutWRte)	Límite de descarga (OutWRte)
+Discharge power (+ discharge)	Potencia de descarga (+ descarga)
+Discharged Ah	Ah descargados
+Discharged energy	Energía descargada
+Discharged today	Descargado hoy
+Discharged total	Descargado total
+Discharging	Descargando
+Discharging (inverting) power	Potencia de descarga (inversión)
+Discharging power	Potencia de descarga
+Disconnected	Desconectado
+Disconnected from grid	Desconectado de la red
+Dispatch	Despacho
+Dispatch run	Funcionamiento en despacho
+Dispatch running	Despacho en curso
+Displacement power factor	Factor de potencia de desplazamiento
+Disturbance	Perturbación
+Diverter valve (QN10)	Válvula de tres vías (QN10)
+Drying cooling-down	Secado enfriamiento
+Drying end	Fin de secado
+Drying heating-up	Secado calentamiento
+Drying stationary	Secado estacionario
+Dustproof kit installed	Kit antipolvo instalado
+EEI displacement power factor	Factor de potencia de desplazamiento EEI
+EEPROM failure	Fallo de EEPROM
+EEPROM version	Versión de EEPROM
+EMS communication lost	Comunicación con EMS perdida
+EMS mode	Modo EMS
+ENS DC injection mismatch	Discrepancia ENS inyección DC
+ENS GFCI mismatch	Discrepancia ENS GFCI
+ENS grid frequency mismatch	Discrepancia ENS frecuencia de red
+ENS grid impedance mismatch	Discrepancia ENS impedancia de red
+ENS grid voltage mismatch	Discrepancia ENS tensión de red
+ENS measurement mismatch	Discrepancia ENS de medición
+ESS mode	Modo ESS
+Easy connection mode (A): power always positive, export not measured	Modo de conexión fácil (A): potencia siempre positiva, exportación no medida
+Economy cooling	Refrigeración económica
+Economy heating	Calefacción económica
+Efficiency	Rendimiento
+Electrical energy total	Energía eléctrica total
+Electrical heating total	Total eléctrico calefacción
+Electrical hot water total	Total eléctrico ACS
+Electrical power	Potencia eléctrica
+Electrical power limit	Límite de potencia eléctrica
+Electrical today	Eléctrico hoy
+Emergency battery charge	Carga de emergencia de batería
+Emergency charging	Carga de emergencia
+Emergency operation	Funcionamiento de emergencia
+Emergency stop	Parada de emergencia
+Empty	Vacío
+Enabled	Activado
+Encharge SoC	SoC Encharge
+Encharge energy	Energía Encharge
+Energy	Energía
+Energy (Conext CL registers)	Energía (registros Conext CL)
+Energy (lifetime)	Energía (total)
+Energy (net)	Energía (neta)
+Energy ({n}–{n})	Energía ({n}–{n})
+Energy capacity	Capacidad energética
+Energy consumed	Energía consumida
+Energy consumed (total)	Energía consumida (total)
+Energy data update (UTC)	Actualización datos de energía (UTC)
+Energy delivered	Energía entregada
+Energy delivered (actEnergyDlvd)	Energía entregada (actEnergyDlvd)
+Energy delivered (total)	Energía entregada (total)
+Energy drawn (+)	Energía importada (+)
+Energy fed in (−)	Energía inyectada (−)
+Energy from grid today	Energía importada de la red hoy
+Energy import	Importación de energía
+Energy manager	Gestor de energía
+Energy meter	Contador de energía
+Energy received (actEnergyRcvd)	Energía recibida (actEnergyRcvd)
+Energy to grid today	Energía exportada a la red hoy
+Energy totals	Totales de energía
+Equalisation charging	Carga de ecualización
+Erasing external EEPROM	Borrando EEPROM externa
+Erasing internal EEPROM	Borrando EEPROM interna
+Error code	Código de error
+Error code high	Código de error alto
+Error code low	Código de error bajo
+Error flags	Indicadores de error
+Error meas F (E028)	Error medición F (E028)
+Error meas Ileak (E030)	Error medición Ileak (E030)
+Error meas V (E027)	Error medición V (E027)
+Error meas Z (E029)	Error medición Z (E029)
+Error message	Mensaje de error
+Error messages {n} / {n} / {n}	Mensajes de error {n} / {n} / {n}
+Error read I (E032)	Error lectura I (E032)
+Error read V (E031)	Error lectura V (E031)
+Errors	Errores
+Event code {n}	Código de evento {n}
+Event number for manufacturer	Número de evento para el fabricante
+Events	Eventos
+Events for installer	Eventos para el instalador
+Events for user	Eventos para el usuario
+Events {n}	Eventos {n}
+Executing auto-test	Ejecutando autotest
+Executing autotest	Ejecutando autotest
+Exhaust air (BT20)	Aire de salida (BT20)
+Export (delivered)	Exportación (entregada)
+Export T{n}	Exportación T{n}
+Export power ({n})	Potencia de exportación ({n})
+Export power demand	Demanda de potencia de exportación
+Exported	Exportado
+Exported (lifetime)	Exportado (total)
+Exported (reverse)	Exportado (inverso)
+Exported T{n} / T{n}	Exportado T{n} / T{n}
+Exported energy (positive active)	Energía exportada (activa positiva)
+Exported from PV today	Exportado desde FV hoy
+Exported from PV total	Exportado desde FV total
+Exported kWh(−)	kWh exportados (−)
+Exported tariff {x}	Exportado tarifa {x}
+Exported today	Exportado hoy
+Exported total	Exportado total
+External AC inverters	Inversores AC externos
+External EMS	EMS externo
+External connection frequency	Frecuencia de conexión externa
+External control	Control externo
+External current {x}	Corriente externa {x}
+External power	Potencia externa
+External power {x}	Potencia externa {x}
+External production	Producción externa
+External supply (BT25)	Impulsión externa (BT25)
+External switch off	Apagado externo
+External via Modbus	Externo vía Modbus
+External via digital I/O	Externo vía E/S digital
+External voltage {x}	Tensión externa {x}
+Externally blocked	Bloqueado externamente
+Extract air (BT21)	Aire extraído (BT21)
+FGA number	Número FGA
+Factory default	Valores de fábrica
+Failed sending table	Error al enviar la tabla
+Failsafe current	Corriente de seguridad
+Failsafe timeout	Tiempo de espera de seguridad
+Family	Familia
+Fan fail (W010)	Fallo del ventilador (W010)
+Fan locked	Ventilador bloqueado
+Fan stuck	Ventilador atascado
+Fan stuck (E038)	Ventilador atascado (E038)
+Fan-on voltage offset	Offset de tensión de encendido del ventilador
+Fault	Fallo
+Fault / alarm code	Código de fallo / alarma
+Fault ID	ID de fallo
+Fault code	Código de fallo
+Fault correction measure	Medida correctiva del fallo
+Fault sub-code	Subcódigo de fallo
+Fault {x}	Fallo {x}
+Fault/alarm code	Código de fallo/alarma
+Fault/alarm time	Hora de fallo/alarma
+Faulted	En fallo
+Faults	Fallos
+Faults and alarms (Appendix {n} bit fields)	Fallos y alarmas (campos de bits del apéndice {n})
+Fed-in energy (lifetime)	Energía inyectada (total)
+Feed-in	Inyección
+Feed-in limitation	Limitación de inyección
+Feed-in limitation ratio	Ratio de limitación de inyección
+Feed-in limitation value	Valor de limitación de inyección
+Feed-in management	Gestión de inyección
+Feed-in power limit	Límite de potencia de inyección
+Feed-in power limit ratio	Ratio de límite de potencia de inyección
+Feed-in power limit value	Valor de límite de potencia de inyección
+Feed-in time	Tiempo de inyección
+Feed-in time today	Tiempo de inyección hoy
+Feed-in today	Inyección hoy
+Feed-in total	Inyección total
+Feeding in	Inyectando
+Finished	Finalizado
+Finished, car connected	Finalizado, vehículo conectado
+Finishing	Finalizando
+Firmware (DLF X.Y.ZTT, raw)	Firmware (DLF X.Y.ZTT, bruto)
+Firmware (DSP.LCD major)	Firmware (DSP.LCD mayor)
+Firmware (DSP.LCD minor)	Firmware (DSP.LCD menor)
+Firmware DSP master	Firmware DSP maestro
+Firmware DSP slave	Firmware DSP esclavo
+Firmware logic component	Firmware componente lógico
+Firmware main processor	Firmware procesador principal
+Firmware update	Actualización de firmware
+Fixed charge/discharge	Carga/descarga fija
+Float	Flotación
+Float charging	Carga de flotación
+Float word order	Orden de palabras float
+Flooded	Inundada
+Flow	Impulsión
+Flow (BF1)	Caudal (BF1)
+Flow WQ/GW circuit	Impulsión circuito WQ/GW
+Flow booster	Impulsión apoyo
+Flow heat pump	Impulsión bomba de calor
+Flow rate	Caudal
+Flow setpoint	Consigna de impulsión
+Flow temperature	Temperatura de impulsión
+Flow time condenser pump	Tiempo de prefuncionamiento bomba condensador
+Flow time cooling operation	Tiempo de prefuncionamiento refrigeración
+Flow time heating operation	Tiempo de prefuncionamiento calefacción
+Flow time primary	Tiempo de prefuncionamiento primario
+Follow-up time primary	Tiempo de posfuncionamiento primario
+Forbidden state	Estado prohibido
+Forced acceptance	Aceptación forzada
+Forced charging	Carga forzada
+Forced throttling	Limitación forzada
+Forcible charge/discharge	Carga/descarga forzada
+Framing	Tramado
+Freeze	Congelación
+Frequency	Frecuencia
+From PV	Desde FV
+From battery	Desde batería
+From grid	Desde la red
+Front selector	Selector frontal
+Frost operation	Funcionamiento antihielo
+Full	Lleno
+Full charges	Cargas completas
+Full-charge capacity	Capacidad a carga completa
+Fully fed to grid	Inyección total a red
+Function bits	Bits de función
+Fundamental active energy	Energía activa fundamental
+Fundamental returned energy	Energía devuelta fundamental
+Fuse fail	Fallo de fusible
+Fuse ok	Fusible OK
+Fuse type	Tipo de fusible
+GFCI sensor failure	Fallo del sensor GFCI
+GX device	Dispositivo GX
+Gateway	Pasarela
+Generation energy	Energía generada
+Generation power	Potencia generada
+Generation time	Tiempo de generación
+Generator	Generador
+Generator power	Potencia del generador
+Generator starts	Arranques del generador
+Generator status	Estado del generador
+Generator to battery	Generador a batería
+Generator to load	Generador a carga
+Global state	Estado global
+Grid	Red
+Grid OF (W006)	Sobrefrecuencia de red (W006)
+Grid OV	Sobretensión de red
+Grid OV (W004)	Sobretensión de red (W004)
+Grid UF (W007)	Subfrecuencia de red (W007)
+Grid UV (W005)	Subtensión de red (W005)
+Grid buy	Compra de red
+Grid check	Comprobación de red
+Grid connection	Conexión a red
+Grid connections	Conexiones a red
+Grid current	Corriente de red
+Grid df/dt (W015)	df/dt de red (W015)
+Grid fail	Fallo de red
+Grid fail (W003)	Fallo de red (W003)
+Grid feed-in	Inyección a red
+Grid feed-in counter	Contador de inyección a red
+Grid first	Prioridad red
+Grid frequency	Frecuencia de red
+Grid frequency / active power control	Frecuencia de red / control de potencia activa
+Grid frequency out of range (master)	Frecuencia de red fuera de rango (maestro)
+Grid impedance	Impedancia de red
+Grid impedance change (ΔZ)	Cambio de impedancia de red (ΔZ)
+Grid impedance out of range (master)	Impedancia de red fuera de rango (maestro)
+Grid impedance {x}	Impedancia de red {x}
+Grid meter (only with a directly connected smart meter)	Contador de red (solo con contador inteligente conectado directamente)
+Grid meter (only with a smart meter for feed-in limitation)	Contador de red (solo con contador inteligente para limitación de inyección)
+Grid mode	Modo de red
+Grid net power (sign not documented)	Potencia neta de red (signo no documentado)
+Grid not present	Red no presente
+Grid part	Parte de red
+Grid power (+ export)	Potencia de red (+ exportación)
+Grid pre-check	Precomprobación de red
+Grid protection self-test fault	Fallo en autotest de protección de red
+Grid rated current	Corriente nominal de red
+Grid rated voltage	Tensión nominal de red
+Grid reference counter	Contador de consumo de red
+Grid relay	Relé de red
+Grid scheduling: PF-U curve	Gestión de red: curva PF-U
+Grid scheduling: Q-P curve	Gestión de red: curva Q-P
+Grid scheduling: Q-U curve	Gestión de red: curva Q-U
+Grid scheduling: cosφ-P curve	Gestión de red: curva cosφ-P
+Grid scheduling: dry contact	Gestión de red: contacto seco
+Grid sell	Venta a red
+Grid sequence fault	Fallo de secuencia de red
+Grid side ({n}–{n})	Lado de red ({n}–{n})
+Grid switch off	Desconexión de red
+Grid sync	Sincronización de red
+Grid to battery	Red a batería
+Grid to battery (AC)	Red a batería (AC)
+Grid to load	Red a carga
+Grid voltage	Tensión de red
+Grid voltage / active power control	Tensión de red / control de potencia activa
+Grid voltage out of range (master)	Tensión de red fuera de rango (maestro)
+Grid-side fault	Fallo en lado de red
+Gross capacity	Capacidad bruta
+Ground fault	Fallo a tierra
+Ground fault (E018)	Fallo a tierra (E018)
+Ground water frost protection	Protección antihielo agua subterránea
+Grounding-kit fault	Fallo del kit de puesta a tierra
+HC1 pump	Bomba HC1
+HC2 pump	Bomba HC2
+HEMS current limit	Límite de corriente HEMS
+HP fault (sensor or switch)	Fallo de alta presión (sensor o presostato)
+HP flow too high	Impulsión BC demasiado alta
+HP frost protection	Protección antihielo BC
+HP off	BC apagada
+HP temperature too low	Temperatura BC demasiado baja
+Hardware fault	Fallo de hardware
+Hardware revision	Revisión de hardware
+Hardware type	Tipo de hardware
+Hardware version	Versión de hardware
+Heat	Calor
+Heat by compressor, heating	Calor por compresor, calefacción
+Heat by compressor, hot water	Calor por compresor, ACS
+Heat by compressor, pool	Calor por compresor, piscina
+Heat cooling total	Total calor refrigeración
+Heat finished	Calor finalizado
+Heat generator off	Generador de calor apagado
+Heat generator status	Estado del generador de calor
+Heat heating total	Total calor calefacción
+Heat hot water total	Total calor ACS
+Heat produced, heating	Calor producido, calefacción
+Heat produced, hot water	Calor producido, ACS
+Heat pump	Bomba de calor
+Heat pump error	Error de la bomba de calor
+Heat sink temperature	Temperatura del disipador
+Heat today	Calor hoy
+Heat-up program	Programa de calentamiento
+Heating	Calefacción
+Heating circuit {n}	Circuito de calefacción {n}
+Heating circuit {n} flow	Impulsión circuito de calefacción {n}
+Heating external/constant request	Solicitud de calefacción externa/constante
+Heating medium pump (GP1)	Bomba del medio calefactor (GP1)
+Heating operation	Funcionamiento en calefacción
+Heating power	Potencia de calefacción
+Heating pressure	Presión de calefacción
+Heating with HP	Calefacción con BC
+Heatsink temperature	Temperatura del disipador
+High grid frequency	Frecuencia de red alta
+High grid voltage	Tensión de red alta
+Highest temperature	Temperatura máxima
+Highest voltage	Tensión máxima
+Holding	Retención
+Holiday	Vacaciones
+Home consumption	Consumo de la casa
+Host (master)	Host (maestro)
+Host name	Nombre de host
+Hot gas	Gas caliente
+Hot water	ACS
+Hot water bottom (SF2)	ACS inferior (SF2)
+Hot water charging (BT6)	Carga ACS (BT6)
+Hot water set	Consigna ACS
+Hot water setpoint	Consigna ACS
+Hot water start (BT5)	Inicio ACS (BT5)
+Hot water top (BT7)	ACS superior (BT7)
+Hot water top (SF)	ACS superior (SF)
+Hot water with HP	ACS con BC
+Hybrid inverter	Inversor híbrido
+Hybrid inverter DC power	Potencia DC del inversor híbrido
+I-V scanning	Escaneo I-V
+IGBT sat	Saturación IGBT
+IGBT sat (E007)	Saturación IGBT (E007)
+IP address	Dirección IP
+ISG version	Versión ISG
+Identification code	Código de identificación
+Identity (SunSpec model {n})	Identidad (modelo SunSpec {n})
+Identity ({n}–{n})	Identidad ({n}–{n})
+Idle	Inactivo
+Ileak sens. fail (E019)	Fallo sensor Ileak (E019)
+Ileak sensor fail	Fallo del sensor Ileak
+Import (consumed)	Importación (consumida)
+Import T{n}	Importación T{n}
+Import power demand	Demanda de potencia de importación
+Imported	Importado
+Imported (forward)	Importado (directo)
+Imported (lifetime)	Importado (total)
+Imported T{n} / T{n}	Importado T{n} / T{n}
+Imported energy (reverse active)	Energía importada (activa inversa)
+Imported kWh(+)	kWh importados (+)
+Imported tariff {x}	Importado tarifa {x}
+Imported today	Importado hoy
+Imported total	Importado total
+Importing	Importando
+Improper DC voltage	Tensión DC inadecuada
+Information flags	Indicadores de información
+Init	Inicio
+Initial ramp	Rampa inicial
+Initial standby	Espera inicial
+Initializing	Inicializando
+Initializing (configuring power control)	Inicializando (configurando control de potencia)
+Initializing (system start-up)	Inicializando (arranque del sistema)
+Initiated	Iniciado
+Input OC	Sobrecorriente de entrada
+Input OC (E001)	Sobrecorriente de entrada (E001)
+Input OV	Sobretensión de entrada
+Input OV (E002)	Sobretensión de entrada (E002)
+Input UC	Subcorriente de entrada
+Input UC (E037)	Subcorriente de entrada (E037)
+Input UV	Subtensión de entrada
+Input UV (W002)	Subtensión de entrada (W002)
+Input low	Entrada baja
+Input mode error	Error de modo de entrada
+Input voltage range	Rango de tensión de entrada
+Input {n} current	Corriente entrada {n}
+Input {n} power	Potencia entrada {n}
+Input {n} voltage	Tensión entrada {n}
+Input {x} current	Corriente entrada {x}
+Input {x} power	Potencia entrada {x}
+Input {x} voltage	Tensión entrada {x}
+Inside temperature	Temperatura interior
+Inspecting	Inspeccionando
+Insulation impedance	Impedancia de aislamiento
+Insulation resistance	Resistencia de aislamiento
+Intelligent station building	Edificio de estación inteligente
+Interlock (emergency stop)	Enclavamiento (parada de emergencia)
+Interlock (remote off)	Enclavamiento (apagado remoto)
+Interlock fail	Fallo de enclavamiento
+Interlock fail (E034)	Fallo de enclavamiento (E034)
+Intermediate circuit voltage	Tensión del circuito intermedio
+Internal	Interno
+Internal communication fault	Fallo de comunicación interna
+Internal error	Error interno
+Internal error (E009)	Error interno (E009)
+Internal error (E024)	Error interno (E024)
+Internal error E026	Error interno E026
+Internal error E027	Error interno E027
+Internal error E028	Error interno E028
+Internal error E029	Error interno E029
+Internal error E030	Error interno E030
+Internal temperature	Temperatura interna
+Interrupted (temperature / suspended)	Interrumpido (temperatura / suspendido)
+Invalid	No válido
+Inverter	Inversor
+Inverter (AC)	Inversor (AC)
+Inverter (SunSpec model {n})	Inversor (modelo SunSpec {n})
+Inverter ({n}–{n})	Inversor ({n}–{n})
+Inverter DSP not programmed	DSP del inversor no programado
+Inverter M3 firmware	Firmware M3 del inversor
+Inverter active power (+ export)	Potencia activa del inversor (+ exportación)
+Inverter alarm	Alarma del inversor
+Inverter clock	Reloj del inversor
+Inverter controls (SunSpec model {n})	Controles del inversor (modelo SunSpec {n})
+Inverter fail	Fallo del inversor
+Inverter fail (E016)	Fallo del inversor (E016)
+Inverter fault/Modbus communication	Fallo del inversor/comunicación Modbus
+Inverter firmware	Firmware del inversor
+Inverter input today	Entrada del inversor hoy
+Inverter input total	Entrada del inversor total
+Inverter output ({n}–{n})	Salida del inversor ({n}–{n})
+Inverter output today	Salida del inversor hoy
+Inverter output total	Salida del inversor total
+Inverter start	Arranque del inversor
+Inverter state	Estado del inversor
+Inverter temperature	Temperatura del inversor
+Inverter/charger	Inversor/cargador
+Inverting	Modo inversor
+Island mains	Red aislada
+Isolation measurement	Medición de aislamiento
+Isolation resistance	Resistencia de aislamiento
+Item number	Número de artículo
+Jbox fail (W017)	Fallo caja de conexiones (W017)
+Key stop	Parada por llave
+LCD firmware	Firmware LCD
+LWZ integral unit	Unidad integral LWZ
+Lagging	Inductivo
+Lagging reactive energy	Energía reactiva inductiva
+Last energy reset	Último reinicio de energía
+Last fault values	Últimos valores de fallo
+Last update	Última actualización
+Last update (UTC)	Última actualización (UTC)
+Latch with reset by hand	Enclavado con reinicio manual
+Lead-acid	Plomo-ácido
+Leading	Capacitivo
+Leading reactive energy	Energía reactiva capacitiva
+Leak fail	Fallo de fuga
+Leak fault	Fallo de fuga
+Leakage current	Corriente de fuga
+Leakage current too high	Corriente de fuga demasiado alta
+Leakage fault	Fallo de fuga
+Left	Izquierda
+Legionella boost	Boost antilegionela
+Li-ion	Ion-litio
+Limitation compressor	Limitación del compresor
+Line	Línea
+Line fault	Fallo de línea
+Line voltage L{n}-L{n}	Tensión de línea L{n}-L{n}
+Line voltage L{n}-L{n} (or grid voltage)	Tensión de línea L{n}-L{n} (o tensión de red)
+Line voltage {x}	Tensión de línea {x}
+Liquid line (BT15)	Línea de líquido (BT15)
+Lithium	Litio
+Live data	Datos en vivo
+Load	Carga
+Load (home consumption)	Carga (consumo de la casa)
+Load (lifetime)	Carga (total)
+Load (positive)	Carga (positiva)
+Load first	Prioridad carga
+Load frequency	Frecuencia de carga
+Load generating (retrofit)	Carga generadora (retrofit)
+Load nominal power	Potencia nominal de carga
+Load on	Carga activada
+Load power	Potencia de carga
+Load state	Estado de carga
+Load today	Carga hoy
+Load today (without back-up)	Carga hoy (sin respaldo)
+Load total	Carga total
+Load total (without back-up)	Carga total (sin respaldo)
+Load voltage	Tensión de carga
+Local & remote	Local y remoto
+Local / remote control	Control local / remoto
+Low SOC	SoC bajo
+Low Vac to reach nominal power	Vac baja para alcanzar la potencia nominal
+Low grid frequency	Frecuencia de red baja
+Low power	Baja potencia
+Low-pressure fault	Fallo de baja presión
+Lower discharge limit (self-consumption)	Límite inferior de descarga (autoconsumo)
+Lowest temperature	Temperatura mínima
+L{n} current	Corriente L{n}
+L{n} power	Potencia L{n}
+L{n} voltage	Tensión L{n}
+L{n} voltage (phase R)	Tensión L{n} (fase R)
+L{n}–L{n} voltage	Tensión L{n}–L{n}
+L{x} current	Corriente L{x}
+L{x} power	Potencia L{x}
+L{x} voltage	Tensión L{x}
+MAC address	Dirección MAC
+MPP search	Búsqueda MPP
+MPPT {x} current	Corriente MPPT {x}
+MPPT {x} power	Potencia MPPT {x}
+MPPT {x} voltage	Tensión MPPT {x}
+MPPTs	MPPT
+Machine not configured	Máquina no configurada
+Machine type	Tipo de máquina
+Main CPU firmware	Firmware CPU principal
+Mainboard error	Error de la placa base
+Manual DHW	ACS manual
+Manual cooling	Refrigeración manual
+Manual heating	Calefacción manual
+Manual mode cooling	Modo manual refrigeración
+Manual mode heating	Modo manual calefacción
+Manual mode hot water	Modo manual ACS
+Manual operation	Funcionamiento manual
+Manufactured	Fabricado
+Manufacturer	Fabricante
+Manufacturer reserved	Reservado por el fabricante
+Master (standalone)	Maestro (independiente)
+Master (with internal slave)	Maestro (con esclavo interno)
+Master exclusion	Exclusión del maestro
+Master-slave communication failed	Fallo de comunicación maestro-esclavo
+Max AC charging current	Corriente máx. de carga AC
+Max charge power (battery)	Potencia máx. de carga (batería)
+Max charge power (manufacturer)	Potencia máx. de carga (fabricante)
+Max charge rate	Tasa máx. de carga
+Max charge/discharge power	Potencia máx. de carga/descarga
+Max charging current	Corriente máx. de carga
+Max charging time at C.V.	Tiempo máx. de carga a C.V.
+Max current (saved)	Corriente máx. (guardada)
+Max current (volatile)	Corriente máx. (volátil)
+Max current of the car	Corriente máx. del vehículo
+Max discharge power (battery)	Potencia máx. de descarga (batería)
+Max discharge power (manufacturer)	Potencia máx. de descarga (fabricante)
+Max discharge rate	Tasa máx. de descarga
+Max discharging current	Corriente máx. de descarga
+Max leakage current	Corriente de fuga máx.
+Max registers per request	Máx. registros por solicitud
+Max supported current (hardware)	Corriente máx. admitida (hardware)
+Max. PV input power	Potencia máx. de entrada FV
+Max. SOC	SoC máx.
+Max. active power	Potencia activa máx.
+Max. active power (real)	Potencia activa máx. (real)
+Max. allowed charge power	Potencia máx. de carga permitida
+Max. allowed discharge power	Potencia máx. de descarga permitida
+Max. apparent power	Potencia aparente máx.
+Max. apparent power (real)	Potencia aparente máx. (real)
+Max. cell temperature	Temperatura máx. de celda
+Max. cell voltage	Tensión máx. de celda
+Max. charge current	Corriente máx. de carga
+Max. charge current (as reported)	Corriente máx. de carga (según informe)
+Max. charge power (system)	Potencia máx. de carga (sistema)
+Max. charge rate	Tasa máx. de carga
+Max. charging current (BMS)	Corriente máx. de carga (BMS)
+Max. deliverable power	Potencia máx. suministrable
+Max. discharge current	Corriente máx. de descarga
+Max. discharge current (as reported)	Corriente máx. de descarga (según informe)
+Max. discharge power (system)	Potencia máx. de descarga (sistema)
+Max. discharge rate	Tasa máx. de descarga
+Max. discharging current (BMS)	Corriente máx. de descarga (BMS)
+Max. feed-in limitation	Limitación máx. de inyección
+Max. power	Potencia máx.
+Max. power possible (incl. slaves)	Potencia máx. posible (incl. esclavos)
+Max. reactive power (absorbed)	Potencia reactiva máx. (absorbida)
+Max. reactive power (fed in)	Potencia reactiva máx. (inyectada)
+Maximise self-consumption	Maximizar autoconsumo
+Maximum VA demand	Demanda máxima de VA
+Maximum active power	Potencia activa máxima
+Maximum apparent power	Potencia aparente máxima
+Maximum current demand	Demanda máxima de corriente
+Maximum power	Potencia máxima
+Maximum power demand	Demanda máxima de potencia
+Mean current	Corriente media
+Mean grid voltage (phase–neutral)	Tensión media de red (fase–neutro)
+Measurement mode	Modo de medición
+Measuring Riso	Midiendo Riso
+Measuring interval	Intervalo de medición
+Measuring system	Sistema de medición
+Message	Mensaje
+Meter	Contador
+Meter active power ({n}, > {n} import)	Potencia activa del contador ({n}, > {n} importación)
+Meter amps	Amperios del contador
+Meter code	Código del contador
+Meter communication detection	Detección de comunicación del contador
+Meter error	Error del contador
+Meter firmware	Firmware del contador
+Meter name	Nombre del contador
+Meter position ({n})	Posición del contador ({n})
+Meter power (+ import)	Potencia del contador (+ importación)
+Meter power ({n}, as reported)	Potencia del contador ({n}, según informe)
+Meter power direction ({n})	Sentido de potencia del contador ({n})
+Meter power seen by device	Potencia del contador vista por el dispositivo
+Meter state	Estado del contador
+Meter type	Tipo de contador
+Meter: {x}	Contador: {x}
+Metering status	Estado de medición
+Microgrid operation	Funcionamiento en microrred
+Microinverters ({x})	Microinversores ({x})
+Min. SOC	SoC mín.
+Min. cell temperature	Temperatura mín. de celda
+Min. cell voltage	Tensión mín. de celda
+Min. feed-in limitation	Limitación mín. de inyección
+Min. power factor Q{x}	Factor de potencia mín. Q{x}
+Minimum active power	Potencia activa mínima
+Minimum active power +	Potencia activa mínima +
+Minimum current	Corriente mínima
+Minimum off time	Tiempo mínimo de apagado
+Minimum on time	Tiempo mínimo de encendido
+Minimum reserve	Reserva mínima
+Modbus address	Dirección Modbus
+Modbus device address	Dirección Modbus del dispositivo
+Modbus mapping version	Versión de mapeo Modbus
+Modbus max current	Corriente máx. Modbus
+Modbus max current valid for	Corriente máx. Modbus válida durante
+Modbus protocol version	Versión del protocolo Modbus
+Modbus setpoint accounted for	Consigna Modbus tenida en cuenta
+Modbus spec version	Versión de especificación Modbus
+Modbus table version	Versión de tabla Modbus
+Mode	Modo
+Mode (QMOD)	Modo (QMOD)
+Mode {n} state	Estado modo {n}
+Model	Modelo
+Model ID	ID de modelo
+Model code	Código de modelo
+Model family	Familia de modelo
+Modulation	Modulación
+Module	Módulo
+Module rated capacity	Capacidad nominal del módulo
+Module rated voltage	Tensión nominal del módulo
+Module temperature	Temperatura del módulo
+Modules per cluster	Módulos por clúster
+More	Más
+Multi Device Control plant	Instalación Multi Device Control
+Multi Device Control role	Rol Multi Device Control
+N-bus voltage	Tensión bus N
+Name	Nombre
+Nameplate	Placa de características
+Nameplate ratings (SunSpec model {n})	Valores nominales (modelo SunSpec {n})
+Negative	Negativo
+Negative voltage to ground	Tensión negativa a tierra
+Net	Neto
+Net active energy	Energía activa neta
+Net power (sign not documented)	Potencia neta (signo no documentado)
+Neutral current	Corriente de neutro
+Neutral current (calculated)	Corriente de neutro (calculada)
+Neutral current (vector sum)	Corriente de neutro (suma vectorial)
+Neutral current mismatch	Discrepancia de corriente de neutro
+Neutral meter error	Error de contador de neutro
+Neutral overcurrent	Sobrecorriente de neutro
+Night SVG	SVG nocturno
+Night powered mode	Modo de alimentación nocturna
+No ESS	Sin ESS
+No alarm	Sin alarma
+No battery	Sin batería
+No cable	Sin cable
+No control signal	Sin señal de control
+No error	Sin error
+No fault	Sin fallo
+No flow between battery and grid	Sin flujo entre batería y red
+No grid	Sin red
+No ground	Sin tierra
+No matching schedule	Sin programación coincidente
+No parameters	Sin parámetros
+No parameters (E003)	Sin parámetros (E003)
+No reduction	Sin reducción
+No sensor	Sin sensor
+Nominal PV voltage	Tensión FV nominal
+Nominal active power	Potencia activa nominal
+Nominal capacity	Capacidad nominal
+Nominal frequency	Frecuencia nominal
+Nominal output power	Potencia de salida nominal
+Nominal power	Potencia nominal
+Nominal power (Ok mode)	Potencia nominal (modo Ok)
+Nominal reactive power	Potencia reactiva nominal
+None	Ninguno
+Normal charging	Carga normal
+Normal cooling	Refrigeración normal
+Normal heating	Calefacción normal
+Not active	No activo
+Not allowed	No permitido
+Not applicable	No aplicable
+Not available	No disponible
+Not connected	No conectado
+Not ready	No preparado
+Not ready to connect	No preparado para conectar
+Not used	No utilizado
+Number of elements	Número de elementos
+OCPP state	Estado OCPP
+OCPP status	Estado OCPP
+Occupied	Ocupado
+Off	Apagado
+Off-grid	Aislado de red
+Off-grid (PV + battery)	Aislado de red (FV + batería)
+Off-grid charge	Carga aislada de red
+Off-grid option	Opción aislada de red
+Offline	Fuera de línea
+On	Encendido
+On-grid	Conectado a red
+On-grid load L{n}	Carga en red L{n}
+On-grid: power limited	Conectado a red: potencia limitada
+On-grid: self-derating	Conectado a red: autorreducción
+On-line	En línea
+On/off command	Comando encendido/apagado
+One direction restricted	Una dirección restringida
+Online	En línea
+Only solar	Solo solar
+Open	Abierto
+Open loop	Lazo abierto
+Operating hours	Horas de funcionamiento
+Operating message	Mensaje de funcionamiento
+Operating mode	Modo de funcionamiento
+Operating prioritisation	Priorización de funcionamiento
+Operating state	Estado de funcionamiento
+Operating status	Estado de funcionamiento
+Operating time	Tiempo de funcionamiento
+Operation	Funcionamiento
+Operation choice	Selección de funcionamiento
+Operation logic	Lógica de funcionamiento
+Operation mode	Modo de funcionamiento
+Operation overtemperature	Sobretemperatura en funcionamiento
+Operation state	Estado de funcionamiento
+Operation state bits	Bits de estado de funcionamiento
+Operation time (lifetime)	Tiempo de funcionamiento (total)
+Operation time today	Tiempo de funcionamiento hoy
+Operation timer	Temporizador de funcionamiento
+Operator current limit	Límite de corriente del operador
+Options	Opciones
+Order number	Número de pedido
+Other	Otro
+Out OC	Sobrecorriente de salida
+Outdoor	Exterior
+Outdoor (AF1)	Exterior (AF1)
+Outdoor (BT1)	Exterior (BT1)
+Outdoor temperature	Temperatura exterior
+Outdoor unit (BT28)	Unidad exterior (BT28)
+Output OC (E006)	Sobrecorriente de salida (E006)
+Output active power	Potencia activa de salida
+Output apparent power	Potencia aparente de salida
+Output energy today (PV + battery)	Energía de salida hoy (FV + batería)
+Output energy total	Energía de salida total
+Output frequency	Frecuencia de salida
+Output load	Carga de salida
+Output mode	Modo de salida
+Output of photovoltaics	Producción fotovoltaica
+Output rated active power	Potencia activa nominal de salida
+Output rated apparent power	Potencia aparente nominal de salida
+Output rated current	Corriente nominal de salida
+Output rated frequency	Frecuencia nominal de salida
+Output rated voltage	Tensión nominal de salida
+Output source priority	Prioridad de fuente de salida
+Output type	Tipo de salida
+Output voltage	Tensión de salida
+Output wiring	Cableado de salida
+Output {n} power	Potencia salida {n}
+Over temp. (E014)	Sobretemperatura (E014)
+Over-temperature	Sobretemperatura
+Over-temperature fault	Fallo por sobretemperatura
+Overcurrent	Sobrecorriente
+Overheating	Sobrecalentamiento
+Overload	Sobrecarga
+Overpower	Sobrepotencia
+Overtemperature electronics	Sobretemperatura en la electrónica
+Overtemperature measured	Sobretemperatura medida
+Overtemperature, fuse blown	Sobretemperatura, fusible fundido
+Overvoltage	Sobretensión
+P(f) algorithm	Algoritmo P(f)
+PCS settings	Ajustes PCS
+PF setting	Ajuste de PF
+PID abnormity	Anomalía PID
+PID alarm	Alarma PID
+PID function abnormity	Anomalía de la función PID
+PID impedance abnormity	Anomalía de impedancia PID
+PID overvoltage/overcurrent protection	Protección PID contra sobretensión/sobrecorriente
+PID recover operation	Funcionamiento de recuperación PID
+PID recovery	Recuperación PID
+PID work state	Estado de trabajo PID
+PSSB fuse	Fusible PSSB
+PV (DC, all inputs)	FV (DC, todas las entradas)
+PV (lifetime)	FV (total)
+PV OK condition for parallel	Condición FV OK para paralelo
+PV and loads	FV y cargas
+PV channels	Canales FV
+PV energy today	Energía FV hoy
+PV energy total	Energía FV total
+PV extended ({n}–{n})	FV ampliado ({n}–{n})
+PV generating	FV generando
+PV generation (today)	Generación FV (hoy)
+PV generation counter	Contador de generación FV
+PV harvest power (charge controllers)	Potencia de captación FV (reguladores de carga)
+PV input voltage	Tensión de entrada FV
+PV inputs	Entradas FV
+PV inputs ({n}–{n})	Entradas FV ({n}–{n})
+PV isolation failure	Fallo de aislamiento FV
+PV isolation resistance	Resistencia de aislamiento FV
+PV mode	Modo FV
+PV online, battery offline	FV en línea, batería fuera de línea
+PV power	Potencia FV
+PV power (V × I)	Potencia FV (V × I)
+PV power balance	Balance de potencia FV
+PV power generated	Potencia FV generada
+PV strings	Strings FV
+PV to battery	FV a batería
+PV to grid	FV a red
+PV today	FV hoy
+PV total	FV total
+PV total power	Potencia FV total
+PV used directly today	FV autoconsumida hoy
+PV used directly total	FV autoconsumida total
+PV voltage	Tensión FV
+PV voltage too high	Tensión FV demasiado alta
+PV voltage unbalance vs. earth	Desequilibrio de tensión FV respecto a tierra
+PV with storage	FV con almacenamiento
+PV{n} charging power	Potencia de carga PV{n}
+PV{n} current	Corriente PV{n}
+PV{n} voltage	Tensión PV{n}
+PV{x} current	Corriente PV{x}
+PV{x} power	Potencia PV{x}
+PV{x} voltage	Tensión PV{x}
+PWM out	Salida PWM
+Pac vs Vac algorithm	Algoritmo Pac vs Vac
+Pack temperature	Temperatura del pack
+Parallel	Paralelo
+Parallel max number	Número máx. en paralelo
+Parity	Paridad
+Parity / stop bits	Paridad / bits de parada
+Part number	Número de pieza
+Partial	Parcial
+Partial active import	Importación activa parcial
+Partial energy	Energía parcial
+Partial reactive import	Importación reactiva parcial
+Party	Fiesta
+Party cooling	Refrigeración fiesta
+Passive	Pasivo
+Passive cooling	Refrigeración pasiva
+Passthru	Paso directo
+Pause	Pausa
+Paused	En pausa
+Paused by car	En pausa por el vehículo
+Paused by charger	En pausa por el cargador
+Peak active power today	Pico de potencia activa hoy
+Peak power	Potencia pico
+Peak power (absolute)	Potencia pico (absoluta)
+Peak power today	Potencia pico hoy
+Permanent fault	Fallo permanente
+Phase angle	Ángulo de fase
+Phase angle current	Ángulo de fase corriente
+Phase angle power	Ángulo de fase potencia
+Phase angle voltage	Ángulo de fase tensión
+Phase count	Número de fases
+Phase disturbance	Perturbación de fase
+Phase mode	Modo de fases
+Phase sequence	Secuencia de fases
+Phase sequence error	Error de secuencia de fases
+Phase switching source	Fuente de conmutación de fases
+Phase {n} of {n}	Fase {n} de {n}
+Phase {n} of {n} ({n}°)	Fase {n} de {n} ({n}°)
+Phase {x} current	Corriente fase {x}
+Phase {x} power	Potencia fase {x}
+Phase {x} voltage	Tensión fase {x}
+Phases	Fases
+Phases / wires	Fases / hilos
+Plant AC power	Potencia AC de la instalación
+Plant PV power	Potencia FV de la instalación
+Plant battery power (+ discharge)	Potencia de batería de la instalación (+ descarga)
+Plant mains connection	Conexión a red de la instalación
+Plant state of charge	Nivel de carga de la instalación
+Platform	Plataforma
+Plug lock	Bloqueo del conector
+Pool	Piscina
+Port	Puerto
+Positive	Positivo
+Post-alarm (pause)	Post-alarma (pausa)
+Post-alarm (recovery)	Post-alarma (recuperación)
+Power	Potencia
+Power (+ charging)	Potencia (+ carga)
+Power (+ discharge)	Potencia (+ descarga)
+Power (magnitude)	Potencia (magnitud)
+Power ({n}, magnitude)	Potencia ({n}, magnitud)
+Power L{x}	Potencia L{x}
+Power demand	Demanda de potencia
+Power down counter	Contador de apagados
+Power factor	Factor de potencia
+Power factor (+ leading)	Factor de potencia (+ capacitivo)
+Power factor (> {n} leading)	Factor de potencia (> {n} capacitivo)
+Power factor L{x}	Factor de potencia L{x}
+Power factor setpoint	Consigna de factor de potencia
+Power factor setpoint active	Consigna de factor de potencia activa
+Power fail counter	Contador de cortes de alimentación
+Power flow	Flujo de potencia
+Power flow ({n})	Flujo de potencia ({n})
+Power from grid	Potencia desde la red
+Power limit	Límite de potencia
+Power limit (grid operator)	Límite de potencia (operador de red)
+Power limit active	Límite de potencia activo
+Power limitation	Limitación de potencia
+Power limitation adjustment	Ajuste de limitación de potencia
+Power limitation setting	Configuración de limitación de potencia
+Power meter (LG model {n})	Contador (modelo LG {n})
+Power meter ({n}–{n})	Contador ({n}–{n})
+Power of this device	Potencia de este dispositivo
+Power off	Apagado
+Power on	Encendido
+Power outage	Corte de suministro
+Power reduction	Reducción de potencia
+Power reduction reason	Motivo de reducción de potencia
+Power saving	Ahorro de energía
+Power setpoint	Consigna de potencia
+Power stage communication fault	Fallo de comunicación de la etapa de potencia
+Power stage error {x}	Error de la etapa de potencia {x}
+Power stage firmware	Firmware de la etapa de potencia
+Power stage off-line	Etapa de potencia fuera de línea
+Power stage overtemperature	Sobretemperatura de la etapa de potencia
+Power stage temperature probe fault	Fallo de la sonda de temperatura de la etapa de potencia
+Power supply status	Estado de la alimentación
+Power supply/energy gen. block	Bloqueo suministro/generación de energía
+Power system	Sistema eléctrico
+Power timeout	Tiempo de espera de potencia
+Power to grid	Potencia a la red
+Power {x}	Potencia {x}
+Preheat compressor oil	Precalentar aceite del compresor
+Preparing	Preparando
+Priority	Prioridad
+Pro battery	Pro batería
+Pro grid	Pro red
+Producing	Produciendo
+Product	Producto
+Product code	Código de producto
+Production	Producción
+Production AC (external inverters)	Producción AC (inversores externos)
+Production DC (hybrid inverter)	Producción DC (inversor híbrido)
+Production number	Número de producción
+Production year	Año de producción
+Programmed operation	Funcionamiento programado
+Programming power stage	Programando etapa de potencia
+Protection cooling	Refrigeración de protección
+Protocol	Protocolo
+Protocol ID	ID de protocolo
+Protocol number	Número de protocolo
+Protocol version	Versión del protocolo
+Public electricity mains	Red eléctrica pública
+Pulse energy meter (BE6/BF2)	Contador de energía por impulsos (BE6/BF2)
+Pulse energy meter (BE7/BF3)	Contador de energía por impulsos (BE7/BF3)
+Pulse {n} energy	Energía impulsos {n}
+Purchased energy (lifetime)	Energía comprada (total)
+Purchased today	Comprado hoy
+Purchased total	Comprado total
+Q(P) active	Q(P) activo
+Q(P) curve	Curva Q(P)
+Q(U) curve	Curva Q(U)
+Q1 (P +, inductive)	Q1 (P +, inductivo)
+Q2 (P −, capacitive)	Q2 (P −, capacitivo)
+Q3 (P −, inductive)	Q3 (P −, inductivo)
+Q4 (P +, capacitive)	Q4 (P +, capacitivo)
+Qref communications	Qref comunicaciones
+Quadrant	Cuadrante
+Quadrant (total, L{n}, L{n}, L{n})	Cuadrante (total, L{n}, L{n}, L{n})
+RCCB (residual current)	Diferencial (corriente residual)
+RFID reader	Lector RFID
+RFID tag	Tarjeta RFID
+Ramp fail	Fallo de rampa
+Ramp fail (E011)	Fallo de rampa (E011)
+Ramp start	Inicio de rampa
+Rate A import	Importación tarifa A
+Rate B import	Importación tarifa B
+Rate C import	Importación tarifa C
+Rate D import	Importación tarifa D
+Rated active power	Potencia activa nominal
+Rated apparent power	Potencia aparente nominal
+Rated battery charge/discharge power	Potencia nominal de carga/descarga de batería
+Rated capacity	Capacidad nominal
+Rated charge power	Potencia nominal de carga
+Rated current	Corriente nominal
+Rated discharge power	Potencia nominal de descarga
+Rated power	Potencia nominal
+Rated reactive power Q{x}	Potencia reactiva nominal Q{x}
+Rated storage energy	Energía nominal de almacenamiento
+Rated voltage	Tensión nominal
+Ratings (QPIRI)	Valores nominales (QPIRI)
+Re-engage switching delay	Retardo de reconexión
+Reactive energy	Energía reactiva
+Reactive energy +	Energía reactiva +
+Reactive energy capacitive	Energía reactiva capacitiva
+Reactive energy inductive	Energía reactiva inductiva
+Reactive energy −	Energía reactiva −
+Reactive export	Exportación reactiva
+Reactive export T{n}	Exportación reactiva T{n}
+Reactive exported	Reactiva exportada
+Reactive exported kvarh(−)	kvarh reactivos exportados (−)
+Reactive forward	Reactiva directa
+Reactive import	Importación reactiva
+Reactive import T{n}	Importación reactiva T{n}
+Reactive imported	Reactiva importada
+Reactive imported kvarh(+)	kvarh reactivos importados (+)
+Reactive power	Potencia reactiva
+Reactive power +	Potencia reactiva +
+Reactive power adjustment	Ajuste de potencia reactiva
+Reactive power at night	Potencia reactiva nocturna
+Reactive power control active	Control de potencia reactiva activo
+Reactive power mode	Modo de potencia reactiva
+Reactive power percentage	Porcentaje de potencia reactiva
+Reactive power reference	Referencia de potencia reactiva
+Reactive power setpoint	Consigna de potencia reactiva
+Reactive power {x}	Potencia reactiva {x}
+Reactive power −	Potencia reactiva −
+Reactive priority and output current limit	Prioridad reactiva y límite de corriente de salida
+Reactive reverse	Reactiva inversa
+Reactive total	Reactiva total
+Reading time	Hora de lectura
+Ready	Preparado
+Ready, no car	Preparado, sin vehículo
+Ready, waiting for car	Preparado, esperando vehículo
+Recharge	Recarga
+Rechargeable alkaline	Alcalina recargable
+Recommended action	Acción recomendada
+Recovery	Recuperación
+Reduced charging	Carga reducida
+Register map	Mapa de registros
+Register order	Orden de registros
+Relay failure	Fallo del relé
+Relay status	Estado del relé
+Relay {n}	Relé {n}
+Remaining charge/discharge time	Tiempo restante de carga/descarga
+Remote	Remoto
+Remote control active	Control remoto activo
+Remote control authority	Autoridad de control remoto
+Remote off	Apagado remoto
+Remote off (E035)	Apagado remoto (E035)
+Remote off power gradient	Gradiente de potencia de apagado remoto
+Requested compressor frequency	Frecuencia del compresor solicitada
+Reserved	Reservado
+Reserved SOC for backup	SoC reservado para respaldo
+Resettable day counter	Contador diario reiniciable
+Resettable exported	Exportado reiniciable
+Resettable imported	Importado reiniciable
+Residual current	Corriente residual
+Restart block	Bloqueo de rearranque
+Restarting	Reiniciando
+Restrictions	Restricciones
+Return	Retorno
+Return (BT3)	Retorno (BT3)
+Return temperature	Temperatura de retorno
+Right	Derecha
+Rise in self-consumption	Aumento del autoconsumo
+Rise in self-consumption today	Aumento del autoconsumo hoy
+Riso low (E025)	Riso bajo (E025)
+Role	Rol
+Room (BT50)	Ambiente (BT50)
+Room (FE7)	Ambiente (FE7)
+Rotation field	Campo giratorio
+Run	En marcha
+Run hours	Horas de funcionamiento
+Running	En funcionamiento
+Running (off-grid)	En funcionamiento (aislado de red)
+Running (on-grid)	En funcionamiento (conectado a red)
+Running in compulsory mode	Funcionando en modo obligatorio
+Running in external EMS mode	Funcionando en modo EMS externo
+Running in maintain mode	Funcionando en modo mantenimiento
+Running state ({n})	Estado de funcionamiento ({n})
+Running time today	Tiempo de funcionamiento hoy
+Running: off-grid charging	En funcionamiento: carga aislada de red
+S0 output rate	Tasa de salida S0
+SBU (solar, battery, utility)	SBU (solar, batería, red)
+SBU priority version	Versión de prioridad SBU
+SCC firmware updated	Firmware SCC actualizado
+SG Ready operating state	Estado de funcionamiento SG Ready
+SOC low	SoC bajo
+SW bundle not valid	Paquete de software no válido
+Safe current	Corriente segura
+Safe mode	Modo seguro
+Safety country	País de seguridad
+Safety thermostat triggered	Termostato de seguridad activado
+Scheduled recharge	Recarga programada
+Secondary active export (MID)	Exportación activa secundaria (MID)
+Secondary active import (MID)	Importación activa secundaria (MID)
+Self-check	Autocomprobación
+Self-consumption	Autoconsumo
+Self-consumption mode	Modo autoconsumo
+Self-consumption rate	Tasa de autoconsumo
+Self-consumption ratio	Ratio de autoconsumo
+Self-consumption today	Autoconsumo hoy
+Self-test	Autotest
+Self-test error {n} (E019)	Error de autotest {n} (E019)
+Self-test error {n} (E020)	Error de autotest {n} (E020)
+Self-test error {n} (E021)	Error de autotest {n} (E021)
+Self-test error {n} (E022)	Error de autotest {n} (E022)
+Self-test fail	Autotest fallido
+Self-test failed	Autotest fallido
+Selling (grid output)	Venta (salida a red)
+Sending parameters	Enviando parámetros
+Sending wind table	Enviando tabla eólica
+Sensor test + Riso	Test de sensores + Riso
+Separate network mode	Modo de red separada
+Separated	Separado
+Serial (MAC address)	Serie (dirección MAC)
+Serial number	Número de serie
+Series	Serie
+Session energy	Energía de la sesión
+Set active power limit	Fijar límite de potencia activa
+Settings	Ajustes
+Setup	Configuración
+Shore power	Toma de puerto
+Shut down	Apagar
+Shutdown	Apagado
+Shutdown time	Hora de apagado
+Shutdown: DC switches disconnected	Apagado: interruptores DC desconectados
+Shutdown: OVGR	Apagado: OVGR
+Shutdown: command	Apagado: comando
+Shutdown: communication disconnected	Apagado: comunicación desconectada
+Shutdown: fault	Apagado: fallo
+Shutdown: input underpower	Apagado: potencia de entrada insuficiente
+Shutdown: manual startup required	Apagado: requiere arranque manual
+Shutdown: power limited	Apagado: potencia limitada
+Shutdown: rapid cutoff	Apagado: desconexión rápida
+Shutting down	Apagando
+Sign used for {n} (undocumented)	Signo usado para {n} (no documentado)
+Signalled current	Corriente señalizada
+Silent mode {n}	Modo silencioso {n}
+Single	Simple
+Single phase	Monofásico
+Single-phase	Monofásico
+Slave (auto discovery)	Esclavo (detección automática)
+Slave (fixed IP)	Esclavo (IP fija)
+Slave insertion	Inserción de esclavo
+Sleep mode	Modo reposo
+Sleeping	En reposo
+Sleeping (no sun)	En reposo (sin sol)
+Slow charge	Carga lenta
+Smart Grid forced acceptance	Smart Grid aceptación forzada
+Smart Grid preferential	Smart Grid preferente
+Smart Grid preferential cooling	Smart Grid refrigeración preferente
+Smart Grid preferential heating	Smart Grid calefacción preferente
+SoC protection	Protección de SoC
+Sockets	Tomas
+Sodium-sulfur	Sodio-azufre
+Soft shutdown	Apagado suave
+Software IO controller	Software controlador de E/S
+Software main controller	Software controlador principal
+Software package	Paquete de software
+Software release	Versión de software
+Software version	Versión de software
+Solar (SCC) charging	Carga solar (SCC)
+Solar + utility	Solar + red
+Solar first	Prioridad solar
+Solar first (SUB)	Prioridad solar (SUB)
+Solar inverter	Inversor solar
+Solar part	Parte solar
+Sold (lifetime)	Vendido (total)
+Sold today	Vendido hoy
+Source	Fuente
+Split-phase voltage {n}	Tensión fase partida {n}
+Spot-check ready	Listo para comprobación puntual
+Spot-checking	Comprobación puntual
+Stand by	En espera
+Stand-alone operation	Funcionamiento autónomo
+Standard, not calibrated	Estándar, no calibrado
+Standby	En espera
+Standby: detecting insulation resistance	En espera: detectando resistencia de aislamiento
+Standby: detecting irradiation	En espera: detectando irradiación
+Standby: grid detecting	En espera: detectando red
+Standby: initializing	En espera: inicializando
+Standby: no irradiation	En espera: sin irradiación
+Start	Inicio
+Start timeout (E017)	Tiempo de arranque agotado (E017)
+Start-up	Arranque
+Start/stop	Inicio/parada
+Starting	Arrancando
+Startup time	Hora de arranque
+State	Estado
+State of charge	Nivel de carga
+State of charge (bank {n})	Nivel de carga (banco {n})
+State of charge (float)	Nivel de carga (float)
+State of health	Estado de salud
+State of health (bank {n})	Estado de salud (banco {n})
+State {x}	Estado {x}
+Station	Estación
+Status	Estado
+Status ({n}–{n})	Estado ({n}–{n})
+Status bits (QPIGS)	Bits de estado (QPIGS)
+Status flags	Indicadores de estado
+Status master (L{n})	Estado maestro (L{n})
+Status slave {n} (L{n})	Estado esclavo {n} (L{n})
+Stop	Parada
+Stop bits	Bits de parada
+Stop event	Evento de parada
+Stopped	Detenido
+Storage	Almacenamiento
+Storage capacity	Capacidad de almacenamiento
+Storage mode	Modo de almacenamiento
+Strategy	Estrategia
+String kit warning	Aviso del kit de strings
+String kit warning {n}	Aviso del kit de strings {n}
+String {x} current	Corriente string {x}
+String {x} voltage	Tensión string {x}
+Subnet mask	Máscara de subred
+Suction gas (BT17)	Gas de aspiración (BT17)
+Sum of currents	Suma de corrientes
+Summer mode	Modo verano
+Sun low (W001)	Poco sol (W001)
+SunSpec model	Modelo SunSpec
+Supplemental operation	Funcionamiento complementario
+Supply (BT2)	Impulsión (BT2)
+Supported current	Corriente admitida
+Suspending	Suspendiendo
+Sustain	Mantenimiento
+Switch on	Encender
+Switched off	Apagado
+Switched on	Encendido
+Switching cycles	Ciclos de conmutación
+System	Sistema
+System fault {n}	Fallo del sistema {n}
+System state	Estado del sistema
+System time (UTC)	Hora del sistema (UTC)
+System type	Tipo de sistema
+TRAS switch open	Interruptor TRAS abierto
+TRAS switch open (E040)	Interruptor TRAS abierto (E040)
+Table fail (W009)	Fallo de tabla (W009)
+Target SOC	SoC objetivo
+Target temperature	Temperatura objetivo
+Tariff	Tarifa
+Temperature	Temperatura
+Temperature derating	Reducción por temperatura
+Temperature fault	Fallo de temperatura
+Temperature sensor fault	Fallo del sensor de temperatura
+Temperature sensors fault	Fallo de los sensores de temperatura
+Temperatures	Temperaturas
+Testing	Probando
+This month	Este mes
+This week	Esta semana
+This year	Este año
+Three-phase	Trifásico
+Throttled	Limitado
+Time of use	Tarifa horaria
+Time to go	Tiempo restante
+Time until full charge	Tiempo hasta carga completa
+To grid today	A la red hoy
+To grid total	A la red total
+To user (from grid) today	Al usuario (desde la red) hoy
+To user (from grid) total	Al usuario (desde la red) total
+Today	Hoy
+Topology	Topología
+Total (+ import)	Total (+ importación)
+Total (combination code)	Total (código de combinación)
+Total (import + export)	Total (importación + exportación)
+Total DC input energy	Energía total de entrada DC
+Total DC power	Potencia DC total
+Total DC power (PV inputs)	Potencia DC total (entradas FV)
+Total PV input power	Potencia total de entrada FV
+Total active power ({n})	Potencia activa total ({n})
+Total back-up load	Carga total de respaldo
+Total current	Corriente total
+Total energy	Energía total
+Total energy (meter)	Energía total (contador)
+Total energy efficiency	Eficiencia energética total
+Total fault	Fallo total
+Total from PV	Total desde FV
+Total from battery	Total desde batería
+Total from grid	Total desde la red
+Total input power	Potencia total de entrada
+Total inverter power	Potencia total del inversor
+Total on-grid load	Carga total en red
+Total power	Potencia total
+Total run	Funcionamiento total
+Total running time	Tiempo total de funcionamiento
+Total yield	Producción total
+Transformer	Transformador
+Transformer temperature	Temperatura del transformador
+Transformerless	Sin transformador
+Two phase	Bifásico
+Type	Tipo
+Type designation	Designación de tipo
+UPS load	Carga SAI
+Unavailable	No disponible
+Unchecked	Sin comprobar
+Under-temperature fault	Fallo por baja temperatura
+Uninitialized	No inicializado
+Unknown	Desconocido
+Unknown / charger defective	Desconocido / cargador defectuoso
+Unlocked by RFID card	Desbloqueado con tarjeta RFID
+Unsuccessful defrosting	Desescarche fallido
+Update	Actualización
+Update failed	Actualización fallida
+Upgrading	Actualizando
+Uptime	Tiempo en funcionamiento
+Used power	Potencia utilizada
+User	Usuario
+User charge limited	Carga limitada por el usuario
+User discharge limited	Descarga limitada por el usuario
+Utility first	Prioridad red
+Utility first (USB)	Prioridad red (USB)
+Utility grid status	Estado de la red eléctrica
+VA demand	Demanda de VA
+VE.Bus current (+ to DC)	Corriente VE.Bus (+ hacia DC)
+VE.Bus fault condition	Condición de fallo VE.Bus
+VE.Bus power (+ to DC)	Potencia VE.Bus (+ hacia DC)
+VPP protocol version	Versión del protocolo VPP
+VT ratio	Relación VT
+Vehicle state	Estado del vehículo
+Vendor	Fabricante
+Vendor events {n}	Eventos del fabricante {n}
+Vendor state	Estado del fabricante
+Version	Versión
+Voltage	Tensión
+Voltage (as reported)	Tensión (según informe)
+Voltage L-L	Tensión L-L
+Voltage L-L (system)	Tensión L-L (sistema)
+Voltage L-L average	Tensión L-L media
+Voltage L-N	Tensión L-N
+Voltage L-N (system)	Tensión L-N (sistema)
+Voltage L-N average	Tensión L-N media
+Voltage L{n}	Tensión L{n}
+Voltage L{n}-N	Tensión L{n}-N
+Voltage L{x}	Tensión L{x}
+Voltage N	Tensión N
+Voltage THD	THD de tensión
+Voltage at charge controller (SCC)	Tensión en el regulador de carga (SCC)
+Voltage {x}	Tensión {x}
+Volume flow	Caudal volumétrico
+Vout avg error (E036)	Error Vout media (E036)
+Vref error (E026)	Error Vref (E026)
+WFA status	Estado WFA
+WFmax switch-off	Desconexión WFmax
+WFsetp switch-off	Desconexión WFsetp
+Waiting	Esperando
+Waiting after grid interruption	Esperando tras interrupción de red
+Waiting for PV voltage	Esperando tensión FV
+Waiting for car	Esperando vehículo
+Waiting for manual reset	Esperando reinicio manual
+Waiting for sun or grid	Esperando sol o red
+Waiting for sun/grid	Esperando sol/red
+Waiting for utility company	Esperando a la compañía eléctrica
+Waiting for valid AC grid	Esperando red AC válida
+Waiting start	Esperando inicio
+Waiting sun	Esperando sol
+Waiting time until feed-in	Tiempo de espera hasta inyección
+Waiting to connect	Esperando para conectar
+Warn running	Funcionando con aviso
+Warning	Aviso
+Warning code	Código de aviso
+Warning code high	Código de aviso alto
+Warning code low	Código de aviso bajo
+Warning flags	Indicadores de aviso
+Warnings (QPIWS)	Avisos (QPIWS)
+Water temperature (Temp {n})	Temperatura del agua (Temp {n})
+Wattmeter (self-consumption)	Vatímetro (autoconsumo)
+Winter mode step {n}	Modo invierno etapa {n}
+Wiring check	Comprobación del cableado
+Wiring: 	Cableado:
+Work capacity	Capacidad de trabajo
+Work mode	Modo de trabajo
+Work state {n} ({n})	Estado de trabajo {n} ({n})
+Working mode	Modo de trabajo
+Working state	Estado de trabajo
+Wrong mode (E013)	Modo erróneo (E013)
+Yes	Sí
+Yield this hour	Producción esta hora
+Yield this month	Producción este mes
+Yield this year	Producción este año
+Yield today	Producción hoy
+Yield total	Producción total
+Yield yesterday	Producción ayer
+Z grid Hi (W008)	Impedancia de red alta (W008)
+Zero power	Potencia cero
+Zero power (W014)	Potencia cero (W014)
+Zinc chloride	Cloruro de zinc
+cos φ (− supply, + obtain)	cos φ (− suministro, + consumo)
+cos φ communications	cos φ comunicaciones
+cos φ configuration	Configuración cos φ
+cos φ or tangent target	Objetivo cos φ o tangente
+export active	activa exportada
+export reactive	reactiva exportada
+forward + reverse	directa + inversa
+forward only	solo directa
+forward − reverse	directa − inversa
+forward − reverse (C-{n})	directa − inversa (C-{n})
+import active	activa importada
+import reactive	reactiva importada
+programming locked	programación bloqueada
+programming unlocked	programación desbloqueada
+reverse only	solo inversa
+reverse − forward	inversa − directa
+total = import	total = importación
+total = import + export	total = importación + exportación
+total = import − export	total = importación − exportación
+total active	activa total
+total reactive	reactiva total
+{n} (blocked)	{n} (bloqueado)
+{n} (increased)	{n} (aumentado)
+{n} (maximum)	{n} (máximo)
+{n} phase {n} wire	{n} fases {n} hilos
+{n} stop bit, even parity	{n} bit de parada, paridad par
+{n} stop bit, no parity	{n} bit de parada, sin paridad
+{n} stop bit, odd parity	{n} bit de parada, paridad impar
+{n} stop bits, no parity	{n} bits de parada, sin paridad
+{n}-phase {n}-wire	{n} fases {n} hilos
+{n}.{n} V reference fault	Fallo de referencia {n}.{n} V
+{n}PH3W L-L with N	{n}PH3W L-L con N
+{n}PH4W multi L with N	{n}PH4W multi L con N
+{n}s state	Estado {n}s
+{x} active power	Potencia activa {x}
+{x} current	Corriente {x}
+{x} energy (lifetime)	Energía {x} (total)
+{x} frequency	Frecuencia {x}
+{x} load mode	Modo de carga {x}
+{x} power	Potencia {x}
+{x} state	Estado {x}
+{x} voltage	Tensión {x}
+Solar power	Potencia solar
+Battery power (+ discharge)	Potencia batería (+ descarga)
+Battery state of charge	Nivel de carga batería
+Solar yield today	Producción solar hoy
+Lifetime yield	Producción total
+Consumption today	Consumo hoy
+Active faults: {n}	Fallos activos: {n}
+Active warnings: {n}	Avisos activos: {n}

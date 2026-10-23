@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="forms_remove_title">¿Eliminar %1$s?</string>
+    <string name="forms_remove">Eliminar</string>
+    <string name="forms_cancel">Cancelar</string>
+    <string name="forms_name">Nombre</string>
+    <string name="forms_rename">Renombrar</string>
+    <string name="forms_plants_title">Instalaciones</string>
+    <string name="forms_add_plant">Añadir instalación</string>
+    <string name="forms_plants_empty">Aún no hay instalaciones. Toca + para añadir una y luego añade sus inversores, baterías y contadores.</string>
+    <string name="forms_rename_item">Renombrar %1$s</string>
+    <string name="forms_remove_item">Eliminar %1$s</string>
+    <string name="forms_rename_plant">Renombrar instalación</string>
+    <string name="forms_remove_plant_detail">Se eliminarán de la app la instalación, sus dispositivos y su historial (solar, casa, batería, red). En los dispositivos no cambia nada. Los datos registrados de cada dispositivo se conservan: vuelve a añadir el mismo dispositivo, a cualquier instalación, y reaparecerán.</string>
+    <string name="forms_remove_plant_delete_data">Eliminar también los datos registrados de los dispositivos</string>
+    <string name="forms_new_plant">Nueva instalación</string>
+    <string name="forms_plant_name_placeholder">p. ej., Tejado del taller</string>
+    <string name="forms_add">Añadir</string>
+    <string name="forms_test_connected">Conectado: %1$s, N/S %2$s</string>
+    <string name="forms_test_failed">Error: %1$s</string>
+    <string name="forms_edit_device_title">Editar %1$s</string>
+    <string name="forms_add_device_title">Añadir dispositivo a %1$s</string>
+    <string name="forms_back">Atrás</string>
+    <string name="forms_device_name_placeholder">p. ej., Inversor 1 (tejado este)</string>
+    <string name="forms_ip_address">Dirección IP</string>
+    <string name="forms_port">Puerto</string>
+    <string name="forms_unit_id">ID de unidad Modbus</string>
+    <string name="forms_access_token">Token de acceso</string>
+    <string name="forms_device_password">Contraseña del dispositivo</string>
+    <string name="forms_meter_measures">¿Qué mide este contador?</string>
+    <string name="forms_invert_meter">Invertir sentido del contador</string>
+    <string name="forms_invert_grid">Invertir signo de red</string>
+    <string name="forms_testing">Probando…</string>
+    <string name="forms_test_connection">Probar conexión</string>
+    <string name="forms_save">Guardar</string>
+    <string name="forms_type_coming_soon">%1$s (próximamente)</string>
+    <string name="forms_stop_search">Detener búsqueda</string>
+    <string name="forms_search_network">Buscar en la red</string>
+    <string name="forms_scan_progress">%1$d de %2$d</string>
+    <string name="forms_found_already_in">ya en %1$s</string>
+    <string name="forms_found_unit">ID de unidad %1$d</string>
+    <string name="forms_found_serial">N/S %1$s</string>
+    <string name="forms_found_via_mdns">encontrado vía mDNS</string>
+    <string name="forms_hint_scan">Busca en esta red Wi-Fi inversores y controladores de sistema (Fronius, GoodWe, Growatt, Huawei, KACO, KOSTAL, LG, SMA, SolarEdge, Sungrow, Victron, Schneider, FENECON y otros equipos SunSpec) en los puertos Modbus TCP 502, 503, 1502 y 6502. Los contadores, bombas de calor y cargadores se añaden a mano.</string>
+    <string name="forms_hint_kind_battery">Añade aquí solo baterías independientes. Una batería en un inversor híbrido ya se lee a través del inversor; si la añades de nuevo, se contaría dos veces.</string>
+    <string name="forms_hint_kind_meter">Un contador en la conexión a red sustituye los valores de red de los inversores. Un contador FV añade producción (p. ej., un inversor sin comunicación); un subcontador de consumidor muestra una sola carga.</string>
+    <string name="forms_hint_kind_consumer">Los consumidores se muestran como parte del consumo de la casa. No cambian los totales de la instalación: el contador de red o el balance ya los incluye.</string>
+    <string name="forms_hint_shared_gateway">Varios dispositivos detrás de la misma pasarela comparten su dirección IP y puerto, y se distinguen por el ID de unidad.</string>
+    <string name="forms_hint_enphase_token">Desde el software 7, la pasarela necesita un token: crea un token de propietario (válido un año) en entrez.enphaseenergy.com para el número de serie de esta pasarela y pégalo aquí. Cuando caduque, el dispositivo indicará que el token ha caducado o falta.</string>
+    <string name="forms_hint_mac_password">La contraseña de usuario es la dirección MAC del equipo, en minúsculas y sin dos puntos (p. ej., 001122aabbcc). La encontrarás en la lista de dispositivos conectados de tu router, o en un ordenador con `ip neigh` tras hacer ping al equipo. Android no permite que las apps la consulten.</string>
+    <string name="forms_hint_invert_meter">Si el contador está conectado al revés (lo exportado aparece como importado, o un contador FV marca 0 mientras produce), marca esta casilla.</string>
+    <string name="forms_hint_invert_grid">SunSpec no define en qué sentido cuenta el contador. Si el panel muestra exportación mientras consumes de la red (o al revés), marca esta casilla.</string>
+    <string name="forms_hint_huawei">ID de unidad 1 para un inversor detrás de un SDongle o SmartLogger (su dirección allí); 0 si te conectas a la WLAN o al puerto FE del propio inversor. Modbus TCP debe estar activado en el SDongle (app FusionSolar: Communication Configuration).</string>
+    <string name="forms_hint_power_one">Los inversores TRIO solo tienen RS485. Conéctalos mediante una pasarela RS485-Ethernet configurada en «Modbus TCP to RTU» (19200 baudios, 8N1 por defecto); introduce la IP y el puerto de la pasarela, y la dirección RS485 del inversor como ID de unidad. Varios TRIO en un mismo bus comparten la pasarela. Por la noche el inversor se apaga y aparece en reposo.</string>
+    <string name="forms_hint_sungrow">Usa el puerto LAN del propio inversor o un WiNet-S / WiNet-S2 / Logger1000 por Ethernet (no iHomeManager). Puerto 502, ID de unidad = dirección Modbus del inversor (por defecto 1; detrás de un WiNet, la dirección que indica su página web). Se detecta si es un modelo híbrido o de string. Los valores de red y casa requieren un smart meter de Sungrow.</string>
+    <string name="forms_hint_sma">Modbus viene desactivado de fábrica: en la interfaz web del inversor (como instalador) pon Device Parameters → External Communication → Modbus → TCP Server en Yes, puerto 502. ID de unidad 3. Añade cada inversor con su propia IP. La potencia de red requiere un SMA Energy Meter en el equipo; un Sunny Island informa del consumo de la casa pero no del solar, así que añade también los inversores FV.</string>
+    <string name="forms_hint_voltronic" tools:ignore="Typos">Estos inversores-cargadores tienen un puerto RS232 (RJ45 o DB9), no Modbus. Conéctalo a una pasarela RS232-TCP (p. ej., Elfin EW11) con el cable incluido con el inversor: serie 2400 baudios, 8N1, sin control de flujo; lado de red servidor TCP, puerto 8899, modo transparente (no Modbus). La app solo envía comandos de lectura. Estos equipos no miden la potencia de red.</string>
+    <string name="forms_hint_kaco_nx3">SunSpec Modbus TCP, puerto 502, ID de unidad 1 (activa Modbus/SunSpec en el inversor).</string>
+    <string name="forms_hint_fimer">A través de un logger VSN300 / VSN700 o un inversor SunSpec nativo: puerto 502; ID de unidad 247 para el logger; si no, la dirección Aurora del inversor (a menudo 2).</string>
+    <string name="forms_hint_apsystems_ecu">Activa Modbus en EMA Manager (firmware ECU-R 1.3.7 / 2.0.2, ECU-C C1.1.3 o posterior). Añade un dispositivo por microinversor: ID de unidad = su dirección Modbus en EMA Manager. Puerto 502.</string>
+    <string name="forms_hint_conext_cl">SunSpec Modbus TCP, puerto 502, ID de unidad 10 (valor de fábrica). Por SunSpec la potencia va en pasos de 100 W.</string>
+    <string name="forms_hint_conext_cl60">Modbus TCP puerto 502, ID de unidad 1.</string>
+    <string name="forms_hint_conext_gateway">Lee todo el sistema XW desde el Conext Gateway / Insight Home: puerto 503, ID de unidad 1.</string>
+    <string name="forms_hint_kostal_piko_ci">Modbus TCP puerto 1502, ID de unidad 71 (activa Modbus en la interfaz web del inversor).</string>
+    <string name="forms_hint_ingeteam">Modbus TCP a través del dongle del inversor: puerto 502, ID de unidad 1. Ingeteam admite un solo cliente y pide al menos 1 s entre peticiones.</string>
+    <string name="forms_hint_cps">Los inversores CPS hablan Modbus RTU (9600 8N1): usa una pasarela RS485-Ethernet en modo «Modbus TCP to RTU». Los equipos de 275 / 350 kW también tienen Modbus TCP en el puerto 502. ID de unidad = dirección RS485 (por defecto 1).</string>
+    <string name="forms_hint_riello_central">Modbus TCP, o RTU (9600 baudios) a través de una pasarela. Puerto 502, ID de unidad 1.</string>
+    <string name="forms_hint_carlo_gavazzi">EM24 Ethernet: la IP del contador, puerto 502. EM300 / EM210 / EM24-DIN: una pasarela RS485 (9600 8N1; los EM24-DIN antiguos, 4800 o 9600), ID de unidad = dirección del contador (por defecto 1). El modelo se detecta.</string>
+    <string name="forms_hint_eastron">Pasarela RS485 en modo Modbus TCP to RTU: SDM630 9600 8N1, SDM120 2400 8N1 (valores de fábrica); ID de unidad = dirección del contador (por defecto 1).</string>
+    <string name="forms_hint_inepro_pro380">Pasarela RS485 en modo Modbus TCP to RTU, 9600 8E1; ID de unidad = dirección del contador (por defecto 1).</string>
+    <string name="forms_hint_abb_b2x">Primero ajusta el protocolo RS485 del contador a Modbus; después, una pasarela RS485 con la velocidad y la paridad del contador, ID de unidad = su dirección Modbus.</string>
+    <string name="forms_hint_janitza_umg">Modbus TCP puerto 502, ID de unidad = dirección Modbus del equipo (por defecto 1). Un 96RM sin Ethernet necesita una pasarela RS485.</string>
+    <string name="forms_hint_schneider_iem">RS485 Modbus RTU a través de una pasarela Modbus TCP; ID de unidad = la dirección configurada en la pantalla del contador.</string>
+    <string name="forms_hint_siemens_pac">Modbus TCP puerto 502 (o el puerto configurado en el equipo), ID de unidad 1.</string>
+    <string name="forms_hint_kostal_ksem">En la interfaz web del KSEM activa el esclavo Modbus TCP sin TLS. Puerto 502, ID de unidad 1.</string>
+    <string name="forms_hint_shelly_pro_3em">Activa Modbus en la interfaz web del Shelly. Puerto 502, ID de unidad 1.</string>
+    <string name="forms_hint_keba_p30">Pon el interruptor DIP DSW1.3 en ON (firmware c-series 3.10.16 / x-series 1.11 o posterior); no uses la interfaz UDP a la vez. Puerto 502, ID de unidad 255. Solo lectura.</string>
+    <string name="forms_hint_alfen_eve">Requiere la licencia Active Load Balancing; en ACE Service Installer pon la fuente de datos en Energy Management System, Modbus TCP/IP, y activa «Allow reading». Puerto 502; ID de unidad 1 o 2 = toma.</string>
+    <string name="forms_hint_mennekes_amtron">En la interfaz web del cargador activa «Modbus TCP Server» (software ECU 5.12 o posterior). Puerto 502; un segundo conector responde en el puerto 503: añádelo como dispositivo aparte.</string>
+    <string name="forms_hint_go_e">Activa Modbus en la app go-e: Internet → Advanced settings → Modbus. Puerto 502, ID de unidad 1.</string>
+    <string name="forms_hint_my_pv">En la interfaz web del calentador ajusta el tipo de control a Modbus TCP. Puerto 502, ID de unidad 1. Solo lectura.</string>
+    <string name="forms_hint_stiebel_eltron_isg">Requiere un ISG web / plus / Connect con la extensión de software Modbus TCP/IP. Puerto 502, ID de unidad 1. Solo lectura: temperaturas, estado y la energía eléctrica diaria y total (el ISG no informa de la potencia instantánea).</string>
+    <string name="forms_hint_nibe_s">Activa en la bomba de calor el menú 7.5.9 «Modbus TCP/IP» (software 2.2.1 o posterior); se recomienda «Reading Modbus only». Puerto 502. La bomba de calor solo acepta clientes de redes privadas.</string>
+    <string name="forms_hint_hoval_toptronic">Requiere la pasarela Modbus TopTronic E (software V2.38 o posterior), para bombas de calor con WFA (UltraSource, Belaria pro). Lectura lenta, cada 30 s. Puerto 502, ID de unidad 1.</string>
+    <string name="forms_hint_fenecon">Lee todo el sistema (FV, batería, red, consumo) mediante la app FEMS preinstalada «Modbus/TCP Read Access»: puerto 502, ID de unidad 1.</string>
+    <string name="forms_hint_victron">En el GX activa Settings → Integrations → Modbus TCP server (Venus OS antiguos: Settings → Services → Modbus TCP). Puerto 502, ID de unidad 100 = toda la instalación (FV, consumo, red, batería).</string>
+    <string name="forms_hint_growatt">Los híbridos Growatt hablan Modbus RTU por RS485: usa una pasarela RS485-Ethernet en modo «Modbus TCP to RTU» (9600 baudios, 8N1). ID de unidad = dirección de comunicación del inversor (por defecto 1). Los valores de red y casa requieren el smart meter de Growatt; con este protocolo Growatt no informa de la producción solar de hoy.</string>
+    <string name="forms_hint_solaredge">Activa Modbus TCP en SetApp (o en el menú LCD): solo LAN por cable, puerto 1502, ID de dispositivo 1. SolarEdge admite un solo cliente Modbus. También se leen los contadores conectados al inversor.</string>
+    <string name="forms_hint_sunspec">Para cualquier inversor que hable SunSpec por Modbus TCP (p. ej., SMA con SunSpec activado: ID de unidad 126). Lee los modelos de inversor, MPPT, batería y contador que ofrezca el equipo.</string>
+    <string name="forms_hint_fronius">Activa Modbus TCP en la interfaz web del inversor (Communication → Modbus: «SunSpec Model Type» float o int + SF, ambos sirven); puerto 502, ID de unidad 1. Un Fronius Smart Meter en la conexión a red se lee a través del inversor (ID de unidad 200).</string>
+    <string name="forms_hint_kostal_plenticore">Activa Modbus TCP en la interfaz web del inversor (Settings → Modbus / SunSpec (TCP)); puerto 1502, ID de unidad 71. Con maestro y esclavo (host y cliente), añade cada inversor como dispositivo aparte de esta instalación: la app averigua cuál tiene la batería y el contador de energía.</string>
+    <plurals name="forms_scan_found">
+        <item quantity="one">%d encontrado</item>
+        <item quantity="many">%d encontrados</item>
+        <item quantity="other">%d encontrados</item>
+    </plurals>
+    <string name="forms_about">Acerca de</string>
+    <string name="forms_about_version">Versión %1$s (compilación %2$d)</string>
+    <string name="forms_about_built">Compilada el %1$s</string>
+    <string name="forms_about_license">Software libre bajo la GNU General Public License, versión 3 o posterior. Sin ninguna garantía.</string>
+    <string name="forms_about_close">Cerrar</string>
+</resources>

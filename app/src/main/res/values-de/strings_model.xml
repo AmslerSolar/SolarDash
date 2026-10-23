@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="kind_inverters">Wechselrichter</string>
+    <string name="kind_batteries">Batterien</string>
+    <string name="kind_meters">Stromzähler</string>
+    <string name="kind_consumers">Verbraucher</string>
+    <string name="meter_role_grid">Netzanschluss</string>
+    <string name="meter_role_pv">PV-Produktion (z. B. ein Wechselrichter ohne Kommunikation)</string>
+    <string name="meter_role_consumer">Verbraucher-Unterzähler (z. B. eine Wärmepumpe)</string>
+    <string name="period_day">Tag</string>
+    <string name="period_week">Woche</string>
+    <string name="period_month">Monat</string>
+    <string name="period_year">Jahr</string>
+    <string name="period_lifetime">Gesamt</string>
+    <string name="range_all_time">Gesamte Laufzeit</string>
+</resources>

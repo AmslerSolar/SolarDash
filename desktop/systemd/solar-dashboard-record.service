@@ -1,0 +1,8 @@
+[Unit]
+Description=Record one Solar Dashboard history sample per plant
+
+[Service]
+Type=oneshot
+# Adjust the path to where this folder lives.
+WorkingDirectory=%h/dev/apk-dashboard/desktop
+ExecStart=%h/dev/apk-dashboard/desktop/.venv/bin/python -m solar_dashboard record

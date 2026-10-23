@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="forms_remove_title">Rimuovere %1$s?</string>
+    <string name="forms_remove">Rimuovi</string>
+    <string name="forms_cancel">Annulla</string>
+    <string name="forms_name">Nome</string>
+    <string name="forms_rename">Rinomina</string>
+    <string name="forms_plants_title">Impianti</string>
+    <string name="forms_add_plant">Aggiungi impianto</string>
+    <string name="forms_plants_empty">Ancora nessun impianto. Tocca + per aggiungerne uno, poi aggiungi i suoi inverter, batterie e contatori.</string>
+    <string name="forms_rename_item">Rinomina %1$s</string>
+    <string name="forms_remove_item">Rimuovi %1$s</string>
+    <string name="forms_rename_plant">Rinomina impianto</string>
+    <string name="forms_remove_plant_detail">Rimuove dall\'app l\'impianto, i suoi dispositivi e il suo storico (solare, casa, batteria, rete). Sui dispositivi non cambia nulla. I dati registrati di ogni dispositivo restano: aggiungi di nuovo lo stesso dispositivo, a qualsiasi impianto, e tornano.</string>
+    <string name="forms_remove_plant_delete_data">Elimina anche i dati registrati dei dispositivi</string>
+    <string name="forms_new_plant">Nuovo impianto</string>
+    <string name="forms_plant_name_placeholder">ad es. Tetto dell\'officina</string>
+    <string name="forms_add">Aggiungi</string>
+    <string name="forms_test_connected">Connesso: %1$s, S/N %2$s</string>
+    <string name="forms_test_failed">Non riuscito: %1$s</string>
+    <string name="forms_edit_device_title">Modifica %1$s</string>
+    <string name="forms_add_device_title">Aggiungi dispositivo a %1$s</string>
+    <string name="forms_back">Indietro</string>
+    <string name="forms_device_name_placeholder">ad es. Inverter 1 (tetto est)</string>
+    <string name="forms_ip_address">Indirizzo IP</string>
+    <string name="forms_port">Porta</string>
+    <string name="forms_unit_id">ID unità Modbus</string>
+    <string name="forms_access_token">Token di accesso</string>
+    <string name="forms_device_password">Password del dispositivo</string>
+    <string name="forms_meter_measures">Cosa misura questo contatore?</string>
+    <string name="forms_invert_meter">Inverti direzione contatore</string>
+    <string name="forms_invert_grid">Inverti segno rete</string>
+    <string name="forms_testing">Prova in corso…</string>
+    <string name="forms_test_connection">Prova connessione</string>
+    <string name="forms_save">Salva</string>
+    <string name="forms_type_coming_soon">%1$s (in arrivo)</string>
+    <string name="forms_stop_search">Interrompi ricerca</string>
+    <string name="forms_search_network">Cerca nella rete</string>
+    <string name="forms_scan_progress">%1$d di %2$d</string>
+    <string name="forms_found_already_in">già in %1$s</string>
+    <string name="forms_found_unit">ID unità %1$d</string>
+    <string name="forms_found_serial">S/N %1$s</string>
+    <string name="forms_found_via_mdns">trovato via mDNS</string>
+    <string name="forms_hint_scan">Cerca in questa rete Wi-Fi inverter e controller di sistema (Fronius, GoodWe, Growatt, Huawei, KACO, KOSTAL, LG, SMA, SolarEdge, Sungrow, Victron, Schneider, FENECON e altri dispositivi SunSpec) sulle porte Modbus TCP 502, 503, 1502 e 6502. Contatori, pompe di calore e wallbox si aggiungono a mano.</string>
+    <string name="forms_hint_kind_battery">Aggiungi qui solo batterie autonome. Una batteria collegata a un inverter ibrido viene già letta tramite l\'inverter: aggiungerla di nuovo la conterebbe due volte.</string>
+    <string name="forms_hint_kind_meter">Un contatore al punto di connessione alla rete sostituisce i valori di rete degli inverter. Un contatore FV aggiunge produzione (ad es. un inverter senza comunicazione); un sottocontatore di un\'utenza mostra un singolo carico.</string>
+    <string name="forms_hint_kind_consumer">Le utenze sono mostrate come parti del consumo della casa. Non cambiano i totali dell\'impianto: il contatore di rete o il bilancio le include già.</string>
+    <string name="forms_hint_shared_gateway">Più dispositivi dietro lo stesso gateway ne condividono indirizzo IP e porta, e si distinguono per l\'ID unità.</string>
+    <string name="forms_hint_enphase_token">Dal software 7 il gateway richiede un token: crea un token proprietario (valido un anno) su entrez.enphaseenergy.com per il numero di serie di questo gateway e incollalo qui. Alla scadenza il dispositivo segnala un token scaduto o mancante.</string>
+    <string name="forms_hint_mac_password">La password utente è l\'indirizzo MAC dell\'apparecchio, in minuscolo e senza due punti (ad es. 001122aabbcc). Lo trovi nell\'elenco dei dispositivi connessi del router, o su un computer con `ip neigh` dopo aver fatto un ping all\'apparecchio. Android non permette alle app di leggerlo.</string>
+    <string name="forms_hint_invert_meter">Se il contatore è cablato al contrario (immissione mostrata come prelievo, o un contatore FV che segna 0 mentre produce), spunta questa casella.</string>
+    <string name="forms_hint_invert_grid">SunSpec non definisce in che verso conta il contatore. Se la panoramica mostra immissione mentre prelevi dalla rete (o viceversa), spunta questa casella.</string>
+    <string name="forms_hint_huawei">ID unità 1 per un inverter dietro uno SDongle o uno SmartLogger (il suo indirizzo lì); 0 se ti colleghi al WLAN o alla porta FE dell\'inverter stesso. Modbus TCP deve essere attivato sullo SDongle (app FusionSolar: Communication Configuration).</string>
+    <string name="forms_hint_power_one">Gli inverter TRIO hanno solo RS485. Collegali tramite un gateway RS485-Ethernet impostato su «Modbus TCP to RTU» (19200 baud, 8N1 di default); inserisci IP e porta del gateway e l\'indirizzo RS485 dell\'inverter come ID unità. Più TRIO sullo stesso bus condividono il gateway. Di notte l\'inverter si spegne e risulta in standby.</string>
+    <string name="forms_hint_sungrow">Usa la porta LAN dell\'inverter o un WiNet-S / WiNet-S2 / Logger1000 via Ethernet (non iHomeManager). Porta 502, ID unità = indirizzo Modbus dell\'inverter (default 1; dietro un WiNet usa l\'indirizzo indicato nella sua pagina web). Il modello ibrido o di stringa viene rilevato. I valori di rete e casa richiedono uno smart meter Sungrow.</string>
+    <string name="forms_hint_sma">Modbus è disattivato di default: nell\'interfaccia web dell\'inverter (come installatore) imposta Device Parameters → External Communication → Modbus → TCP Server su Yes, porta 502. ID unità 3. Aggiungi ogni inverter con il suo IP. La potenza di rete richiede un SMA Energy Meter sul dispositivo; un Sunny Island riporta il consumo della casa ma non il solare, quindi aggiungi anche gli inverter FV.</string>
+    <string name="forms_hint_voltronic" tools:ignore="Typos">Questi inverter-caricabatterie hanno una porta RS232 (RJ45 o DB9), non Modbus. Collegala a un gateway RS232-TCP (ad es. Elfin EW11) con il cavo fornito con l\'inverter: seriale 2400 baud, 8N1, senza controllo di flusso; lato rete server TCP, porta 8899, modalità trasparente (non Modbus). L\'app invia solo comandi di lettura. Questi apparecchi non misurano la potenza di rete.</string>
+    <string name="forms_hint_kaco_nx3">SunSpec Modbus TCP, porta 502, ID unità 1 (attiva Modbus/SunSpec nell\'inverter).</string>
+    <string name="forms_hint_fimer">Tramite un logger VSN300 / VSN700 o un inverter SunSpec nativo: porta 502; ID unità 247 per il logger, altrimenti l\'indirizzo Aurora dell\'inverter (spesso 2).</string>
+    <string name="forms_hint_apsystems_ecu">Attiva Modbus in EMA Manager (firmware ECU-R 1.3.7 / 2.0.2, ECU-C C1.1.3 o successivo). Aggiungi un dispositivo per ogni microinverter: ID unità = il suo indirizzo Modbus in EMA Manager. Porta 502.</string>
+    <string name="forms_hint_conext_cl">SunSpec Modbus TCP, porta 502, ID unità 10 (impostazione di fabbrica). Via SunSpec la potenza varia a passi di 100 W.</string>
+    <string name="forms_hint_conext_cl60">Modbus TCP porta 502, ID unità 1.</string>
+    <string name="forms_hint_conext_gateway">Legge l\'intero sistema XW dal Conext Gateway / Insight Home: porta 503, ID unità 1.</string>
+    <string name="forms_hint_kostal_piko_ci">Modbus TCP porta 1502, ID unità 71 (attiva Modbus nell\'interfaccia web dell\'inverter).</string>
+    <string name="forms_hint_ingeteam">Modbus TCP tramite il dongle dell\'inverter: porta 502, ID unità 1. Ingeteam accetta un solo client e chiede almeno 1 s tra le richieste.</string>
+    <string name="forms_hint_cps">Gli inverter CPS usano Modbus RTU (9600 8N1): usa un gateway RS485-Ethernet in modalità «Modbus TCP to RTU». I modelli da 275 / 350 kW hanno anche Modbus TCP sulla porta 502. ID unità = indirizzo RS485 (default 1).</string>
+    <string name="forms_hint_riello_central">Modbus TCP, oppure RTU (9600 baud) tramite un gateway. Porta 502, ID unità 1.</string>
+    <string name="forms_hint_carlo_gavazzi">EM24 Ethernet: l\'IP del contatore, porta 502. EM300 / EM210 / EM24-DIN: un gateway RS485 (9600 8N1; i vecchi EM24-DIN 4800 o 9600), ID unità = indirizzo del contatore (default 1). Il modello viene rilevato.</string>
+    <string name="forms_hint_eastron">Gateway RS485 in modalità Modbus TCP to RTU: SDM630 9600 8N1, SDM120 2400 8N1 (impostazioni di fabbrica); ID unità = indirizzo del contatore (default 1).</string>
+    <string name="forms_hint_inepro_pro380">Gateway RS485 in modalità Modbus TCP to RTU, 9600 8E1; ID unità = indirizzo del contatore (default 1).</string>
+    <string name="forms_hint_abb_b2x">Imposta prima il protocollo RS485 del contatore su Modbus; poi un gateway RS485 con baud rate e parità del contatore, ID unità = il suo indirizzo Modbus.</string>
+    <string name="forms_hint_janitza_umg">Modbus TCP porta 502, ID unità = indirizzo Modbus del dispositivo (default 1). Un 96RM senza Ethernet richiede un gateway RS485.</string>
+    <string name="forms_hint_schneider_iem">RS485 Modbus RTU tramite un gateway Modbus TCP; ID unità = l\'indirizzo impostato sul display del contatore.</string>
+    <string name="forms_hint_siemens_pac">Modbus TCP porta 502 (o la porta impostata sul dispositivo), ID unità 1.</string>
+    <string name="forms_hint_kostal_ksem">Nell\'interfaccia web del KSEM attiva lo slave Modbus TCP senza TLS. Porta 502, ID unità 1.</string>
+    <string name="forms_hint_shelly_pro_3em">Attiva Modbus nell\'interfaccia web dello Shelly. Porta 502, ID unità 1.</string>
+    <string name="forms_hint_keba_p30">Imposta il DIP switch DSW1.3 su ON (firmware c-series 3.10.16 / x-series 1.11 o successivo); non usare contemporaneamente l\'interfaccia UDP. Porta 502, ID unità 255. Sola lettura.</string>
+    <string name="forms_hint_alfen_eve">Richiede la licenza Active Load Balancing; in ACE Service Installer imposta la sorgente dati su Energy Management System, Modbus TCP/IP, e attiva «Allow reading». Porta 502; ID unità 1 o 2 = presa.</string>
+    <string name="forms_hint_mennekes_amtron">Nell\'interfaccia web della wallbox attiva «Modbus TCP Server» (software ECU 5.12 o successivo). Porta 502; una seconda presa risponde sulla porta 503: aggiungila come dispositivo a sé.</string>
+    <string name="forms_hint_go_e">Attiva Modbus nell\'app go-e: Internet → Advanced settings → Modbus. Porta 502, ID unità 1.</string>
+    <string name="forms_hint_my_pv">Nell\'interfaccia web del riscaldatore imposta il tipo di controllo su Modbus TCP. Porta 502, ID unità 1. Sola lettura.</string>
+    <string name="forms_hint_stiebel_eltron_isg">Richiede un ISG web / plus / Connect con l\'estensione software Modbus TCP/IP. Porta 502, ID unità 1. Sola lettura: temperature, stato e l\'energia elettrica giornaliera e totale (l\'ISG non fornisce la potenza istantanea).</string>
+    <string name="forms_hint_nibe_s">Attiva sulla pompa di calore il menu 7.5.9 «Modbus TCP/IP» (software 2.2.1 o successivo); si consiglia «Reading Modbus only». Porta 502. La pompa di calore accetta solo client su reti private.</string>
+    <string name="forms_hint_hoval_toptronic">Richiede il gateway Modbus TopTronic E (software V2.38 o successivo), per pompe di calore con WFA (UltraSource, Belaria pro). Lettura lenta, ogni 30 s. Porta 502, ID unità 1.</string>
+    <string name="forms_hint_fenecon">Legge l\'intero sistema (FV, batteria, rete, consumo) tramite l\'app FEMS preinstallata «Modbus/TCP Read Access»: porta 502, ID unità 1.</string>
+    <string name="forms_hint_victron">Sul GX attiva Settings → Integrations → Modbus TCP server (Venus OS meno recenti: Settings → Services → Modbus TCP). Porta 502, ID unità 100 = l\'intero impianto (FV, consumo, rete, batteria).</string>
+    <string name="forms_hint_growatt">Gli ibridi Growatt usano Modbus RTU su RS485: usa un gateway RS485-Ethernet in modalità «Modbus TCP to RTU» (9600 baud, 8N1). ID unità = indirizzo di comunicazione dell\'inverter (default 1). I valori di rete e casa richiedono lo smart meter Growatt; con questo protocollo Growatt non fornisce la produzione solare di oggi.</string>
+    <string name="forms_hint_solaredge">Attiva Modbus TCP in SetApp (o dal menu LCD): solo LAN cablata, porta 1502, ID dispositivo 1. SolarEdge accetta un solo client Modbus. Vengono letti anche i contatori collegati all\'inverter.</string>
+    <string name="forms_hint_sunspec">Per qualsiasi inverter che parla SunSpec via Modbus TCP (ad es. SMA con SunSpec attivo: ID unità 126). Legge i modelli inverter, MPPT, batteria e contatore offerti dal dispositivo.</string>
+    <string name="forms_hint_fronius">Attiva Modbus TCP nell\'interfaccia web dell\'inverter (Communication → Modbus: «SunSpec Model Type» float o int + SF, vanno bene entrambi); porta 502, ID unità 1. Un Fronius Smart Meter al punto di connessione alla rete viene letto tramite l\'inverter (ID unità 200).</string>
+    <string name="forms_hint_kostal_plenticore">Attiva Modbus TCP nell\'interfaccia web dell\'inverter (Settings → Modbus / SunSpec (TCP)); porta 1502, ID unità 71. Con master e slave (host e client) aggiungi ogni inverter come dispositivo a sé di questo impianto: l\'app capisce quale ha la batteria e il contatore di energia.</string>
+    <plurals name="forms_scan_found">
+        <item quantity="one">%d trovato</item>
+        <item quantity="many">%d trovati</item>
+        <item quantity="other">%d trovati</item>
+    </plurals>
+    <string name="forms_about">Informazioni</string>
+    <string name="forms_about_version">Versione %1$s (build %2$d)</string>
+    <string name="forms_about_built">Compilata il %1$s</string>
+    <string name="forms_about_license">Software libero sotto la GNU General Public License, versione 3 o successiva. Senza alcuna garanzia.</string>
+    <string name="forms_about_close">Chiudi</string>
+</resources>

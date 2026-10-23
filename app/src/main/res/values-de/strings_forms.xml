@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="forms_remove_title">%1$s entfernen?</string>
+    <string name="forms_remove">Entfernen</string>
+    <string name="forms_cancel">Abbrechen</string>
+    <string name="forms_name">Name</string>
+    <string name="forms_rename">Umbenennen</string>
+    <string name="forms_plants_title">Anlagen</string>
+    <string name="forms_add_plant">Anlage hinzufügen</string>
+    <string name="forms_plants_empty">Noch keine Anlagen. Tippe auf +, um eine Anlage hinzuzufügen, und füge dann ihre Wechselrichter, Batterien und Zähler hinzu.</string>
+    <string name="forms_rename_item">%1$s umbenennen</string>
+    <string name="forms_remove_item">%1$s entfernen</string>
+    <string name="forms_rename_plant">Anlage umbenennen</string>
+    <string name="forms_remove_plant_detail">Damit werden die Anlage, ihre Geräte und ihr Anlagenverlauf (Solar, Haus, Batterie, Netz) aus der App entfernt. An den Geräten selbst ändert sich nichts. Die aufgezeichneten Daten jedes Geräts bleiben erhalten: Füge dasselbe Gerät wieder hinzu, egal zu welcher Anlage, und sie sind wieder da.</string>
+    <string name="forms_remove_plant_delete_data">Auch die aufgezeichneten Daten der Geräte löschen</string>
+    <string name="forms_new_plant">Neue Anlage</string>
+    <string name="forms_plant_name_placeholder">z. B. Werkstattdach</string>
+    <string name="forms_add">Hinzufügen</string>
+    <string name="forms_test_connected">Verbunden: %1$s, S/N %2$s</string>
+    <string name="forms_test_failed">Fehlgeschlagen: %1$s</string>
+    <string name="forms_edit_device_title">%1$s bearbeiten</string>
+    <string name="forms_add_device_title">Gerät zu %1$s hinzufügen</string>
+    <string name="forms_back">Zurück</string>
+    <string name="forms_device_name_placeholder">z. B. Wechselrichter 1 (Ostdach)</string>
+    <string name="forms_ip_address">IP-Adresse</string>
+    <string name="forms_port">Port</string>
+    <string name="forms_unit_id">Modbus-Unit-ID</string>
+    <string name="forms_access_token">Zugriffstoken</string>
+    <string name="forms_device_password">Gerätepasswort</string>
+    <string name="forms_meter_measures">Was misst dieser Zähler?</string>
+    <string name="forms_invert_meter">Zählrichtung umkehren</string>
+    <string name="forms_invert_grid">Netz-Vorzeichen umkehren</string>
+    <string name="forms_testing">Teste…</string>
+    <string name="forms_test_connection">Verbindung testen</string>
+    <string name="forms_save">Speichern</string>
+    <string name="forms_type_coming_soon">%1$s (demnächst)</string>
+    <string name="forms_stop_search">Suche stoppen</string>
+    <string name="forms_search_network">Netzwerk durchsuchen</string>
+    <string name="forms_scan_progress">%1$d von %2$d</string>
+    <string name="forms_found_already_in">bereits in %1$s</string>
+    <string name="forms_found_unit">Unit-ID %1$d</string>
+    <string name="forms_found_serial">S/N %1$s</string>
+    <string name="forms_found_via_mdns">über mDNS gefunden</string>
+    <string name="forms_hint_scan">Sucht in diesem Wi-Fi-Netzwerk nach Wechselrichtern und Systemsteuerungen (Fronius, GoodWe, Growatt, Huawei, KACO, KOSTAL, LG, SMA, SolarEdge, Sungrow, Victron, Schneider, FENECON und andere SunSpec-Geräte) auf den Modbus-TCP-Ports 502, 503, 1502 und 6502. Zähler, Wärmepumpen und Wallboxen fügst du von Hand hinzu.</string>
+    <string name="forms_hint_kind_battery">Füge hier nur eigenständige Batterien hinzu. Eine Batterie an einem Hybrid-Wechselrichter wird bereits über den Wechselrichter gelesen und würde sonst doppelt gezählt.</string>
+    <string name="forms_hint_kind_meter">Ein Zähler am Netzanschluss ersetzt die Netzwerte der Wechselrichter. Ein PV-Zähler ergänzt Produktion (z. B. eines Wechselrichters ohne Kommunikation); ein Verbraucher-Unterzähler zeigt einen einzelnen Verbraucher.</string>
+    <string name="forms_hint_kind_consumer">Verbraucher werden als Teil des Hausverbrauchs angezeigt. Die Summen der Anlage ändern sie nicht: Der Netzzähler oder die Bilanz enthält sie bereits.</string>
+    <string name="forms_hint_shared_gateway">Mehrere Geräte hinter demselben Gateway teilen sich dessen IP-Adresse und Port und unterscheiden sich durch die Unit-ID.</string>
+    <string name="forms_hint_enphase_token">Ab Gateway-Software 7 braucht es ein Token: Erstelle auf entrez.enphaseenergy.com ein Owner-Token (ein Jahr gültig) für die Seriennummer dieses Gateways und füge es hier ein. Läuft es ab, meldet das Gerät ein abgelaufenes oder fehlendes Token.</string>
+    <string name="forms_hint_mac_password">Das Benutzerpasswort ist die MAC-Adresse des Geräts, kleingeschrieben ohne Doppelpunkte (z. B. 001122aabbcc). Du findest sie in der Liste verbundener Geräte deines Routers oder auf einem Computer mit `ip neigh`, nachdem du das Gerät angepingt hast. Android lässt Apps sie nicht abfragen.</string>
+    <string name="forms_hint_invert_meter">Wenn der Zähler andersherum angeschlossen ist (Einspeisung wird als Bezug angezeigt oder ein PV-Zähler zeigt beim Produzieren 0), setze hier ein Häkchen.</string>
+    <string name="forms_hint_invert_grid">SunSpec legt nicht fest, in welche Richtung der Zähler zählt. Zeigt die Übersicht Einspeisung, während du Strom aus dem Netz beziehst (oder umgekehrt), setze hier ein Häkchen.</string>
+    <string name="forms_hint_huawei">Unit-ID 1 für einen Wechselrichter hinter einem SDongle oder SmartLogger (seine Adresse dort); 0 bei Verbindung mit dem eigenen WLAN oder FE-Port des Wechselrichters. Modbus TCP muss auf dem SDongle aktiviert sein (FusionSolar-App: Communication Configuration).</string>
+    <string name="forms_hint_power_one">TRIO-Wechselrichter haben nur RS485. Schliesse sie über ein RS485-Ethernet-Gateway im Modus «Modbus TCP to RTU» an (standardmässig 19200 Baud, 8N1); gib IP und Port des Gateways ein und die RS485-Adresse des Wechselrichters als Unit-ID. Mehrere TRIOs an einem Bus teilen sich das Gateway. Nachts schaltet der Wechselrichter ab und wird als schlafend angezeigt.</string>
+    <string name="forms_hint_sungrow">Nutze den LAN-Port des Wechselrichters oder einen WiNet-S / WiNet-S2 / Logger1000 über Ethernet (nicht iHomeManager). Port 502, Unit-ID = Modbus-Adresse des Wechselrichters (Standard 1; hinter einem WiNet die Adresse, die seine Webseite anzeigt). Hybrid- oder String-Modell wird erkannt. Netz- und Hauswerte brauchen einen Sungrow Smart Meter.</string>
+    <string name="forms_hint_sma">Modbus ist ab Werk aus: Setze in der Weboberfläche des Wechselrichters (als Installateur) Device Parameters → External Communication → Modbus → TCP Server auf Yes, Port 502. Unit-ID 3. Füge jeden Wechselrichter mit seiner eigenen IP hinzu. Für die Netzleistung braucht es einen SMA Energy Meter am Gerät; ein Sunny Island meldet den Hausverbrauch, aber nicht die Solarleistung, füge also auch die PV-Wechselrichter hinzu.</string>
+    <string name="forms_hint_voltronic" tools:ignore="Typos">Diese Wechselrichter-Ladegeräte haben einen RS232-Anschluss (RJ45 oder DB9), kein Modbus. Verbinde ihn mit dem mitgelieferten Kabel mit einem RS232-TCP-Gateway (z. B. Elfin EW11): seriell 2400 Baud, 8N1, keine Flusskontrolle; netzwerkseitig TCP-Server, Port 8899, Transparent-Modus (nicht Modbus). Die App sendet nur Lesebefehle. Diese Geräte messen keine Netzleistung.</string>
+    <string name="forms_hint_kaco_nx3">SunSpec Modbus TCP, Port 502, Unit-ID 1 (Modbus/SunSpec im Wechselrichter aktivieren).</string>
+    <string name="forms_hint_fimer">Über einen VSN300- / VSN700-Logger oder einen Wechselrichter mit nativem SunSpec: Port 502; Unit-ID 247 für den Logger, sonst die Aurora-Adresse des Wechselrichters (oft 2).</string>
+    <string name="forms_hint_apsystems_ecu">Aktiviere Modbus im EMA Manager (ECU-R Firmware 1.3.7 / 2.0.2, ECU-C C1.1.3 oder neuer). Füge pro Mikrowechselrichter ein Gerät hinzu: Unit-ID = seine Modbus-Adresse aus dem EMA Manager. Port 502.</string>
+    <string name="forms_hint_conext_cl">SunSpec Modbus TCP, Port 502, Unit-ID 10 (Werkseinstellung). Über SunSpec kommt die Leistung in 100-W-Schritten.</string>
+    <string name="forms_hint_conext_cl60">Modbus TCP Port 502, Unit-ID 1.</string>
+    <string name="forms_hint_conext_gateway">Liest das ganze XW-System über das Conext Gateway / Insight Home: Port 503, Unit-ID 1.</string>
+    <string name="forms_hint_kostal_piko_ci">Modbus TCP Port 1502, Unit-ID 71 (Modbus in der Weboberfläche des Wechselrichters aktivieren).</string>
+    <string name="forms_hint_ingeteam">Modbus TCP über den Dongle des Wechselrichters: Port 502, Unit-ID 1. Ingeteam erlaubt nur einen Client und verlangt mindestens 1 s zwischen Anfragen.</string>
+    <string name="forms_hint_cps">CPS-Wechselrichter sprechen Modbus RTU (9600 8N1): Nutze ein RS485-Ethernet-Gateway im Modus «Modbus TCP to RTU». Geräte mit 275 / 350 kW haben auch Modbus TCP auf Port 502. Unit-ID = RS485-Adresse (Standard 1).</string>
+    <string name="forms_hint_riello_central">Modbus TCP oder RTU (9600 Baud) über ein Gateway. Port 502, Unit-ID 1.</string>
+    <string name="forms_hint_carlo_gavazzi">EM24 Ethernet: IP des Zählers, Port 502. EM300 / EM210 / EM24-DIN: ein RS485-Gateway (9600 8N1; ältere EM24-DIN 4800 oder 9600), Unit-ID = Zähleradresse (Standard 1). Das Modell wird erkannt.</string>
+    <string name="forms_hint_eastron">RS485-Gateway im Modus Modbus TCP to RTU: SDM630 9600 8N1, SDM120 2400 8N1 (Werkseinstellungen); Unit-ID = Zähleradresse (Standard 1).</string>
+    <string name="forms_hint_inepro_pro380">RS485-Gateway im Modus Modbus TCP to RTU, 9600 8E1; Unit-ID = Zähleradresse (Standard 1).</string>
+    <string name="forms_hint_abb_b2x">Stelle zuerst das RS485-Protokoll des Zählers auf Modbus; dann ein RS485-Gateway mit Baudrate und Parität des Zählers, Unit-ID = seine Modbus-Adresse.</string>
+    <string name="forms_hint_janitza_umg">Modbus TCP Port 502, Unit-ID = Modbus-Adresse des Geräts (Standard 1). Ein 96RM ohne Ethernet braucht ein RS485-Gateway.</string>
+    <string name="forms_hint_schneider_iem">RS485 Modbus RTU über ein Modbus-TCP-Gateway; Unit-ID = die am Display des Zählers eingestellte Adresse.</string>
+    <string name="forms_hint_siemens_pac">Modbus TCP Port 502 (oder der am Gerät eingestellte Port), Unit-ID 1.</string>
+    <string name="forms_hint_kostal_ksem">Aktiviere in der KSEM-Weboberfläche den Modbus-TCP-Slave ohne TLS. Port 502, Unit-ID 1.</string>
+    <string name="forms_hint_shelly_pro_3em">Aktiviere Modbus in der Shelly-Weboberfläche. Port 502, Unit-ID 1.</string>
+    <string name="forms_hint_keba_p30">Stelle den DIP-Schalter DSW1.3 auf ON (Firmware c-series 3.10.16 / x-series 1.11 oder neuer); nutze nicht gleichzeitig die UDP-Schnittstelle. Port 502, Unit-ID 255. Nur lesend.</string>
+    <string name="forms_hint_alfen_eve">Braucht die Lizenz Active Load Balancing; stelle im ACE Service Installer die Datenquelle auf Energy Management System, Modbus TCP/IP und schalte «Allow reading» ein. Port 502; Unit-ID 1 oder 2 = Ladepunkt.</string>
+    <string name="forms_hint_mennekes_amtron">Schalte in der Weboberfläche der Wallbox «Modbus TCP Server» ein (ECU-Software 5.12 oder neuer). Port 502; ein zweiter Ladepunkt antwortet auf Port 503, füge ihn als eigenes Gerät hinzu.</string>
+    <string name="forms_hint_go_e">Aktiviere Modbus in der go-e App: Internet → Advanced settings → Modbus. Port 502, Unit-ID 1.</string>
+    <string name="forms_hint_my_pv">Stelle in der Weboberfläche des Heizstabs die Ansteuerungsart auf Modbus TCP. Port 502, Unit-ID 1. Nur lesend.</string>
+    <string name="forms_hint_stiebel_eltron_isg">Braucht ein ISG web / plus / Connect mit der Software-Erweiterung Modbus TCP/IP. Port 502, Unit-ID 1. Nur lesend: Temperaturen, Zustand sowie die elektrische Energie pro Tag und gesamt (das ISG meldet keine aktuelle Leistung).</string>
+    <string name="forms_hint_nibe_s">Aktiviere an der Wärmepumpe das Menü 7.5.9 «Modbus TCP/IP» (Software 2.2.1 oder neuer); «Reading Modbus only» wird empfohlen. Port 502. Die Wärmepumpe akzeptiert nur Clients aus privaten Netzwerken.</string>
+    <string name="forms_hint_hoval_toptronic">Braucht das TopTronic E Modbus-Gateway (Software V2.38 oder neuer), für Wärmepumpen mit WFA (UltraSource, Belaria pro). Langsam lesen, alle 30 s. Port 502, Unit-ID 1.</string>
+    <string name="forms_hint_fenecon">Liest das ganze System (PV, Batterie, Netz, Verbrauch) über die vorinstallierte FEMS App «Modbus/TCP Read Access»: Port 502, Unit-ID 1.</string>
+    <string name="forms_hint_victron">Aktiviere auf dem GX Settings → Integrations → Modbus TCP server (ältere Venus OS: Settings → Services → Modbus TCP). Port 502, Unit-ID 100 = die ganze Anlage (PV, Verbrauch, Netz, Batterie).</string>
+    <string name="forms_hint_growatt">Growatt-Hybride sprechen Modbus RTU über RS485: Nutze ein RS485-Ethernet-Gateway im Modus «Modbus TCP to RTU» (9600 Baud, 8N1). Unit-ID = Kommunikationsadresse des Wechselrichters (Standard 1). Netz- und Hauswerte brauchen den Growatt Smart Meter; den heutigen Solarertrag liefert Growatt über dieses Protokoll nicht.</string>
+    <string name="forms_hint_solaredge">Aktiviere Modbus TCP in SetApp (oder im LCD-Menü): nur über LAN-Kabel, Port 1502, Geräte-ID 1. SolarEdge erlaubt nur einen Modbus-Client. Am Wechselrichter angeschlossene Zähler werden mitgelesen.</string>
+    <string name="forms_hint_sunspec">Für jeden Wechselrichter, der SunSpec über Modbus TCP spricht (z. B. SMA mit aktiviertem SunSpec: Unit-ID 126). Liest die Wechselrichter-, MPPT-, Batterie- und Zählermodelle, die das Gerät anbietet.</string>
+    <string name="forms_hint_fronius">Aktiviere Modbus TCP in der Weboberfläche des Wechselrichters (Communication → Modbus: «SunSpec Model Type» float oder int + SF, beides geht); Port 502, Unit-ID 1. Ein Fronius Smart Meter am Netzanschluss wird über den Wechselrichter gelesen (Unit-ID 200).</string>
+    <string name="forms_hint_kostal_plenticore">Aktiviere Modbus TCP in der Weboberfläche des Wechselrichters (Settings → Modbus / SunSpec (TCP)); Port 1502, Unit-ID 71. Bei Master und Slave (Host und Client) füge jeden Wechselrichter als eigenes Gerät dieser Anlage hinzu: Die App erkennt, welcher die Batterie und den Energiezähler hat.</string>
+    <plurals name="forms_scan_found">
+        <item quantity="one">%d gefunden</item>
+        <item quantity="other">%d gefunden</item>
+    </plurals>
+    <string name="forms_about">Info</string>
+    <string name="forms_about_version">Version %1$s (Build %2$d)</string>
+    <string name="forms_about_built">Erstellt am %1$s</string>
+    <string name="forms_about_license">Freie Software unter der GNU General Public License, Version 3 oder neuer. Ohne jede Gewährleistung.</string>
+    <string name="forms_about_close">Schliessen</string>
+</resources>

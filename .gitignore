@@ -1,0 +1,19 @@
+*.iml
+.gradle/
+/local.properties
+/.idea/
+/.kotlin/
+.DS_Store
+/build/
+/app/build/
+/captures
+.externalNativeBuild
+.cxx
+
+# Manufacturer documents are copyrighted (several may not be passed on): not published.
+# Each docs/specs/<make>/SOURCES.md says where to download them.
+/docs/specs/**/*
+!/docs/specs/*/
+!/docs/specs/*/SOURCES.md
+!/docs/specs/*/.gitkeep
+/docs/other/

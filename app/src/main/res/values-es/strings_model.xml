@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="kind_inverters">Inversores</string>
+    <string name="kind_batteries">Baterías</string>
+    <string name="kind_meters">Contadores</string>
+    <string name="kind_consumers">Consumidores</string>
+    <string name="meter_role_grid">Conexión a la red</string>
+    <string name="meter_role_pv">Producción FV (p. ej. un inversor sin comunicación)</string>
+    <string name="meter_role_consumer">Subcontador de un consumidor (p. ej. una bomba de calor)</string>
+    <string name="period_day">Día</string>
+    <string name="period_week">Semana</string>
+    <string name="period_month">Mes</string>
+    <string name="period_year">Año</string>
+    <string name="period_lifetime">Total</string>
+    <string name="range_all_time">Desde la instalación</string>
+</resources>

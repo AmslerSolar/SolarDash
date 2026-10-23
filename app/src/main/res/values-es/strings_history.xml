@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- History tab: chart, totals, tables and channel picker. -->
+<resources>
+    <string name="history_metric_solar">Solar</string>
+    <string name="history_metric_consumption">Consumo</string>
+    <string name="history_metric_battery">Batería</string>
+    <string name="history_metric_grid">Red</string>
+    <string name="history_metric_exported">Exportado</string>
+    <string name="history_metric_imported">Importado</string>
+    <string name="history_soc">Nivel de carga</string>
+    <string name="history_previous">Anterior</string>
+    <string name="history_next">Siguiente</string>
+    <string name="history_show_chart">Mostrar gráfico</string>
+    <string name="history_show_table">Mostrar tabla</string>
+    <string name="history_refused_title">No se puede añadir el canal</string>
+    <string name="history_ok">Aceptar</string>
+    <string name="history_generating">Generando…</string>
+    <string name="history_fill_demo">Rellenar con dos años de historial de demostración</string>
+    <string name="history_empty">Aún no hay historial. La app registra una vez por minuto mientras una instalación está abierta y cada 15 minutos aproximadamente en segundo plano.</string>
+    <string name="history_tap_chart">Toca el gráfico para ver los valores</string>
+    <string name="history_tap_bar">Toca una barra para ver los valores</string>
+    <string name="history_no_samples_week">No hay valores registrados esta semana.</string>
+    <string name="history_no_samples_day">No hay valores registrados este día.</string>
+    <string name="history_remove_channel">Eliminar %1$s</string>
+    <string name="history_add_channel">Añadir canal…</string>
+    <string name="history_chart_hint">Pellizca para ampliar, arrastra para desplazar, toca dos veces para restablecer</string>
+    <string name="history_totals">Totales</string>
+    <string name="history_solar_yield">Producción solar</string>
+    <string name="history_self_sufficiency">Autosuficiencia</string>
+    <string name="history_self_consumption">Autoconsumo</string>
+    <string name="history_hourly_power">Potencia media por hora</string>
+    <string name="history_consumption_short">Cons.</string>
+    <string name="history_energy">Energía</string>
+    <string name="history_picker_title">Añadir canales</string>
+    <string name="history_picker_search">Buscar</string>
+    <string name="history_picker_loading">Cargando…</string>
+    <string name="history_picker_empty">Aún no hay nada registrado para este dispositivo. Los canales aparecen cuando la instalación ha estado abierta un minuto.</string>
+    <string name="history_section_live">Valores en directo</string>
+    <string name="history_add">Añadir</string>
+    <string name="history_cancel">Cancelar</string>
+    <plurals name="history_picker_status">
+        <item quantity="one">%1$d seleccionado · libres: %2$d de %3$d</item>
+        <item quantity="many">%1$d seleccionados · libres: %2$d de %3$d</item>
+        <item quantity="other">%1$d seleccionados · libres: %2$d de %3$d</item>
+    </plurals>
+    <plurals name="history_refused_channels">
+        <item quantity="one">Como máximo %1$d canal añadido a la vez, para que el gráfico siga siendo legible. Elimínalo primero.</item>
+        <item quantity="many">Como máximo %1$d canales añadidos a la vez, para que el gráfico siga siendo legible. Elimina uno primero.</item>
+        <item quantity="other">Como máximo %1$d canales añadidos a la vez, para que el gráfico siga siendo legible. Elimina uno primero.</item>
+    </plurals>
+    <plurals name="history_refused_units">
+        <item quantity="one">El gráfico muestra como máximo %1$d unidad a la vez (%2$s). Elimina primero una serie con otra unidad.</item>
+        <item quantity="many">El gráfico muestra como máximo %1$d unidades distintas a la vez (%2$s). Elimina primero una serie con otra unidad.</item>
+        <item quantity="other">El gráfico muestra como máximo %1$d unidades distintas a la vez (%2$s). Elimina primero una serie con otra unidad.</item>
+    </plurals>
+</resources>

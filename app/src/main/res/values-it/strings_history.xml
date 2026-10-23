@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- History tab: chart, totals, tables and channel picker. -->
+<resources>
+    <string name="history_metric_solar">Solare</string>
+    <string name="history_metric_consumption">Consumo</string>
+    <string name="history_metric_battery">Batteria</string>
+    <string name="history_metric_grid">Rete</string>
+    <string name="history_metric_exported">Immessa in rete</string>
+    <string name="history_metric_imported">Prelevata dalla rete</string>
+    <string name="history_soc">Livello di carica</string>
+    <string name="history_previous">Precedente</string>
+    <string name="history_next">Successivo</string>
+    <string name="history_show_chart">Mostra grafico</string>
+    <string name="history_show_table">Mostra tabella</string>
+    <string name="history_refused_title">Impossibile aggiungere il canale</string>
+    <string name="history_ok">OK</string>
+    <string name="history_generating">Generazione…</string>
+    <string name="history_fill_demo">Riempi con due anni di storico demo</string>
+    <string name="history_empty">Nessuno storico per ora. L\'app registra una volta al minuto mentre un impianto è aperto e circa ogni 15 minuti in background.</string>
+    <string name="history_tap_chart">Tocca il grafico per i valori</string>
+    <string name="history_tap_bar">Tocca una barra per i valori</string>
+    <string name="history_no_samples_week">Nessun valore registrato in questa settimana.</string>
+    <string name="history_no_samples_day">Nessun valore registrato in questo giorno.</string>
+    <string name="history_remove_channel">Rimuovi %1$s</string>
+    <string name="history_add_channel">Aggiungi canale…</string>
+    <string name="history_chart_hint">Pizzica per lo zoom, trascina per spostare, doppio tocco per ripristinare</string>
+    <string name="history_totals">Totali</string>
+    <string name="history_solar_yield">Produzione solare</string>
+    <string name="history_self_sufficiency">Autosufficienza</string>
+    <string name="history_self_consumption">Autoconsumo</string>
+    <string name="history_hourly_power">Potenza media oraria</string>
+    <string name="history_consumption_short">Cons.</string>
+    <string name="history_energy">Energia</string>
+    <string name="history_picker_title">Aggiungi canali</string>
+    <string name="history_picker_search">Cerca</string>
+    <string name="history_picker_loading">Caricamento…</string>
+    <string name="history_picker_empty">Ancora nulla registrato per questo dispositivo. I canali compaiono dopo che l\'impianto è rimasto aperto per un minuto.</string>
+    <string name="history_section_live">Valori in tempo reale</string>
+    <string name="history_add">Aggiungi</string>
+    <string name="history_cancel">Annulla</string>
+    <plurals name="history_picker_status">
+        <item quantity="one">%1$d selezionato · liberi: %2$d di %3$d</item>
+        <item quantity="many">%1$d selezionati · liberi: %2$d di %3$d</item>
+        <item quantity="other">%1$d selezionati · liberi: %2$d di %3$d</item>
+    </plurals>
+    <plurals name="history_refused_channels">
+        <item quantity="one">Al massimo %1$d canale aggiunto alla volta, così il grafico resta leggibile. Rimuovilo prima.</item>
+        <item quantity="many">Al massimo %1$d canali aggiunti alla volta, così il grafico resta leggibile. Rimuovine prima uno.</item>
+        <item quantity="other">Al massimo %1$d canali aggiunti alla volta, così il grafico resta leggibile. Rimuovine prima uno.</item>
+    </plurals>
+    <plurals name="history_refused_units">
+        <item quantity="one">Il grafico mostra al massimo %1$d unità alla volta (%2$s). Rimuovi prima una serie con un\'altra unità.</item>
+        <item quantity="many">Il grafico mostra al massimo %1$d unità diverse alla volta (%2$s). Rimuovi prima una serie con un\'altra unità.</item>
+        <item quantity="other">Il grafico mostra al massimo %1$d unità diverse alla volta (%2$s). Rimuovi prima una serie con un\'altra unità.</item>
+    </plurals>
+</resources>

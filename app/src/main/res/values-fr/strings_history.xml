@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- History tab: chart, totals, tables and channel picker. -->
+<resources>
+    <string name="history_metric_solar">Solaire</string>
+    <string name="history_metric_consumption">Consommation</string>
+    <string name="history_metric_battery">Batterie</string>
+    <string name="history_metric_grid">Réseau</string>
+    <string name="history_metric_exported">Injecté</string>
+    <string name="history_metric_imported">Soutiré</string>
+    <string name="history_soc">Niveau de charge</string>
+    <string name="history_previous">Précédent</string>
+    <string name="history_next">Suivant</string>
+    <string name="history_show_chart">Afficher le graphique</string>
+    <string name="history_show_table">Afficher le tableau</string>
+    <string name="history_refused_title">Impossible d\'ajouter le canal</string>
+    <string name="history_ok">OK</string>
+    <string name="history_generating">Génération…</string>
+    <string name="history_fill_demo">Remplir avec deux ans d\'historique de démo</string>
+    <string name="history_empty">Pas encore d\'historique. L\'app enregistre une fois par minute tant qu\'une installation est ouverte, et environ toutes les 15 minutes en arrière-plan.</string>
+    <string name="history_tap_chart">Touchez le graphique pour voir les valeurs</string>
+    <string name="history_tap_bar">Touchez une barre pour voir les valeurs</string>
+    <string name="history_no_samples_week">Aucune valeur enregistrée cette semaine.</string>
+    <string name="history_no_samples_day">Aucune valeur enregistrée ce jour-là.</string>
+    <string name="history_remove_channel">Supprimer %1$s</string>
+    <string name="history_add_channel">Ajouter un canal…</string>
+    <string name="history_chart_hint">Pincez pour zoomer, glissez pour déplacer, touchez deux fois pour réinitialiser</string>
+    <string name="history_totals">Totaux</string>
+    <string name="history_solar_yield">Production solaire</string>
+    <string name="history_self_sufficiency">Autonomie</string>
+    <string name="history_self_consumption">Autoconsommation</string>
+    <string name="history_hourly_power">Puissance moyenne par heure</string>
+    <string name="history_consumption_short">Cons.</string>
+    <string name="history_energy">Énergie</string>
+    <string name="history_picker_title">Ajouter des canaux</string>
+    <string name="history_picker_search">Rechercher</string>
+    <string name="history_picker_loading">Chargement…</string>
+    <string name="history_picker_empty">Rien n\'a encore été enregistré pour cet appareil. Les canaux apparaissent une fois l\'installation ouverte depuis une minute.</string>
+    <string name="history_section_live">Valeurs en direct</string>
+    <string name="history_add">Ajouter</string>
+    <string name="history_cancel">Annuler</string>
+    <plurals name="history_picker_status">
+        <item quantity="one">%1$d sélectionné · libres : %2$d sur %3$d</item>
+        <item quantity="many">%1$d sélectionnés · libres : %2$d sur %3$d</item>
+        <item quantity="other">%1$d sélectionnés · libres : %2$d sur %3$d</item>
+    </plurals>
+    <plurals name="history_refused_channels">
+        <item quantity="one">Au maximum %1$d canal ajouté à la fois, pour que le graphique reste lisible. Supprimez-le d\'abord.</item>
+        <item quantity="many">Au maximum %1$d canaux ajoutés à la fois, pour que le graphique reste lisible. Supprimez-en d\'abord un.</item>
+        <item quantity="other">Au maximum %1$d canaux ajoutés à la fois, pour que le graphique reste lisible. Supprimez-en d\'abord un.</item>
+    </plurals>
+    <plurals name="history_refused_units">
+        <item quantity="one">Le graphique affiche au maximum %1$d unité à la fois (%2$s). Supprimez d\'abord une courbe avec une autre unité.</item>
+        <item quantity="many">Le graphique affiche au maximum %1$d unités différentes à la fois (%2$s). Supprimez d\'abord une courbe avec une autre unité.</item>
+        <item quantity="other">Le graphique affiche au maximum %1$d unités différentes à la fois (%2$s). Supprimez d\'abord une courbe avec une autre unité.</item>
+    </plurals>
+</resources>

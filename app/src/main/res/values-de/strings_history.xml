@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- History tab: chart, totals, tables and channel picker. -->
+<resources>
+    <string name="history_metric_solar">Solar</string>
+    <string name="history_metric_consumption">Verbrauch</string>
+    <string name="history_metric_battery">Batterie</string>
+    <string name="history_metric_grid">Netz</string>
+    <string name="history_metric_exported">Eingespeist</string>
+    <string name="history_metric_imported">Bezogen</string>
+    <string name="history_soc">Ladestand</string>
+    <string name="history_previous">Zurück</string>
+    <string name="history_next">Weiter</string>
+    <string name="history_show_chart">Diagramm anzeigen</string>
+    <string name="history_show_table">Tabelle anzeigen</string>
+    <string name="history_refused_title">Kanal kann nicht hinzugefügt werden</string>
+    <string name="history_ok">OK</string>
+    <string name="history_generating">Wird erstellt…</string>
+    <string name="history_fill_demo">Mit zwei Jahren Demo-Verlauf füllen</string>
+    <string name="history_empty">Noch kein Verlauf. Die App zeichnet einmal pro Minute auf, solange eine Anlage geöffnet ist, und im Hintergrund etwa alle 15 Minuten.</string>
+    <string name="history_tap_chart">Tippe ins Diagramm für Werte</string>
+    <string name="history_tap_bar">Tippe auf einen Balken für Werte</string>
+    <string name="history_no_samples_week">In dieser Woche wurden keine Werte aufgezeichnet.</string>
+    <string name="history_no_samples_day">An diesem Tag wurden keine Werte aufgezeichnet.</string>
+    <string name="history_remove_channel">%1$s entfernen</string>
+    <string name="history_add_channel">Kanal hinzufügen…</string>
+    <string name="history_chart_hint">Zum Zoomen zwei Finger spreizen, zum Verschieben ziehen, doppeltippen setzt zurück</string>
+    <string name="history_totals">Summen</string>
+    <string name="history_solar_yield">Solarertrag</string>
+    <string name="history_self_sufficiency">Autarkie</string>
+    <string name="history_self_consumption">Eigenverbrauch</string>
+    <string name="history_hourly_power">Mittlere Leistung pro Stunde</string>
+    <string name="history_consumption_short">Verbr.</string>
+    <string name="history_energy">Energie</string>
+    <string name="history_picker_title">Kanäle hinzufügen</string>
+    <string name="history_picker_search">Suchen</string>
+    <string name="history_picker_loading">Wird geladen…</string>
+    <string name="history_picker_empty">Für dieses Gerät ist noch nichts aufgezeichnet. Kanäle erscheinen, wenn die Anlage eine Minute lang geöffnet war.</string>
+    <string name="history_section_live">Live-Werte</string>
+    <string name="history_add">Hinzufügen</string>
+    <string name="history_cancel">Abbrechen</string>
+    <plurals name="history_picker_status">
+        <item quantity="one">%1$d ausgewählt · %2$d von %3$d frei</item>
+        <item quantity="other">%1$d ausgewählt · %2$d von %3$d frei</item>
+    </plurals>
+    <plurals name="history_refused_channels">
+        <item quantity="one">Höchstens %1$d hinzugefügter Kanal gleichzeitig, damit das Diagramm lesbar bleibt. Entferne ihn zuerst.</item>
+        <item quantity="other">Höchstens %1$d hinzugefügte Kanäle gleichzeitig, damit das Diagramm lesbar bleibt. Entferne zuerst einen.</item>
+    </plurals>
+    <plurals name="history_refused_units">
+        <item quantity="one">Das Diagramm zeigt höchstens %1$d Einheit gleichzeitig (%2$s). Entferne zuerst eine Kurve mit einer anderen Einheit.</item>
+        <item quantity="other">Das Diagramm zeigt höchstens %1$d verschiedene Einheiten gleichzeitig (%2$s). Entferne zuerst eine Kurve mit einer anderen Einheit.</item>
+    </plurals>
+</resources>
