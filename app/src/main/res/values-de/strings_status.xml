@@ -40,7 +40,6 @@
     <string name="status_backup_mode_text">%1$s versorgt das Haus ohne Stromnetz aus der Batterie.</string>
     <string name="status_off_grid_mode">Inselbetrieb</string>
     <string name="status_off_grid_mode_text">%1$s läuft im Inselbetrieb, mit Batterie und Solarmodulen.</string>
-    <string name="log_open">Störungsprotokoll</string>
     <string name="log_title">Störungsprotokoll</string>
     <string name="log_filter_all">Alle</string>
     <string name="log_filter_alarms">Nur Störungen</string>

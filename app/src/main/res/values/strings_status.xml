@@ -40,7 +40,6 @@
     <string name="status_backup_mode_text">%1$s supplies the house from the battery, without the grid.</string>
     <string name="status_off_grid_mode">Off-grid mode</string>
     <string name="status_off_grid_mode_text">%1$s runs off-grid, from the battery and the solar panels.</string>
-    <string name="log_open">Fault log</string>
     <string name="log_title">Fault log</string>
     <string name="log_filter_all">All</string>
     <string name="log_filter_alarms">Faults only</string>

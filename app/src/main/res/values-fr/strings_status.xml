@@ -40,7 +40,6 @@
     <string name="status_backup_mode_text">%1$s alimente la maison depuis la batterie, sans le réseau.</string>
     <string name="status_off_grid_mode">Mode autonome</string>
     <string name="status_off_grid_mode_text">%1$s fonctionne en autonomie, avec la batterie et les panneaux solaires.</string>
-    <string name="log_open">Journal des défauts</string>
     <string name="log_title">Journal des défauts</string>
     <string name="log_filter_all">Tout</string>
     <string name="log_filter_alarms">Défauts seulement</string>

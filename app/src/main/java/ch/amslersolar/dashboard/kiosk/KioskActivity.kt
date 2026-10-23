@@ -3,7 +3,6 @@
 
 package ch.amslersolar.dashboard.kiosk
 
-import ch.amslersolar.dashboard.ui.status.FaultLogActivity
 import ch.amslersolar.dashboard.ui.status.rememberPlantStatus
 import ch.amslersolar.dashboard.ui.PlantState
 import android.Manifest
@@ -114,7 +113,6 @@ class KioskActivity : ComponentActivity() {
                         applyDim(false)
                     },
                     onExit = { Kiosk.stop(this) },
-                    onLog = { FaultLogActivity.open(this, plantId) },
                 )
             }
         }

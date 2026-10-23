@@ -87,7 +87,7 @@ fun statusHeadline(status: PlantStatus): String = stringResource(
 
 /** Status card on the plant's dashboard: headline, then every issue with a link to its guide. */
 @Composable
-fun StatusCard(status: PlantStatus, onGuide: (Guide) -> Unit, modifier: Modifier = Modifier, onLog: (() -> Unit)? = null) {
+fun StatusCard(status: PlantStatus, onGuide: (Guide) -> Unit, modifier: Modifier = Modifier) {
     val color = severityColor(if (status.ok) null else status.severity)
     Card(
         modifier.fillMaxWidth(),
@@ -104,9 +104,6 @@ fun StatusCard(status: PlantStatus, onGuide: (Guide) -> Unit, modifier: Modifier
                 )
             }
             IssueList(status.issues, onGuide)
-            if (onLog != null) {
-                TextButton(onClick = onLog) { Text(stringResource(R.string.log_open)) }
-            }
         }
     }
 }

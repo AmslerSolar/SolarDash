@@ -40,7 +40,6 @@
     <string name="status_backup_mode_text">%1$s alimenta la casa desde la batería, sin la red.</string>
     <string name="status_off_grid_mode">Modo aislado</string>
     <string name="status_off_grid_mode_text">%1$s funciona aislado de la red, con la batería y los paneles solares.</string>
-    <string name="log_open">Registro de fallos</string>
     <string name="log_title">Registro de fallos</string>
     <string name="log_filter_all">Todo</string>
     <string name="log_filter_alarms">Solo fallos</string>

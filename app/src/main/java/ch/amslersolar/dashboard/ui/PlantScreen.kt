@@ -174,7 +174,7 @@ fun DashboardTab(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     StatusLine(state.snapshot, onShowDevices)
-                    StatusCard(status, onGuide, onLog = { FaultLogActivity.open(context, plant.id) })
+                    StatusCard(status, onGuide)
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         PlantEnergyFlow(state.snapshot, flowHeight, Modifier.weight(3f))
                         Column(Modifier.weight(2f), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -189,7 +189,7 @@ fun DashboardTab(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     item { StatusLine(state.snapshot, onShowDevices) }
-                    item { StatusCard(status, onGuide, onLog = { FaultLogActivity.open(context, plant.id) }) }
+                    item { StatusCard(status, onGuide) }
                     item { PlantEnergyFlow(state.snapshot, flowHeight) }
                     item { TodayCard(state.snapshot) }
                     if (state.snapshot.consumers.isNotEmpty()) item { ConsumersCard(state.snapshot) }
