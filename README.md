@@ -185,7 +185,6 @@ a problem wakes the screen and keeps it on; a tap on the status line lists the d
 | Fault / Warning | The device's own fault and warning codes (`DeviceReading.problems`) | alarm / warning |
 | No mains power | A device reports grid loss; on an **off-grid plant** (plant menu ⋮) it's "No AC input" (generator off), info | warning |
 | Backup mode / Off-grid mode | The inverter runs in off-grid / backup / island / emergency-power mode (`DeviceProblem.Kind.BACKUP_MODE`): "Backup mode" on a grid-tied plant, "Off-grid mode" on an off-grid plant | warning / info |
-| Battery low / almost empty | Plant battery below 20 % / 10 % | warning / alarm |
 | No internet | Not needed; shown as information | info |
 
 **Fault log:** every problem is recorded with its start and end time (`events` table in history.db, version 4),

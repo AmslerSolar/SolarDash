@@ -30,10 +30,6 @@
     <string name="status_mains_lost_text">%1$s segnala che la rete elettrica è assente.</string>
     <string name="status_no_ac_input">Nessun ingresso AC</string>
     <string name="status_no_ac_input_text">Né generatore né rete: funzionamento a batteria.</string>
-    <string name="status_battery_low">Batteria scarica</string>
-    <string name="status_battery_low_text">La batteria è al %1$d %%.</string>
-    <string name="status_battery_empty">Batteria quasi vuota</string>
-    <string name="status_battery_empty_text">La batteria è al %1$d %%. Consuma meno corrente possibile.</string>
     <string name="status_no_internet">Nessun internet</string>
     <string name="status_no_internet_text">Non serve: questo display funziona senza internet.</string>
     <string name="status_backup_mode">Modalità di emergenza</string>

@@ -30,10 +30,6 @@
     <string name="status_mains_lost_text">%1$s reports that the grid is down.</string>
     <string name="status_no_ac_input">No AC input</string>
     <string name="status_no_ac_input_text">No generator or grid power: running on the battery.</string>
-    <string name="status_battery_low">Battery low</string>
-    <string name="status_battery_low_text">The battery is at %1$d %%.</string>
-    <string name="status_battery_empty">Battery almost empty</string>
-    <string name="status_battery_empty_text">The battery is at %1$d %%. Use as little power as possible.</string>
     <string name="status_no_internet">No internet</string>
     <string name="status_no_internet_text">Not needed: this display works without internet.</string>
     <string name="status_backup_mode">Backup mode</string>

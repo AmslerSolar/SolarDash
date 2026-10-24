@@ -183,8 +183,6 @@ fun issueTitle(issue: Issue): String = stringResource(
         IssueKind.NO_AC_INPUT -> R.string.status_no_ac_input
         IssueKind.BACKUP_MODE -> R.string.status_backup_mode
         IssueKind.OFF_GRID_MODE -> R.string.status_off_grid_mode
-        IssueKind.BATTERY_LOW -> R.string.status_battery_low
-        IssueKind.BATTERY_EMPTY -> R.string.status_battery_empty
         IssueKind.NO_INTERNET -> R.string.status_no_internet
     },
 )
@@ -209,7 +207,5 @@ fun issueText(kind: IssueKind, name: String, percent: Int?): String = when (kind
     IssueKind.NO_AC_INPUT -> stringResource(R.string.status_no_ac_input_text)
     IssueKind.BACKUP_MODE -> stringResource(R.string.status_backup_mode_text, name)
     IssueKind.OFF_GRID_MODE -> stringResource(R.string.status_off_grid_mode_text, name)
-    IssueKind.BATTERY_LOW -> stringResource(R.string.status_battery_low_text, percent ?: 0)
-    IssueKind.BATTERY_EMPTY -> stringResource(R.string.status_battery_empty_text, percent ?: 0)
     IssueKind.NO_INTERNET -> stringResource(R.string.status_no_internet_text)
 }

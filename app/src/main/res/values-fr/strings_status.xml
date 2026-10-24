@@ -30,10 +30,6 @@
     <string name="status_mains_lost_text">%1$s signale une coupure du réseau.</string>
     <string name="status_no_ac_input">Pas d’entrée AC</string>
     <string name="status_no_ac_input_text">Ni générateur ni réseau : fonctionnement sur batterie.</string>
-    <string name="status_battery_low">Batterie faible</string>
-    <string name="status_battery_low_text">La batterie est à %1$d %%.</string>
-    <string name="status_battery_empty">Batterie presque vide</string>
-    <string name="status_battery_empty_text">La batterie est à %1$d %%. Consommez le moins possible.</string>
     <string name="status_no_internet">Pas d’internet</string>
     <string name="status_no_internet_text">Pas nécessaire : cet affichage fonctionne sans internet.</string>
     <string name="status_backup_mode">Mode secours</string>

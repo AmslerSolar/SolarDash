@@ -30,10 +30,6 @@
     <string name="status_mains_lost_text">%1$s meldet, dass das Stromnetz ausgefallen ist.</string>
     <string name="status_no_ac_input">Kein AC-Eingang</string>
     <string name="status_no_ac_input_text">Kein Generator- oder Netzstrom: Betrieb über die Batterie.</string>
-    <string name="status_battery_low">Batterie schwach</string>
-    <string name="status_battery_low_text">Die Batterie ist bei %1$d %%.</string>
-    <string name="status_battery_empty">Batterie fast leer</string>
-    <string name="status_battery_empty_text">Die Batterie ist bei %1$d %%. Bitte möglichst wenig Strom verbrauchen.</string>
     <string name="status_no_internet">Kein Internet</string>
     <string name="status_no_internet_text">Nicht nötig: Diese Anzeige funktioniert ohne Internet.</string>
     <string name="status_backup_mode">Notstrombetrieb</string>

@@ -37,7 +37,6 @@ enum class Guide(val id: String) {
     MAINS_LOST("mains_lost"),
     GENERATOR_OFF("generator_off"),
     BACKUP_MODE("backup_mode"),
-    BATTERY_LOW("battery_low"),
     NO_INTERNET("no_internet"),
 }
 
@@ -60,8 +59,6 @@ enum class IssueKind(val severity: Severity, val guide: Guide) {
     BACKUP_MODE(Severity.WARNING, Guide.BACKUP_MODE),
     /** An off-grid plant's inverter in off-grid mode: its normal state, shown for information. */
     OFF_GRID_MODE(Severity.INFO, Guide.BACKUP_MODE),
-    BATTERY_LOW(Severity.WARNING, Guide.BATTERY_LOW),
-    BATTERY_EMPTY(Severity.ALARM, Guide.BATTERY_LOW),
     NO_INTERNET(Severity.INFO, Guide.NO_INTERNET),
 }
 
@@ -93,8 +90,6 @@ class LastReadings {
 }
 
 object PlantStatusRules {
-    const val BATTERY_LOW_PERCENT = 20
-    const val BATTERY_EMPTY_PERCENT = 10
     /** Below this a PV inverter's last power counts as "the sun was gone" when it stops answering. */
     private const val ASLEEP_BELOW_W = 50
 
@@ -123,12 +118,6 @@ object PlantStatusRules {
             issues.removeAll(issues.filter { it.kind in group }.drop(1).toSet())
         }
 
-        snapshot?.battery?.socPercent?.let { soc ->
-            when {
-                soc < BATTERY_EMPTY_PERCENT -> issues += Issue(IssueKind.BATTERY_EMPTY, percent = soc)
-                soc < BATTERY_LOW_PERCENT -> issues += Issue(IssueKind.BATTERY_LOW, percent = soc)
-            }
-        }
         if (!net.internet) issues += Issue(IssueKind.NO_INTERNET)
         return PlantStatus(issues.distinct().sortedByDescending { it.severity })
     }

@@ -110,13 +110,11 @@ class PlantStatusTest {
     }
 
     @Test
-    fun batteryThresholds() {
-        fun at(soc: Int) = kinds(
-            PlantStatusRules.evaluate(plant(hybrid), snapshot(DeviceStatus(hybrid, DeviceReading(battery = BatteryState(0, soc, null, "Idle")), null)), home),
-        )
-        assertEquals(emptyList<IssueKind>(), at(20))
-        assertEquals(listOf(IssueKind.BATTERY_LOW), at(19))
-        assertEquals(listOf(IssueKind.BATTERY_EMPTY), at(9))
+    fun theChargeLevelIsNoProblem() {
+        for (soc in listOf(0, 5, 9, 15, 50)) {
+            val s = PlantStatusRules.evaluate(plant(hybrid), snapshot(DeviceStatus(hybrid, DeviceReading(battery = BatteryState(0, soc, null, "Idle")), null)), home)
+            assertEquals(emptyList<IssueKind>(), kinds(s))
+        }
     }
 
     @Test
