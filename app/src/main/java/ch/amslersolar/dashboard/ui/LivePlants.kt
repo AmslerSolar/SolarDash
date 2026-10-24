@@ -190,4 +190,4 @@ class LivePlants(
     }
 }
 
-private fun connection(d: DeviceConfig) = listOf(d.id, d.type, d.host, d.port, d.unitId, d.password, d.invertGrid, d.meterRole)
+private fun connection(d: DeviceConfig) = listOf(d.id, d.type, d.host, d.port, d.unitId, d.password, d.invertGrid, d.meterRole, d.model)

@@ -1,0 +1,142 @@
+{
+ "directions": {
+  "charge": "positive = battery charging",
+  "consumption": "positive = the device consumes power",
+  "discharge": "positive = battery discharging",
+  "export": "positive = power flowing from the site to the grid",
+  "generation": "positive = the device produces power",
+  "import": "positive = power flowing from the grid to the site",
+  "main": "per-phase values: the direction of the device's main power (see the AC measurements comment)"
+ },
+ "keys": {
+  "apparent_power": {
+   "unit": "VA"
+  },
+  "battery_current": {
+   "description": "+ = discharging, − = charging",
+   "positive": "discharge",
+   "unit": "A"
+  },
+  "battery_power": {
+   "description": "+ = discharging, − = charging",
+   "positive": "discharge",
+   "unit": "W"
+  },
+  "battery_soc": {
+   "description": "State of charge 0–100",
+   "unit": "%"
+  },
+  "battery_soh": {
+   "description": "State of health 0–100",
+   "unit": "%"
+  },
+  "battery_temperature": {
+   "unit": "°C"
+  },
+  "battery_voltage": {
+   "unit": "V"
+  },
+  "consumer_energy": {
+   "description": "Lifetime energy the device consumed",
+   "unit": "kWh"
+  },
+  "consumer_power": {
+   "description": "Power the device draws; + = consuming",
+   "positive": "consumption",
+   "unit": "W"
+  },
+  "error_code": {
+   "description": "Device error code; 0 = none unless the spec says otherwise",
+   "unit": ""
+  },
+  "firmware": {
+   "description": "Firmware version",
+   "unit": ""
+  },
+  "frequency": {
+   "unit": "Hz"
+  },
+  "grid_export_energy": {
+   "description": "Lifetime energy exported to the grid",
+   "unit": "kWh"
+  },
+  "grid_import_energy": {
+   "description": "Lifetime energy imported from the grid",
+   "unit": "kWh"
+  },
+  "grid_power": {
+   "description": "Power at the grid connection; + = feed-in (export), − = import",
+   "positive": "export",
+   "unit": "W"
+  },
+  "l1_current": {
+   "unit": "A"
+  },
+  "l1_power": {
+   "positive": "main",
+   "unit": "W"
+  },
+  "l1_voltage": {
+   "unit": "V"
+  },
+  "l2_current": {
+   "unit": "A"
+  },
+  "l2_power": {
+   "positive": "main",
+   "unit": "W"
+  },
+  "l2_voltage": {
+   "unit": "V"
+  },
+  "l3_current": {
+   "unit": "A"
+  },
+  "l3_power": {
+   "positive": "main",
+   "unit": "W"
+  },
+  "l3_voltage": {
+   "unit": "V"
+  },
+  "load_power": {
+   "description": "House consumption (≥ 0)",
+   "unit": "W"
+  },
+  "power_factor": {
+   "description": "−1…1",
+   "unit": ""
+  },
+  "pv_energy": {
+   "description": "Lifetime solar yield",
+   "unit": "kWh"
+  },
+  "pv_energy_today": {
+   "description": "Solar yield today",
+   "unit": "kWh"
+  },
+  "pv_power": {
+   "description": "DC or AC solar production power (≥ 0)",
+   "unit": "W"
+  },
+  "reactive_power": {
+   "unit": "var"
+  },
+  "serial": {
+   "description": "Serial number",
+   "unit": ""
+  },
+  "session_energy": {
+   "description": "Energy of the current or last charging session",
+   "unit": "kWh"
+  },
+  "state": {
+   "description": "Operating state; values in an enum",
+   "unit": ""
+  },
+  "temperature": {
+   "description": "Device (inverter / heat sink) temperature",
+   "unit": "°C"
+  }
+ }
+}

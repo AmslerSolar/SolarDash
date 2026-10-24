@@ -98,4 +98,6 @@
     <string name="forms_about_built">Built %1$s</string>
     <string name="forms_about_license">Free software under the GNU General Public License, version 3 or later. It comes with no warranty.</string>
     <string name="forms_about_close">Close</string>
+    <string name="forms_model">Model</string>
+    <string name="forms_hint_model">This device can\'t report its model over Modbus: choose it here, so the right values are read.</string>
 </resources>

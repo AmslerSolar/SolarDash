@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard
 
+import ch.amslersolar.dashboard.driver.spec.SpecLibrary
 import ch.amslersolar.dashboard.model.FaultLog
 import ch.amslersolar.dashboard.net.LocalNetworks
 import ch.amslersolar.dashboard.driver.net.DeviceNetwork
@@ -37,6 +38,7 @@ class SolarApp : Application() {
         super.onCreate()
         DetailTexts.init(this)
         DeviceNetwork.current = LocalNetworks.get(this) // devices on Wi-Fi without internet, too
+        SpecLibrary.current = SpecLibrary { name -> assets.open("modbusspec/$name").bufferedReader().use { it.readText() } }
         HistoryWorker.schedule(this)
     }
 }

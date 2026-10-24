@@ -106,6 +106,8 @@ data class DeviceConfig(
     val invertGrid: Boolean = false,
     /** Power meters only: what the meter measures. */
     val meterRole: MeterRole = MeterRole.GRID,
+    /** The model, for devices whose models can't be told apart over Modbus (ModbusSpec `model_choice: user`). */
+    val model: String = "",
 ) {
     override fun toString() = "DeviceConfig(id=$id, name=$name, type=$type, host=$host, port=$port, unitId=$unitId, serial=$serial)"
 }

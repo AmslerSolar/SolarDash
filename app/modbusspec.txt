@@ -1,0 +1,42 @@
+# ModbusSpec device ids the app bundles (tools/modbusspec_sync.py copies them to assets/modbusspec/).
+# "<id> keep <key>,<key>": write registers a hook in SpecDevices reads (the copies leave write registers out otherwise).
+eastron-sdm
+keba-kecontact-p30
+kostal-piko-ci keep x.meter_position
+schneider-conext-cl60
+schneider-conext-gateway
+chint-cps-403x
+alfen-eve-socket
+alfen-eve-station
+bender-ecu
+goe-charger
+mypv-elwa-acthor keep x.power_setpoint
+stiebel-wpm
+nibe-s-series
+hoval-toptronic-e
+inepro-pro380
+abb-b23-b24 keep x.number_of_elements
+janitza-umg
+schneider-iem3000
+siemens-pac2200
+kostal-ksem
+shelly-pro-3em
+carlogavazzi-em24-din keep x.measuring_system
+carlogavazzi-em24-e1 keep x.measuring_system
+carlogavazzi-em300 keep x.measuring_system
+carlogavazzi-em210 keep x.measuring_system
+goodwe-et
+fenecon-fems
+huawei-sun2000
+growatt-sph
+growatt-tl-x
+growatt-wit
+kostal-plenticore
+sma-inverter
+sungrow-shx
+sungrow-sg
+powerone-trio
+powerone-trio-50
+ingeteam-ingecon-sun
+ingeteam-ingecon-sun-legacy
+riello-central

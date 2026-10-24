@@ -99,4 +99,6 @@
     <string name="forms_about_built">Compilada el %1$s</string>
     <string name="forms_about_license">Software libre bajo la GNU General Public License, versión 3 o posterior. Sin ninguna garantía.</string>
     <string name="forms_about_close">Cerrar</string>
+    <string name="forms_model">Modelo</string>
+    <string name="forms_hint_model">Este dispositivo no indica su modelo por Modbus: elígelo aquí para que se lean los valores correctos.</string>
 </resources>

@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard.driver
 
+import ch.amslersolar.dashboard.driver.spec.SpecDevices
 import ch.amslersolar.dashboard.driver.apsystems.ApsystemsEcuDriver
 import ch.amslersolar.dashboard.driver.consumer.AlfenEveDriver
 import ch.amslersolar.dashboard.driver.consumer.BenderEcuDriver
@@ -67,7 +68,12 @@ interface DeviceDriver {
 
 object DeviceDrivers {
     /** Connections come from [connections], so devices behind the same gateway share one TCP connection. */
-    fun create(config: DeviceConfig, connections: ModbusConnections): DeviceDriver = when (config.type) {
+    fun create(config: DeviceConfig, connections: ModbusConnections): DeviceDriver =
+        (if (config.type in SpecDevices.SPEC_IDS) SpecDevices.create(config.type, connections.get(config.host, config.port), config.unitId, config.model) else null)
+            ?: handWritten(config, connections)
+
+    /** The hand-written drivers: everything not (yet) read through ModbusSpec, and the reference for the golden tests. */
+    private fun handWritten(config: DeviceConfig, connections: ModbusConnections): DeviceDriver = when (config.type) {
         DeviceType.GOODWE_ET -> GoodWeEtDriver(connections.get(config.host, config.port), config.unitId)
         DeviceType.HUAWEI -> HuaweiSun2000Driver(connections.get(config.host, config.port), config.unitId)
         DeviceType.KOSTAL_PLENTICORE -> KostalPlenticoreDriver(connections.get(config.host, config.port), config.unitId)

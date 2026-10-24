@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard.ui
 
+import ch.amslersolar.dashboard.driver.spec.SpecDevices
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -83,6 +84,8 @@ fun AddDeviceScreen(
     var serial by rememberSaveable { mutableStateOf(existing?.serial.orEmpty()) }
     var invertGrid by rememberSaveable { mutableStateOf(existing?.invertGrid ?: false) }
     var meterRole by rememberSaveable { mutableStateOf(existing?.meterRole ?: MeterRole.GRID) }
+    var model by rememberSaveable { mutableStateOf(existing?.model.orEmpty()) }
+    val models = remember(type) { SpecDevices.userModels(type) }
     // Deliberately not saveable: kept out of the saved instance state.
     var password by remember { mutableStateOf(existing?.password.orEmpty()) }
     var testResult by rememberSaveable(stateSaver = ConnectionTestSaver) { mutableStateOf<ConnectionTest?>(null) }
@@ -131,6 +134,7 @@ fun AddDeviceScreen(
         password = if (type.needsPassword) password else "",
         invertGrid = (type.gridSignOption || type.kind == DeviceKind.METER) && invertGrid,
         meterRole = if (type.kind == DeviceKind.METER) meterRole else MeterRole.GRID,
+        model = if (models.any { it.first == model }) model else "",
         // A changed type or unit id may be another device: drop a serial that came with the old settings.
         serial = if (existing != null && (type != existing.type || unitId != existing.unitId.toString()) && serial == existing.serial) "" else serial,
     )
@@ -297,6 +301,25 @@ fun AddDeviceScreen(
                             stringResource(R.string.forms_hint_mac_password)
                         },
                     )
+                }
+            }
+
+            if (models.isNotEmpty()) {
+                // The device can't tell its model over Modbus: the installer picks it (ModbusSpec model_choice: user).
+                Text(stringResource(R.string.forms_model), style = MaterialTheme.typography.titleSmall)
+                Hint(stringResource(R.string.forms_hint_model))
+                Column(Modifier.selectableGroup()) {
+                    models.forEach { (id, label) ->
+                        Row(
+                            Modifier.fillMaxWidth()
+                                .selectable(selected = model == id, role = Role.RadioButton) { model = id; testResult = null }
+                                .padding(vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            RadioButton(selected = model == id, onClick = null)
+                            Text(label, modifier = Modifier.padding(start = 12.dp))
+                        }
+                    }
                 }
             }
 

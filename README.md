@@ -134,6 +134,38 @@ shown in English, so new driver rows need a dictionary line in each language.
 - History: `history.db` (SQLite) with numbered upgrade steps; `HistoryUpgradeTest` opens a schema-1 database.
 - An update keeps the data only if it's signed with the same key as the installed app (see Build).
 
+## Drivers from ModbusSpec
+
+Register maps come more and more from [ModbusSpec](~/dev/ModbusSpec), one YAML file per device family. The app
+bundles the files it uses as JSON (`app/src/main/assets/modbusspec/`, list in `app/modbusspec.txt`), copied at a
+pinned ModbusSpec commit by `python3 -I tools/modbusspec_sync.py` (it refuses uncommitted ModbusSpec changes and
+runs ModbusSpec's validator; `LOCK.json` records the commit). The build never reads ModbusSpec itself.
+
+- `driver/spec/SpecReader.kt` reads and decodes a device with its file (a port of ModbusSpec's `tools/msp.py`):
+  word order and model detection, requests within the device's limits, scaling, sign normalisation, enums, flags,
+  derived values and fault rules.
+- `driver/spec/SpecDriver.kt` turns the vocabulary keys into a `DeviceReading` and lists every value as a detail
+  row. Points only open-source projects name (not checked against the maker's documents) appear under
+  "Other sources (unverified)" and never feed the energy flow or the plant status.
+- `driver/spec/SpecDevices.kt` says which device type reads through which file(s) and holds small per-device
+  hooks for what the format can't express. A type moves there only when a golden test
+  (`test/…/driver/spec/*GoldenTest.kt`) shows the spec driver reads what its hand-written driver read on the same
+  register images. The hand-written drivers stay as the reference; Modbus devices that need logic (SunSpec chain,
+  Victron's unit ids) and non-Modbus devices (Voltronic, LG, Enphase) stay hand-written.
+- Switched (33 device types): Eastron SDM, KEBA P30, Carlo Gavazzi (EM24-E1, EM300, EM210, EM24-DIN), inepro
+  PRO380, ABB B23/B24, Schneider iEM3000, Siemens PAC2200, KOSTAL KSEM, Shelly Pro 3EM, my-PV, Stiebel Eltron ISG,
+  Alfen Eve, MENNEKES/Bender ECU, go-e, NIBE S series (model picked in the device form: `model_choice: user`),
+  Hoval TopTronic E, FENECON, Huawei SUN2000, Growatt (SPH, TL-X, WIT), GoodWe ET, SMA, Sungrow (SHx, SG), KOSTAL
+  PIKO CI, Schneider Conext CL-60 and Gateway, CPS 403X, Power-One TRIO (asleep at night: `connection.sleeps`),
+  Ingeteam INGECON SUN, Riello central.
+- Still hand-written: Janitza UMG (an identify check went missing in ModbusSpec 301604b), KOSTAL Plenticore (word
+  order given by a register's value, which the format can't express), the SunSpec family (Fronius, SolarEdge, KACO,
+  FIMER, APsystems, Conext CL, LG SunSpec), Victron, and the non-Modbus Voltronic, LG ESS and Enphase.
+- The bundled copies leave out write registers (unless a hook reads one: `keep` in `app/modbusspec.txt`), notes and
+  source details: 1.5 MB for 40 files.
+- History channels of switched devices get new detail row names (the detail rows follow the spec's labels), and
+  their detail labels and fault texts are English until they're added to the translations.
+
 ## Plant status and help guides
 
 The dashboard and the kiosk show the plant's status in plain words: a green "Everything OK", or what's wrong,
