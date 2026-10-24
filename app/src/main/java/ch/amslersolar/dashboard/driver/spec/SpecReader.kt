@@ -24,7 +24,7 @@ data class SpecValue(val point: Spec.Point?, val number: Double?, val text: Stri
  * [addressOffset] is added to every address sent: for gateways that renumber a device documented with 1-based
  * register numbers (the file's address X is then asked at X + 1).
  */
-class SpecTables(private val holding: RegisterReader, private val input: RegisterReader, val addressOffset: Int = 0) {
+class SpecTables(internal val holding: RegisterReader, private val input: RegisterReader, val addressOffset: Int = 0) {
     suspend fun read(table: String, unitId: Int, address: Int, count: Int): IntArray {
         val reader = when (table) {
             "holding" -> holding

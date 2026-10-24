@@ -205,8 +205,12 @@ object SpecDevices {
                 val input = RegisterReader { u, r, c -> client.readInputRegisters(u, r, c) }
                 // SMA: function 03 and 04 read the same registers (input_equals_holding); the old driver used 04.
                 val holding = if (type in INPUT_FOR_HOLDING) input else RegisterReader { u, r, c -> client.readHoldingRegisters(u, r, c) }
-                SpecDriver(
-                    library.spec(id), library.vocabulary, SpecTables(holding = holding, input = input, addressOffset = offset), unitId, hooks(id),
+                val spec = library.spec(id)
+                val tables = SpecTables(holding = holding, input = input, addressOffset = offset)
+                // SunSpec devices: the chain is walked where the device has it; the file adds the rest.
+                if (spec.sunspec && type in GENERIC) SunSpecSpecDriver(spec, library.vocabulary, tables, unitId, model?.takeIf { it.isNotBlank() })
+                else SpecDriver(
+                    spec, library.vocabulary, tables, unitId, hooks(id),
                     requestGapMs = if (pollGap != null) 0 else null, model = model?.takeIf { it.isNotBlank() },
                 )
             }
@@ -360,10 +364,10 @@ object SpecDevices {
  * One device type, several spec files (e.g. a maker's meter families): the first whose identify checks pass is
  * used from then on; until one does, reads fail with the last driver's reason.
  */
-class ChoosingSpecDriver(private val candidates: List<SpecDriver>) : DeviceDriver {
-    private var chosen: SpecDriver? = null
+class ChoosingSpecDriver(private val candidates: List<DeviceDriver>) : DeviceDriver {
+    private var chosen: DeviceDriver? = null
 
-    private suspend fun choose(): SpecDriver {
+    private suspend fun choose(): DeviceDriver {
         chosen?.let { return it }
         var last: Exception? = null
         for (d in candidates) {

@@ -40,7 +40,13 @@ class Spec(
     val problems: List<ProblemRule>,
     /** "auto" (detect the model) or "user" (the models can't be told apart: the user picks one). */
     val modelChoice: String = "auto",
+    /** The points are SunSpec models at their usual chain addresses: read the chain with a SunSpec reader. */
+    val sunspec: Boolean = false,
 ) {
+    /** The same device with only [points] (e.g. the vendor registers beside a SunSpec chain). */
+    fun withPoints(points: List<Point>) =
+        Spec(id, manufacturer, name, kind, connection, encoding, models, identify, points, derived, enums, flags, problems, modelChoice, sunspec)
+
     /** [blocks]: ranges (table, unit id or null, address, count) the device only answers as one request; [sleeps]: no answer = asleep. */
     data class Connection(
         val defaultPort: Int, val defaultUnit: Int, val maxRegisters: Int, val evenAddress: Boolean, val maxGap: Int, val minIntervalMs: Long,
@@ -166,6 +172,7 @@ class Spec(
                     Identify(serials, groups(i["checks"]), groups(i["any"]))
                 },
                 modelChoice = o.str("model_choice") ?: "auto",
+                sunspec = o.bool("sunspec") == true,
                 points = o.arr("points")?.map { point(it.jsonObject) }.orEmpty(),
                 derived = o.arr("derived")?.map { it.jsonObject }?.map { d ->
                     Derived(

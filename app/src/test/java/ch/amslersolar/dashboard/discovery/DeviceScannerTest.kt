@@ -120,6 +120,17 @@ class DeviceScannerTest {
     }
 
     @Test
+    fun aSunSpecDeviceIsNamedByItsModbusSpecFileWhenOneKnowsIt() = runBlocking {
+        val scanner = DeviceScanner(
+            portOpen = { _, p -> p == 502 },
+            identify = { type, _, _, _ -> if (type == DeviceType.SUNSPEC) DeviceInfo("SCHNEIDER Conext CL", "ZX1") else throw java.io.IOException("no") },
+            specIdentify = { h, p -> FoundDevice(h, p, DeviceType.MODBUS_SPEC_INVERTER, 10, "Schneider Conext CL", "ZX1", specId = "schneider-conext-cl") },
+        )
+        val found = latest(scanner.scan(listOf("192.168.0.5"), emptyMap()).toList()).single()
+        assertEquals("schneider-conext-cl", found.specId)
+    }
+
+    @Test
     fun findsAMovedDeviceBySerialWithoutTouchingConfiguredOnes() = runBlocking {
         val asked = mutableListOf<String>()
         val serials = mapOf("192.168.0.50" to "OTHER", "192.168.0.61" to "9012ABC", "192.168.0.70" to "9012ABC")

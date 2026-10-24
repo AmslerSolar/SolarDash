@@ -83,13 +83,14 @@ class SunSpecDevice(private val reader: RegisterReader, private val unitId: Int)
         return block
     }
 
-    private companion object {
-        const val SUNS_1 = 0x5375 // "Su"
-        const val SUNS_2 = 0x6E53 // "nS"
-        const val END = 0xFFFF
-        const val COMMON = 1
-        const val MAX_MODELS = 32
-        const val MAX_READ = 125
+    companion object {
+        private const val SUNS_1 = 0x5375 // "Su"
+        private const val SUNS_2 = 0x6E53 // "nS"
+        private const val END = 0xFFFF
+        private const val COMMON = 1
+        private const val MAX_MODELS = 32
+        private const val MAX_READ = 125
+        /** Where a chain may start ("SunS"). */
         val BASES = listOf(0, 40000, 50000)
     }
 }

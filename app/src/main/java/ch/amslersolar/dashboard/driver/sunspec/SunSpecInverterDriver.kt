@@ -213,39 +213,56 @@ open class SunSpecInverterDriver(reader: RegisterReader, unitId: Int, private va
             }
         }
 
+        /** The battery from model 124 (storage), 802 (battery base) or Fronius's storage modules in 160; null without. */
+        fun battery(storage: Model?, bank: Model?, modules: List<Module> = emptyList()): BatteryState? {
+            if (storage == null && bank == null && modules.none { it.storage }) return null
+            val chaSt = storage?.u16(11) ?: bank?.u16(16)
+            val power = if (modules.any { it.storage }) {
+                val charge = modules.firstOrNull { it.charging }?.w ?: 0.0
+                val discharge = modules.firstOrNull { it.discharging }?.w ?: 0.0
+                discharge - charge
+            } else {
+                // Model 802: W has no defined sign; the direction comes from ChaSt.
+                val magnitude = bank?.let { b -> b.scaled(b.s16(47), 63) }?.let(::abs) ?: 0.0
+                when (chaSt) {
+                    3 -> magnitude
+                    4 -> -magnitude
+                    else -> 0.0
+                }
+            }
+            return BatteryState(
+                powerW = power.roundToInt(),
+                socPercent = (storage?.let { s -> s.scaled(s.u16(8), 22) } ?: bank?.let { b -> b.scaled(b.u16(11), 56) })
+                    ?.roundToInt()?.takeIf { it in 0..100 },
+                voltageV = storage?.let { s -> s.scaled(s.u16(10), 24) } ?: bank?.let { b -> b.scaled(b.u16(34), 59) },
+                mode = CHARGE_STATES[chaSt] ?: when {
+                    power > 0 -> "Discharging"
+                    power < 0 -> "Charging"
+                    else -> "Idle"
+                },
+            )
+        }
+
+        /** A meter on its own: grid power ([importPositive]: + means drawing), phases and frequency. */
+        fun parseMeter(meter: Meter, importPositive: Boolean = true): DeviceReading {
+            val hz = meter[MET_HZ] ?: 0.0
+            val sign = if (importPositive) -1 else 1
+            return DeviceReading(
+                gridPowerW = meter[MET_W]?.let { (sign * it).roundToInt() },
+                phases = (0 until 3).mapNotNull { i ->
+                    val v = meter[MET_PH_V[i]]?.takeIf { it > 0 } ?: return@mapNotNull null
+                    PhaseReading("L${i + 1}", v, meter[MET_PH_A[i]], hz, meter[MET_PH_W[i]]?.let { (sign * it).roundToInt() })
+                },
+            )
+        }
+
         fun parse(inv: Inverter, mppt: Model?, storage: Model?, meter: Meter?, bank: Model? = null, meterImportPositive: Boolean = true): DeviceReading {
             val modules = mppt?.let(::modules).orEmpty()
             val pvModules = modules.filterNot { it.storage }
             val acW = inv[INV_W]
             val pv = if (pvModules.isNotEmpty()) pvModules.sumOf { it.w ?: 0.0 } else inv[INV_DCW]
 
-            val battery = if (storage == null && bank == null && modules.none { it.storage }) null else {
-                val chaSt = storage?.u16(11) ?: bank?.u16(16)
-                val power = if (modules.any { it.storage }) {
-                    val charge = modules.firstOrNull { it.charging }?.w ?: 0.0
-                    val discharge = modules.firstOrNull { it.discharging }?.w ?: 0.0
-                    discharge - charge
-                } else {
-                    // Model 802: W has no defined sign; the direction comes from ChaSt.
-                    val magnitude = bank?.let { b -> b.scaled(b.s16(47), 63) }?.let(::abs) ?: 0.0
-                    when (chaSt) {
-                        3 -> magnitude
-                        4 -> -magnitude
-                        else -> 0.0
-                    }
-                }
-                BatteryState(
-                    powerW = power.roundToInt(),
-                    socPercent = (storage?.let { s -> s.scaled(s.u16(8), 22) } ?: bank?.let { b -> b.scaled(b.u16(11), 56) })
-                        ?.roundToInt()?.takeIf { it in 0..100 },
-                    voltageV = storage?.let { s -> s.scaled(s.u16(10), 24) } ?: bank?.let { b -> b.scaled(b.u16(34), 59) },
-                    mode = CHARGE_STATES[chaSt] ?: when {
-                        power > 0 -> "Discharging"
-                        power < 0 -> "Charging"
-                        else -> "Idle"
-                    },
-                )
-            }
+            val battery = battery(storage, bank, modules)
 
             val grid = meter?.get(MET_W)?.let { if (meterImportPositive) -it.roundToInt() else it.roundToInt() }
             val load = if (acW != null && grid != null) maxOf(0, (acW - grid).roundToInt()) else null

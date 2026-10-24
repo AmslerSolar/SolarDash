@@ -58,9 +58,17 @@ as "Modbus TCP device, not recognised". **Extended search** also tries the other
 8899 (RS485/Wi-Fi gateways) and the ports of the ModbusSpec files (4701, 4702, 5555, 8080, 10001, 30502); it takes
 longer. Tap a recognised result to fill in the form. Devices already in a plant are listed but not contacted, since
 some accept only one Modbus client. The LG HTTPS API (port 443) isn't searched for; its unit shows up via SunSpec.
-Devices without an identify check (many meters, heat pumps and wallboxes) are added by hand. The search also listens for mDNS announcements (`_sunspec._tcp`, `_modbus._tcp`) for its first 8 seconds; those
+Devices without an identify check (many meters, heat pumps and wallboxes) are added by hand. A device the generic SunSpec driver
+recognises is named by its ModbusSpec file when one identifies it. The search also listens for mDNS announcements (`_sunspec._tcp`, `_modbus._tcp`) for its first 8 seconds; those
 devices show up straight away, marked "found via mDNS". The LG ESS Home 10 announces itself as
 `LGE_ESS-<serial>` (`_sunspec._tcp`, port 6502); whether GoodWe, Huawei or KOSTAL announce anything is untested.
+
+**SunSpec devices from ModbusSpec:** files marked `sunspec: true` (Fronius, KACO, REFU, Schneider Conext CL,
+SolarEdge, APsystems, LG ESS, FranklinWH) aren't read at the file's fixed addresses: the app walks the device's own
+SunSpec chain (from "SunS" at 0, 40000 or 50000, whatever models come first) and reads the inverter, meter or
+battery models from it. The file adds what SunSpec doesn't say: identification, the sign of the grid power
+(`positive` of its grid_power point), and its vendor registers outside the chain (e.g. the Conext CL's energy
+counters at 2050), which fill in what the SunSpec models leave empty and are listed with the details.
 
 **Changed IP addresses (DHCP):** each device keeps its serial number (from the search, Test connection, or read
 once while polling). If a Modbus device hasn't answered for 2 minutes, the app searches the subnet on its port

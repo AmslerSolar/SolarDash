@@ -139,7 +139,8 @@ class DeviceScanner(
                 val key = "$host:$port"
                 val device = probes.withPermit {
                     val named = probe(host, port, mdnsCandidates ?: CANDIDATES[port] ?: CANDIDATES.values.flatten().distinct())
-                    if (named.type != null) named else (runCatching { specIdentify(host, port) }.getOrNull() ?: named)
+                    // A SunSpec device the generic driver took: its ModbusSpec file may know it better.
+                    if (named.type != null && named.type != DeviceType.SUNSPEC) named else (runCatching { specIdentify(host, port) }.getOrNull() ?: named)
                 }
                 send(ScanEvent.Found(device.copy(viaMdns = key in viaMdns, identifying = false)))
                 send(ScanEvent.Progress(identified.incrementAndGet(), toProbe.size, ScanPhase.IDENTIFY))
