@@ -54,6 +54,12 @@ class DetailTranslator(entries: Map<String, String>) {
             return fill(tr, ns, xs)
         }
         SUFFIX.matchEntire(text)?.let { m -> lookup(m.groupValues[1], depth)?.let { return "$it (${m.groupValues[2]})" } }
+        // Several states or flags in one value ("Fan fault, Overheating"): each on its own.
+        if (depth == 0 && ", " in text) {
+            val parts = text.split(", ")
+            val translated = parts.map { lookup(it, depth + 1) }
+            if (translated.any { it != null }) return parts.indices.joinToString(", ") { translated[it] ?: parts[it] }
+        }
         return null
     }
 

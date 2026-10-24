@@ -38,6 +38,7 @@ class DetailTranslatorTest {
         assertEquals("238.4 V", t.translate("238.4 V"))
         assertEquals("-12 W", t.translate("-12 W"))
         assertEquals("Something new", t.translate("Something new"))
+        assertEquals("Lädt, Netz, Unknown", t.translate("Charging, Grid, Unknown")) // flags: each on its own
         assertEquals("Anything", DetailTranslator(emptyMap()).translate("Anything"))
     }
 
