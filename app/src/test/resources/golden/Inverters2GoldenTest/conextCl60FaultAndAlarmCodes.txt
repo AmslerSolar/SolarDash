@@ -1,0 +1,132 @@
+[conextCl60FaultAndAlarmCodes/1]
+(pv, 70500)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 100.20, null], [L2, 230.50, 100.10, null], [L3, 229.90, 100.30, null]])
+(lifetimePv, 123456.000)
+(todayPv, 234.500)
+(problemKinds, [MAINS_LOST])
+sleeping=false
+problems=[Islanding (grid outage) (10)]
+
+[conextCl60FaultAndAlarmCodes/2]
+(pv, 70500)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 100.20, null], [L2, 230.50, 100.10, null], [L3, 229.90, 100.30, null]])
+(lifetimePv, 123456.000)
+(todayPv, 234.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Insulation fault (39)]
+
+[conextCl60FaultAndAlarmCodes/3]
+(pv, 70500)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 100.20, null], [L2, 230.50, 100.10, null], [L3, 229.90, 100.30, null]])
+(lifetimePv, 123456.000)
+(todayPv, 234.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Fault code 999]
+
+[conextCl60FaultAndAlarmCodes/4]
+(pv, 70500)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 100.20, null], [L2, 230.50, 100.10, null], [L3, 229.90, 100.30, null]])
+(lifetimePv, 123456.000)
+(todayPv, 234.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Fault (state 0x5500)]
+
+[conextCl60FaultAndAlarmCodes/5]
+(pv, 70500)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 100.20, null], [L2, 230.50, 100.10, null], [L3, 229.90, 100.30, null]])
+(lifetimePv, 123456.000)
+(todayPv, 234.500)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Fan failure (70)]
+
+[conextCl60FaultAndAlarmCodes/6]
+(pv, 70500)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 100.20, null], [L2, 230.50, 100.10, null], [L3, 229.90, 100.30, null]])
+(lifetimePv, 123456.000)
+(todayPv, 234.500)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Derating (state 0x8100)]
+
+[conextCl60FaultAndAlarmCodes/7]
+(pv, 70500)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 100.20, null], [L2, 230.50, 100.10, null], [L3, 229.90, 100.30, null]])
+(lifetimePv, 123456.000)
+(todayPv, 234.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[conextCl60FaultAndAlarmCodes/8]
+(pv, 70500)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 100.20, null], [L2, 230.50, 100.10, null], [L3, 229.90, 100.30, null]])
+(lifetimePv, 123456.000)
+(todayPv, 234.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[conextCl60FaultAndAlarmCodes/9]
+(pv, 70500)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 100.20, null], [L2, 230.50, 100.10, null], [L3, 229.90, 100.30, null]])
+(lifetimePv, 123456.000)
+(todayPv, 234.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[conextCl60FaultAndAlarmCodes/10]
+(pv, 70500)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 100.20, null], [L2, 230.50, 100.10, null], [L3, 229.90, 100.30, null]])
+(lifetimePv, 123456.000)
+(todayPv, 234.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Communication failure (state 0x2500)]
+
+[conextCl60FaultAndAlarmCodes/11]
+(pv, 70500)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 100.20, null], [L2, 230.50, 100.10, null], [L3, 229.90, 100.30, null]])
+(lifetimePv, 123456.000)
+(todayPv, 234.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+

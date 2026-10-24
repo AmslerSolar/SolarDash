@@ -1,0 +1,24 @@
+[trioGt03MapBothNumberings/1]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapBothNumberings/2]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+

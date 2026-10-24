@@ -4,27 +4,24 @@
 package ch.amslersolar.dashboard.driver.spec
 
 import ch.amslersolar.dashboard.driver.DeviceDriver
-import ch.amslersolar.dashboard.driver.meter.AbbMeterDriver
-import ch.amslersolar.dashboard.driver.meter.CarloGavazziMeterDriver
-import ch.amslersolar.dashboard.driver.meter.FakeMeterImage
-import ch.amslersolar.dashboard.driver.meter.IneproPro380Driver
 import ch.amslersolar.dashboard.driver.meter.JanitzaUmgDriver
-import ch.amslersolar.dashboard.driver.meter.KostalKsemDriver
 import ch.amslersolar.dashboard.driver.meter.MeterRegisterFake
-import ch.amslersolar.dashboard.driver.meter.SchneiderIemDriver
-import ch.amslersolar.dashboard.driver.meter.ShellyPro3EmDriver
-import ch.amslersolar.dashboard.driver.meter.SiemensPacDriver
 import ch.amslersolar.dashboard.driver.meter.silentDevice
 import ch.amslersolar.dashboard.model.DeviceReading
 import java.io.File
+import java.util.Locale
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Ignore
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TestName
 
 /**
  * The ModbusSpec drivers of the meters must read what the hand-written meter drivers read, on the same register
  * images (copied from the drivers' own tests): power, phases, energy and the problem kinds. Texts may differ.
+ * The hand-written drivers are gone (except Janitza's): what they read is recorded in
+ * golden/MetersGoldenTest/old-drivers.txt, keyed `<test method>/<n-th comparison in it>`.
  */
 class MetersGoldenTest {
     private val library = SpecLibrary { File("src/main/assets/modbusspec/$it").readText() }
@@ -40,11 +37,28 @@ class MetersGoldenTest {
     private fun essentials(r: DeviceReading) = listOf(
         "pv" to r.pvPowerW, "grid" to r.gridPowerW, "load" to r.loadPowerW,
         "battery" to r.battery?.let { listOf(it.powerW, it.socPercent) },
-        "phases" to r.phases.map { listOf(it.name, "%.2f".format(it.voltageV), it.currentA?.let { a -> "%.2f".format(a) }, it.powerW) },
+        "phases" to r.phases.map { listOf(it.name, "%.2f".format(Locale.ROOT, it.voltageV), it.currentA?.let { a -> "%.2f".format(Locale.ROOT, a) }, it.powerW) },
         "lifetimePv" to r.lifetimePvKwh, "todayPv" to r.today.pvKwh,
         "problems" to r.problems.map { it.kind }.sorted(),
     )
 
+    @get:Rule val name = TestName()
+    private var case = 0
+
+    private val old = OldDriverRecords("MetersGoldenTest")
+
+    /** [new] must read what the hand-written driver read on the same image (the recording of this comparison). */
+    private fun same(new: DeviceDriver) = runBlocking {
+        val key = "${name.methodName}/${case++}"
+        val b = new.read()
+        assertEquals(key, old[key], essentials(b).joinToString("\n"))
+        val ta = old["$key:texts"]
+        val tb = b.problems.map { it.text }.sorted().toString()
+        if (ta != tb) println("problem texts differ: old $ta, spec $tb")
+        b
+    }
+
+    /** Janitza's hand-written driver stays: compared live. */
     private fun same(old: DeviceDriver, new: DeviceDriver) = runBlocking {
         val a = old.read()
         val b = new.read()
@@ -78,13 +92,13 @@ class MetersGoldenTest {
     @Test
     fun ineproImportExportAndGaps() {
         for (kw in listOf(listOf(1.2, 0.8, 0.5), listOf(-1.0, -1.0, -0.5))) {
-            same(IneproPro380Driver(pro380(kw), 3), spec("inepro-pro380", pro380(kw), 3))
+            same(spec("inepro-pro380", pro380(kw), 3))
         }
         fun gaps() = pro380(listOf(0.1, 0.0, 0.0)).also { f ->
             for (a in 0x6000..0x604A) f.regs.remove(a)
             f.f32(0x5016, Double.NaN)
         }
-        same(IneproPro380Driver(gaps(), 3), spec("inepro-pro380", gaps(), 3))
+        same(spec("inepro-pro380", gaps(), 3))
     }
 
     @Test
@@ -117,7 +131,7 @@ class MetersGoldenTest {
         return f
     }
 
-    private fun abb(image: () -> FakeMeterImage) = same(AbbMeterDriver(image(), 1), spec("abb-b23-b24", image(), 1))
+    private fun abb(image: () -> FakeMeterImage) = same(spec("abb-b23-b24", image(), 1))
 
     @Test
     fun abbImportExportSingleElementInvalid() {
@@ -224,7 +238,7 @@ class MetersGoldenTest {
             u64(3207, 2_500_000); u64(3219, 10_000); u64(3223, 20_000)
         }
 
-    private fun schneider(image: () -> MeterRegisterFake) = same(SchneiderIemDriver(image(), 5), spec("schneider-iem3000", image(), 5))
+    private fun schneider(image: () -> MeterRegisterFake) = same(spec("schneider-iem3000", image(), 5))
 
     @Test
     fun schneiderImportExportIem3150() {
@@ -276,7 +290,7 @@ class MetersGoldenTest {
         f64(973, 1_234_000.0)
     }
 
-    private fun siemens(image: () -> MeterRegisterFake) = same(SiemensPacDriver(image(), 1), spec("siemens-pac2200", image(), 1))
+    private fun siemens(image: () -> MeterRegisterFake) = same(spec("siemens-pac2200", image(), 1))
 
     @Test
     fun siemensImportExportMissingStatus() {
@@ -306,7 +320,7 @@ class MetersGoldenTest {
         }
         val driver = spec("siemens-pac2200", strict, 1)
         assertEquals("LQN/12345678", driver.identify().serial)
-        same(SiemensPacDriver(pac2200(listOf(500.0, 0.0, 0.0)), 1), driver)
+        same(driver)
         Unit
     }
 
@@ -336,7 +350,7 @@ class MetersGoldenTest {
         for (b in listOf(592, 672, 752)) for (o in listOf(0, 4, 8, 12, 32, 36)) u64(b + o, 10_000)
     }
 
-    private fun kostal(image: () -> MeterRegisterFake) = same(KostalKsemDriver(image(), 1), spec("kostal-ksem", image(), 1))
+    private fun kostal(image: () -> MeterRegisterFake) = same(spec("kostal-ksem", image(), 1))
 
     @Test
     fun kostalImportExportMissing() {
@@ -356,9 +370,12 @@ class MetersGoldenTest {
 
     // ---------------------------------------------------------------- Shelly Pro 3EM
 
+    /** What the Shelly subtracts on the wire (was ShellyPro3EmDriver.REGISTER_BASE). */
+    private val shellyRegisterBase = 30000
+
     /** The fake holds the documented table numbers (30000 + address); requests use the plain address. */
     private fun wire(fake: MeterRegisterFake) = ch.amslersolar.dashboard.driver.sunspec.RegisterReader { unit, register, count ->
-        val b = fake.read(unit, register + ShellyPro3EmDriver.REGISTER_BASE, count)
+        val b = fake.read(unit, register + shellyRegisterBase, count)
         ch.amslersolar.dashboard.driver.modbus.RegisterBlock(register, ByteArray(count * 2) { i -> b.u16(b.start + i / 2).let { if (i % 2 == 0) it shr 8 else it }.toByte() })
     }
 
@@ -381,7 +398,7 @@ class MetersGoldenTest {
         }
 
     private fun shellyPair(image: () -> MeterRegisterFake) =
-        same(ShellyPro3EmDriver(wire(image()), 1), spec("shelly-pro-3em", SpecTables(holding = wire(image()), input = wire(image())), 1))
+        same(spec("shelly-pro-3em", SpecTables(holding = wire(image()), input = wire(image())), 1))
 
     @Test
     fun shellyImportExportMissing() {
@@ -450,7 +467,7 @@ class MetersGoldenTest {
         return f
     }
 
-    private fun cg(unit: Int = 1, image: () -> FakeMeterImage) = same(CarloGavazziMeterDriver(image(), unit), cgSpec(image(), unit))
+    private fun cg(unit: Int = 1, image: () -> FakeMeterImage) = same(cgSpec(image(), unit))
 
     @Test
     fun carloGavazziFamiliesAndModels() {

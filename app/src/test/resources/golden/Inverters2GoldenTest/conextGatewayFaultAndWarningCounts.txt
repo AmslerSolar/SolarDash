@@ -1,0 +1,24 @@
+[conextGatewayFaultAndWarningCounts/1]
+(pv, 4200)
+(grid, 1100)
+(load, 1600)
+(battery, [-1500, 81])
+(phases, [[L1, 120.20, 4.50, null], [L2, 120.10, 4.60, null]])
+(lifetimePv, 45100.000)
+(todayPv, 18.250)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[conextGatewayFaultAndWarningCounts/2]
+(pv, 4200)
+(grid, 1100)
+(load, 1600)
+(battery, [-1500, 81])
+(phases, [[L1, 120.20, 4.50, null], [L2, 120.10, 4.60, null]])
+(lifetimePv, 45100.000)
+(todayPv, 18.250)
+(problemKinds, [FAULT, WARNING])
+sleeping=false
+problems=[1 active warning, 2 active faults]
+

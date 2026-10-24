@@ -1,0 +1,252 @@
+[ingeteamCurrentMap/1]
+(pv, 9800)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 14.00, 3200], [L2, 231.00, 14.00, 3200], [L3, 232.00, 14.00, 3200]])
+(lifetimePv, 123456.000)
+(todayPv, 31.250)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Over-temperature derating (reduction bit 0)]
+
+[ingeteamCurrentMap/2]
+(pv, 9800)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 14.00, 3200], [L2, 231.00, 14.00, 3200], [L3, 232.00, 14.00, 3200]])
+(lifetimePv, 123456.000)
+(todayPv, 31.250)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Over-temperature derating (reduction bit 0)]
+
+[ingeteamCurrentMap/3]
+(pv, 5270)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 14.00, 3200]])
+(lifetimePv, 123456.000)
+(todayPv, null)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Over-temperature derating (reduction bit 0)]
+
+[ingeteamCurrentMap/4]
+(pv, 4530)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 14.00, 3200], [L2, 231.00, 14.00, 3200], [L3, 232.00, 14.00, 3200]])
+(lifetimePv, 123456.000)
+(todayPv, 31.250)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Over-temperature derating (reduction bit 0)]
+
+[ingeteamCurrentMap/5]
+(pv, 0)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 14.00, 3200], [L2, 231.00, 14.00, 3200], [L3, 232.00, 14.00, 3200]])
+(lifetimePv, 123456.000)
+(todayPv, 31.250)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Over-temperature derating (reduction bit 0)]
+
+[ingeteamCurrentMap/6]
+(pv, 9800)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 14.00, 3200], [L2, 231.00, 14.00, 3200], [L3, 232.00, 14.00, 3200]])
+(lifetimePv, 123456.000)
+(todayPv, 31.250)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Over-temperature derating (reduction bit 0)]
+
+[ingeteamCurrentMap/7]
+(pv, 9800)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 14.00, 3200], [L2, 231.00, 14.00, 3200], [L3, 232.00, 14.00, 3200]])
+(lifetimePv, 123456.000)
+(todayPv, 31.250)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamCurrentMap/8]
+(pv, 9800)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 14.00, 3200], [L2, 231.00, 14.00, 3200], [L3, 232.00, 14.00, 3200]])
+(lifetimePv, 123456.000)
+(todayPv, 31.250)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Fan locked (reduction bit 2)]
+
+[ingeteamCurrentMap/9]
+(pv, 9800)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 14.00, 3200], [L2, 231.00, 14.00, 3200], [L3, 232.00, 14.00, 3200]])
+(lifetimePv, 123456.000)
+(todayPv, 31.250)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamCurrentMap/10]
+(pv, 9800)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 14.00, 3200], [L2, 231.00, 14.00, 3200], [L3, 232.00, 14.00, 3200]])
+(lifetimePv, 123456.000)
+(todayPv, 31.250)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamCurrentMap/11]
+(pv, 9800)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 14.00, 3200], [L2, 231.00, 14.00, 3200], [L3, 232.00, 14.00, 3200]])
+(lifetimePv, 123456.000)
+(todayPv, 31.250)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamCurrentMap/12]
+(pv, 9800)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 14.00, 3200], [L2, 231.00, 14.00, 3200], [L3, 232.00, 14.00, 3200]])
+(lifetimePv, 123456.000)
+(todayPv, 31.250)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamCurrentMap/13]
+(pv, 9800)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 14.00, 3200], [L2, 231.00, 14.00, 3200], [L3, 232.00, 14.00, 3200]])
+(lifetimePv, 123456.000)
+(todayPv, 31.250)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamCurrentMap/14]
+(pv, 9800)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 14.00, 3200], [L2, 231.00, 14.00, 3200], [L3, 232.00, 14.00, 3200]])
+(lifetimePv, 123456.000)
+(todayPv, 31.250)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamCurrentMap/15]
+(pv, 9800)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 14.00, 3200], [L2, 231.00, 14.00, 3200], [L3, 232.00, 14.00, 3200]])
+(lifetimePv, 123456.000)
+(todayPv, 31.250)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamCurrentMap/16]
+(pv, 9800)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 14.00, 3200], [L2, 231.00, 14.00, 3200], [L3, 232.00, 14.00, 3200]])
+(lifetimePv, 123456.000)
+(todayPv, 31.250)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamCurrentMap/17]
+(pv, 9800)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 14.00, 3200], [L2, 231.00, 14.00, 3200], [L3, 232.00, 14.00, 3200]])
+(lifetimePv, 123456.000)
+(todayPv, 31.250)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamCurrentMap/18]
+(pv, 9800)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 14.00, 3200], [L2, 231.00, 14.00, 3200], [L3, 232.00, 14.00, 3200]])
+(lifetimePv, 123456.000)
+(todayPv, 31.250)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamCurrentMap/19]
+(pv, 9800)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 14.00, 3200], [L2, 231.00, 14.00, 3200], [L3, 232.00, 14.00, 3200]])
+(lifetimePv, 123456.000)
+(todayPv, 31.250)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamCurrentMap/20]
+(pv, 9800)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 14.00, 3200], [L2, 231.00, 14.00, 3200], [L3, 232.00, 14.00, 3200]])
+(lifetimePv, 123456.000)
+(todayPv, 31.250)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamCurrentMap/21]
+(pv, 9800)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 14.00, 3200], [L2, 231.00, 14.00, 3200], [L3, 232.00, 14.00, 3200]])
+(lifetimePv, 123456.000)
+(todayPv, 31.250)
+(problemKinds, [])
+sleeping=false
+problems=[]
+

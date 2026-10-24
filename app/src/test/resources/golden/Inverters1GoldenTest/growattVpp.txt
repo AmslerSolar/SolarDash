@@ -1,0 +1,165 @@
+[growattVpp/Growatt charging, importing]
+(pv, 6152)
+(grid, -1200)
+(load, 700)
+(battery, [-2500, 60])
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+problems=[]
+
+[growattVpp/Growatt discharging, exporting]
+(pv, 6152)
+(grid, 900)
+(load, 3100)
+(battery, [1800, 60])
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+problems=[]
+
+[growattVpp/Growatt MIN-X without battery, single-phase]
+(pv, 6152)
+(grid, 2000)
+(load, 2500)
+(battery, null)
+(phases, [[L1, 231.20, 4.30, null]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+problems=[]
+
+[growattVpp/Growatt MIN-XH]
+(pv, 6152)
+(grid, -1200)
+(load, 4200)
+(battery, [2500, 60])
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+problems=[]
+
+[growattVpp/Growatt WIT]
+(pv, 6152)
+(grid, -1200)
+(load, 4200)
+(battery, [2500, 60])
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+problems=[]
+
+[growattVpp/Growatt SPH single-phase]
+(pv, 6152)
+(grid, -1200)
+(load, 4200)
+(battery, [2500, 60])
+(phases, [[L1, 231.20, 4.30, null]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+problems=[]
+
+[growattVpp/Growatt three batteries]
+(pv, 6152)
+(grid, -1200)
+(load, 4200)
+(battery, [-2500, 55])
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+problems=[]
+
+[growattVpp/Growatt four batteries]
+(pv, 6152)
+(grid, -1200)
+(load, 4200)
+(battery, [-1, 54])
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+problems=[]
+
+[growattVpp/Growatt no versions]
+(pv, 6152)
+(grid, -1200)
+(load, 4200)
+(battery, [2500, 60])
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+problems=[]
+
+[growattVpp/Growatt negative PV and load]
+(pv, 0)
+(grid, -1000)
+(load, 0)
+(battery, [2500, 60])
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+problems=[]
+
+[growattVpp/Growatt all fine]
+(pv, 6152)
+(grid, -1200)
+(load, 4200)
+(battery, [2500, 60])
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+problems=[]
+
+[growattVpp/Growatt fault, alarm, battery fault]
+(pv, 6152)
+(grid, -1200)
+(load, 4200)
+(battery, [2500, 60])
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT, FAULT, WARNING])
+problems=[FAULT: Battery fault (battery state 4), FAULT: Fault code 102/3, WARNING: Alarm code 205/1]
+
+[growattVpp/Growatt battery fault without battery]
+(pv, 6152)
+(grid, -1200)
+(load, 4200)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+problems=[]
+
+[growattVpp/Growatt off-grid]
+(pv, 6152)
+(grid, -1200)
+(load, 4200)
+(battery, [2500, 60])
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [BACKUP_MODE])
+problems=[BACKUP_MODE: Off-grid operation (state 7)]
+
+[growattVpp/Growatt fault without code]
+(pv, 6152)
+(grid, -1200)
+(load, 4200)
+(battery, [2500, 60])
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+problems=[FAULT: Fault (state 3)]
+

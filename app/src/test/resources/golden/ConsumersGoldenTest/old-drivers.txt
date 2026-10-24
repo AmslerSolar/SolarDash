@@ -1,0 +1,1576 @@
+# ConsumersGoldenTest: what the hand-written drivers read on the test's register images, recorded at commit 8818a64
+# before they were deleted. Entry: '=== <testMethod>/<case>' then the essentials; '<key>:texts' = problem texts.
+# The @Ignore'd cases (alfenShiftedAddresses, benderInputRegisterFallback) are recorded too, for when the spec can read them.
+=== hovalStatesAndProblemsWithoutTimeouts/heating
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== hovalStatesAndProblemsWithoutTimeouts/heating:texts
+[]
+=== hovalStatesAndProblemsWithoutTimeouts/wfa 4
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== hovalStatesAndProblemsWithoutTimeouts/wfa 4:texts
+[]
+=== hovalStatesAndProblemsWithoutTimeouts/wfa 8
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== hovalStatesAndProblemsWithoutTimeouts/wfa 8:texts
+[]
+=== hovalStatesAndProblemsWithoutTimeouts/wfa 0
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== hovalStatesAndProblemsWithoutTimeouts/wfa 0:texts
+[]
+=== hovalStatesAndProblemsWithoutTimeouts/wfa 11 gen 16
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== hovalStatesAndProblemsWithoutTimeouts/wfa 11 gen 16:texts
+[Heat pump fault (sensor or switch) (WFA status 11)]
+=== hovalStatesAndProblemsWithoutTimeouts/gen 16
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== hovalStatesAndProblemsWithoutTimeouts/gen 16:texts
+[Heat generator fault (status 16)]
+=== hovalStatesAndProblemsWithoutTimeouts/W17
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [WARNING])
+=== hovalStatesAndProblemsWithoutTimeouts/W17:texts
+[Heat pump error W17 (code 80)]
+=== hovalStatesAndProblemsWithoutTimeouts/low pressure
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT, FAULT, WARNING])
+=== hovalStatesAndProblemsWithoutTimeouts/low pressure:texts
+[Low-pressure fault (WFA status 12), Hot water warning (status 7), Heat pump error E12 (code 203)]
+=== hovalStatesAndProblemsWithoutTimeouts/W11
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [WARNING])
+=== hovalStatesAndProblemsWithoutTimeouts/W11:texts
+[Heat pump error W11 (code 74)]
+=== hovalStatesAndProblemsWithoutTimeouts/not available
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== hovalStatesAndProblemsWithoutTimeouts/not available:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s1155 heating
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s1155 heating:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s1156 heating
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s1156 heating:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s2125 heating
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s2125 heating:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s320 heating
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s320 heating:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s330 heating
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s330 heating:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s735 heating
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s735 heating:texts
+[]
+=== nibeEveryFileStatesAndAlarm/smos40 heating
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/smos40 heating:texts
+[]
+=== nibeEveryFileStatesAndAlarm/vvms320 heating
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/vvms320 heating:texts
+[]
+=== nibeEveryFileStatesAndAlarm/vvms500 heating
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/vvms500 heating:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s1155 priority 10
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s1155 priority 10:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s1156 priority 10
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s1156 priority 10:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s2125 priority 10
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s2125 priority 10:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s320 priority 10
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s320 priority 10:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s330 priority 10
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s330 priority 10:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s735 priority 10
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s735 priority 10:texts
+[]
+=== nibeEveryFileStatesAndAlarm/smos40 priority 10
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/smos40 priority 10:texts
+[]
+=== nibeEveryFileStatesAndAlarm/vvms320 priority 10
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/vvms320 priority 10:texts
+[]
+=== nibeEveryFileStatesAndAlarm/vvms500 priority 10
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/vvms500 priority 10:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s1155 priority 20
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s1155 priority 20:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s1156 priority 20
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s1156 priority 20:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s2125 priority 20
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s2125 priority 20:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s320 priority 20
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s320 priority 20:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s330 priority 20
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s330 priority 20:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s735 priority 20
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s735 priority 20:texts
+[]
+=== nibeEveryFileStatesAndAlarm/smos40 priority 20
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/smos40 priority 20:texts
+[]
+=== nibeEveryFileStatesAndAlarm/vvms320 priority 20
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/vvms320 priority 20:texts
+[]
+=== nibeEveryFileStatesAndAlarm/vvms500 priority 20
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/vvms500 priority 20:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s1155 priority 40
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s1155 priority 40:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s1156 priority 40
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s1156 priority 40:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s2125 priority 40
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s2125 priority 40:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s320 priority 40
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s320 priority 40:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s330 priority 40
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s330 priority 40:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s735 priority 40
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s735 priority 40:texts
+[]
+=== nibeEveryFileStatesAndAlarm/smos40 priority 40
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/smos40 priority 40:texts
+[]
+=== nibeEveryFileStatesAndAlarm/vvms320 priority 40
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/vvms320 priority 40:texts
+[]
+=== nibeEveryFileStatesAndAlarm/vvms500 priority 40
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/vvms500 priority 40:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s1155 priority 60
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s1155 priority 60:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s1156 priority 60
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s1156 priority 60:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s2125 priority 60
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s2125 priority 60:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s320 priority 60
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s320 priority 60:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s330 priority 60
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s330 priority 60:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s735 priority 60
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s735 priority 60:texts
+[]
+=== nibeEveryFileStatesAndAlarm/smos40 priority 60
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/smos40 priority 60:texts
+[]
+=== nibeEveryFileStatesAndAlarm/vvms320 priority 60
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/vvms320 priority 60:texts
+[]
+=== nibeEveryFileStatesAndAlarm/vvms500 priority 60
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/vvms500 priority 60:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s1155 defrost
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s1155 defrost:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s1156 defrost
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s1156 defrost:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s2125 defrost
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s2125 defrost:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s320 defrost
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s320 defrost:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s330 defrost
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s330 defrost:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s735 defrost
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s735 defrost:texts
+[]
+=== nibeEveryFileStatesAndAlarm/smos40 defrost
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/smos40 defrost:texts
+[]
+=== nibeEveryFileStatesAndAlarm/vvms320 defrost
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/vvms320 defrost:texts
+[]
+=== nibeEveryFileStatesAndAlarm/vvms500 defrost
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/vvms500 defrost:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s1155 alarm
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== nibeEveryFileStatesAndAlarm/s1155 alarm:texts
+[Heat pump alarm (alarm 183)]
+=== nibeEveryFileStatesAndAlarm/s1156 alarm
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== nibeEveryFileStatesAndAlarm/s1156 alarm:texts
+[Heat pump alarm (alarm 183)]
+=== nibeEveryFileStatesAndAlarm/s2125 alarm
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== nibeEveryFileStatesAndAlarm/s2125 alarm:texts
+[Heat pump alarm (alarm 183)]
+=== nibeEveryFileStatesAndAlarm/s320 alarm
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== nibeEveryFileStatesAndAlarm/s320 alarm:texts
+[Heat pump alarm (alarm 183)]
+=== nibeEveryFileStatesAndAlarm/s330 alarm
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== nibeEveryFileStatesAndAlarm/s330 alarm:texts
+[Heat pump alarm (alarm 183)]
+=== nibeEveryFileStatesAndAlarm/s735 alarm
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== nibeEveryFileStatesAndAlarm/s735 alarm:texts
+[Heat pump alarm (alarm 183)]
+=== nibeEveryFileStatesAndAlarm/smos40 alarm
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== nibeEveryFileStatesAndAlarm/smos40 alarm:texts
+[Heat pump alarm (alarm 183)]
+=== nibeEveryFileStatesAndAlarm/vvms320 alarm
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== nibeEveryFileStatesAndAlarm/vvms320 alarm:texts
+[Heat pump alarm (alarm 183)]
+=== nibeEveryFileStatesAndAlarm/vvms500 alarm
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== nibeEveryFileStatesAndAlarm/vvms500 alarm:texts
+[Heat pump alarm (alarm 183)]
+=== nibeEveryFileStatesAndAlarm/s1155 BT1 not connected
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s1155 BT1 not connected:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s1156 BT1 not connected
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s1156 BT1 not connected:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s2125 BT1 not connected
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s2125 BT1 not connected:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s320 BT1 not connected
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s320 BT1 not connected:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s330 BT1 not connected
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s330 BT1 not connected:texts
+[]
+=== nibeEveryFileStatesAndAlarm/s735 BT1 not connected
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/s735 BT1 not connected:texts
+[]
+=== nibeEveryFileStatesAndAlarm/smos40 BT1 not connected
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/smos40 BT1 not connected:texts
+[]
+=== nibeEveryFileStatesAndAlarm/vvms320 BT1 not connected
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/vvms320 BT1 not connected:texts
+[]
+=== nibeEveryFileStatesAndAlarm/vvms500 BT1 not connected
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== nibeEveryFileStatesAndAlarm/vvms500 BT1 not connected:texts
+[]
+=== benderChargingOldFirmwareStatesAndOcppFault/bender charging
+(pv, null)
+(grid, null)
+(load, 11000)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, 3666], [L2, 231.00, 16.10, 3666], [L3, 229.00, 15.90, 3666]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== benderChargingOldFirmwareStatesAndOcppFault/bender charging:texts
+[]
+=== benderChargingOldFirmwareStatesAndOcppFault/bender < 5.22
+(pv, null)
+(grid, null)
+(load, 7000)
+(battery, null)
+(phases, [[L1, 0.00, 16.00, null], [L2, 0.00, 16.10, null], [L3, 0.00, 15.90, null]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== benderChargingOldFirmwareStatesAndOcppFault/bender < 5.22:texts
+[]
+=== benderChargingOldFirmwareStatesAndOcppFault/bender idle
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, 0], [L2, 231.00, 16.10, 0], [L3, 229.00, 15.90, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== benderChargingOldFirmwareStatesAndOcppFault/bender idle:texts
+[]
+=== benderChargingOldFirmwareStatesAndOcppFault/bender connected
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, 0], [L2, 231.00, 16.10, 0], [L3, 229.00, 15.90, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== benderChargingOldFirmwareStatesAndOcppFault/bender connected:texts
+[]
+=== benderChargingOldFirmwareStatesAndOcppFault/bender suspended
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, 0], [L2, 231.00, 16.10, 0], [L3, 229.00, 15.90, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== benderChargingOldFirmwareStatesAndOcppFault/bender suspended:texts
+[]
+=== benderChargingOldFirmwareStatesAndOcppFault/bender backend
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, 0], [L2, 231.00, 16.10, 0], [L3, 229.00, 15.90, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [WARNING])
+=== benderChargingOldFirmwareStatesAndOcppFault/bender backend:texts
+[Backend disconnected (error bit 7)]
+=== benderChargingOldFirmwareStatesAndOcppFault/bender OCPP 4
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, 0], [L2, 231.00, 16.10, 0], [L3, 229.00, 15.90, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== benderChargingOldFirmwareStatesAndOcppFault/bender OCPP 4:texts
+[Charge point faulted (OCPP status 4)]
+=== benderChargingOldFirmwareStatesAndOcppFault/bender vehicle E
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, 0], [L2, 231.00, 16.10, 0], [L3, 229.00, 15.90, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== benderChargingOldFirmwareStatesAndOcppFault/bender vehicle E:texts
+[Vehicle state E (error)]
+=== goeChargingWordOrdersStatesAndErrors/go-e charging
+(pv, null)
+(grid, null)
+(load, 11040)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, 3700], [L2, 231.00, 16.10, 3700], [L3, 229.00, 15.90, 3600]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== goeChargingWordOrdersStatesAndErrors/go-e charging:texts
+[]
+=== goeChargingWordOrdersStatesAndErrors/go-e low word first
+(pv, null)
+(grid, null)
+(load, 11040)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, 3700], [L2, 231.00, 16.10, 3700], [L3, 229.00, 15.90, 3600]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== goeChargingWordOrdersStatesAndErrors/go-e low word first:texts
+[]
+=== goeChargingWordOrdersStatesAndErrors/go-e car 1
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, 3700], [L2, 231.00, 16.10, 3700], [L3, 229.00, 15.90, 3600]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== goeChargingWordOrdersStatesAndErrors/go-e car 1:texts
+[]
+=== goeChargingWordOrdersStatesAndErrors/go-e car 2
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, 3700], [L2, 231.00, 16.10, 3700], [L3, 229.00, 15.90, 3600]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== goeChargingWordOrdersStatesAndErrors/go-e car 2:texts
+[]
+=== goeChargingWordOrdersStatesAndErrors/go-e car 3
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, 3700], [L2, 231.00, 16.10, 3700], [L3, 229.00, 15.90, 3600]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== goeChargingWordOrdersStatesAndErrors/go-e car 3:texts
+[]
+=== goeChargingWordOrdersStatesAndErrors/go-e car 4
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, 3700], [L2, 231.00, 16.10, 3700], [L3, 229.00, 15.90, 3600]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== goeChargingWordOrdersStatesAndErrors/go-e car 4:texts
+[]
+=== goeChargingWordOrdersStatesAndErrors/go-e missing power
+(pv, null)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, null], [L2, 231.00, 16.10, null], [L3, 229.00, 15.90, null]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== goeChargingWordOrdersStatesAndErrors/go-e missing power:texts
+[]
+=== goeChargingWordOrdersStatesAndErrors/go-e error 1
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, 3700], [L2, 231.00, 16.10, 3700], [L3, 229.00, 15.90, 3600]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== goeChargingWordOrdersStatesAndErrors/go-e error 1:texts
+[Residual current breaker (RCCB) tripped (error 1)]
+=== goeChargingWordOrdersStatesAndErrors/go-e error 8
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, 3700], [L2, 231.00, 16.10, 3700], [L3, 229.00, 15.90, 3600]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== goeChargingWordOrdersStatesAndErrors/go-e error 8:texts
+[No ground detected (error 8)]
+=== goeChargingWordOrdersStatesAndErrors/go-e error 12
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, 3700], [L2, 231.00, 16.10, 3700], [L3, 229.00, 15.90, 3600]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== goeChargingWordOrdersStatesAndErrors/go-e error 12:texts
+[Internal error (error 12)]
+=== goeChargingWordOrdersStatesAndErrors/go-e car 0
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, 3700], [L2, 231.00, 16.10, 3700], [L3, 229.00, 15.90, 3600]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== goeChargingWordOrdersStatesAndErrors/go-e car 0:texts
+[Charging station defective (car state 0)]
+=== goeChargingWordOrdersStatesAndErrors/go-e car 0 + error
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, 3700], [L2, 231.00, 16.10, 3700], [L3, 229.00, 15.90, 3600]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== goeChargingWordOrdersStatesAndErrors/go-e car 0 + error:texts
+[Phase disturbance (error 3)]
+=== benderErrorBits/bender RCM + welded
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, 0], [L2, 231.00, 16.10, 0], [L3, 229.00, 15.90, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT, FAULT])
+=== benderErrorBits/bender RCM + welded:texts
+[RCM triggered (error bit 0), Contactor welded (error bit 6)]
+=== alfenBothWordOrdersStatesAndNanSum/alfen low=true
+(pv, null)
+(grid, null)
+(load, 7200)
+(battery, null)
+(phases, [[L1, 230.00, 10.40, 2400], [L2, 231.00, 10.50, 2400], [L3, 229.00, 10.60, 2400]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== alfenBothWordOrdersStatesAndNanSum/alfen low=true:texts
+[]
+=== alfenBothWordOrdersStatesAndNanSum/alfen low=false
+(pv, null)
+(grid, null)
+(load, 7200)
+(battery, null)
+(phases, [[L1, 230.00, 10.40, 2400], [L2, 231.00, 10.50, 2400], [L3, 229.00, 10.60, 2400]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== alfenBothWordOrdersStatesAndNanSum/alfen low=false:texts
+[]
+=== alfenBothWordOrdersStatesAndNanSum/alfen A
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 10.40, 2400], [L2, 231.00, 10.50, 2400], [L3, 229.00, 10.60, 2400]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== alfenBothWordOrdersStatesAndNanSum/alfen A:texts
+[]
+=== alfenBothWordOrdersStatesAndNanSum/alfen B1
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 10.40, 2400], [L2, 231.00, 10.50, 2400], [L3, 229.00, 10.60, 2400]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== alfenBothWordOrdersStatesAndNanSum/alfen B1:texts
+[]
+=== alfenBothWordOrdersStatesAndNanSum/alfen C1
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 10.40, 2400], [L2, 231.00, 10.50, 2400], [L3, 229.00, 10.60, 2400]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== alfenBothWordOrdersStatesAndNanSum/alfen C1:texts
+[]
+=== alfenBothWordOrdersStatesAndNanSum/alfen NaN sum
+(pv, null)
+(grid, null)
+(load, 7200)
+(battery, null)
+(phases, [[L1, 230.00, 10.40, 2400], [L2, 231.00, 10.50, 2400], [L3, 229.00, 10.60, 2400]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== alfenBothWordOrdersStatesAndNanSum/alfen NaN sum:texts
+[]
+=== alfenBothWordOrdersStatesAndNanSum/alfen meter warning + error
+(pv, null)
+(grid, null)
+(load, 7200)
+(battery, null)
+(phases, [[L1, 230.00, 10.40, 2400], [L2, 231.00, 10.50, 2400], [L3, 229.00, 10.60, 2400]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [WARNING, WARNING])
+=== alfenBothWordOrdersStatesAndNanSum/alfen meter warning + error:texts
+[Energy meter error (meter state 0x08), Energy meter warning (meter state 0x04)]
+=== alfenBothWordOrdersStatesAndNanSum/alfen socket 2
+(pv, null)
+(grid, null)
+(load, 7200)
+(battery, null)
+(phases, [[L1, 230.00, 10.40, 2400], [L2, 231.00, 10.50, 2400], [L3, 229.00, 10.60, 2400]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== alfenBothWordOrdersStatesAndNanSum/alfen socket 2:texts
+[]
+=== stiebelStatesFaultsAndMissingRegisters/WPM 3 heating
+(pv, null)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== stiebelStatesFaultsAndMissingRegisters/WPM 3 heating:texts
+[]
+=== stiebelStatesFaultsAndMissingRegisters/hot water
+(pv, null)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== stiebelStatesFaultsAndMissingRegisters/hot water:texts
+[]
+=== stiebelStatesFaultsAndMissingRegisters/defrost
+(pv, null)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== stiebelStatesFaultsAndMissingRegisters/defrost:texts
+[]
+=== stiebelStatesFaultsAndMissingRegisters/idle
+(pv, null)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== stiebelStatesFaultsAndMissingRegisters/idle:texts
+[]
+=== stiebelStatesFaultsAndMissingRegisters/standby
+(pv, null)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== stiebelStatesFaultsAndMissingRegisters/standby:texts
+[]
+=== stiebelStatesFaultsAndMissingRegisters/cooling
+(pv, null)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== stiebelStatesFaultsAndMissingRegisters/cooling:texts
+[]
+=== stiebelStatesFaultsAndMissingRegisters/fault + CAN
+(pv, null)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT, WARNING])
+=== stiebelStatesFaultsAndMissingRegisters/fault + CAN:texts
+[System fault (fatal error), CAN bus error (bus status -3)]
+=== stiebelStatesFaultsAndMissingRegisters/bus fault
+(pv, null)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [WARNING])
+=== stiebelStatesFaultsAndMissingRegisters/bus fault:texts
+[Bus fault (bus status -1)]
+=== stiebelStatesFaultsAndMissingRegisters/bus line
+(pv, null)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [WARNING])
+=== stiebelStatesFaultsAndMissingRegisters/bus line:texts
+[Bus line fault (bus status -4)]
+=== stiebelStatesFaultsAndMissingRegisters/WPM 3i without 542..548
+(pv, null)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== stiebelStatesFaultsAndMissingRegisters/WPM 3i without 542..548:texts
+[]
+=== stiebelStatesFaultsAndMissingRegisters/WPMsystem
+(pv, null)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== stiebelStatesFaultsAndMissingRegisters/WPMsystem:texts
+[]
+=== stiebelStatesFaultsAndMissingRegisters/no 5002
+(pv, null)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== stiebelStatesFaultsAndMissingRegisters/no 5002:texts
+[]
+=== alfenErrorState/alfen F
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 10.40, 2400], [L2, 231.00, 10.50, 2400], [L3, 229.00, 10.60, 2400]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== alfenErrorState/alfen F:texts
+[Charging error (Mode 3 state F)]
+=== alfenErrorState/alfen F + meter
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 10.40, 2400], [L2, 231.00, 10.50, 2400], [L3, 229.00, 10.60, 2400]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT, WARNING])
+=== alfenErrorState/alfen F + meter:texts
+[Charging error (Mode 3 state F), Energy meter error (meter state 0x08)]
+=== mypvModelsPowerFallbacksAndFaults/AC•THOR heating
+(pv, null)
+(grid, null)
+(load, 2100)
+(battery, null)
+(phases, [[L1, 232.00, 9.10, null]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== mypvModelsPowerFallbacksAndFaults/AC•THOR heating:texts
+[]
+=== mypvModelsPowerFallbacksAndFaults/AC•THOR 9s
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 0.00, null], [L2, 231.00, 0.00, null], [L3, 229.00, 0.00, null]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== mypvModelsPowerFallbacksAndFaults/AC•THOR 9s:texts
+[]
+=== mypvModelsPowerFallbacksAndFaults/AC•THOR 9s outputs
+(pv, null)
+(grid, null)
+(load, 2700)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== mypvModelsPowerFallbacksAndFaults/AC•THOR 9s outputs:texts
+[]
+=== mypvModelsPowerFallbacksAndFaults/AC•THOR no 1082
+(pv, null)
+(grid, null)
+(load, 1234)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== mypvModelsPowerFallbacksAndFaults/AC•THOR no 1082:texts
+[]
+=== mypvModelsPowerFallbacksAndFaults/ELWA 2 heating
+(pv, null)
+(grid, null)
+(load, 1800)
+(battery, null)
+(phases, [[L1, 231.00, null, null]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== mypvModelsPowerFallbacksAndFaults/ELWA 2 heating:texts
+[]
+=== mypvModelsPowerFallbacksAndFaults/ELWA 2 done
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== mypvModelsPowerFallbacksAndFaults/ELWA 2 done:texts
+[]
+=== mypvModelsPowerFallbacksAndFaults/ELWA 2 standby
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== mypvModelsPowerFallbacksAndFaults/ELWA 2 standby:texts
+[]
+=== mypvModelsPowerFallbacksAndFaults/ELWA 2 outputs
+(pv, null)
+(grid, null)
+(load, 1800)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== mypvModelsPowerFallbacksAndFaults/ELWA 2 outputs:texts
+[]
+=== mypvModelsPowerFallbacksAndFaults/ELWA-E setpoint
+(pv, null)
+(grid, null)
+(load, 2500)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== mypvModelsPowerFallbacksAndFaults/ELWA-E setpoint:texts
+[]
+=== mypvModelsPowerFallbacksAndFaults/missing temperature
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== mypvModelsPowerFallbacksAndFaults/missing temperature:texts
+[]
+=== mypvModelsPowerFallbacksAndFaults/AC•THOR 201
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== mypvModelsPowerFallbacksAndFaults/AC•THOR 201:texts
+[Power stage error (status 201)]
+=== mypvModelsPowerFallbacksAndFaults/ELWA 2 201
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== mypvModelsPowerFallbacksAndFaults/ELWA 2 201:texts
+[Safety thermostat triggered (status 201)]
+=== mypvModelsPowerFallbacksAndFaults/ELWA-E 205
+(pv, null)
+(grid, null)
+(load, 0)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT])
+=== mypvModelsPowerFallbacksAndFaults/ELWA-E 205:texts
+[Temperature sensor fault (status 205)]
+=== goeSwappedBytes/go-e bytes swapped
+(pv, null)
+(grid, null)
+(load, 11040)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, 3700], [L2, 231.00, 16.10, 3700], [L3, 229.00, 15.90, 3600]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== goeSwappedBytes/go-e bytes swapped:texts
+[]
+=== hovalUnlistedErrorCode/gen 16 + code 77
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [FAULT, FAULT])
+=== hovalUnlistedErrorCode/gen 16 + code 77:texts
+[Heat generator fault (status 16), Heat pump error code 77]
+=== hovalOptionalSensorTimesOut/heating, SF2 times out
+(pv, null)
+(grid, null)
+(load, 1850)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== hovalOptionalSensorTimesOut/heating, SF2 times out:texts
+[]
+=== alfenShiftedAddresses/alfen shifted
+(pv, null)
+(grid, null)
+(load, 7200)
+(battery, null)
+(phases, [[L1, 230.00, 10.40, 2400], [L2, 231.00, 10.50, 2400], [L3, 229.00, 10.60, 2400]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== alfenShiftedAddresses/alfen shifted:texts
+[]
+=== benderInputRegisterFallback/bender FC04
+(pv, null)
+(grid, null)
+(load, 11000)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, 3666], [L2, 231.00, 16.10, 3666], [L3, 229.00, 15.90, 3666]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+=== benderInputRegisterFallback/bender FC04:texts
+[]

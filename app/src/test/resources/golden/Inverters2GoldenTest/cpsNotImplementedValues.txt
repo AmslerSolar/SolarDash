@@ -1,0 +1,12 @@
+[cpsNotImplementedValues/1]
+(pv, 18821)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Internal fan alarm (IntFanErr)]
+

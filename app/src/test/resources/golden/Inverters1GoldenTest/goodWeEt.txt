@@ -1,0 +1,121 @@
+[goodWeEt/GoodWe PV extension, battery charging]
+(pv, 5440)
+(grid, 1200)
+(load, 3300)
+(battery, [-1000, 64])
+(phases, [[L1, 230.50, 6.50, 1500], [L2, 231.00, 6.60, 1520], [L3, 229.80, 6.40, 1480]])
+(lifetimePv, 12345.600)
+(todayPv, 23.400)
+(problemKinds, [])
+problems=[]
+
+[goodWeEt/GoodWe no PV extension: sum of PV1–4]
+(pv, 5440)
+(grid, 1200)
+(load, 3300)
+(battery, [-1000, 64])
+(phases, [[L1, 230.50, 6.50, 1500], [L2, 231.00, 6.60, 1520], [L3, 229.80, 6.40, 1480]])
+(lifetimePv, 12345.600)
+(todayPv, 23.400)
+(problemKinds, [])
+problems=[]
+
+[goodWeEt/GoodWe two batteries]
+(pv, 5440)
+(grid, 1200)
+(load, 3300)
+(battery, [500, 64])
+(phases, [[L1, 230.50, 6.50, 1500], [L2, 231.00, 6.60, 1520], [L3, 229.80, 6.40, 1480]])
+(lifetimePv, 12345.600)
+(todayPv, 23.400)
+(problemKinds, [])
+problems=[]
+
+[goodWeEt/GoodWe battery 2 only]
+(pv, 5440)
+(grid, 1200)
+(load, 3300)
+(battery, [1500, null])
+(phases, [[L1, 230.50, 6.50, 1500], [L2, 231.00, 6.60, 1520], [L3, 229.80, 6.40, 1480]])
+(lifetimePv, 12345.600)
+(todayPv, 23.400)
+(problemKinds, [])
+problems=[]
+
+[goodWeEt/GoodWe no battery, BMS codes ignored]
+(pv, 5440)
+(grid, 1200)
+(load, 3300)
+(battery, null)
+(phases, [[L1, 230.50, 6.50, 1500], [L2, 231.00, 6.60, 1520], [L3, 229.80, 6.40, 1480]])
+(lifetimePv, 12345.600)
+(todayPv, 23.400)
+(problemKinds, [])
+problems=[]
+
+[goodWeEt/GoodWe isolation fault, off-grid, warning, BMS codes]
+(pv, 5440)
+(grid, 1200)
+(load, 3300)
+(battery, [-1000, 64])
+(phases, [[L1, 230.50, 6.50, 1500], [L2, 231.00, 6.60, 1520], [L3, 229.80, 6.40, 1480]])
+(lifetimePv, 12345.600)
+(todayPv, 23.400)
+(problemKinds, [FAULT, FAULT, WARNING, WARNING, BACKUP_MODE])
+problems=[BACKUP_MODE: Off-grid mode (work mode 2), FAULT: BMS error code 0x00010020, FAULT: Isolation failure (error bit 18), WARNING: BMS warning code 0x00000008, WARNING: Warning code 0x0012]
+
+[goodWeEt/GoodWe off-grid]
+(pv, 5440)
+(grid, 1200)
+(load, 3300)
+(battery, [-1000, 64])
+(phases, [[L1, 230.50, 6.50, 1500], [L2, 231.00, 6.60, 1520], [L3, 229.80, 6.40, 1480]])
+(lifetimePv, 12345.600)
+(todayPv, 23.400)
+(problemKinds, [BACKUP_MODE])
+problems=[BACKUP_MODE: Off-grid mode (work mode 2)]
+
+[goodWeEt/GoodWe grid mode 2 + work mode 3: one fault]
+(pv, 5440)
+(grid, 1200)
+(load, 3300)
+(battery, [-1000, 64])
+(phases, [[L1, 230.50, 6.50, 1500], [L2, 231.00, 6.60, 1520], [L3, 229.80, 6.40, 1480]])
+(lifetimePv, 12345.600)
+(todayPv, 23.400)
+(problemKinds, [FAULT])
+problems=[FAULT: Grid fault (grid mode 2)]
+
+[goodWeEt/GoodWe work mode 3]
+(pv, 5440)
+(grid, 1200)
+(load, 3300)
+(battery, [-1000, 64])
+(phases, [[L1, 230.50, 6.50, 1500], [L2, 231.00, 6.60, 1520], [L3, 229.80, 6.40, 1480]])
+(lifetimePv, 12345.600)
+(todayPv, 23.400)
+(problemKinds, [FAULT])
+problems=[FAULT: Fault mode (work mode 3)]
+
+[goodWeEt/GoodWe waiting, grid disconnected]
+(pv, 5440)
+(grid, 1200)
+(load, 3300)
+(battery, [-1000, 64])
+(phases, [[L1, 230.50, 6.50, 1500], [L2, 231.00, 6.60, 1520], [L3, 229.80, 6.40, 1480]])
+(lifetimePv, 12345.600)
+(todayPv, 23.400)
+(problemKinds, [])
+problems=[]
+
+[goodWeEt/GoodWe error bit fault + work mode 3]
+(pv, 5440)
+(grid, 1200)
+(load, 3300)
+(battery, [-1000, 64])
+(phases, [[L1, 230.50, 6.50, 1500], [L2, 231.00, 6.60, 1520], [L3, 229.80, 6.40, 1480]])
+(lifetimePv, 12345.600)
+(todayPv, 23.400)
+(problemKinds, [FAULT])
+problems=[FAULT: External fan failure (error bit 16)]
+

@@ -1,0 +1,11 @@
+[goodWeEtLowErrorBits/GoodWe utility loss + error bit 2]
+(pv, 5440)
+(grid, 1200)
+(load, 3300)
+(battery, [-1000, 64])
+(phases, [[L1, 230.50, 6.50, 1500], [L2, 231.00, 6.60, 1520], [L3, 229.80, 6.40, 1480]])
+(lifetimePv, 12345.600)
+(todayPv, 23.400)
+(problemKinds, [FAULT, MAINS_LOST])
+problems=[FAULT: Error (error bit 2), MAINS_LOST: Utility loss (error bit 9)]
+

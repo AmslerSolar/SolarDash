@@ -1,0 +1,154 @@
+[huaweiSun2000/Huawei battery charging]
+(pv, 6125)
+(grid, -1234)
+(load, null)
+(battery, [-2000, 65])
+(phases, [[L1, 231.10, 5.12, -400], [L2, 232.00, 4.98, -420], [L3, 229.80, 5.05, -414]])
+(lifetimePv, 12345.670)
+(todayPv, 23.450)
+(problemKinds, [])
+problems=[]
+
+[huaweiSun2000/Huawei battery discharging]
+(pv, 6125)
+(grid, -1234)
+(load, null)
+(battery, [1500, 65])
+(phases, [[L1, 231.10, 5.12, -400], [L2, 232.00, 4.98, -420], [L3, 229.80, 5.05, -414]])
+(lifetimePv, 12345.670)
+(todayPv, 23.450)
+(problemKinds, [])
+problems=[]
+
+[huaweiSun2000/Huawei no battery, no meter]
+(pv, 6125)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 12345.670)
+(todayPv, 23.450)
+(problemKinds, [])
+problems=[]
+
+[huaweiSun2000/Huawei battery with capacity 0]
+(pv, 6125)
+(grid, -1234)
+(load, null)
+(battery, null)
+(phases, [[L1, 231.10, 5.12, -400], [L2, 232.00, 4.98, -420], [L3, 229.80, 5.05, -414]])
+(lifetimePv, 12345.670)
+(todayPv, 23.450)
+(problemKinds, [])
+problems=[]
+
+[huaweiSun2000/Huawei meter offline]
+(pv, 6125)
+(grid, null)
+(load, null)
+(battery, [-2000, 65])
+(phases, [])
+(lifetimePv, 12345.670)
+(todayPv, 23.450)
+(problemKinds, [])
+problems=[]
+
+[huaweiSun2000/Huawei unknown status]
+(pv, 6125)
+(grid, -1234)
+(load, null)
+(battery, [-2000, 65])
+(phases, [[L1, 231.10, 5.12, -400], [L2, 232.00, 4.98, -420], [L3, 229.80, 5.05, -414]])
+(lifetimePv, 12345.670)
+(todayPv, 23.450)
+(problemKinds, [])
+problems=[]
+
+[huaweiSun2000/Huawei night]
+(pv, 6125)
+(grid, -1234)
+(load, null)
+(battery, [-2000, 65])
+(phases, [[L1, 231.10, 5.12, -400], [L2, 232.00, 4.98, -420], [L3, 229.80, 5.05, -414]])
+(lifetimePv, 12345.670)
+(todayPv, 23.450)
+(problemKinds, [])
+problems=[]
+
+[huaweiSun2000/Huawei alarms, off-grid, battery fault ID]
+(pv, 6125)
+(grid, -1234)
+(load, null)
+(battery, [-2000, 65])
+(phases, [[L1, 231.10, 5.12, -400], [L2, 232.00, 4.98, -420], [L3, 229.80, 5.05, -414]])
+(lifetimePv, 12345.670)
+(todayPv, 23.450)
+(problemKinds, [FAULT, FAULT, WARNING, WARNING, MAINS_LOST, BACKUP_MODE])
+problems=[BACKUP_MODE: Off-grid (0x0203), FAULT: Battery fault (ID 17), FAULT: Grid overvoltage (2034), MAINS_LOST: Grid loss (2032), WARNING: Alarm 3 bit 12, WARNING: Overtemperature (2063)]
+
+[huaweiSun2000/Huawei battery status 3 without fault ID]
+(pv, 6125)
+(grid, -1234)
+(load, null)
+(battery, [-2000, 65])
+(phases, [[L1, 231.10, 5.12, -400], [L2, 232.00, 4.98, -420], [L3, 229.80, 5.05, -414]])
+(lifetimePv, 12345.670)
+(todayPv, 23.450)
+(problemKinds, [FAULT])
+problems=[FAULT: Battery fault (status 3)]
+
+[huaweiSun2000/Huawei shutdown: fault]
+(pv, 6125)
+(grid, -1234)
+(load, null)
+(battery, [-2000, 65])
+(phases, [[L1, 231.10, 5.12, -400], [L2, 232.00, 4.98, -420], [L3, 229.80, 5.05, -414]])
+(lifetimePv, 12345.670)
+(todayPv, 23.450)
+(problemKinds, [FAULT])
+problems=[FAULT: Shutdown: fault (0x0300)]
+
+[huaweiSun2000/Huawei shutdown: fault with an alarm fault]
+(pv, 6125)
+(grid, -1234)
+(load, null)
+(battery, [-2000, 65])
+(phases, [[L1, 231.10, 5.12, -400], [L2, 232.00, 4.98, -420], [L3, 229.80, 5.05, -414]])
+(lifetimePv, 12345.670)
+(todayPv, 23.450)
+(problemKinds, [FAULT])
+problems=[FAULT: Grid overvoltage (2034)]
+
+[huaweiSun2000/Huawei off-grid]
+(pv, 6125)
+(grid, -1234)
+(load, null)
+(battery, [-2000, 65])
+(phases, [[L1, 231.10, 5.12, -400], [L2, 232.00, 4.98, -420], [L3, 229.80, 5.05, -414]])
+(lifetimePv, 12345.670)
+(todayPv, 23.450)
+(problemKinds, [BACKUP_MODE])
+problems=[BACKUP_MODE: Off-grid (0x0203)]
+
+[huaweiSun2000/Huawei off-grid charging]
+(pv, 6125)
+(grid, -1234)
+(load, null)
+(battery, [-2000, 65])
+(phases, [[L1, 231.10, 5.12, -400], [L2, 232.00, 4.98, -420], [L3, 229.80, 5.05, -414]])
+(lifetimePv, 12345.670)
+(todayPv, 23.450)
+(problemKinds, [BACKUP_MODE])
+problems=[BACKUP_MODE: Running: off-grid charging (0x0A00)]
+
+[huaweiSun2000/Huawei self-derating]
+(pv, 6125)
+(grid, -1234)
+(load, null)
+(battery, [-2000, 65])
+(phases, [[L1, 231.10, 5.12, -400], [L2, 232.00, 4.98, -420], [L3, 229.80, 5.05, -414]])
+(lifetimePv, 12345.670)
+(todayPv, 23.450)
+(problemKinds, [WARNING])
+problems=[WARNING: Self-derating (0x0202)]
+

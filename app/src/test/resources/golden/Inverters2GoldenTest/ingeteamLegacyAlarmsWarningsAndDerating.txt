@@ -1,0 +1,432 @@
+[ingeteamLegacyAlarmsWarningsAndDerating/1]
+(pv, 15000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 21.00, null], [L2, 231.00, 21.10, null], [L3, 229.50, 20.90, null]])
+(lifetimePv, 54321.000)
+(todayPv, 42.100)
+(problemKinds, [FAULT, WARNING])
+sleeping=false
+problems=[Alarm code 1: 0x0004, Warning code 0x0010]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/2]
+(pv, 15000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 21.00, null], [L2, 231.00, 21.10, null], [L3, 229.50, 20.90, null]])
+(lifetimePv, 54321.000)
+(todayPv, 42.100)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/3]
+(pv, 15000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 21.00, null], [L2, 231.00, 21.10, null], [L3, 229.50, 20.90, null]])
+(lifetimePv, 54321.000)
+(todayPv, 42.100)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/4]
+(pv, 4700)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.20, 20.00, 4500]])
+(lifetimePv, 9999.000)
+(todayPv, 23.450)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/5]
+(pv, 15000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 21.00, null], [L2, 231.00, 21.10, null], [L3, 229.50, 20.90, null]])
+(lifetimePv, 54321.000)
+(todayPv, 42.100)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/6]
+(pv, 4700)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.20, 20.00, 4500]])
+(lifetimePv, 9999.000)
+(todayPv, 23.450)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/7]
+(pv, 15000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 21.00, null], [L2, 231.00, 21.10, null], [L3, 229.50, 20.90, null]])
+(lifetimePv, 54321.000)
+(todayPv, 42.100)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/8]
+(pv, 4700)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.20, 20.00, 4500]])
+(lifetimePv, 9999.000)
+(todayPv, 23.450)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Temperature derating (reason 2)]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/9]
+(pv, 15000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 21.00, null], [L2, 231.00, 21.10, null], [L3, 229.50, 20.90, null]])
+(lifetimePv, 54321.000)
+(todayPv, 42.100)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/10]
+(pv, 4700)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.20, 20.00, 4500]])
+(lifetimePv, 9999.000)
+(todayPv, 23.450)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Temperature derating (reason 3)]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/11]
+(pv, 15000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 21.00, null], [L2, 231.00, 21.10, null], [L3, 229.50, 20.90, null]])
+(lifetimePv, 54321.000)
+(todayPv, 42.100)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/12]
+(pv, 4700)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.20, 20.00, 4500]])
+(lifetimePv, 9999.000)
+(todayPv, 23.450)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Temperature derating (reason 4)]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/13]
+(pv, 15000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 21.00, null], [L2, 231.00, 21.10, null], [L3, 229.50, 20.90, null]])
+(lifetimePv, 54321.000)
+(todayPv, 42.100)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/14]
+(pv, 4700)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.20, 20.00, 4500]])
+(lifetimePv, 9999.000)
+(todayPv, 23.450)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/15]
+(pv, 15000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 21.00, null], [L2, 231.00, 21.10, null], [L3, 229.50, 20.90, null]])
+(lifetimePv, 54321.000)
+(todayPv, 42.100)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/16]
+(pv, 4700)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.20, 20.00, 4500]])
+(lifetimePv, 9999.000)
+(todayPv, 23.450)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/17]
+(pv, 15000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 21.00, null], [L2, 231.00, 21.10, null], [L3, 229.50, 20.90, null]])
+(lifetimePv, 54321.000)
+(todayPv, 42.100)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/18]
+(pv, 4700)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.20, 20.00, 4500]])
+(lifetimePv, 9999.000)
+(todayPv, 23.450)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/19]
+(pv, 15000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 21.00, null], [L2, 231.00, 21.10, null], [L3, 229.50, 20.90, null]])
+(lifetimePv, 54321.000)
+(todayPv, 42.100)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/20]
+(pv, 4700)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.20, 20.00, 4500]])
+(lifetimePv, 9999.000)
+(todayPv, 23.450)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/21]
+(pv, 15000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 21.00, null], [L2, 231.00, 21.10, null], [L3, 229.50, 20.90, null]])
+(lifetimePv, 54321.000)
+(todayPv, 42.100)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/22]
+(pv, 4700)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.20, 20.00, 4500]])
+(lifetimePv, 9999.000)
+(todayPv, 23.450)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/23]
+(pv, 15000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 21.00, null], [L2, 231.00, 21.10, null], [L3, 229.50, 20.90, null]])
+(lifetimePv, 54321.000)
+(todayPv, 42.100)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/24]
+(pv, 4700)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.20, 20.00, 4500]])
+(lifetimePv, 9999.000)
+(todayPv, 23.450)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/25]
+(pv, 15000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 21.00, null], [L2, 231.00, 21.10, null], [L3, 229.50, 20.90, null]])
+(lifetimePv, 54321.000)
+(todayPv, 42.100)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/26]
+(pv, 4700)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.20, 20.00, 4500]])
+(lifetimePv, 9999.000)
+(todayPv, 23.450)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/27]
+(pv, 15000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 21.00, null], [L2, 231.00, 21.10, null], [L3, 229.50, 20.90, null]])
+(lifetimePv, 54321.000)
+(todayPv, 42.100)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/28]
+(pv, 4700)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.20, 20.00, 4500]])
+(lifetimePv, 9999.000)
+(todayPv, 23.450)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/29]
+(pv, 15000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 21.00, null], [L2, 231.00, 21.10, null], [L3, 229.50, 20.90, null]])
+(lifetimePv, 54321.000)
+(todayPv, 42.100)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/30]
+(pv, 4700)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.20, 20.00, 4500]])
+(lifetimePv, 9999.000)
+(todayPv, 23.450)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/31]
+(pv, 15000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 21.00, null], [L2, 231.00, 21.10, null], [L3, 229.50, 20.90, null]])
+(lifetimePv, 54321.000)
+(todayPv, 42.100)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/32]
+(pv, 4700)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.20, 20.00, 4500]])
+(lifetimePv, 9999.000)
+(todayPv, 23.450)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/33]
+(pv, 15000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 21.00, null], [L2, 231.00, 21.10, null], [L3, 229.50, 20.90, null]])
+(lifetimePv, 54321.000)
+(todayPv, 42.100)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/34]
+(pv, 4700)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.20, 20.00, 4500]])
+(lifetimePv, 9999.000)
+(todayPv, 23.450)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/35]
+(pv, 4700)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.20, 20.00, 4500]])
+(lifetimePv, 9999.000)
+(todayPv, 23.450)
+(problemKinds, [FAULT, FAULT, WARNING])
+sleeping=false
+problems=[Alarm code 1: 0x0001, Alarm code 4: 0x0002, Warning code 0x0003]
+
+[ingeteamLegacyAlarmsWarningsAndDerating/36]
+(pv, 101000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 231.00, 140.00, null], [L2, 230.50, 141.00, null], [L3, 230.00, 139.00, null]])
+(lifetimePv, 1000000.000)
+(todayPv, 150.000)
+(problemKinds, [FAULT, WARNING])
+sleeping=false
+problems=[Alarm code 2: 0x0080, Warning code 0x0001]
+

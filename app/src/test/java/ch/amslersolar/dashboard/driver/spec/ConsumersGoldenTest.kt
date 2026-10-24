@@ -4,30 +4,26 @@
 package ch.amslersolar.dashboard.driver.spec
 
 import ch.amslersolar.dashboard.driver.DeviceDriver
-import ch.amslersolar.dashboard.driver.consumer.AlfenEveDriver
-import ch.amslersolar.dashboard.driver.consumer.BenderEcuDriver
-import ch.amslersolar.dashboard.driver.consumer.FakeRegisters
-import ch.amslersolar.dashboard.driver.consumer.GoEChargerDriver
-import ch.amslersolar.dashboard.driver.consumer.HovalTopTronicDriver
-import ch.amslersolar.dashboard.driver.consumer.MyPvDriver
-import ch.amslersolar.dashboard.driver.consumer.NibeSDriver
-import ch.amslersolar.dashboard.driver.consumer.StiebelEltronIsgDriver
 import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DeviceReading
 import java.io.File
+import java.util.Locale
 import java.net.SocketTimeoutException
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Ignore
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TestName
 
 /**
  * The consumers' ModbusSpec drivers against their hand-written drivers, on the register images of the hand-written
  * drivers' tests: power, phases, energy and the problem kinds must match (problem texts may differ; they're printed).
- * Cases a spec can't read yet are @Ignore'd with the reason.
+ * Cases a spec can't read yet are @Ignore'd with the reason. The hand-written drivers are gone: what they read is
+ * recorded in golden/ConsumersGoldenTest/old-drivers.txt, keyed `<test method>/<case>`.
  */
 class ConsumersGoldenTest {
     private val library = SpecLibrary { File("src/main/assets/modbusspec/$it").readText() }
@@ -40,17 +36,23 @@ class ConsumersGoldenTest {
     private fun essentials(r: DeviceReading) = listOf(
         "pv" to r.pvPowerW, "grid" to r.gridPowerW, "load" to r.loadPowerW,
         "battery" to r.battery?.let { listOf(it.powerW, it.socPercent) },
-        "phases" to r.phases.map { listOf(it.name, "%.2f".format(it.voltageV), it.currentA?.let { a -> "%.2f".format(a) }, it.powerW) },
+        "phases" to r.phases.map { listOf(it.name, "%.2f".format(Locale.ROOT, it.voltageV), it.currentA?.let { a -> "%.2f".format(Locale.ROOT, a) }, it.powerW) },
         "lifetimePv" to r.lifetimePvKwh, "todayPv" to r.today.pvKwh,
         "problemKinds" to r.problems.map { it.kind }.sorted(),
     )
 
-    private fun same(case: String, old: DeviceDriver, new: DeviceDriver) = runBlocking {
-        val a = old.read()
+    @get:Rule val name = TestName()
+
+    private val old = OldDriverRecords("ConsumersGoldenTest")
+
+    /** [new] must read what the hand-written driver read on the same image (recorded as `<test method>/<case>`). */
+    private fun same(case: String, new: DeviceDriver) = runBlocking {
+        val key = "${name.methodName}/$case"
         val b = new.read()
-        assertEquals(case, essentials(a).joinToString("\n"), essentials(b).joinToString("\n"))
-        if (a.problems.map { it.text } != b.problems.map { it.text }) {
-            println("$case: problem texts differ\n  old: ${a.problems.map { it.text }}\n  new: ${b.problems.map { it.text }}")
+        assertEquals(case, old[key], essentials(b).joinToString("\n"))
+        val oldTexts = old["$key:texts"]
+        if (oldTexts != b.problems.map { it.text }.toString()) {
+            println("$case: problem texts differ\n  old: $oldTexts\n  new: ${b.problems.map { it.text }}")
         }
     }
 
@@ -98,7 +100,7 @@ class ConsumersGoldenTest {
     }
 
     private fun alfenSame(case: String, make: () -> FakeRegisters, unit: Int = 1) =
-        same(case, AlfenEveDriver(make(), unit), spec("alfen-eve-socket", make(), unit))
+        same(case, spec("alfen-eve-socket", make(), unit))
 
     @Test
     fun alfenBothWordOrdersStatesAndNanSum() {
@@ -133,7 +135,7 @@ class ConsumersGoldenTest {
         .u16(705, 5_000).u16(706, 16).u16(709, 1_800).u16(712, 6).u16(715, 32).u32(716, 5_000).u32(718, 1_800)
         .u16(1000, 32)
 
-    private fun benderSame(case: String, make: () -> FakeRegisters) = same(case, BenderEcuDriver(make(), 1), spec("bender-ecu", make(), 1))
+    private fun benderSame(case: String, make: () -> FakeRegisters) = same(case, spec("bender-ecu", make(), 1))
 
     @Test
     fun benderChargingOldFirmwareStatesAndOcppFault() {
@@ -157,7 +159,7 @@ class ConsumersGoldenTest {
     @Test
     fun benderInputRegisterFallback() {
         val holding = FakeRegisters().apply { failWith = 1 }
-        same("bender FC04", BenderEcuDriver(holding, 1, ecu()), spec("bender-ecu", SpecTables(holding = holding, input = ecu()), 1))
+        same("bender FC04", spec("bender-ecu", SpecTables(holding = holding, input = ecu()), 1))
     }
 
     // ---------------------------------------------------------------- go-eCharger
@@ -172,7 +174,7 @@ class ConsumersGoldenTest {
         .u16(200, 1).u16(202, 0).u16(203, 0).u16(205, 0b111111)
         .text(304, 6, "012345678901").text(310, 5, "go-e-012345")
 
-    private fun goeSame(case: String, make: () -> FakeRegisters) = same(case, GoEChargerDriver(make(), 1), spec("goe-charger", make(), 1))
+    private fun goeSame(case: String, make: () -> FakeRegisters) = same(case, spec("goe-charger", make(), 1))
 
     @Test
     fun goeChargingWordOrdersStatesAndErrors() {
@@ -201,7 +203,7 @@ class ConsumersGoldenTest {
             .u16(1082, power).u16(1083, power).u16(1084, 0).u16(1069, (-1_500) and 0xFFFF).u32(1087, -1_500L and 0xFFFFFFFFL)
     }
 
-    private fun mypvSame(case: String, make: () -> FakeRegisters) = same(case, MyPvDriver(make(), 1), spec("mypv-elwa-acthor", make(), 1))
+    private fun mypvSame(case: String, make: () -> FakeRegisters) = same(case, spec("mypv-elwa-acthor", make(), 1))
 
     @Test
     fun mypvModelsPowerFallbacksAndFaults() {
@@ -260,9 +262,8 @@ class ConsumersGoldenTest {
     }
 
     private fun stiebelSame(case: String, make: () -> Isg) {
-        val a = make()
         val b = make()
-        same(case, StiebelEltronIsgDriver(a.input, a.holding, 1), spec("stiebel-wpm", SpecTables(holding = b.holding, input = b.input), 1))
+        same(case, spec("stiebel-wpm", SpecTables(holding = b.holding, input = b.input), 1))
     }
 
     @Test
@@ -334,9 +335,8 @@ class ConsumersGoldenTest {
     private fun nibeSame(case: String, make: () -> Nibe) {
         assertEquals(9, nibeModels.size)
         for (m in nibeModels) {
-            val a = make()
             val b = make()
-            same("$m $case", NibeSDriver(a.input, a.holding, 1), spec("nibe-s-series", SpecTables(holding = b.holding, input = b.input), 1, model = m))
+            same("$m $case", spec("nibe-s-series", SpecTables(holding = b.holding, input = b.input), 1, model = m))
         }
     }
 
@@ -375,7 +375,7 @@ class ConsumersGoldenTest {
         if (sf2TimesOut) timeouts += 27483
     }
 
-    private fun hovalSame(case: String, make: () -> Regs) = same(case, HovalTopTronicDriver(make(), 1), spec("hoval-toptronic-e", make(), 1))
+    private fun hovalSame(case: String, make: () -> Regs) = same(case, spec("hoval-toptronic-e", make(), 1))
 
     @Test
     fun hovalStatesAndProblemsWithoutTimeouts() {

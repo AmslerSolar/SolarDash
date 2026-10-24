@@ -1,0 +1,36 @@
+[conextCl60RunningAndWiring/1]
+(pv, 70500)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 100.20, null], [L2, 230.50, 100.10, null], [L3, 229.90, 100.30, null]])
+(lifetimePv, 123456.000)
+(todayPv, 234.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[conextCl60RunningAndWiring/2]
+(pv, 70500)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 123456.000)
+(todayPv, 234.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[conextCl60RunningAndWiring/3]
+(pv, 70500)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 100.20, null], [L2, 230.50, 100.10, null], [L3, 229.90, 100.30, null]])
+(lifetimePv, 123456.000)
+(todayPv, 234.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+

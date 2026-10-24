@@ -1,0 +1,60 @@
+[trioGtMapBothNumberingsAndWordOrders/1]
+(pv, 14200)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 231.00, 20.50, null]])
+(lifetimePv, 98765.398)
+(todayPv, 31.400)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGtMapBothNumberingsAndWordOrders/2]
+(pv, 14200)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 231.00, 20.50, null]])
+(lifetimePv, 98765.398)
+(todayPv, 31.400)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGtMapBothNumberingsAndWordOrders/3]
+(pv, 14200)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 231.00, 20.50, null]])
+(lifetimePv, 98765.398)
+(todayPv, 31.400)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGtMapBothNumberingsAndWordOrders/4]
+(pv, 14200)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 231.00, 20.50, null]])
+(lifetimePv, 98765.398)
+(todayPv, 31.400)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGtMapBothNumberingsAndWordOrders/5]
+(pv, 0)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 231.00, 20.50, null]])
+(lifetimePv, 98765.398)
+(todayPv, 31.400)
+(problemKinds, [])
+sleeping=false
+problems=[]
+

@@ -1,0 +1,12 @@
+[cpsMapWithGaps/1]
+(pv, 248000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 0.000)
+(todayPv, 0.000)
+(problemKinds, [])
+sleeping=false
+problems=[]
+

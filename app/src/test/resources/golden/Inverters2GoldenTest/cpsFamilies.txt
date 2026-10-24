@@ -1,0 +1,60 @@
+[cpsFamilies/1]
+(pv, 56400)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 22422296.000)
+(todayPv, 312.500)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Internal fan alarm (IntFanErr)]
+
+[cpsFamilies/2]
+(pv, 19000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 0.000)
+(todayPv, 0.000)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[cpsFamilies/3]
+(pv, 123500)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 0.000)
+(todayPv, 0.000)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[cpsFamilies/4]
+(pv, 118512)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 0.000)
+(todayPv, 0.000)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[cpsFamilies/5]
+(pv, 20000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 0.000)
+(todayPv, 0.000)
+(problemKinds, [])
+sleeping=false
+problems=[]
+

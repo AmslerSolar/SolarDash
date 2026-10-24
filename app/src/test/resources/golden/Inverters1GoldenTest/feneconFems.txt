@@ -1,0 +1,88 @@
+[feneconFems/FEMS charging/export]
+(pv, 6000)
+(grid, 2500)
+(load, 1500)
+(battery, [-2000, 64])
+(phases, [])
+(lifetimePv, 9876.500)
+(todayPv, null)
+(problemKinds, [])
+problems=[]
+
+[feneconFems/FEMS charging/export strict]
+(pv, 6000)
+(grid, 2500)
+(load, 1500)
+(battery, [-2000, 64])
+(phases, [])
+(lifetimePv, 9876.500)
+(todayPv, null)
+(problemKinds, [])
+problems=[]
+
+[feneconFems/FEMS discharging/import, warning]
+(pv, 0)
+(grid, -700)
+(load, 2500)
+(battery, [1800, 35])
+(phases, [])
+(lifetimePv, 9876.500)
+(todayPv, null)
+(problemKinds, [WARNING])
+problems=[WARNING: Warning (state 2)]
+
+[feneconFems/FEMS battery fallback 303 − 339]
+(pv, 6000)
+(grid, 2500)
+(load, 1500)
+(battery, [-2000, 64])
+(phases, [])
+(lifetimePv, 9876.500)
+(todayPv, null)
+(problemKinds, [])
+problems=[]
+
+[feneconFems/FEMS info state]
+(pv, 6000)
+(grid, 2500)
+(load, 1500)
+(battery, [-2000, 64])
+(phases, [])
+(lifetimePv, 9876.500)
+(todayPv, null)
+(problemKinds, [])
+problems=[]
+
+[feneconFems/FEMS fault + off-grid]
+(pv, 6000)
+(grid, 2500)
+(load, 1500)
+(battery, [-2000, 64])
+(phases, [])
+(lifetimePv, 9876.500)
+(todayPv, null)
+(problemKinds, [FAULT, BACKUP_MODE])
+problems=[BACKUP_MODE: Off-grid (grid mode 2), FAULT: Fault (state 3)]
+
+[feneconFems/FEMS off-grid]
+(pv, 300)
+(grid, 0)
+(load, 1200)
+(battery, [900, 80])
+(phases, [])
+(lifetimePv, 9876.500)
+(todayPv, null)
+(problemKinds, [BACKUP_MODE])
+problems=[BACKUP_MODE: Off-grid (grid mode 2)]
+
+[feneconFems/FEMS no ESS, no meter (NaN)]
+(pv, 4200)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+problems=[]
+

@@ -1,0 +1,84 @@
+[cpsEventBitsAndRawFaultWords/1]
+(pv, 56400)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 22422296.000)
+(todayPv, 312.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[cpsEventBitsAndRawFaultWords/2]
+(pv, 56400)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 22422296.000)
+(todayPv, 312.500)
+(problemKinds, [FAULT, MAINS_LOST])
+sleeping=false
+problems=[Grid frequency low (GridF.OutLim), Insulation resistance too low (IsolationErr)]
+
+[cpsEventBitsAndRawFaultWords/3]
+(pv, 56400)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 22422296.000)
+(todayPv, 312.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Fault (mode 0x8000)]
+
+[cpsEventBitsAndRawFaultWords/4]
+(pv, 56400)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 22422296.000)
+(todayPv, 312.500)
+(problemKinds, [FAULT, WARNING])
+sleeping=false
+problems=[Fault (mode 0x8000), Internal fan alarm (IntFanErr)]
+
+[cpsEventBitsAndRawFaultWords/5]
+(pv, 56400)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 22422296.000)
+(todayPv, 312.500)
+(problemKinds, [FAULT, FAULT, WARNING])
+sleeping=false
+problems=[Fault0 bit 1, Fault0 bit 5, Warn bit 14]
+
+[cpsEventBitsAndRawFaultWords/6]
+(pv, 0)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 0.000)
+(todayPv, 0.000)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Fault0 0x0400]
+
+[cpsEventBitsAndRawFaultWords/7]
+(pv, 0)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 0.000)
+(todayPv, 0.000)
+(problemKinds, [])
+sleeping=false
+problems=[]
+

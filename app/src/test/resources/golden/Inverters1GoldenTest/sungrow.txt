@@ -1,0 +1,297 @@
+[sungrow/Sungrow SH charging, exporting]
+(pv, 6000)
+(grid, 1500)
+(load, 2500)
+(battery, [-2000, 66])
+(phases, [[L1, 230.10, 8.70, null], [L2, 231.00, 8.60, null], [L3, 229.50, 8.80, null]])
+(lifetimePv, 12345.600)
+(todayPv, 21.500)
+(problemKinds, [])
+problems=[]
+
+[sungrow/Sungrow SH discharging, importing]
+(pv, 6000)
+(grid, -700)
+(load, 3100)
+(battery, [1800, 66])
+(phases, [[L1, 230.10, 8.70, null], [L2, 231.00, 8.60, null], [L3, 229.50, 8.80, null]])
+(lifetimePv, 12345.600)
+(todayPv, 21.500)
+(problemKinds, [])
+problems=[]
+
+[sungrow/Sungrow SH8.0RS, four MPPTs]
+(pv, 6000)
+(grid, 0)
+(load, 0)
+(battery, [0, 66])
+(phases, [[L1, 230.10, 8.70, null], [L2, 231.00, 8.60, null], [L3, 229.50, 8.80, null]])
+(lifetimePv, 12345.600)
+(todayPv, 21.500)
+(problemKinds, [])
+problems=[]
+
+[sungrow/Sungrow SH without meter, values not available]
+(pv, 6000)
+(grid, null)
+(load, null)
+(battery, [0, null])
+(phases, [[L1, 230.10, 8.70, null], [L2, 231.00, 8.60, null], [L3, 229.50, 8.80, null]])
+(lifetimePv, null)
+(todayPv, 21.500)
+(problemKinds, [])
+problems=[]
+
+[sungrow/Sungrow SH meter marker]
+(pv, 6000)
+(grid, null)
+(load, null)
+(battery, [0, 66])
+(phases, [[L1, 230.10, 8.70, null], [L2, 231.00, 8.60, null], [L3, 229.50, 8.80, null]])
+(lifetimePv, 12345.600)
+(todayPv, 21.500)
+(problemKinds, [])
+problems=[]
+
+[sungrow/Sungrow SH without battery]
+(pv, 6000)
+(grid, 0)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.10, 8.70, null], [L2, 231.00, 8.60, null], [L3, 229.50, 8.80, null]])
+(lifetimePv, 12345.600)
+(todayPv, 21.500)
+(problemKinds, [])
+problems=[]
+
+[sungrow/Sungrow SH single phase]
+(pv, 6000)
+(grid, 0)
+(load, 0)
+(battery, [0, 66])
+(phases, [[L1, 230.10, 8.70, null]])
+(lifetimePv, 12345.600)
+(todayPv, 21.500)
+(problemKinds, [])
+problems=[]
+
+[sungrow/Sungrow SH 3P3L]
+(pv, 6000)
+(grid, 0)
+(load, 0)
+(battery, [0, 66])
+(phases, [])
+(lifetimePv, 12345.600)
+(todayPv, 21.500)
+(problemKinds, [])
+problems=[]
+
+[sungrow/Sungrow SH fault bits, fault state]
+(pv, 6000)
+(grid, 0)
+(load, 0)
+(battery, [0, 66])
+(phases, [[L1, 230.10, 8.70, null], [L2, 231.00, 8.60, null], [L3, 229.50, 8.80, null]])
+(lifetimePv, 12345.600)
+(todayPv, 21.500)
+(problemKinds, [FAULT, FAULT, WARNING, MAINS_LOST])
+problems=[FAULT: Code (battery fault bit 1), FAULT: Grid overvoltage (grid-side fault bit 0), MAINS_LOST: Grid power outage (grid-side fault bit 8), WARNING: Fan alarm (inverter alarm bit 0)]
+
+[sungrow/Sungrow SH fault state]
+(pv, 6000)
+(grid, 0)
+(load, 0)
+(battery, [0, 66])
+(phases, [[L1, 230.10, 8.70, null], [L2, 231.00, 8.60, null], [L3, 229.50, 8.80, null]])
+(lifetimePv, 12345.600)
+(todayPv, 21.500)
+(problemKinds, [FAULT])
+problems=[FAULT: Fault (0x5500)]
+
+[sungrow/Sungrow SH warn running with an alarm bit]
+(pv, 6000)
+(grid, 0)
+(load, 0)
+(battery, [0, 66])
+(phases, [[L1, 230.10, 8.70, null], [L2, 231.00, 8.60, null], [L3, 229.50, 8.80, null]])
+(lifetimePv, 12345.600)
+(todayPv, 21.500)
+(problemKinds, [WARNING])
+problems=[WARNING: Communication alarm (inverter alarm bit 4)]
+
+[sungrow/Sungrow SH warn running]
+(pv, 6000)
+(grid, 0)
+(load, 0)
+(battery, [0, 66])
+(phases, [[L1, 230.10, 8.70, null], [L2, 231.00, 8.60, null], [L3, 229.50, 8.80, null]])
+(lifetimePv, 12345.600)
+(todayPv, 21.500)
+(problemKinds, [WARNING])
+problems=[WARNING: Warn running (0x9100)]
+
+[sungrow/Sungrow SH off-grid]
+(pv, 6000)
+(grid, 0)
+(load, 0)
+(battery, [0, 66])
+(phases, [[L1, 230.10, 8.70, null], [L2, 231.00, 8.60, null], [L3, 229.50, 8.80, null]])
+(lifetimePv, 12345.600)
+(todayPv, 21.500)
+(problemKinds, [BACKUP_MODE])
+problems=[BACKUP_MODE: Running (off-grid) (0x1000)]
+
+[sungrow/Sungrow SH derating]
+(pv, 6000)
+(grid, 0)
+(load, 0)
+(battery, [0, 66])
+(phases, [[L1, 230.10, 8.70, null], [L2, 231.00, 8.60, null], [L3, 229.50, 8.80, null]])
+(lifetimePv, 12345.600)
+(todayPv, 21.500)
+(problemKinds, [WARNING])
+problems=[WARNING: Derating running (0x8100)]
+
+[sungrow/Sungrow SH standby]
+(pv, 6000)
+(grid, 0)
+(load, 0)
+(battery, [0, 66])
+(phases, [[L1, 230.10, 8.70, null], [L2, 231.00, 8.60, null], [L3, 229.50, 8.80, null]])
+(lifetimePv, 12345.600)
+(todayPv, 21.500)
+(problemKinds, [])
+problems=[]
+
+[sungrow/Sungrow SH BMS fault 2 (no named bits)]
+(pv, 6000)
+(grid, 0)
+(load, 0)
+(battery, [0, 66])
+(phases, [[L1, 230.10, 8.70, null], [L2, 231.00, 8.60, null], [L3, 229.50, 8.80, null]])
+(lifetimePv, 12345.600)
+(todayPv, 21.500)
+(problemKinds, [FAULT])
+problems=[FAULT: Code (BMS fault 2 bit 3)]
+
+[sungrow/Sungrow SG with meter]
+(pv, 4200)
+(grid, 1000)
+(load, 3200)
+(battery, null)
+(phases, [[L1, 230.00, 6.10, null], [L2, 231.00, 6.00, null], [L3, 232.00, 6.20, null]])
+(lifetimePv, 98765.400)
+(todayPv, 31.200)
+(problemKinds, [])
+problems=[]
+
+[sungrow/Sungrow SG meter sign from the energy balance]
+(pv, 4200)
+(grid, 1000)
+(load, 3200)
+(battery, null)
+(phases, [[L1, 230.00, 6.10, null], [L2, 231.00, 6.00, null], [L3, 232.00, 6.20, null]])
+(lifetimePv, 98765.400)
+(todayPv, 31.200)
+(problemKinds, [])
+problems=[]
+
+[sungrow/Sungrow SG5.0RS without meter]
+(pv, 4200)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 6.10, null]])
+(lifetimePv, 9876.000)
+(todayPv, 31.200)
+(problemKinds, [])
+problems=[]
+
+[sungrow/Sungrow SG negative AC power]
+(pv, 0)
+(grid, 0)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 6.10, null], [L2, 231.00, 6.00, null], [L3, 232.00, 6.20, null]])
+(lifetimePv, 98765.400)
+(todayPv, 31.200)
+(problemKinds, [])
+problems=[]
+
+[sungrow/Sungrow SG fault code]
+(pv, 4200)
+(grid, 0)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 6.10, null], [L2, 231.00, 6.00, null], [L3, 232.00, 6.20, null]])
+(lifetimePv, 98765.400)
+(todayPv, 31.200)
+(problemKinds, [FAULT])
+problems=[FAULT: Grid overvoltage (2)]
+
+[sungrow/Sungrow SG grid outage]
+(pv, 4200)
+(grid, 0)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 6.10, null], [L2, 231.00, 6.00, null], [L3, 232.00, 6.20, null]])
+(lifetimePv, 98765.400)
+(todayPv, 31.200)
+(problemKinds, [MAINS_LOST])
+problems=[MAINS_LOST: Grid power outage (10)]
+
+[sungrow/Sungrow SG fault without code]
+(pv, 4200)
+(grid, 0)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 6.10, null], [L2, 231.00, 6.00, null], [L3, 232.00, 6.20, null]])
+(lifetimePv, 98765.400)
+(todayPv, 31.200)
+(problemKinds, [FAULT])
+problems=[FAULT: Fault (0x5500)]
+
+[sungrow/Sungrow SG alarm, unknown code, PID alarm]
+(pv, 4200)
+(grid, 0)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 6.10, null], [L2, 231.00, 6.00, null], [L3, 232.00, 6.20, null]])
+(lifetimePv, 98765.400)
+(todayPv, 31.200)
+(problemKinds, [WARNING, WARNING])
+problems=[WARNING: Alarm code 9999, WARNING: PID impedance abnormity (432)]
+
+[sungrow/Sungrow SG code outside fault / alarm]
+(pv, 4200)
+(grid, 0)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 6.10, null], [L2, 231.00, 6.00, null], [L3, 232.00, 6.20, null]])
+(lifetimePv, 98765.400)
+(todayPv, 31.200)
+(problemKinds, [])
+problems=[]
+
+[sungrow/Sungrow SG derating, communicate fault]
+(pv, 4200)
+(grid, 0)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 6.10, null], [L2, 231.00, 6.00, null], [L3, 232.00, 6.20, null]])
+(lifetimePv, 98765.400)
+(todayPv, 31.200)
+(problemKinds, [WARNING])
+problems=[WARNING: Derating run (0x8100)]
+
+[sungrow/Sungrow SG communicate fault]
+(pv, 4200)
+(grid, 0)
+(load, 0)
+(battery, null)
+(phases, [[L1, 230.00, 6.10, null], [L2, 231.00, 6.00, null], [L3, 232.00, 6.20, null]])
+(lifetimePv, 98765.400)
+(todayPv, 31.200)
+(problemKinds, [FAULT])
+problems=[FAULT: Communicate fault (0x2500)]
+

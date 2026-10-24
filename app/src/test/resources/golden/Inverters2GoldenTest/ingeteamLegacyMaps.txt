@@ -1,0 +1,60 @@
+[ingeteamLegacyMaps/1]
+(pv, 15000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 21.00, null], [L2, 231.00, 21.10, null], [L3, 229.50, 20.90, null]])
+(lifetimePv, 54321.000)
+(todayPv, 42.100)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyMaps/2]
+(pv, 15000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 21.00, null], [L2, 231.00, 21.10, null], [L3, 229.50, 20.90, null]])
+(lifetimePv, 54321.000)
+(todayPv, 42.100)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyMaps/3]
+(pv, 4700)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.20, 20.00, 4500]])
+(lifetimePv, 9999.000)
+(todayPv, 23.450)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyMaps/4]
+(pv, 4700)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.20, 20.00, 4500]])
+(lifetimePv, 9999.000)
+(todayPv, 23.450)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[ingeteamLegacyMaps/5]
+(pv, 101000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 231.00, 140.00, null], [L2, 230.50, 141.00, null], [L3, 230.00, 139.00, null]])
+(lifetimePv, 1000000.000)
+(todayPv, 150.000)
+(problemKinds, [])
+sleeping=false
+problems=[]
+

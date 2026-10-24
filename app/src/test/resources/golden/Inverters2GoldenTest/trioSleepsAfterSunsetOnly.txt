@@ -1,0 +1,66 @@
+[trioSleepsAfterSunsetOnly/1]
+(pv, 120)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 231.00, 20.50, null]])
+(lifetimePv, 98765.398)
+(todayPv, 31.400)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioSleepsAfterSunsetOnly/2]
+(pv, 0)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+sleeping=true
+problems=[]
+
+[trioSleepsAfterSunsetOnly/3]
+(pv, 120)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 231.00, 20.50, null]])
+(lifetimePv, 98765.398)
+(todayPv, 31.400)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioSleepsAfterSunsetOnly/4]
+(pv, 0)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+sleeping=true
+problems=[]
+
+[trioSleepsAfterSunsetOnly/5]
+throwsIOException=true
+
+[trioSleepsAfterSunsetOnly/6]
+(pv, 14200)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 231.00, 20.50, null]])
+(lifetimePv, 98765.398)
+(todayPv, 31.400)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioSleepsAfterSunsetOnly/7]
+throwsIOException=true
+

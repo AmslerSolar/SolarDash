@@ -3,7 +3,6 @@
 
 package ch.amslersolar.dashboard.driver.spec
 
-import ch.amslersolar.dashboard.driver.consumer.FakeRegisters
 import java.io.File
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals

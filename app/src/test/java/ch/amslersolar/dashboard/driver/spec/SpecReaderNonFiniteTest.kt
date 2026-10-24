@@ -3,7 +3,6 @@
 
 package ch.amslersolar.dashboard.driver.spec
 
-import ch.amslersolar.dashboard.driver.meter.FakeMeterImage
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull

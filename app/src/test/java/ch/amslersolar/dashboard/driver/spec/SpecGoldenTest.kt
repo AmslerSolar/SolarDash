@@ -4,19 +4,19 @@
 package ch.amslersolar.dashboard.driver.spec
 
 import ch.amslersolar.dashboard.driver.DeviceDriver
-import ch.amslersolar.dashboard.driver.consumer.FakeRegisters
-import ch.amslersolar.dashboard.driver.consumer.KebaP30Driver
-import ch.amslersolar.dashboard.driver.meter.EastronMeterDriver
-import ch.amslersolar.dashboard.driver.meter.FakeMeterImage
 import ch.amslersolar.dashboard.model.DeviceReading
 import java.io.File
+import java.util.Locale
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TestName
 
 /**
  * The ModbusSpec drivers must read what the hand-written drivers read, on the same register images: the values
  * the energy flow and the plant status use (power, phases, battery, energy, faults). Detail rows may differ.
+ * The hand-written drivers are gone: what they read is recorded in golden/SpecGoldenTest/old-drivers.txt.
  */
 class SpecGoldenTest {
     private val library = SpecLibrary { File("src/main/assets/modbusspec/$it").readText() }
@@ -28,14 +28,19 @@ class SpecGoldenTest {
     private fun essentials(r: DeviceReading) = listOf(
         "pv" to r.pvPowerW, "grid" to r.gridPowerW, "load" to r.loadPowerW,
         "battery" to r.battery?.let { listOf(it.powerW, it.socPercent) },
-        "phases" to r.phases.map { listOf(it.name, "%.2f".format(it.voltageV), it.currentA?.let { a -> "%.2f".format(a) }, it.powerW) },
+        "phases" to r.phases.map { listOf(it.name, "%.2f".format(Locale.ROOT, it.voltageV), it.currentA?.let { a -> "%.2f".format(Locale.ROOT, a) }, it.powerW) },
         "problems" to r.problems.map { it.kind to it.text },
     )
 
-    private fun same(old: DeviceDriver, new: DeviceDriver) = runBlocking {
-        val a = essentials(old.read())
+    @get:Rule val name = TestName()
+
+    private val old = OldDriverRecords("SpecGoldenTest")
+
+    /** [new] must read what the hand-written driver read on the same image (recorded as `<test method>/<case>`). */
+    private fun same(case: String, new: DeviceDriver) = runBlocking {
+        val key = "${name.methodName}/$case"
         val b = essentials(new.read())
-        assertEquals(a.joinToString("\n"), b.joinToString("\n"))
+        assertEquals(key, old[key], b.joinToString("\n"))
     }
 
     // ---------------------------------------------------------------- Eastron SDM630 / SDM120
@@ -56,9 +61,8 @@ class SpecGoldenTest {
     @Test
     fun eastronSdm630BothWordOrders() {
         for (swapped in listOf(false, true)) {
-            val (i1, h1) = sdm630(listOf(1000.0, 500.0, -250.0), swapped)
             val (i2, h2) = sdm630(listOf(1000.0, 500.0, -250.0), swapped)
-            same(EastronMeterDriver(i1, h1, 7), spec("eastron-sdm", SpecTables(holding = h2, input = i2), 7))
+            same("swapped=$swapped", spec("eastron-sdm", SpecTables(holding = h2, input = i2), 7))
         }
     }
 
@@ -83,7 +87,7 @@ class SpecGoldenTest {
     fun kebaChargingAndFault() {
         for ((state, error) in listOf(3L to 0L, 4L to 0x40000L)) {
             val f = keba(state, error)
-            same(KebaP30Driver(keba(state, error), 255), spec("keba-kecontact-p30", SpecTables(holding = f, input = f), 255))
+            same("state=$state error=$error", spec("keba-kecontact-p30", SpecTables(holding = f, input = f), 255))
         }
     }
 

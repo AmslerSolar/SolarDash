@@ -1,0 +1,48 @@
+[conextGatewayFallbacksAndMissingRegisters/1]
+(pv, 4200)
+(grid, 1100)
+(load, 1600)
+(battery, null)
+(phases, [[L1, 120.20, 4.50, null], [L2, 120.10, 4.60, null]])
+(lifetimePv, 45100.000)
+(todayPv, 18.250)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[1 active warning]
+
+[conextGatewayFallbacksAndMissingRegisters/2]
+(pv, 4150)
+(grid, 1100)
+(load, 1600)
+(battery, [-1480, 81])
+(phases, [[L1, 120.20, 4.50, null], [L2, 120.10, 4.60, null]])
+(lifetimePv, 45000.000)
+(todayPv, 18.000)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[1 active warning]
+
+[conextGatewayFallbacksAndMissingRegisters/3]
+(pv, 4200)
+(grid, 0)
+(load, 1600)
+(battery, [-1500, 81])
+(phases, [[L1, 120.20, 4.50, null], [L2, 120.10, 4.60, null]])
+(lifetimePv, 45100.000)
+(todayPv, 18.250)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[1 active warning]
+
+[conextGatewayFallbacksAndMissingRegisters/4]
+(pv, 4200)
+(grid, 1100)
+(load, null)
+(battery, [-1500, null])
+(phases, [[L1, 120.20, 4.50, null], [L2, 120.10, 4.60, null]])
+(lifetimePv, 45100.000)
+(todayPv, 18.250)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[1 active warning]
+

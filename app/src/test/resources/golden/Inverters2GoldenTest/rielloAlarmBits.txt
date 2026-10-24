@@ -1,0 +1,408 @@
+[rielloAlarmBits/1]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[rielloAlarmBits/2]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[rielloAlarmBits/3]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [MAINS_LOST])
+sleeping=false
+problems=[Grid voltage out of range (master) (alarm 7 bit 2)]
+
+[rielloAlarmBits/4]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[PV isolation failure (alarm 7 bit 3)]
+
+[rielloAlarmBits/5]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[AC current offset failure (alarm 7 bit 4)]
+
+[rielloAlarmBits/6]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[ENS measurement mismatch (alarm 7 bit 5)]
+
+[rielloAlarmBits/7]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[ENS grid impedance mismatch (alarm 7 bit 6)]
+
+[rielloAlarmBits/8]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[ENS grid frequency mismatch (alarm 7 bit 7)]
+
+[rielloAlarmBits/9]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[ENS grid voltage mismatch (alarm 7 bit 8)]
+
+[rielloAlarmBits/10]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[rielloAlarmBits/11]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Relay failure (alarm 7 bit 10)]
+
+[rielloAlarmBits/12]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[rielloAlarmBits/13]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Grid impedance out of range (master) (alarm 7 bit 12)]
+
+[rielloAlarmBits/14]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[rielloAlarmBits/15]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [MAINS_LOST])
+sleeping=false
+problems=[Grid frequency out of range (master) (alarm 7 bit 14)]
+
+[rielloAlarmBits/16]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[EEPROM failure (alarm 7 bit 15)]
+
+[rielloAlarmBits/17]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Master-slave communication failed (alarm 7 bit 16)]
+
+[rielloAlarmBits/18]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[GFCI sensor failure (alarm 8 bit 1)]
+
+[rielloAlarmBits/19]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[DC injection sensor fault (alarm 8 bit 2)]
+
+[rielloAlarmBits/20]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[2.5 V reference fault (alarm 8 bit 3)]
+
+[rielloAlarmBits/21]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[ENS DC injection mismatch (alarm 8 bit 4)]
+
+[rielloAlarmBits/22]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[ENS GFCI mismatch (alarm 8 bit 5)]
+
+[rielloAlarmBits/23]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[DC bus voltage too low (alarm 8 bit 6)]
+
+[rielloAlarmBits/24]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[DC bus voltage too high (alarm 8 bit 7)]
+
+[rielloAlarmBits/25]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Device fault (alarm 8 bit 8)]
+
+[rielloAlarmBits/26]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Grid impedance change (ΔZ) (alarm 8 bit 9)]
+
+[rielloAlarmBits/27]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [MAINS_LOST])
+sleeping=false
+problems=[No grid (alarm 8 bit 10)]
+
+[rielloAlarmBits/28]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Leakage current too high (alarm 8 bit 11)]
+
+[rielloAlarmBits/29]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[DC bus failure (alarm 8 bit 12)]
+
+[rielloAlarmBits/30]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[rielloAlarmBits/31]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Over-temperature (alarm 8 bit 14)]
+
+[rielloAlarmBits/32]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Self-test failed (alarm 8 bit 15)]
+
+[rielloAlarmBits/33]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[PV voltage too high (alarm 8 bit 16)]
+
+[rielloAlarmBits/34]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [FAULT, WARNING, MAINS_LOST])
+sleeping=false
+problems=[No grid (alarm 8 bit 10), Over-temperature (alarm 8 bit 14), PV isolation failure (alarm 7 bit 3)]
+

@@ -4,15 +4,8 @@
 package ch.amslersolar.dashboard.driver.spec
 
 import ch.amslersolar.dashboard.driver.DeviceDriver
-import ch.amslersolar.dashboard.driver.cps.CpsDriver
-import ch.amslersolar.dashboard.driver.ingeteam.IngeteamDriver
-import ch.amslersolar.dashboard.driver.kostal.KostalPikoCiDriver
 import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
-import ch.amslersolar.dashboard.driver.powerone.PowerOneTrioDriver
-import ch.amslersolar.dashboard.driver.riello.RielloCentralDriver
-import ch.amslersolar.dashboard.driver.schneider.ConextCl60Driver
-import ch.amslersolar.dashboard.driver.schneider.ConextGatewayDriver
 import ch.amslersolar.dashboard.driver.sunspec.FakeRegisterImage
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.model.DeviceReading
@@ -28,7 +21,9 @@ import org.junit.Test
 /**
  * KOSTAL PIKO CI, Schneider Conext CL-60 and Conext Gateway, CPS 403X, Power-One TRIO, Ingeteam INGECON SUN and
  * Riello central inverters: the ModbusSpec drivers must give the essentials of the hand-written drivers on the
- * register images of those drivers' tests (problem kinds as a multiset; the texts may differ).
+ * register images of those drivers' tests (problem kinds as a multiset; the texts may differ). The hand-written
+ * drivers are gone; what they read was recorded in `src/test/resources/golden/Inverters2GoldenTest/`, one entry per
+ * comparison, numbered in the order the test makes them.
  */
 class Inverters2GoldenTest {
     private val library = SpecLibrary { File("src/main/assets/modbusspec/$it").readText() }
@@ -41,9 +36,9 @@ class Inverters2GoldenTest {
     private fun essentials(r: DeviceReading) = listOf(
         "pv" to r.pvPowerW, "grid" to r.gridPowerW, "load" to r.loadPowerW,
         "battery" to r.battery?.let { listOf(it.powerW, it.socPercent) },
-        "phases" to r.phases.map { listOf(it.name, "%.2f".format(it.voltageV), it.currentA?.let { a -> "%.2f".format(a) }, it.powerW) },
-        "lifetimePv" to r.lifetimePvKwh?.let { "%.3f".format(it) },
-        "todayPv" to r.today.pvKwh?.let { "%.3f".format(it) },
+        "phases" to r.phases.map { listOf(it.name, "%.2f".format(java.util.Locale.ROOT, it.voltageV), it.currentA?.let { a -> "%.2f".format(java.util.Locale.ROOT, a) }, it.powerW) },
+        "lifetimePv" to r.lifetimePvKwh?.let { "%.3f".format(java.util.Locale.ROOT, it) },
+        "todayPv" to r.today.pvKwh?.let { "%.3f".format(java.util.Locale.ROOT, it) },
         "problemKinds" to r.problems.map { it.kind }.sorted(),
     )
 
@@ -61,13 +56,22 @@ class Inverters2GoldenTest {
     private fun typeDriver(type: DeviceType, unit: Int, holding: RegisterReader, input: RegisterReader = holding) =
         typeDriver(type, unit) { SpecTables(holding, input, it) }
 
-    private fun same(old: DeviceDriver, new: DeviceDriver) = runBlocking {
-        val a = old.read()
+    @get:org.junit.Rule val testName = org.junit.rules.TestName()
+    private val golden by lazy { InvertersGoldenRecords("Inverters2GoldenTest", testName.methodName) }
+    @org.junit.After fun finishGolden() = golden.finish()
+    private var case = 0
+
+    /** The next recorded entry: what the hand-written driver gave at this point. */
+    private fun recorded() = golden.fields(golden.take("${++case}"))
+
+    /** [new] against what the hand-written driver read on the same image. */
+    private fun same(new: DeviceDriver) = runBlocking {
+        val a = recorded()
         val b = new.read()
-        assertEquals(essentials(a).joinToString("\n"), essentials(b).joinToString("\n"))
-        assertEquals(a.status == "Sleeping (no sun)", b.status == "Sleeping (no sun)")
-        if (a.problems.map { it.text }.sorted() != b.problems.map { it.text }.sorted()) {
-            println("Problem texts differ: old ${a.problems.map { it.text }}, spec ${b.problems.map { it.text }}")
+        assertEquals(a.getValue(""), essentials(b).joinToString("\n"))
+        assertEquals(a.getValue("sleeping").toBooleanStrict(), b.status == "Sleeping (no sun)")
+        if (a.getValue("problems") != b.problems.map { it.text }.sorted().toString()) {
+            println("Problem texts differ: old ${a.getValue("problems")}, spec ${b.problems.map { it.text }}")
         }
     }
 
@@ -91,7 +95,7 @@ class Inverters2GoldenTest {
             f32(320, 98_765_000.0); f32(322, 21_300.0)
         }
 
-    private fun pikoSame(build: () -> FakeRegisterImage) = same(KostalPikoCiDriver(build(), 71), spec("kostal-piko-ci", build(), 71))
+    private fun pikoSame(build: () -> FakeRegisterImage) = same(spec("kostal-piko-ci", build(), 71))
 
     @Test
     fun pikoCiBothWordOrders() {
@@ -144,7 +148,7 @@ class Inverters2GoldenTest {
         for (i in 0 until 14) u16(0x1B64 + i, 850 + i)
     }
 
-    private fun cl60Same(build: () -> FakeRegisterImage) = same(ConextCl60Driver(build(), 1), spec("schneider-conext-cl60", build(), 1))
+    private fun cl60Same(build: () -> FakeRegisterImage) = same(spec("schneider-conext-cl60", build(), 1))
 
     @Test
     fun conextCl60RunningAndWiring() {
@@ -187,7 +191,7 @@ class Inverters2GoldenTest {
         u32(0x0414, 18_250); u32(0x041C, 45_100_000); u32(0x041E, 97)
     }
 
-    private fun gatewaySame(build: () -> FakeRegisterImage) = same(ConextGatewayDriver(build(), 1), spec("schneider-conext-gateway", build(), 1))
+    private fun gatewaySame(build: () -> FakeRegisterImage) = same(spec("schneider-conext-gateway", build(), 1))
 
     private fun FakeRegisterImage.drop(vararg a: Int) = apply { a.forEach { regs.remove(it); regs.remove(it + 1) } }
 
@@ -259,7 +263,7 @@ class Inverters2GoldenTest {
         u16(0x0041, 0x0115); u16(0x0045, 564); u16(0x0046, 60); u16(0x0047, 66)
     }
 
-    private fun cpsSame(build: () -> FakeCps) = same(CpsDriver(build(), 1), spec("chint-cps-403x", build(), 1))
+    private fun cpsSame(build: () -> FakeCps) = same(spec("chint-cps-403x", build(), 1))
 
     @Test
     fun cpsFamilies() {
@@ -370,7 +374,7 @@ class Inverters2GoldenTest {
 
     private fun trio(fake: FakeTrio) = typeDriver(DeviceType.POWER_ONE, 2, fake)
 
-    private fun trioSame(build: () -> FakeTrio) = same(PowerOneTrioDriver(build(), 2), trio(build()))
+    private fun trioSame(build: () -> FakeTrio) = same(trio(build()))
 
     @Test
     fun trioGtMapBothNumberingsAndWordOrders() {
@@ -412,13 +416,11 @@ class Inverters2GoldenTest {
     fun trioSleepsAfterSunsetOnly() = runBlocking {
         for (gateway in listOf(false, true)) {
             // Evening, 120 W: then no answer is sleeping.
-            val a = trio20().apply { f32(148, 120.0); gatewayNoAnswer = gateway }
             val b = trio20().apply { f32(148, 120.0); gatewayNoAnswer = gateway }
-            val old = PowerOneTrioDriver(a, 2)
             val new = trio(b)
-            same(old, new)
-            a.asleep = true; b.asleep = true
-            same(old, new)
+            same(new)
+            b.asleep = true
+            same(new)
             assertEquals("Sleeping (no sun)", new.read().status)
             // Morning: it answers again (the old driver waits a minute before asking; this one is told not to wait).
             b.asleep = false
@@ -426,12 +428,10 @@ class Inverters2GoldenTest {
         }
         // No answer at all, or no answer at 14.2 kW: an error with both.
         for (first in listOf(false, true)) {
-            val olds = trio20().apply { asleep = !first }
             val news = trio20().apply { asleep = !first }
-            val old = PowerOneTrioDriver(olds, 2)
             val new = trio(news)
-            if (first) { same(old, new); olds.asleep = true; news.asleep = true }
-            assertTrue(runCatching { old.read() }.exceptionOrNull() is IOException)
+            if (first) { same(new); news.asleep = true }
+            assertTrue(recorded().getValue("throwsIOException").toBooleanStrict())
             assertTrue(runCatching { new.read() }.exceptionOrNull() is IOException)
         }
     }
@@ -477,7 +477,7 @@ class Inverters2GoldenTest {
 
     private fun riello(fake: FakeRiello) = typeDriver(DeviceType.RIELLO_CENTRAL, 1, fake)
 
-    private fun rielloSame(build: () -> FakeRiello) = same(RielloCentralDriver(build(), 1), riello(build()))
+    private fun rielloSame(build: () -> FakeRiello) = same(riello(build()))
 
     @Test
     fun rielloBothNumberingsAndByteOrders() {
@@ -580,7 +580,7 @@ class Inverters2GoldenTest {
     }
 
     private fun ingeteamSame(holding: () -> Regs, input: () -> Regs = { Regs() }) =
-        same(IngeteamDriver(holding(), input(), 1, requestGapMs = 0), typeDriver(DeviceType.INGETEAM, 1, holding(), input()))
+        same(typeDriver(DeviceType.INGETEAM, 1, holding(), input()))
 
     @Test
     fun ingeteamCurrentMap() {

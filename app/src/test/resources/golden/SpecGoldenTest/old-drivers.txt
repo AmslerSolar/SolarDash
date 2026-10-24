@@ -1,0 +1,30 @@
+# SpecGoldenTest: what the hand-written drivers read on the test's register images, recorded at commit 8818a64
+# before they were deleted. Entry: '=== <testMethod>/<case>' then the essentials; '<key>:texts' = problem texts.
+=== kebaChargingAndFault/state=3 error=0
+(pv, null)
+(grid, null)
+(load, 11040)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, null], [L2, 231.00, 15.50, null], [L3, 229.00, 0.00, null]])
+(problems, [])
+=== kebaChargingAndFault/state=4 error=262144
+(pv, null)
+(grid, null)
+(load, 11040)
+(battery, null)
+(phases, [[L1, 230.00, 16.00, null], [L2, 231.00, 15.50, null], [L3, 229.00, 0.00, null]])
+(problems, [(FAULT, Charging station error (code 0x40000))])
+=== eastronSdm630BothWordOrders/swapped=false
+(pv, null)
+(grid, -1250)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.50, 3.00, -1000], [L2, 231.00, 2.00, -500], [L3, 229.50, 1.00, 250]])
+(problems, [])
+=== eastronSdm630BothWordOrders/swapped=true
+(pv, null)
+(grid, -1250)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.50, 3.00, -1000], [L2, 231.00, 2.00, -500], [L3, 229.50, 1.00, 250]])
+(problems, [])

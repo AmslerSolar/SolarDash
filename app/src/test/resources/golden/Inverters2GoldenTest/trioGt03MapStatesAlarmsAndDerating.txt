@@ -1,0 +1,6360 @@
+[trioGt03MapStatesAlarmsAndDerating/1]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/2]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/3]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/4]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/5]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/6]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/7]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/8]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/9]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/10]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Ground fault (state 9)]
+
+[trioGt03MapStatesAlarmsAndDerating/11]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Over-temperature fault (state 10)]
+
+[trioGt03MapStatesAlarmsAndDerating/12]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/13]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/14]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Grid protection self-test fault (state 13)]
+
+[trioGt03MapStatesAlarmsAndDerating/15]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/16]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Leakage fault (state 15)]
+
+[trioGt03MapStatesAlarmsAndDerating/17]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/18]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/19]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/20]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/21]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/22]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/23]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/24]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/25]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Under-temperature fault (state 24)]
+
+[trioGt03MapStatesAlarmsAndDerating/26]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/27]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/28]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/29]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/30]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Grounding-kit fault (state 29)]
+
+[trioGt03MapStatesAlarmsAndDerating/31]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[SW bundle not valid (state 30)]
+
+[trioGt03MapStatesAlarmsAndDerating/32]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/33]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/34]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/35]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/36]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/37]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/38]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/39]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/40]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/41]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/42]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Temperature sensors fault (state 41)]
+
+[trioGt03MapStatesAlarmsAndDerating/43]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Grid sequence fault (state 42)]
+
+[trioGt03MapStatesAlarmsAndDerating/44]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/45]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/46]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/47]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/48]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/49]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/50]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/51]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/52]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Arc fault (state 51)]
+
+[trioGt03MapStatesAlarmsAndDerating/53]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/54]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Arc detector self-test fault (state 53)]
+
+[trioGt03MapStatesAlarmsAndDerating/55]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/56]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/57]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/58]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/59]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/60]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/61]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/62]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/63]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/64]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/65]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/66]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/67]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/68]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/69]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/70]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/71]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/72]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/73]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/74]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/75]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/76]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/77]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/78]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/79]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/80]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/81]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/82]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/83]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/84]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/85]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/86]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/87]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/88]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/89]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/90]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/91]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/92]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/93]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/94]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/95]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/96]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/97]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/98]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/99]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/100]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/101]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/102]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/103]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/104]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/105]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/106]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/107]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/108]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/109]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/110]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/111]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/112]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/113]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/114]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/115]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/116]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/117]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Power stage off-line (state 116)]
+
+[trioGt03MapStatesAlarmsAndDerating/118]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/119]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Arc detector wrong configuration (state 118)]
+
+[trioGt03MapStatesAlarmsAndDerating/120]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/121]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Configuration fault (bad model) (state 120)]
+
+[trioGt03MapStatesAlarmsAndDerating/122]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/123]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/124]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/125]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Latch with reset by hand (state 124)]
+
+[trioGt03MapStatesAlarmsAndDerating/126]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/127]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/128]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/129]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/130]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/131]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/132]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/133]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/134]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/135]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/136]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/137]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/138]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/139]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/140]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/141]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/142]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/143]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/144]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/145]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/146]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/147]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/148]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/149]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/150]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/151]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Power stage communication fault (state 150)]
+
+[trioGt03MapStatesAlarmsAndDerating/152]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Configuration fault (bad global settings) (state 151)]
+
+[trioGt03MapStatesAlarmsAndDerating/153]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/154]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/155]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/156]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/157]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/158]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/159]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/160]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/161]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/162]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/163]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/164]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/165]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/166]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/167]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/168]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/169]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/170]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/171]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/172]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/173]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/174]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/175]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/176]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/177]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/178]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/179]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/180]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/181]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/182]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/183]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/184]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/185]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/186]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/187]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/188]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/189]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/190]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/191]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/192]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/193]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/194]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/195]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/196]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/197]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/198]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/199]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/200]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/201]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/202]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/203]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/204]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/205]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/206]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/207]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/208]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/209]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/210]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/211]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/212]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/213]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/214]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/215]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/216]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/217]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/218]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/219]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/220]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/221]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/222]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/223]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/224]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/225]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/226]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/227]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/228]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/229]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/230]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/231]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/232]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/233]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/234]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/235]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/236]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/237]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/238]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/239]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/240]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/241]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/242]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/243]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/244]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/245]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/246]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/247]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/248]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/249]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/250]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/251]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/252]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/253]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/254]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/255]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/256]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/257]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/258]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 1]
+
+[trioGt03MapStatesAlarmsAndDerating/259]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Input OC (E001)]
+
+[trioGt03MapStatesAlarmsAndDerating/260]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/261]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Input OV (E002)]
+
+[trioGt03MapStatesAlarmsAndDerating/262]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 5]
+
+[trioGt03MapStatesAlarmsAndDerating/263]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[No parameters (E003)]
+
+[trioGt03MapStatesAlarmsAndDerating/264]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Bulk OV (E004)]
+
+[trioGt03MapStatesAlarmsAndDerating/265]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Internal error (E005)]
+
+[trioGt03MapStatesAlarmsAndDerating/266]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Output OC (E006)]
+
+[trioGt03MapStatesAlarmsAndDerating/267]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[IGBT sat (E007)]
+
+[trioGt03MapStatesAlarmsAndDerating/268]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/269]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 12]
+
+[trioGt03MapStatesAlarmsAndDerating/270]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 13]
+
+[trioGt03MapStatesAlarmsAndDerating/271]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Bulk UV (E010)]
+
+[trioGt03MapStatesAlarmsAndDerating/272]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Ramp fault (E011)]
+
+[trioGt03MapStatesAlarmsAndDerating/273]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Internal error (E012)]
+
+[trioGt03MapStatesAlarmsAndDerating/274]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Wrong input mode (E013)]
+
+[trioGt03MapStatesAlarmsAndDerating/275]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 18]
+
+[trioGt03MapStatesAlarmsAndDerating/276]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Over-temperature (E014)]
+
+[trioGt03MapStatesAlarmsAndDerating/277]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Capacitor fault (E015)]
+
+[trioGt03MapStatesAlarmsAndDerating/278]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Internal error (E016)]
+
+[trioGt03MapStatesAlarmsAndDerating/279]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Internal error (E017)]
+
+[trioGt03MapStatesAlarmsAndDerating/280]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Leak fault (E018)]
+
+[trioGt03MapStatesAlarmsAndDerating/281]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Internal error (E049)]
+
+[trioGt03MapStatesAlarmsAndDerating/282]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Internal error (E019)]
+
+[trioGt03MapStatesAlarmsAndDerating/283]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Internal error (E012)]
+
+[trioGt03MapStatesAlarmsAndDerating/284]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Internal error (E020)]
+
+[trioGt03MapStatesAlarmsAndDerating/285]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Internal error (E021)]
+
+[trioGt03MapStatesAlarmsAndDerating/286]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Internal error (E019)]
+
+[trioGt03MapStatesAlarmsAndDerating/287]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Internal error (E022)]
+
+[trioGt03MapStatesAlarmsAndDerating/288]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[DC injection (E023)]
+
+[trioGt03MapStatesAlarmsAndDerating/289]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 32]
+
+[trioGt03MapStatesAlarmsAndDerating/290]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 33]
+
+[trioGt03MapStatesAlarmsAndDerating/291]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 34]
+
+[trioGt03MapStatesAlarmsAndDerating/292]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 35]
+
+[trioGt03MapStatesAlarmsAndDerating/293]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 36]
+
+[trioGt03MapStatesAlarmsAndDerating/294]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 37]
+
+[trioGt03MapStatesAlarmsAndDerating/295]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Riso low (E025)]
+
+[trioGt03MapStatesAlarmsAndDerating/296]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 39]
+
+[trioGt03MapStatesAlarmsAndDerating/297]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 40]
+
+[trioGt03MapStatesAlarmsAndDerating/298]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 41]
+
+[trioGt03MapStatesAlarmsAndDerating/299]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Mid bulk OV (E029)]
+
+[trioGt03MapStatesAlarmsAndDerating/300]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 43]
+
+[trioGt03MapStatesAlarmsAndDerating/301]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Internal error (E031)]
+
+[trioGt03MapStatesAlarmsAndDerating/302]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Internal error (E032)]
+
+[trioGt03MapStatesAlarmsAndDerating/303]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 46]
+
+[trioGt03MapStatesAlarmsAndDerating/304]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 47]
+
+[trioGt03MapStatesAlarmsAndDerating/305]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Under-temperature (E033)]
+
+[trioGt03MapStatesAlarmsAndDerating/306]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[IGBT not ready (E034)]
+
+[trioGt03MapStatesAlarmsAndDerating/307]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/308]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Internal error (E036)]
+
+[trioGt03MapStatesAlarmsAndDerating/309]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 52]
+
+[trioGt03MapStatesAlarmsAndDerating/310]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 53]
+
+[trioGt03MapStatesAlarmsAndDerating/311]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Riso low (E037)]
+
+[trioGt03MapStatesAlarmsAndDerating/312]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 55]
+
+[trioGt03MapStatesAlarmsAndDerating/313]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 56]
+
+[trioGt03MapStatesAlarmsAndDerating/314]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 57]
+
+[trioGt03MapStatesAlarmsAndDerating/315]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 58]
+
+[trioGt03MapStatesAlarmsAndDerating/316]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 59]
+
+[trioGt03MapStatesAlarmsAndDerating/317]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 60]
+
+[trioGt03MapStatesAlarmsAndDerating/318]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 61]
+
+[trioGt03MapStatesAlarmsAndDerating/319]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [MAINS_LOST])
+sleeping=false
+problems=[Island detected (W015)]
+
+[trioGt03MapStatesAlarmsAndDerating/320]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 63]
+
+[trioGt03MapStatesAlarmsAndDerating/321]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 64]
+
+[trioGt03MapStatesAlarmsAndDerating/322]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 65]
+
+[trioGt03MapStatesAlarmsAndDerating/323]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 66]
+
+[trioGt03MapStatesAlarmsAndDerating/324]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 67]
+
+[trioGt03MapStatesAlarmsAndDerating/325]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 68]
+
+[trioGt03MapStatesAlarmsAndDerating/326]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 69]
+
+[trioGt03MapStatesAlarmsAndDerating/327]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 70]
+
+[trioGt03MapStatesAlarmsAndDerating/328]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 71]
+
+[trioGt03MapStatesAlarmsAndDerating/329]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 72]
+
+[trioGt03MapStatesAlarmsAndDerating/330]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 73]
+
+[trioGt03MapStatesAlarmsAndDerating/331]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 74]
+
+[trioGt03MapStatesAlarmsAndDerating/332]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 75]
+
+[trioGt03MapStatesAlarmsAndDerating/333]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 76]
+
+[trioGt03MapStatesAlarmsAndDerating/334]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 77]
+
+[trioGt03MapStatesAlarmsAndDerating/335]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Riso test fail (E078)]
+
+[trioGt03MapStatesAlarmsAndDerating/336]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Arc fault detected (E050)]
+
+[trioGt03MapStatesAlarmsAndDerating/337]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 80]
+
+[trioGt03MapStatesAlarmsAndDerating/338]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 81]
+
+[trioGt03MapStatesAlarmsAndDerating/339]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Arc detector fault (E053)]
+
+[trioGt03MapStatesAlarmsAndDerating/340]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 83]
+
+[trioGt03MapStatesAlarmsAndDerating/341]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 84]
+
+[trioGt03MapStatesAlarmsAndDerating/342]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Arc detector wrong configuration (E055)]
+
+[trioGt03MapStatesAlarmsAndDerating/343]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 86]
+
+[trioGt03MapStatesAlarmsAndDerating/344]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 87]
+
+[trioGt03MapStatesAlarmsAndDerating/345]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 88]
+
+[trioGt03MapStatesAlarmsAndDerating/346]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 89]
+
+[trioGt03MapStatesAlarmsAndDerating/347]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Periodic grid off (W048)]
+
+[trioGt03MapStatesAlarmsAndDerating/348]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Internal error (E077)]
+
+[trioGt03MapStatesAlarmsAndDerating/349]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 92]
+
+[trioGt03MapStatesAlarmsAndDerating/350]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 93]
+
+[trioGt03MapStatesAlarmsAndDerating/351]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 94]
+
+[trioGt03MapStatesAlarmsAndDerating/352]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Grid connection fault (W046)]
+
+[trioGt03MapStatesAlarmsAndDerating/353]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Latch, manual reset needed (E075)]
+
+[trioGt03MapStatesAlarmsAndDerating/354]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 97]
+
+[trioGt03MapStatesAlarmsAndDerating/355]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 98]
+
+[trioGt03MapStatesAlarmsAndDerating/356]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 99]
+
+[trioGt03MapStatesAlarmsAndDerating/357]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 100]
+
+[trioGt03MapStatesAlarmsAndDerating/358]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 101]
+
+[trioGt03MapStatesAlarmsAndDerating/359]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 102]
+
+[trioGt03MapStatesAlarmsAndDerating/360]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 103]
+
+[trioGt03MapStatesAlarmsAndDerating/361]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 104]
+
+[trioGt03MapStatesAlarmsAndDerating/362]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 105]
+
+[trioGt03MapStatesAlarmsAndDerating/363]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 106]
+
+[trioGt03MapStatesAlarmsAndDerating/364]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 107]
+
+[trioGt03MapStatesAlarmsAndDerating/365]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 108]
+
+[trioGt03MapStatesAlarmsAndDerating/366]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 109]
+
+[trioGt03MapStatesAlarmsAndDerating/367]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 110]
+
+[trioGt03MapStatesAlarmsAndDerating/368]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 111]
+
+[trioGt03MapStatesAlarmsAndDerating/369]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 112]
+
+[trioGt03MapStatesAlarmsAndDerating/370]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 113]
+
+[trioGt03MapStatesAlarmsAndDerating/371]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 114]
+
+[trioGt03MapStatesAlarmsAndDerating/372]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 115]
+
+[trioGt03MapStatesAlarmsAndDerating/373]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 116]
+
+[trioGt03MapStatesAlarmsAndDerating/374]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 117]
+
+[trioGt03MapStatesAlarmsAndDerating/375]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 118]
+
+[trioGt03MapStatesAlarmsAndDerating/376]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 119]
+
+[trioGt03MapStatesAlarmsAndDerating/377]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 120]
+
+[trioGt03MapStatesAlarmsAndDerating/378]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 121]
+
+[trioGt03MapStatesAlarmsAndDerating/379]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 122]
+
+[trioGt03MapStatesAlarmsAndDerating/380]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 123]
+
+[trioGt03MapStatesAlarmsAndDerating/381]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 124]
+
+[trioGt03MapStatesAlarmsAndDerating/382]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 125]
+
+[trioGt03MapStatesAlarmsAndDerating/383]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 126]
+
+[trioGt03MapStatesAlarmsAndDerating/384]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 127]
+
+[trioGt03MapStatesAlarmsAndDerating/385]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 128]
+
+[trioGt03MapStatesAlarmsAndDerating/386]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 129]
+
+[trioGt03MapStatesAlarmsAndDerating/387]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 130]
+
+[trioGt03MapStatesAlarmsAndDerating/388]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 131]
+
+[trioGt03MapStatesAlarmsAndDerating/389]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 132]
+
+[trioGt03MapStatesAlarmsAndDerating/390]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 133]
+
+[trioGt03MapStatesAlarmsAndDerating/391]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 134]
+
+[trioGt03MapStatesAlarmsAndDerating/392]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 135]
+
+[trioGt03MapStatesAlarmsAndDerating/393]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 136]
+
+[trioGt03MapStatesAlarmsAndDerating/394]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 137]
+
+[trioGt03MapStatesAlarmsAndDerating/395]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 138]
+
+[trioGt03MapStatesAlarmsAndDerating/396]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 139]
+
+[trioGt03MapStatesAlarmsAndDerating/397]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 140]
+
+[trioGt03MapStatesAlarmsAndDerating/398]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 141]
+
+[trioGt03MapStatesAlarmsAndDerating/399]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 142]
+
+[trioGt03MapStatesAlarmsAndDerating/400]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 143]
+
+[trioGt03MapStatesAlarmsAndDerating/401]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 144]
+
+[trioGt03MapStatesAlarmsAndDerating/402]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 145]
+
+[trioGt03MapStatesAlarmsAndDerating/403]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 146]
+
+[trioGt03MapStatesAlarmsAndDerating/404]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 147]
+
+[trioGt03MapStatesAlarmsAndDerating/405]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 148]
+
+[trioGt03MapStatesAlarmsAndDerating/406]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 149]
+
+[trioGt03MapStatesAlarmsAndDerating/407]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Update incomplete (W047)]
+
+[trioGt03MapStatesAlarmsAndDerating/408]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 151]
+
+[trioGt03MapStatesAlarmsAndDerating/409]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Wrong sequence (E079)]
+
+[trioGt03MapStatesAlarmsAndDerating/410]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 153]
+
+[trioGt03MapStatesAlarmsAndDerating/411]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 154]
+
+[trioGt03MapStatesAlarmsAndDerating/412]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 155]
+
+[trioGt03MapStatesAlarmsAndDerating/413]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Back-feed OC (E084)]
+
+[trioGt03MapStatesAlarmsAndDerating/414]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 157]
+
+[trioGt03MapStatesAlarmsAndDerating/415]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 158]
+
+[trioGt03MapStatesAlarmsAndDerating/416]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 159]
+
+[trioGt03MapStatesAlarmsAndDerating/417]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 160]
+
+[trioGt03MapStatesAlarmsAndDerating/418]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 161]
+
+[trioGt03MapStatesAlarmsAndDerating/419]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 162]
+
+[trioGt03MapStatesAlarmsAndDerating/420]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 163]
+
+[trioGt03MapStatesAlarmsAndDerating/421]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 164]
+
+[trioGt03MapStatesAlarmsAndDerating/422]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 165]
+
+[trioGt03MapStatesAlarmsAndDerating/423]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 166]
+
+[trioGt03MapStatesAlarmsAndDerating/424]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Aux. bulk feed connection error (E098)]
+
+[trioGt03MapStatesAlarmsAndDerating/425]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 168]
+
+[trioGt03MapStatesAlarmsAndDerating/426]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 169]
+
+[trioGt03MapStatesAlarmsAndDerating/427]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Ground kit self-test error (E099)]
+
+[trioGt03MapStatesAlarmsAndDerating/428]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 171]
+
+[trioGt03MapStatesAlarmsAndDerating/429]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 172]
+
+[trioGt03MapStatesAlarmsAndDerating/430]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 173]
+
+[trioGt03MapStatesAlarmsAndDerating/431]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 174]
+
+[trioGt03MapStatesAlarmsAndDerating/432]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 175]
+
+[trioGt03MapStatesAlarmsAndDerating/433]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 176]
+
+[trioGt03MapStatesAlarmsAndDerating/434]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 177]
+
+[trioGt03MapStatesAlarmsAndDerating/435]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 178]
+
+[trioGt03MapStatesAlarmsAndDerating/436]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 179]
+
+[trioGt03MapStatesAlarmsAndDerating/437]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 180]
+
+[trioGt03MapStatesAlarmsAndDerating/438]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 181]
+
+[trioGt03MapStatesAlarmsAndDerating/439]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 182]
+
+[trioGt03MapStatesAlarmsAndDerating/440]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 183]
+
+[trioGt03MapStatesAlarmsAndDerating/441]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 184]
+
+[trioGt03MapStatesAlarmsAndDerating/442]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 185]
+
+[trioGt03MapStatesAlarmsAndDerating/443]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 186]
+
+[trioGt03MapStatesAlarmsAndDerating/444]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 187]
+
+[trioGt03MapStatesAlarmsAndDerating/445]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 188]
+
+[trioGt03MapStatesAlarmsAndDerating/446]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 189]
+
+[trioGt03MapStatesAlarmsAndDerating/447]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 190]
+
+[trioGt03MapStatesAlarmsAndDerating/448]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 191]
+
+[trioGt03MapStatesAlarmsAndDerating/449]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 192]
+
+[trioGt03MapStatesAlarmsAndDerating/450]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 193]
+
+[trioGt03MapStatesAlarmsAndDerating/451]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 194]
+
+[trioGt03MapStatesAlarmsAndDerating/452]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 195]
+
+[trioGt03MapStatesAlarmsAndDerating/453]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 196]
+
+[trioGt03MapStatesAlarmsAndDerating/454]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 197]
+
+[trioGt03MapStatesAlarmsAndDerating/455]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 198]
+
+[trioGt03MapStatesAlarmsAndDerating/456]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 199]
+
+[trioGt03MapStatesAlarmsAndDerating/457]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 200]
+
+[trioGt03MapStatesAlarmsAndDerating/458]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 201]
+
+[trioGt03MapStatesAlarmsAndDerating/459]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 202]
+
+[trioGt03MapStatesAlarmsAndDerating/460]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 203]
+
+[trioGt03MapStatesAlarmsAndDerating/461]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 204]
+
+[trioGt03MapStatesAlarmsAndDerating/462]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 205]
+
+[trioGt03MapStatesAlarmsAndDerating/463]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 206]
+
+[trioGt03MapStatesAlarmsAndDerating/464]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 207]
+
+[trioGt03MapStatesAlarmsAndDerating/465]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 208]
+
+[trioGt03MapStatesAlarmsAndDerating/466]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 209]
+
+[trioGt03MapStatesAlarmsAndDerating/467]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 210]
+
+[trioGt03MapStatesAlarmsAndDerating/468]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 211]
+
+[trioGt03MapStatesAlarmsAndDerating/469]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 212]
+
+[trioGt03MapStatesAlarmsAndDerating/470]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 213]
+
+[trioGt03MapStatesAlarmsAndDerating/471]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 214]
+
+[trioGt03MapStatesAlarmsAndDerating/472]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 215]
+
+[trioGt03MapStatesAlarmsAndDerating/473]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 216]
+
+[trioGt03MapStatesAlarmsAndDerating/474]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 217]
+
+[trioGt03MapStatesAlarmsAndDerating/475]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 218]
+
+[trioGt03MapStatesAlarmsAndDerating/476]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 219]
+
+[trioGt03MapStatesAlarmsAndDerating/477]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 220]
+
+[trioGt03MapStatesAlarmsAndDerating/478]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 221]
+
+[trioGt03MapStatesAlarmsAndDerating/479]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 222]
+
+[trioGt03MapStatesAlarmsAndDerating/480]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 223]
+
+[trioGt03MapStatesAlarmsAndDerating/481]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 224]
+
+[trioGt03MapStatesAlarmsAndDerating/482]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 225]
+
+[trioGt03MapStatesAlarmsAndDerating/483]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 226]
+
+[trioGt03MapStatesAlarmsAndDerating/484]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 227]
+
+[trioGt03MapStatesAlarmsAndDerating/485]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 228]
+
+[trioGt03MapStatesAlarmsAndDerating/486]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 229]
+
+[trioGt03MapStatesAlarmsAndDerating/487]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 230]
+
+[trioGt03MapStatesAlarmsAndDerating/488]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 231]
+
+[trioGt03MapStatesAlarmsAndDerating/489]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 232]
+
+[trioGt03MapStatesAlarmsAndDerating/490]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 233]
+
+[trioGt03MapStatesAlarmsAndDerating/491]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 234]
+
+[trioGt03MapStatesAlarmsAndDerating/492]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 235]
+
+[trioGt03MapStatesAlarmsAndDerating/493]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 236]
+
+[trioGt03MapStatesAlarmsAndDerating/494]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 237]
+
+[trioGt03MapStatesAlarmsAndDerating/495]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 238]
+
+[trioGt03MapStatesAlarmsAndDerating/496]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 239]
+
+[trioGt03MapStatesAlarmsAndDerating/497]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 240]
+
+[trioGt03MapStatesAlarmsAndDerating/498]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 241]
+
+[trioGt03MapStatesAlarmsAndDerating/499]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 242]
+
+[trioGt03MapStatesAlarmsAndDerating/500]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 243]
+
+[trioGt03MapStatesAlarmsAndDerating/501]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 244]
+
+[trioGt03MapStatesAlarmsAndDerating/502]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 245]
+
+[trioGt03MapStatesAlarmsAndDerating/503]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 246]
+
+[trioGt03MapStatesAlarmsAndDerating/504]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 247]
+
+[trioGt03MapStatesAlarmsAndDerating/505]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 248]
+
+[trioGt03MapStatesAlarmsAndDerating/506]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 249]
+
+[trioGt03MapStatesAlarmsAndDerating/507]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 250]
+
+[trioGt03MapStatesAlarmsAndDerating/508]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 251]
+
+[trioGt03MapStatesAlarmsAndDerating/509]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 252]
+
+[trioGt03MapStatesAlarmsAndDerating/510]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 253]
+
+[trioGt03MapStatesAlarmsAndDerating/511]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 254]
+
+[trioGt03MapStatesAlarmsAndDerating/512]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT])
+sleeping=false
+problems=[Alarm code 255]
+
+[trioGt03MapStatesAlarmsAndDerating/513]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/514]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/515]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Grid over-frequency derating (derating bit 1)]
+
+[trioGt03MapStatesAlarmsAndDerating/516]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Average grid over-voltage derating (derating bit 2)]
+
+[trioGt03MapStatesAlarmsAndDerating/517]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Anti-islanding derating (derating bit 3)]
+
+[trioGt03MapStatesAlarmsAndDerating/518]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/519]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[Over-temperature derating (derating bit 5)]
+
+[trioGt03MapStatesAlarmsAndDerating/520]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [WARNING])
+sleeping=false
+problems=[DC over-voltage derating (derating bit 6)]
+
+[trioGt03MapStatesAlarmsAndDerating/521]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/522]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/523]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/524]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/525]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/526]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/527]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/528]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/529]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[trioGt03MapStatesAlarmsAndDerating/530]
+(pv, 48300)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, 1530000.000)
+(todayPv, 210.500)
+(problemKinds, [FAULT, WARNING, MAINS_LOST])
+sleeping=false
+problems=[Island detected (W015), Over-temperature derating (derating bit 5), Over-temperature fault (state 10)]
+

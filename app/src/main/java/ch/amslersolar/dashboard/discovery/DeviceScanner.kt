@@ -6,24 +6,15 @@ package ch.amslersolar.dashboard.discovery
 import ch.amslersolar.dashboard.net.LocalNetworks
 import ch.amslersolar.dashboard.driver.net.DeviceNetwork
 import android.content.Context
-import ch.amslersolar.dashboard.driver.fenecon.FeneconFemsDriver
 import ch.amslersolar.dashboard.driver.apsystems.ApsystemsEcuDriver
 import ch.amslersolar.dashboard.driver.fimer.FimerSunSpecDriver
 import ch.amslersolar.dashboard.driver.fronius.FroniusGen24Driver
 import ch.amslersolar.dashboard.driver.kaco.KacoBlueplanetDriver
-import ch.amslersolar.dashboard.driver.kostal.KostalPikoCiDriver
-import ch.amslersolar.dashboard.driver.schneider.ConextCl60Driver
 import ch.amslersolar.dashboard.driver.schneider.ConextClDriver
-import ch.amslersolar.dashboard.driver.schneider.ConextGatewayDriver
-import ch.amslersolar.dashboard.driver.goodwe.GoodWeEtDriver
-import ch.amslersolar.dashboard.driver.growatt.GrowattVppDriver
-import ch.amslersolar.dashboard.driver.huawei.HuaweiSun2000Driver
 import ch.amslersolar.dashboard.driver.kostal.KostalPlenticoreDriver
 import ch.amslersolar.dashboard.driver.lg.LgEssSunSpecDriver
 import ch.amslersolar.dashboard.driver.modbus.ModbusTcpClient
-import ch.amslersolar.dashboard.driver.powerone.PowerOneTrioDriver
-import ch.amslersolar.dashboard.driver.sma.SmaDriver
-import ch.amslersolar.dashboard.driver.sungrow.SungrowDriver
+import ch.amslersolar.dashboard.driver.spec.SpecDevices
 import ch.amslersolar.dashboard.driver.sunspec.SunSpecInverterDriver
 import ch.amslersolar.dashboard.driver.sunspec.SunSpecProfiles
 import ch.amslersolar.dashboard.driver.victron.VictronGxDriver
@@ -231,26 +222,18 @@ class DeviceScanner(
         private suspend fun identifyWith(type: DeviceType, host: String, port: Int, unitId: Int): DeviceInfo =
             ModbusTcpClient(host, port, PROBE_TIMEOUT_MS).use { client ->
                 when (type) {
-                    DeviceType.GOODWE_ET -> GoodWeEtDriver(client, unitId).identify()
                     DeviceType.FRONIUS -> FroniusGen24Driver(client, unitId).identify()
                     DeviceType.KACO_NX3 -> KacoBlueplanetDriver(client, unitId).identify()
                     DeviceType.FIMER -> FimerSunSpecDriver(client, unitId).identify()
                     DeviceType.APSYSTEMS_ECU -> ApsystemsEcuDriver(client, unitId).identify()
                     DeviceType.CONEXT_CL -> ConextClDriver(client, unitId).identify()
-                    DeviceType.CONEXT_CL60 -> ConextCl60Driver(client, unitId).identify()
-                    DeviceType.CONEXT_GATEWAY -> ConextGatewayDriver(client, unitId).identify()
-                    DeviceType.KOSTAL_PIKO_CI -> KostalPikoCiDriver(client, unitId).identify()
                     DeviceType.SOLAREDGE -> SunSpecInverterDriver(client, unitId, SunSpecProfiles.SOLAREDGE).identify()
                     DeviceType.SUNSPEC -> SunSpecInverterDriver(client, unitId, SunSpecProfiles.GENERIC).identify()
-                    DeviceType.POWER_ONE -> PowerOneTrioDriver(client, unitId).identify()
-                    DeviceType.GROWATT -> GrowattVppDriver(client, unitId).identify()
-                    DeviceType.SMA -> SmaDriver(client, unitId).identify()
-                    DeviceType.SUNGROW -> SungrowDriver(client, unitId).identify()
                     DeviceType.VICTRON -> VictronGxDriver(client, unitId).identify()
-                    DeviceType.FENECON -> FeneconFemsDriver(client, unitId).identify()
-                    DeviceType.HUAWEI -> HuaweiSun2000Driver(client, unitId).identify()
                     DeviceType.KOSTAL_PLENTICORE -> KostalPlenticoreDriver(client, unitId).identify()
                     DeviceType.LG_ESS_SUNSPEC -> LgEssSunSpecDriver(client, unitId).identify()
+                    DeviceType.GOODWE_ET, DeviceType.CONEXT_CL60, DeviceType.CONEXT_GATEWAY, DeviceType.KOSTAL_PIKO_CI, DeviceType.POWER_ONE, DeviceType.GROWATT, DeviceType.SMA, DeviceType.SUNGROW, DeviceType.FENECON, DeviceType.HUAWEI ->
+                        SpecDevices.create(type, client, unitId)!!.identify()
                     else -> throw UnsupportedOperationException()
                 }
             }

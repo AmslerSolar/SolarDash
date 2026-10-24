@@ -148,9 +148,9 @@ runs ModbusSpec's validator; `LOCK.json` records the commit). The build never re
   row. Points only open-source projects name (not checked against the maker's documents) appear under
   "Other sources (unverified)" and never feed the energy flow or the plant status.
 - `driver/spec/SpecDevices.kt` says which device type reads through which file(s) and holds small per-device
-  hooks for what the format can't express. A type moves there only when a golden test
-  (`test/…/driver/spec/*GoldenTest.kt`) shows the spec driver reads what its hand-written driver read on the same
-  register images. The hand-written drivers stay as the reference; Modbus devices that need logic (SunSpec chain,
+  hooks for what the format can't express. The golden tests (`test/…/driver/spec/*GoldenTest.kt`) check each
+  spec driver against what the replaced hand-written driver read on the same register images, recorded before those
+  drivers were removed (`test/resources/golden/`). Modbus devices that need logic (SunSpec chain,
   Victron's unit ids) and non-Modbus devices (Voltronic, LG, Enphase) stay hand-written.
 - Switched (33 device types): Eastron SDM, KEBA P30, Carlo Gavazzi (EM24-E1, EM300, EM210, EM24-DIN), inepro
   PRO380, ABB B23/B24, Schneider iEM3000, Siemens PAC2200, KOSTAL KSEM, Shelly Pro 3EM, my-PV, Stiebel Eltron ISG,

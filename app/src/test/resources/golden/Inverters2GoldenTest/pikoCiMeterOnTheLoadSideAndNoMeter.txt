@@ -1,0 +1,24 @@
+[pikoCiMeterOnTheLoadSideAndNoMeter/1]
+(pv, 4600)
+(grid, null)
+(load, 2600)
+(battery, null)
+(phases, [[L1, 230.50, 6.50, 1500], [L2, 231.50, 6.40, 1480], [L3, 229.50, 6.60, 1520]])
+(lifetimePv, 98765.000)
+(todayPv, 21.300)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[pikoCiMeterOnTheLoadSideAndNoMeter/2]
+(pv, 4600)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.50, 6.50, 1500], [L2, 231.50, 6.40, 1480], [L3, 229.50, 6.60, 1520]])
+(lifetimePv, 98765.000)
+(todayPv, 21.300)
+(problemKinds, [])
+sleeping=false
+problems=[]
+

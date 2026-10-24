@@ -1,0 +1,60 @@
+[rielloSinglePhaseAndAcFallback/1]
+(pv, 0)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 0]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[rielloSinglePhaseAndAcFallback/2]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[rielloSinglePhaseAndAcFallback/3]
+(pv, 60000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[rielloSinglePhaseAndAcFallback/4]
+(pv, 0)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L2, 229.80, 86.50, 19900], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [])
+sleeping=false
+problems=[]
+
+[rielloSinglePhaseAndAcFallback/5]
+(pv, 61000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 87.00, 20000], [L3, 230.50, 86.80, 20100]])
+(lifetimePv, 1234567.800)
+(todayPv, 345.600)
+(problemKinds, [])
+sleeping=false
+problems=[]
+

@@ -1,0 +1,165 @@
+[sma/SMA Tripower, two strings]
+(pv, 6130)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 231.00, 8.66, 2000], [L2, 232.00, 8.62, 2000], [L3, 230.00, 8.70, 2000]])
+(lifetimePv, 45678.900)
+(todayPv, 23.450)
+(problemKinds, [])
+problems=[]
+
+[sma/SMA Smart Energy charging, exporting]
+(pv, 4000)
+(grid, 1200)
+(load, null)
+(battery, [-2200, 64])
+(phases, [[L1, 230.00, null, 1800]])
+(lifetimePv, 9000.000)
+(todayPv, 12.300)
+(problemKinds, [])
+problems=[]
+
+[sma/SMA Smart Energy discharging, importing]
+(pv, 4000)
+(grid, -300)
+(load, null)
+(battery, [2200, 64])
+(phases, [[L1, 230.00, null, 1800]])
+(lifetimePv, 9000.000)
+(todayPv, 12.300)
+(problemKinds, [])
+problems=[]
+
+[sma/SMA battery standby]
+(pv, 4000)
+(grid, 1200)
+(load, null)
+(battery, [0, 64])
+(phases, [[L1, 230.00, null, 1800]])
+(lifetimePv, 9000.000)
+(todayPv, 12.300)
+(problemKinds, [])
+problems=[]
+
+[sma/SMA battery direction from the current]
+(pv, 4000)
+(grid, 1200)
+(load, null)
+(battery, [1100, 64])
+(phases, [[L1, 230.00, null, 1800]])
+(lifetimePv, 9000.000)
+(todayPv, 12.300)
+(problemKinds, [])
+problems=[]
+
+[sma/SMA Sunny Island]
+(pv, null)
+(grid, -600)
+(load, 2100)
+(battery, [1500, 81])
+(phases, [[L1, 230.50, null, 1500]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+problems=[]
+
+[sma/SMA Sunny Island by its 31393 / 31395]
+(pv, null)
+(grid, -600)
+(load, 2100)
+(battery, [1500, 81])
+(phases, [[L1, 230.50, null, 1500]])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+problems=[]
+
+[sma/SMA night: NaN]
+(pv, 0)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+problems=[]
+
+[sma/SMA unknown type, hybrid class]
+(pv, 900)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, null)
+(problemKinds, [])
+problems=[]
+
+[sma/SMA fault, operating fault, derating]
+(pv, 6130)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 231.00, 8.66, 2000], [L2, 232.00, 8.62, 2000], [L3, 230.00, 8.70, 2000]])
+(lifetimePv, 45678.900)
+(todayPv, 23.450)
+(problemKinds, [FAULT, WARNING])
+problems=[FAULT: Fault (event 3501), WARNING: Temperature derating]
+
+[sma/SMA warning, separate network, battery warning]
+(pv, 4000)
+(grid, 1200)
+(load, null)
+(battery, [-2200, 64])
+(phases, [[L1, 230.00, null, 1800]])
+(lifetimePv, 9000.000)
+(todayPv, 12.300)
+(problemKinds, [WARNING, WARNING, BACKUP_MODE])
+problems=[BACKUP_MODE: Backup: separate network mode (1441), WARNING: Battery warning (455), WARNING: Warning (455)]
+
+[sma/SMA operating fault only]
+(pv, 6130)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 231.00, 8.66, 2000], [L2, 232.00, 8.62, 2000], [L3, 230.00, 8.70, 2000]])
+(lifetimePv, 45678.900)
+(todayPv, 23.450)
+(problemKinds, [FAULT])
+problems=[FAULT: Fault (1392)]
+
+[sma/SMA battery error]
+(pv, 4000)
+(grid, 1200)
+(load, null)
+(battery, [-2200, 64])
+(phases, [[L1, 230.00, null, 1800]])
+(lifetimePv, 9000.000)
+(todayPv, 12.300)
+(problemKinds, [FAULT])
+problems=[FAULT: Battery error (35)]
+
+[sma/SMA one string NaN]
+(pv, 5200)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 231.00, 8.66, 2000], [L2, 232.00, 8.62, 2000], [L3, 230.00, 8.70, 2000]])
+(lifetimePv, 45678.900)
+(todayPv, 23.450)
+(problemKinds, [])
+problems=[]
+
+[sma/SMA U32 yields only]
+(pv, 6130)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 231.00, 8.66, 2000], [L2, 232.00, 8.62, 2000], [L3, 230.00, 8.70, 2000]])
+(lifetimePv, 45.678)
+(todayPv, 0.023)
+(problemKinds, [])
+problems=[]
+

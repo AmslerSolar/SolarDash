@@ -1,0 +1,475 @@
+# MetersGoldenTest: what the hand-written drivers read on the test's register images, recorded at commit 8818a64
+# before they were deleted. Entry: '=== <testMethod>/<case>' then the essentials; '<key>:texts' = problem texts.
+=== siemensImBlockReadWhole/0
+(pv, null)
+(grid, -500)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 2.17, -500], [L2, 231.00, 0.00, 0], [L3, 232.00, 0.00, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== siemensImBlockReadWhole/0:texts
+[]
+=== ineproImportExportAndGaps/0
+(pv, null)
+(grid, -2500)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 4.00, -1200], [L2, 231.00, 3.00, -800], [L3, 232.00, 2.00, -500]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== ineproImportExportAndGaps/0:texts
+[]
+=== ineproImportExportAndGaps/1
+(pv, null)
+(grid, 2500)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 4.00, 1000], [L2, 231.00, 3.00, 1000], [L3, 232.00, 2.00, 500]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== ineproImportExportAndGaps/1:texts
+[]
+=== ineproImportExportAndGaps/2
+(pv, null)
+(grid, -100)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 4.00, -100], [L2, 231.00, 3.00, null], [L3, 232.00, 2.00, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== ineproImportExportAndGaps/2:texts
+[]
+=== kostalImportExportMissing/0
+(pv, null)
+(grid, -2000)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.50, 4.35, -1000], [L2, 231.50, 2.61, -600], [L3, 232.50, 1.74, -400]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== kostalImportExportMissing/0:texts
+[]
+=== kostalImportExportMissing/1
+(pv, null)
+(grid, 1800)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.50, 8.70, 2000], [L2, 231.50, 1.30, -300], [L3, 232.50, 0.44, 100]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== kostalImportExportMissing/1:texts
+[]
+=== kostalImportExportMissing/2
+(pv, null)
+(grid, -6554)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.50, 0.00, 0], [L2, 231.50, 0.00, 0], [L3, 232.50, 0.00, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== kostalImportExportMissing/2:texts
+[]
+=== kostalImportExportMissing/3
+(pv, null)
+(grid, -300)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.50, 0.44, -100], [L2, 231.50, 0.44, -100]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== kostalImportExportMissing/3:texts
+[]
+=== carloGavazziFamiliesAndModels/0
+(pv, null)
+(grid, -1500)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 2.50, -500], [L2, 231.20, 1.50, -600], [L3, 229.80, 0.50, -400]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== carloGavazziFamiliesAndModels/0:texts
+[]
+=== carloGavazziFamiliesAndModels/1
+(pv, null)
+(grid, 2000)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 2.50, 700], [L2, 231.20, 1.50, 800], [L3, 229.80, 0.50, 500]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== carloGavazziFamiliesAndModels/1:texts
+[]
+=== carloGavazziFamiliesAndModels/2
+(pv, null)
+(grid, -200)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 2.50, -100], [L2, 231.20, 1.50, 200]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== carloGavazziFamiliesAndModels/2:texts
+[]
+=== carloGavazziFamiliesAndModels/3
+(pv, null)
+(grid, 2000)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 2.50, 0], [L2, 231.20, 1.50, 0], [L3, 229.80, 0.50, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== carloGavazziFamiliesAndModels/3:texts
+[]
+=== carloGavazziFamiliesAndModels/4
+(pv, null)
+(grid, 1200)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 2.50, 1200]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== carloGavazziFamiliesAndModels/4:texts
+[]
+=== carloGavazziFamiliesAndModels/5
+(pv, null)
+(grid, -600)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 1.00, -230], [L2, 231.00, 2.00, -460], [L3, 232.00, 3.00, 90]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== carloGavazziFamiliesAndModels/5:texts
+[]
+=== shellyHighWordFirst/0
+(pv, null)
+(grid, -300)
+(load, null)
+(battery, null)
+(phases, [[L1, 232.20, 0.43, -100], [L2, 233.20, 0.43, -100], [L3, 234.20, 0.43, -100]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== shellyHighWordFirst/0:texts
+[]
+=== schneiderImportExportIem3150/0
+(pv, null)
+(grid, -2500)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 4.35, -1000], [L2, 231.00, 3.48, -800], [L3, 232.00, 3.04, -700]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== schneiderImportExportIem3150/0:texts
+[]
+=== schneiderImportExportIem3150/1
+(pv, null)
+(grid, 1200)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 2.17, 500], [L2, 231.00, 2.17, 500], [L3, 232.00, 0.87, 200]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== schneiderImportExportIem3150/1:texts
+[]
+=== schneiderImportExportIem3150/2
+(pv, null)
+(grid, -500)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 2.17, -500]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== schneiderImportExportIem3150/2:texts
+[]
+=== schneiderImportExportIem3150/3
+(pv, null)
+(grid, -900)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 1.30, -300], [L2, 231.00, 1.30, -300], [L3, 232.00, 1.30, -300]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== schneiderImportExportIem3150/3:texts
+[]
+=== shellyImportExportMissing/0
+(pv, null)
+(grid, -2000)
+(load, null)
+(battery, null)
+(phases, [[L1, 232.20, 4.10, -951], [L2, 233.20, 3.02, -700], [L3, 234.20, 1.50, -349]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== shellyImportExportMissing/0:texts
+[]
+=== shellyImportExportMissing/1
+(pv, null)
+(grid, 2251)
+(load, null)
+(battery, null)
+(phases, [[L1, 232.20, 6.47, 1500], [L2, 233.20, 4.10, 951], [L3, 234.20, 0.86, -200]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== shellyImportExportMissing/1:texts
+[]
+=== shellyImportExportMissing/2
+(pv, null)
+(grid, -100)
+(load, null)
+(battery, null)
+(phases, [[L1, 232.20, 0.43, -100], [L2, 233.20, 0.00, 0], [L3, 234.20, 0.00, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== shellyImportExportMissing/2:texts
+[]
+=== shellyImportExportMissing/3
+(pv, null)
+(grid, -300)
+(load, null)
+(battery, null)
+(phases, [[L1, 232.20, 0.43, -100], [L2, 233.20, null, -100], [L3, 234.20, 0.43, -100]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== shellyImportExportMissing/3:texts
+[]
+=== abbImportExportSingleElementInvalid/0
+(pv, null)
+(grid, -4100)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 10.50, -2300], [L2, 229.50, 5.20, -1200], [L3, 231.00, 2.60, -600]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== abbImportExportSingleElementInvalid/0:texts
+[]
+=== abbImportExportSingleElementInvalid/1
+(pv, null)
+(grid, 4000)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 10.50, 1500], [L2, 229.50, 5.20, 1500], [L3, 231.00, 2.60, 1000]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== abbImportExportSingleElementInvalid/1:texts
+[]
+=== abbImportExportSingleElementInvalid/2
+(pv, null)
+(grid, 800)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 10.50, 800]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== abbImportExportSingleElementInvalid/2:texts
+[]
+=== abbImportExportSingleElementInvalid/3
+(pv, null)
+(grid, -300)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 10.50, -100], [L2, 229.50, 5.20, null]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== abbImportExportSingleElementInvalid/3:texts
+[]
+=== abbErrorFlags/0
+(pv, null)
+(grid, -100)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 10.50, -100], [L2, 229.50, 5.20, 0], [L3, 231.00, 2.60, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== abbErrorFlags/0:texts
+[]
+=== abbErrorFlags/1
+(pv, null)
+(grid, -100)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 10.50, -100], [L2, 229.50, 5.20, 0], [L3, 231.00, 2.60, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== abbErrorFlags/1:texts
+[]
+=== abbErrorFlags/2
+(pv, null)
+(grid, -100)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 10.50, -100], [L2, 229.50, 5.20, 0], [L3, 231.00, 2.60, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [FAULT])
+=== abbErrorFlags/2:texts
+[Meter error (error flags 0x10002)]
+=== shellyErrors/0
+(pv, null)
+(grid, -100)
+(load, null)
+(battery, null)
+(phases, [[L1, 232.20, 0.43, -100], [L2, 233.20, 0.00, 0], [L3, 234.20, 0.00, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [WARNING, WARNING])
+=== shellyErrors/0:texts
+[L2 meter error, Phase sequence error]
+=== shellyErrors/1
+(pv, null)
+(grid, -100)
+(load, null)
+(battery, null)
+(phases, [[L1, 232.20, 0.43, -100], [L2, 233.20, 0.00, 0], [L3, 234.20, 0.00, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [WARNING, WARNING, WARNING, WARNING])
+=== shellyErrors/1:texts
+[L1 meter error, Neutral current mismatch, Neutral meter error, Neutral overcurrent]
+=== siemensImportExportMissingStatus/0
+(pv, null)
+(grid, -2000)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 4.35, -1000], [L2, 231.00, 2.17, -500], [L3, 232.00, 2.17, -500]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== siemensImportExportMissingStatus/0:texts
+[]
+=== siemensImportExportMissingStatus/1
+(pv, null)
+(grid, 2000)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 3.48, 800], [L2, 231.00, 3.48, 800], [L3, 232.00, 1.74, 400]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== siemensImportExportMissingStatus/1:texts
+[]
+=== siemensImportExportMissingStatus/2
+(pv, null)
+(grid, -300)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 0.43, -100], [L2, 231.00, 0.43, -100], [L3, 232.00, 0.43, null]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== siemensImportExportMissingStatus/2:texts
+[]
+=== siemensImportExportMissingStatus/3
+(pv, null)
+(grid, -100)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 0.43, -100], [L2, 231.00, 0.00, 0], [L3, 232.00, 0.00, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [WARNING])
+=== siemensImportExportMissingStatus/3:texts
+[Current out of range (status 0x08000000)]
+=== siemensImportExportMissingStatus/4
+(pv, null)
+(grid, -100)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.00, 0.43, -100], [L2, 231.00, 0.00, 0], [L3, 232.00, 0.00, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [WARNING, WARNING, WARNING])
+=== siemensImportExportMissingStatus/4:texts
+[Current out of range (status 0x08000000), Maximum pulse rate exceeded (status 0x00020000), Voltage out of range (status 0x04000000)]
+=== carloGavazziOverflowAndWiring/0
+(pv, null)
+(grid, -300)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 2.50, -100], [L2, 231.20, 1.50, null], [L3, 229.80, 0.50, -100]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== carloGavazziOverflowAndWiring/0:texts
+[]
+=== carloGavazziOverflowAndWiring/1
+(pv, null)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 2.50, -100], [L2, 231.20, null, -100], [L3, 229.80, 0.50, -100]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== carloGavazziOverflowAndWiring/1:texts
+[]
+=== carloGavazziOverflowAndWiring/2
+(pv, null)
+(grid, -100)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 2.50, -100], [L2, 231.20, 1.50, 0], [L3, 229.80, 0.50, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== carloGavazziOverflowAndWiring/2:texts
+[]
+=== carloGavazziOverflowAndWiring/3
+(pv, null)
+(grid, -100)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 2.50, -100], [L2, 231.20, 1.50, 0], [L3, 229.80, 0.50, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== carloGavazziOverflowAndWiring/3:texts
+[]
+=== carloGavazziOverflowAndWiring/4
+(pv, null)
+(grid, -100)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 2.50, -100], [L2, 231.20, 1.50, 0], [L3, 229.80, 0.50, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [WARNING, WARNING])
+=== carloGavazziOverflowAndWiring/4:texts
+[Wrong wiring: phases 1 and 2 exchanged (bit 4), Wrong wiring: wrong voltage sequence (bit 0)]
+=== carloGavazziOverflowAndWiring/5
+(pv, null)
+(grid, -100)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 2.50, -100], [L2, 231.20, 1.50, 0], [L3, 229.80, 0.50, 0]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [WARNING])
+=== carloGavazziOverflowAndWiring/5:texts
+[Wrong wiring: phase 2 inverted (bit 2)]

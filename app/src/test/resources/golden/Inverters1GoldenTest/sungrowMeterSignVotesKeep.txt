@@ -1,0 +1,3 @@
+[sungrowMeterSignVotesKeep/second reading]
+gridPowerW=50
+

@@ -4,7 +4,6 @@
 package ch.amslersolar.dashboard.driver.spec
 
 import ch.amslersolar.dashboard.driver.DeviceDriver
-import ch.amslersolar.dashboard.driver.fenecon.FeneconFemsDriver
 import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
@@ -18,7 +17,8 @@ import org.junit.Test
 
 /**
  * Inverters (group 1): the ModbusSpec drivers must read what the hand-written drivers read, on the same register
- * images. Problem texts may differ; their kinds must match (as a multiset).
+ * images. Problem texts may differ; their kinds must match (as a multiset). The hand-written drivers are gone except
+ * KOSTAL PLENTICORE's; what they read was recorded in `src/test/resources/golden/Inverters1GoldenTest/`.
  */
 class Inverters1GoldenTest {
     private val library = SpecLibrary { File("src/main/assets/modbusspec/$it").readText() }
@@ -32,14 +32,31 @@ class Inverters1GoldenTest {
     private fun essentials(r: DeviceReading) = listOf(
         "pv" to r.pvPowerW, "grid" to r.gridPowerW, "load" to r.loadPowerW,
         "battery" to r.battery?.let { listOf(it.powerW, it.socPercent) },
-        "phases" to r.phases.map { listOf(it.name, "%.2f".format(it.voltageV), it.currentA?.let { a -> "%.2f".format(a) }, it.powerW) },
-        "lifetimePv" to r.lifetimePvKwh?.let { "%.3f".format(it) },
-        "todayPv" to r.today.pvKwh?.let { "%.3f".format(it) },
+        "phases" to r.phases.map { listOf(it.name, "%.2f".format(java.util.Locale.ROOT, it.voltageV), it.currentA?.let { a -> "%.2f".format(java.util.Locale.ROOT, a) }, it.powerW) },
+        "lifetimePv" to r.lifetimePvKwh?.let { "%.3f".format(java.util.Locale.ROOT, it) },
+        "todayPv" to r.today.pvKwh?.let { "%.3f".format(java.util.Locale.ROOT, it) },
         "problemKinds" to r.problems.map { it.kind }.sorted(),
     )
 
     /** Problem texts that differ between the drivers (allowed; listed for the report). */
     val textDifferences = linkedSetOf<String>()
+
+    @get:org.junit.Rule val testName = org.junit.rules.TestName()
+    private val golden by lazy { InvertersGoldenRecords("Inverters1GoldenTest", testName.methodName) }
+    @org.junit.After fun finishGolden() = golden.finish()
+
+    /** [new] against what the hand-written driver read on the same image (recorded under [label]). */
+    private fun same(new: DeviceDriver, label: String) = runBlocking {
+        val old = golden.fields(golden.take(label))
+        val b = new.read()
+        assertEquals(label, old.getValue(""), essentials(b).joinToString("\n"))
+        val ta = old.getValue("problems")
+        val tb = b.problems.map { "${it.kind}: ${it.text}" }.sorted().toString()
+        if (ta != tb) {
+            textDifferences += "$label old=$ta spec=$tb"
+            println("problem texts differ ($label): old=$ta spec=$tb")
+        }
+    }
 
     private fun same(old: DeviceDriver, new: DeviceDriver, label: String = "") = runBlocking {
         val a = old.read()
@@ -121,7 +138,7 @@ class Inverters1GoldenTest {
             "off-grid" to { fems().u16(417, 2).u16(302, 80).f32(415, 900.0).f32(315, 0.0).f32(327, 300.0).f32(343, 1_200.0) },
             "no ESS, no meter (NaN)" to ::noEssNoMeter,
         )
-        for ((label, image) in cases) same(FeneconFemsDriver(image(), 1), spec("fenecon-fems", image(), 1), "FEMS $label")
+        for ((label, image) in cases) same(spec("fenecon-fems", image(), 1), "FEMS $label")
     }
 
     @Test
@@ -157,50 +174,6 @@ class Inverters1GoldenTest {
         }
     }
 
-    /** A Modbus TCP server on the loopback interface answering function 03 from [reader], for drivers that need a client. */
-    private class TcpServer(private val reader: RegisterReader) : java.io.Closeable {
-        private val server = java.net.ServerSocket(0, 5, java.net.InetAddress.getLoopbackAddress())
-        val port get() = server.localPort
-
-        init {
-            Thread {
-                try {
-                    while (true) {
-                        val s = server.accept()
-                        Thread { serve(s) }.apply { isDaemon = true }.start()
-                    }
-                } catch (_: IOException) {
-                }
-            }.apply { isDaemon = true }.start()
-        }
-
-        private fun serve(s: java.net.Socket) = s.use {
-            val input = java.io.DataInputStream(s.getInputStream())
-            val out = s.getOutputStream()
-            try {
-                while (true) {
-                    val req = ByteArray(12).also(input::readFully)
-                    val unit = req[6].toInt() and 0xFF
-                    val fn = req[7].toInt() and 0xFF
-                    val reg = ((req[8].toInt() and 0xFF) shl 8) or (req[9].toInt() and 0xFF)
-                    val n = ((req[10].toInt() and 0xFF) shl 8) or (req[11].toInt() and 0xFF)
-                    val pdu = try {
-                        val block = runBlocking { reader.read(unit, reg, n) }
-                        byteArrayOf(fn.toByte(), (2 * n).toByte()) + ByteArray(2 * n) { i -> (block.u16(reg + i / 2) shr (if (i % 2 == 0) 8 else 0)).toByte() }
-                    } catch (e: ModbusException) {
-                        byteArrayOf((fn or 0x80).toByte(), e.code.toByte())
-                    }
-                    val len = pdu.size + 1
-                    out.write(byteArrayOf(req[0], req[1], 0, 0, (len shr 8).toByte(), len.toByte(), req[6]) + pdu)
-                    out.flush()
-                }
-            } catch (_: IOException) {
-            }
-        }
-
-        override fun close() = server.close()
-    }
-
     private fun goodWe(pvExtended: Boolean = true, battery2: Boolean = false): Image {
         val ranges = listOf(35000..35032, 35100..35224) + listOfNotNull(
             if (battery2) 35262..35266 else null, if (pvExtended) 35301..35307 else null, 37000..37023,
@@ -223,10 +196,7 @@ class Inverters1GoldenTest {
         return i
     }
 
-    private fun goodWeSame(label: String, image: () -> Image) = TcpServer(image()).use { server ->
-        val client = ch.amslersolar.dashboard.driver.modbus.ModbusTcpClient("127.0.0.1", server.port)
-        client.use { same(ch.amslersolar.dashboard.driver.goodwe.GoodWeEtDriver(it, 247), spec("goodwe-et", image(), 247), "GoodWe $label") }
-    }
+    private fun goodWeSame(label: String, image: () -> Image) = same(spec("goodwe-et", image(), 247), "GoodWe $label")
 
     @Test
     fun goodWeEt() {
@@ -262,8 +232,7 @@ class Inverters1GoldenTest {
         val regs = HashMap<Int, Int>()
 
         init {
-            val c = ch.amslersolar.dashboard.driver.huawei.HuaweiSun2000Driver
-            val blocks = c.IDENTITY + c.LIVE + c.DETAIL + (if (meter) c.METER else emptyList()) + (if (battery) c.BATTERY else emptyList())
+            val blocks = IDENTITY + LIVE + DETAIL + (if (meter) METER else emptyList()) + (if (battery) BATTERY else emptyList())
             for ((start, count) in blocks) for (a in start until start + count) regs[a] = 0
             text(30000, "SUN2000-10KTL-M1", 15); text(30015, "HV2150000001", 10)
             regs[30071] = 4; u32(30073, 10_000)
@@ -296,6 +265,15 @@ class Inverters1GoldenTest {
             repeat(count) { val v = regs.getValue(register + it); data[2 * it] = (v shr 8).toByte(); data[2 * it + 1] = v.toByte() }
             return RegisterBlock(register, data)
         }
+
+        companion object {
+            // (start, count): the hand-written driver's runs of defined registers.
+            val IDENTITY = listOf(30000 to 35, 30070 to 17)
+            val LIVE = listOf(32016 to 12, 32064 to 31, 32106 to 14)
+            val METER = listOf(37100 to 39)
+            val BATTERY = listOf(37758 to 3, 37762 to 5, 37780 to 8)
+            val DETAIL = listOf(32008 to 4, 37000 to 5, 37006 to 5, 37014 to 5, 37021 to 2, 37025 to 1, 37046 to 4, 37066 to 4)
+        }
     }
 
     @Test
@@ -321,7 +299,7 @@ class Inverters1GoldenTest {
             "self-derating" to { FakeSun2000(status = 0x0202) },
         )
         for ((label, image) in cases) {
-            same(ch.amslersolar.dashboard.driver.huawei.HuaweiSun2000Driver(image(), 1), spec("huawei-sun2000", image(), 1), "Huawei $label")
+            same(spec("huawei-sun2000", image(), 1), "Huawei $label")
         }
     }
 
@@ -397,8 +375,6 @@ class Inverters1GoldenTest {
                 }
             }
         }
-
-        fun driver() = ch.amslersolar.dashboard.driver.growatt.GrowattVppDriver(input, holding, 1)
     }
 
     private fun growattSpec(f: FakeGrowatt) = ChoosingSpecDriver(
@@ -426,7 +402,7 @@ class Inverters1GoldenTest {
             "off-grid" to { FakeGrowatt().apply { input.regs[31000] = 7 } },
             "fault without code" to { FakeGrowatt().apply { input.regs[31000] = 3 } },
         )
-        for ((label, image) in cases) same(image().driver(), growattSpec(image()), "Growatt $label")
+        for ((label, image) in cases) same(growattSpec(image()), "Growatt $label")
     }
 
     @Test
@@ -642,7 +618,7 @@ class Inverters1GoldenTest {
             "one string NaN" to { tripower().s32(30959, Int.MIN_VALUE) },
             "U32 yields only" to { tripower().u64(30513, -1L).u64(30517, -1L).u32(30529, 45_678).u32(30535, 23) },
         )
-        for ((label, image) in cases) same(ch.amslersolar.dashboard.driver.sma.SmaDriver(image(), 3), spec("sma-inverter", image(), 3), "SMA $label")
+        for ((label, image) in cases) same(spec("sma-inverter", image(), 3), "SMA $label")
     }
 
     @Test
@@ -703,7 +679,6 @@ class Inverters1GoldenTest {
 
         val input = RegisterReader { u, r, c -> serve(inp, inputDefined, u, r, c) }
         val holding = RegisterReader { u, r, c -> serve(hold, holdingDefined, u, r, c) }
-        fun driver() = ch.amslersolar.dashboard.driver.sungrow.SungrowDriver(input, holding, 1)
     }
 
     private val hybridInput = listOf(
@@ -787,7 +762,7 @@ class Inverters1GoldenTest {
             "SG derating, communicate fault" to { sg10rt().apply { u16(5038, 0x8100) } },
             "SG communicate fault" to { sg10rt().apply { u16(5038, 0x2500) } },
         )
-        for ((label, image) in cases) same(image().driver(), sungrowSpec(image()), "Sungrow $label")
+        for ((label, image) in cases) same(sungrowSpec(image()), "Sungrow $label")
     }
 
     /**
@@ -809,11 +784,11 @@ class Inverters1GoldenTest {
     fun sungrowMeterSignVotesKeep() = runBlocking {
         // After the balance said "+ export", a reading too small to vote on keeps that sign (as the old driver).
         val dev = sg10rt().apply { s32(5083, 1000); s32(5091, 3200) }
-        val old = dev.driver()
         val new = sungrowSpec(dev)
-        old.read(); new.read()
+        new.read()
         dev.s32(5083, 50)
-        assertEquals(old.read().gridPowerW, new.read().gridPowerW)
+        val oldGrid = golden.fields(golden.take("second reading")).getValue("gridPowerW").toIntOrNull()
+        assertEquals(oldGrid, new.read().gridPowerW)
     }
 
     @Test
