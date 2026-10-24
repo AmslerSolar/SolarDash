@@ -36,6 +36,18 @@ def referenced(d: dict) -> set:
     return keys
 
 
+def identifies(d: dict) -> bool:
+    """The file can recognise its device on the network: an identify check that names it (a fixed value, a list,
+    a text prefix or contents), not just a plausible range."""
+    ident = d.get("identify") or {}
+
+    def flat(c):
+        return [y for x in c for y in flat(x)] if isinstance(c, list) else [c]
+
+    conds = flat(ident.get("checks", [])) + flat(ident.get("any", []))
+    return any(k in c for c in conds for k in ("equals", "in", "prefix", "contains"))
+
+
 def slim(d: dict, hook_keys: set = frozenset()) -> dict:
     """The device file without what the app never reads (see the module doc); [hook_keys] are kept too."""
     keep = referenced(d) | set(hook_keys)
@@ -115,7 +127,8 @@ def main() -> int:
         c = d["connection"]
         index.append({"id": wid, "manufacturer": d["manufacturer"], "name": d["name"], "kind": d["kind"],
                       "port": c["default_port"], "unit": c["default_unit"],
-                      "documented": any(not p.get("sources") or p.get("verified") for p in d["points"])})
+                      "documented": any(not p.get("sources") or p.get("verified") for p in d["points"]),
+                      "identifies": identifies(d)})
     vocab = yaml.safe_load(at_head("vocabulary.yaml"))
     (OUT / "vocabulary.json").write_text(json.dumps(vocab, ensure_ascii=False, sort_keys=True, indent=1) + "\n", encoding="utf-8")
     # The list the device form offers, without parsing every file.

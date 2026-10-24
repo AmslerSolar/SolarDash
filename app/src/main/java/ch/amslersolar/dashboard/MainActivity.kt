@@ -110,13 +110,13 @@ class MainActivity : ComponentActivity() {
                                 AddDeviceScreen(
                                     plantName = plant.name,
                                     onTest = plantsVm::testConnection,
-                                    onScan = {
+                                    onScan = { extended ->
                                         // Configured devices are listed, not probed: a second client could disturb their poll.
                                         val known = plants.orEmpty().flatMap { p ->
                                             p.devices.filter { it.type.needsHost && it.id != editing?.id }
                                                 .map { "${it.host}:${it.port}" to "${p.name} · ${it.name}" }
                                         }.toMap()
-                                        DeviceScanner.scanLocalNetwork(applicationContext, known)
+                                        DeviceScanner.scanLocalNetwork(applicationContext, known, extended)
                                     },
                                     onSave = {
                                         if (editing != null) plantsVm.updateDevice(plant.id, it) else plantsVm.addDevice(plant.id, it)

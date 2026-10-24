@@ -3,6 +3,12 @@
 
 package ch.amslersolar.dashboard.discovery
 
+import ch.amslersolar.dashboard.driver.modbus.ModbusException
+import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
+import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
+import ch.amslersolar.dashboard.driver.spec.SpecTables
+import ch.amslersolar.dashboard.driver.spec.SpecDriver
+import ch.amslersolar.dashboard.driver.spec.SpecLibrary
 import ch.amslersolar.dashboard.net.LocalNetworks
 import ch.amslersolar.dashboard.driver.net.DeviceNetwork
 import android.content.Context
@@ -37,7 +43,10 @@ import java.net.Inet4Address
 import java.net.InetSocketAddress
 import java.util.concurrent.atomic.AtomicInteger
 
-/** An inverter found on the network; [type] is null when something answered but wasn't recognised. */
+/**
+ * A device found on the network; [type] is null when a port answered but nothing recognised it (or while it's
+ * still being identified: [identifying]). [specId]: the ModbusSpec file, for the generic ModbusSpec types.
+ */
 data class FoundDevice(
     val host: String,
     val port: Int,
@@ -49,10 +58,18 @@ data class FoundDevice(
     val alreadyIn: String? = null,
     /** Found through its own mDNS announcement rather than the port scan. */
     val viaMdns: Boolean = false,
-)
+    val specId: String = "",
+    /** The port answered; identification is still to come (a later event for the same host:port replaces it). */
+    val identifying: Boolean = false,
+) {
+    val key: String get() = "$host:$port"
+}
+
+/** Ports first, then identifying what answered. */
+enum class ScanPhase { PORTS, IDENTIFY }
 
 sealed interface ScanEvent {
-    data class Progress(val done: Int, val total: Int) : ScanEvent
+    data class Progress(val done: Int, val total: Int, val phase: ScanPhase = ScanPhase.PORTS) : ScanEvent
     data class Found(val device: FoundDevice) : ScanEvent
     data class Failed(val message: String) : ScanEvent
 }
@@ -68,32 +85,65 @@ class DeviceScanner(
     private val identify: suspend (type: DeviceType, host: String, port: Int, unitId: Int) -> DeviceInfo = ::identifyWith,
     /** mDNS announcements, listened to for the first [MDNS_WINDOW_MS] of a scan. */
     private val mdns: () -> Flow<MdnsService> = { emptyFlow() },
+    /** Recognises a device the named drivers don't, with the ModbusSpec files' identify checks (null: not recognised). */
+    private val specIdentify: suspend (host: String, port: Int) -> FoundDevice? = { _, _ -> null },
 ) {
-    fun scan(hosts: List<String>, known: Map<String, String>): Flow<ScanEvent> = channelFlow {
-        val targets = hosts.flatMap { h -> CANDIDATES.keys.map { p -> h to p } }
+    /**
+     * Two phases. First every address of [hosts] is tried on Modbus TCP port 502, then, with [extended], on the other
+     * ports devices use (1502, 503, 6502, the gateways' 8899, …): every open port is reported at once (identifying).
+     * Then each one is identified: the named drivers for its port, then the ModbusSpec files that can recognise a
+     * device; what nothing recognises stays listed as an open port.
+     */
+    fun scan(hosts: List<String>, known: Map<String, String>, extended: Boolean = false): Flow<ScanEvent> = channelFlow {
+        val ports = if (extended) EXTENDED_PORTS else listOf(MODBUS_PORT)
+        val targets = ports.flatMap { p -> hosts.map { h -> h to p } } // port by port: 502 everywhere first
         val done = AtomicInteger()
         send(ScanEvent.Progress(0, targets.size))
         val connects = Semaphore(PARALLEL_CONNECTS)
-        val probes = Semaphore(PARALLEL_PROBES)
-        // mDNS and the port scan run side by side; whichever reaches a host:port first reports it.
-        val claimed = ConcurrentHashMap.newKeySet<String>()
-        suspend fun report(host: String, port: Int, viaMdns: Boolean, candidates: List<Pair<DeviceType, Int>>) {
-            val configured = known["$host:$port"]
-            val device = if (configured != null) FoundDevice(host, port, null, 0, "Already added", alreadyIn = configured)
-            else probes.withPermit { probe(host, port, candidates) }
-            send(ScanEvent.Found(device.copy(viaMdns = viaMdns)))
+        val open = ConcurrentHashMap<String, Triple<String, Int, List<Pair<DeviceType, Int>>?>>() // key → host, port, mDNS candidates
+        val viaMdns = ConcurrentHashMap.newKeySet<String>()
+        suspend fun opened(host: String, port: Int, mdnsCandidates: List<Pair<DeviceType, Int>>?) {
+            val key = "$host:$port"
+            if (open.putIfAbsent(key, Triple(host, port, mdnsCandidates)) != null) return
+            if (mdnsCandidates != null) viaMdns += key
+            val configured = known[key]
+            send(
+                ScanEvent.Found(
+                    if (configured != null) FoundDevice(host, port, null, 0, "Already added", alreadyIn = configured, viaMdns = key in viaMdns)
+                    else FoundDevice(host, port, null, 0, "Port open", viaMdns = key in viaMdns, identifying = true),
+                ),
+            )
         }
-        launch {
-            withTimeoutOrNull(MDNS_WINDOW_MS) {
-                mdns().collect { s -> if (claimed.add("${s.host}:${s.port}")) launch { report(s.host, s.port, true, candidatesFor(s)) } }
+        coroutineScope {
+            // mDNS and the port scan run side by side; whichever reaches a host:port first lists it.
+            launch {
+                withTimeoutOrNull(MDNS_WINDOW_MS) { mdns().collect { s -> opened(s.host, s.port, candidatesFor(s)) } }
+            }
+            for (port in ports) {
+                coroutineScope {
+                    for (host in hosts) launch {
+                        val key = "$host:$port"
+                        if (!open.containsKey(key) && (known.containsKey(key) || connects.withPermit { portOpen(host, port) })) opened(host, port, null)
+                        send(ScanEvent.Progress(done.incrementAndGet(), targets.size))
+                    }
+                }
             }
         }
-        for ((host, port) in targets) launch {
-            val key = "$host:$port"
-            if (key in claimed) Unit
-            else if (known.containsKey(key)) { if (claimed.add(key)) report(host, port, false, emptyList()) }
-            else if (connects.withPermit { portOpen(host, port) } && claimed.add(key)) report(host, port, false, CANDIDATES.getValue(port))
-            send(ScanEvent.Progress(done.incrementAndGet(), targets.size))
+        // Identify what answered (configured devices aren't asked: a second client could disturb their poll).
+        val toProbe = open.filterKeys { it !in known }.values.sortedWith(compareBy({ it.second }, { it.first }))
+        val probes = Semaphore(PARALLEL_PROBES)
+        val identified = AtomicInteger()
+        send(ScanEvent.Progress(0, toProbe.size, ScanPhase.IDENTIFY))
+        coroutineScope {
+            for ((host, port, mdnsCandidates) in toProbe) launch {
+                val key = "$host:$port"
+                val device = probes.withPermit {
+                    val named = probe(host, port, mdnsCandidates ?: CANDIDATES[port] ?: CANDIDATES.values.flatten().distinct())
+                    if (named.type != null) named else (runCatching { specIdentify(host, port) }.getOrNull() ?: named)
+                }
+                send(ScanEvent.Found(device.copy(viaMdns = key in viaMdns, identifying = false)))
+                send(ScanEvent.Progress(identified.incrementAndGet(), toProbe.size, ScanPhase.IDENTIFY))
+            }
         }
     }.flowOn(Dispatchers.IO)
 
@@ -175,6 +225,13 @@ class DeviceScanner(
         }
 
         const val MDNS_WINDOW_MS = 8_000L
+        const val MODBUS_PORT = 502
+
+        /** The extended search: 502, the named drivers' ports, RS485/Wi-Fi gateways (8899) and the ModbusSpec files' ports. */
+        val EXTENDED_PORTS: List<Int> by lazy {
+            (listOf(MODBUS_PORT) + CANDIDATES.keys + listOf(8899) +
+                (SpecLibrary.current?.index?.map { it.port }.orEmpty())).distinct()
+        }
         private const val PARALLEL_CONNECTS = 64
         private const val PARALLEL_PROBES = 8
         private const val CONNECT_TIMEOUT_MS = 400
@@ -204,11 +261,11 @@ class DeviceScanner(
         fun localHosts(context: Context): List<String>? = localNetwork(context)?.let { (own, prefix) -> hosts(own, prefix) }
 
         /** Scans the phone's local network; fails with a message when it isn't on one. */
-        fun scanLocalNetwork(context: Context, known: Map<String, String>): Flow<ScanEvent> {
+        fun scanLocalNetwork(context: Context, known: Map<String, String>, extended: Boolean = false): Flow<ScanEvent> {
             val (own, prefix) = localNetwork(context) ?: return channelFlow {
                 send(ScanEvent.Failed("Not connected to a local network. Connect to the plant's Wi-Fi and try again."))
             }
-            return DeviceScanner(mdns = { MdnsBrowser.browse(context) }).scan(hosts(own, prefix), known)
+            return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs).scan(hosts(own, prefix), known, extended)
         }
 
         private fun tcpOpen(host: String, port: Int): Boolean = try {
@@ -216,6 +273,38 @@ class DeviceScanner(
             true
         } catch (_: Exception) {
             false
+        }
+
+        /**
+         * The ModbusSpec files that can recognise their device (an identify check naming it) and use [port], tried on
+         * their usual unit ids; each unit's registers are read once and shared by all files (a unit that doesn't
+         * answer in time is skipped). A file of a named device type gives that type, others the generic ModbusSpec type.
+         */
+        suspend fun identifyFromSpecs(host: String, port: Int): FoundDevice? {
+            val library = SpecLibrary.current ?: return null
+            val entries = library.index.filter { it.identifies && it.port == port }
+            if (entries.isEmpty()) return null
+            val named = SpecDevices.SPEC_IDS.entries.flatMap { (t, ids) -> ids.map { it to t } }.toMap()
+            return ModbusTcpClient(host, port, PROBE_TIMEOUT_MS).use { client ->
+                for ((unit, files) in entries.groupBy { it.unit }) {
+                    val holding = CachingReader { u, r, c -> client.readHoldingRegisters(u, r, c) }
+                    val input = CachingReader { u, r, c -> client.readInputRegisters(u, r, c) }
+                    for (e in files.sortedByDescending { it.documented }) {
+                        val info = try {
+                            SpecDriver(library.spec(e.id), library.vocabulary, SpecTables(holding, input), unit, requestGapMs = 0).identify()
+                        } catch (e2: CancellationException) {
+                            throw e2
+                        } catch (_: java.io.InterruptedIOException) {
+                            break // this unit id doesn't answer
+                        } catch (_: Exception) {
+                            continue
+                        }
+                        val type = named[e.id] ?: SpecDevices.genericType(e.kind)
+                        return@use FoundDevice(host, port, type, unit, info.model.ifBlank { e.title }, info.serial, specId = if (type in SpecDevices.GENERIC) e.id else "")
+                    }
+                }
+                null
+            }
         }
 
         private suspend fun identifyWith(type: DeviceType, host: String, port: Int, unitId: Int): DeviceInfo =
@@ -237,4 +326,29 @@ class DeviceScanner(
                 }
             }
     }
+}
+
+/**
+ * Remembers what a unit answered (and what it rejected), so several ModbusSpec files' identify checks on the same
+ * registers cost one request each.
+ */
+internal class CachingReader(private val inner: RegisterReader) : RegisterReader {
+    private val words = HashMap<Pair<Int, Int>, Int>()
+    private val failed = HashMap<Triple<Int, Int, Int>, Exception>()
+
+    override suspend fun read(unitId: Int, register: Int, count: Int): RegisterBlock {
+        failed[Triple(unitId, register, count)]?.let { throw it }
+        if ((register until register + count).all { (unitId to it) in words }) return block(unitId, register, count)
+        val b = try {
+            inner.read(unitId, register, count)
+        } catch (e: ModbusException) {
+            failed[Triple(unitId, register, count)] = e
+            throw e
+        }
+        for (a in register until register + count) words[unitId to a] = b.u16(a)
+        return block(unitId, register, count)
+    }
+
+    private fun block(unitId: Int, register: Int, count: Int) =
+        RegisterBlock(register, ByteArray(count * 2) { i -> words.getValue(unitId to register + i / 2).let { w -> (if (i % 2 == 0) w shr 8 else w).toByte() } })
 }

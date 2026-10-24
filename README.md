@@ -50,12 +50,15 @@ No standalone battery or meter drivers exist yet besides the demos.
 
 Unit tests (drivers, Modbus framing, plant totals, history, discovery; database tests run on Robolectric): `./gradlew test`, or right-click the `test` folder in Android Studio.
 
-**Search network** on the add-device screen finds supported inverters on the phone's Wi-Fi (its own /24):
-it tries every address on ports 502 (Fronius, GoodWe, Huawei), 1502 (KOSTAL) and 6502 (LG SunSpec) and identifies what
-answers; tap a result to fill in the form. Devices already in a plant are listed but not contacted, since some
-accept only one Modbus client. The LG HTTPS API (port 443) isn't searched for; its unit shows up via SunSpec.
-Ports 502, 503, 1502 and 6502 are tried. Meters, heat pumps and wallboxes aren't searched for (several can only
-be recognised by plausible values); add them by hand. The search also listens for mDNS announcements (`_sunspec._tcp`, `_modbus._tcp`) for its first 8 seconds; those
+**Search network** on the add-device screen looks at the phone's Wi-Fi (its own /24) in two steps: first every
+address is tried on Modbus TCP port 502, and each open port is listed at once ("Identifying…"); then each one is
+identified, first with the named drivers, then with the bundled ModbusSpec files that have an identify check for
+their port (each unit's registers are read once and shared by all files). Open ports nothing recognises stay listed
+as "Modbus TCP device, not recognised". **Extended search** also tries the other ports devices use: 503, 1502, 6502,
+8899 (RS485/Wi-Fi gateways) and the ports of the ModbusSpec files (4701, 4702, 5555, 8080, 10001, 30502); it takes
+longer. Tap a recognised result to fill in the form. Devices already in a plant are listed but not contacted, since
+some accept only one Modbus client. The LG HTTPS API (port 443) isn't searched for; its unit shows up via SunSpec.
+Devices without an identify check (many meters, heat pumps and wallboxes) are added by hand. The search also listens for mDNS announcements (`_sunspec._tcp`, `_modbus._tcp`) for its first 8 seconds; those
 devices show up straight away, marked "found via mDNS". The LG ESS Home 10 announces itself as
 `LGE_ESS-<serial>` (`_sunspec._tcp`, port 6502); whether GoodWe, Huawei or KOSTAL announce anything is untested.
 

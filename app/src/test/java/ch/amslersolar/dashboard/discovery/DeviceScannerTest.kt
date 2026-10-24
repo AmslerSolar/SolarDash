@@ -83,15 +83,40 @@ class DeviceScannerTest {
                 DeviceInfo("PLENTICORE plus 10", "1")
             },
         )
-        val events = scanner.scan(listOf("192.168.0.33", "192.168.0.40"), mapOf("192.168.0.33:6502" to "Home · LG")).toList()
-        val found = events.filterIsInstance<ScanEvent.Found>().map { it.device }
+        val events = scanner.scan(listOf("192.168.0.33", "192.168.0.40"), mapOf("192.168.0.33:6502" to "Home · LG"), extended = true).toList()
+        val found = latest(events)
         assertEquals(setOf("192.168.0.40"), probed.toSet())
         assertEquals("Home · LG", found.single { it.host == "192.168.0.33" }.alreadyIn)
         assertEquals(DeviceType.KOSTAL_PLENTICORE, found.single { it.host == "192.168.0.40" }.type)
-        val last = events.filterIsInstance<ScanEvent.Progress>().maxBy { it.done }
-        val ports = DeviceScanner.CANDIDATES.size
+        val last = events.filterIsInstance<ScanEvent.Progress>().filter { it.phase == ScanPhase.PORTS }.maxBy { it.done }
+        val ports = DeviceScanner.EXTENDED_PORTS.size
         assertEquals(2 * ports, last.total)
         assertEquals(2 * ports, last.done)
+    }
+
+    /** The last event per host:port: what the list finally shows. */
+    private fun latest(events: List<ScanEvent>) =
+        events.filterIsInstance<ScanEvent.Found>().map { it.device }.associateBy { it.key }.values.toList()
+
+    @Test
+    fun normalSearchTriesOnly502AndListsEveryOpenPort() = runBlocking {
+        val tried = mutableListOf<Int>()
+        val scanner = DeviceScanner(
+            portOpen = { h, p -> synchronized(tried) { tried += p }; h != "192.168.0.9" },
+            identify = { _, h, _, _ -> if (h == "192.168.0.1") DeviceInfo("GoodWe GW10K-ET", "9010KETU000W0000") else throw java.io.IOException("no") },
+            specIdentify = { h, p -> if (h == "192.168.0.2") FoundDevice(h, p, DeviceType.MODBUS_SPEC_METER, 1, "Carlo Gavazzi EM24", specId = "carlo-gavazzi/em24") else null },
+        )
+        val events = scanner.scan(listOf("192.168.0.1", "192.168.0.2", "192.168.0.3", "192.168.0.9"), emptyMap()).toList()
+        assertEquals(setOf(502), tried.toSet())
+        // Each open port is listed at once, then identified.
+        val first = events.filterIsInstance<ScanEvent.Found>().take(3).map { it.device }
+        assertTrue(first.all { it.identifying })
+        val found = latest(events).associateBy { it.host }
+        assertEquals(3, found.size)
+        assertEquals(DeviceType.GOODWE_ET, found.getValue("192.168.0.1").type)
+        assertEquals("carlo-gavazzi/em24", found.getValue("192.168.0.2").specId)
+        assertNull(found.getValue("192.168.0.3").type) // open, not recognised, still listed
+        assertFalse(found.values.any { it.identifying })
     }
 
     @Test
@@ -129,7 +154,7 @@ class DeviceScannerTest {
             identify = { _, _, _, _ -> DeviceInfo("LG Electronics ELEC (firmware 10.05.7437)", "DE2002BKRE0138F7") },
             mdns = { flowOf(lgAnnouncement) },
         )
-        val found = scanner.scan(listOf("192.168.0.33"), emptyMap()).toList().filterIsInstance<ScanEvent.Found>().map { it.device }
+        val found = latest(scanner.scan(listOf("192.168.0.33"), emptyMap()).toList())
         val lg = found.single()
         assertEquals(DeviceType.LG_ESS_SUNSPEC, lg.type)
         assertTrue(lg.viaMdns)

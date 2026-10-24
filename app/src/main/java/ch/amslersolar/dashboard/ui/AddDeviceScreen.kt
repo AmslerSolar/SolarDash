@@ -62,6 +62,7 @@ import ch.amslersolar.dashboard.model.DeviceType
 import ch.amslersolar.dashboard.model.MeterRole
 import ch.amslersolar.dashboard.discovery.FoundDevice
 import ch.amslersolar.dashboard.discovery.ScanEvent
+import ch.amslersolar.dashboard.discovery.ScanPhase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -72,7 +73,8 @@ import java.util.UUID
 fun AddDeviceScreen(
     plantName: String,
     onTest: suspend (DeviceConfig) -> ConnectionTest,
-    onScan: () -> Flow<ScanEvent>,
+    /** The network search; extended: all ports devices use, not only 502. */
+    onScan: (extended: Boolean) -> Flow<ScanEvent>,
     onSave: (DeviceConfig) -> Unit,
     onBack: () -> Unit,
     /** Set when editing: the form starts from it, and saving keeps its id (history and chart channels stay). */
@@ -103,16 +105,20 @@ fun AddDeviceScreen(
     var scanError by remember { mutableStateOf<String?>(null) }
     val found = remember { mutableStateListOf<FoundDevice>() }
 
-    fun startScan() {
+    fun startScan(extended: Boolean) {
         scan?.cancel()
         found.clear()
         scanError = null
         progress = null
         scan = scope.launch {
-            onScan().collect { e ->
+            onScan(extended).collect { e ->
                 when (e) {
                     is ScanEvent.Progress -> progress = e
-                    is ScanEvent.Found -> found += e.device
+                    is ScanEvent.Found -> {
+                        // A later event for the same host:port (identified, or not) replaces the "port open" entry.
+                        val i = found.indexOfFirst { it.key == e.device.key }
+                        if (i >= 0) found[i] = e.device else found += e.device
+                    }
                     is ScanEvent.Failed -> scanError = e.message
                 }
             }
@@ -127,6 +133,7 @@ fun AddDeviceScreen(
         port = d.port.toString()
         unitId = d.unitId.toString()
         serial = d.serial
+        specId = d.specId
         if (name.isBlank()) name = d.model
         testResult = null
     }
@@ -168,7 +175,7 @@ fun AddDeviceScreen(
                 scanning = scan != null,
                 progress = progress,
                 error = scanError,
-                found = found.sortedWith(compareBy<FoundDevice> { it.type == null }.thenBy { it.alreadyIn != null }.thenBy { it.host }),
+                found = found.sortedWith(compareBy<FoundDevice> { it.type == null }.thenBy { it.alreadyIn != null }.thenBy { it.identifying }.thenBy { it.host }.thenBy { it.port }),
                 onScan = ::startScan,
                 onStop = { scan?.cancel(); scan = null },
                 onPick = ::pick,
@@ -452,18 +459,27 @@ private fun ScanSection(
     progress: ScanEvent.Progress?,
     error: String?,
     found: List<FoundDevice>,
-    onScan: () -> Unit,
+    onScan: (extended: Boolean) -> Unit,
     onStop: () -> Unit,
     onPick: (FoundDevice) -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             if (scanning) OutlinedButton(onClick = onStop) { Text(stringResource(R.string.forms_stop_search)) }
-            else OutlinedButton(onClick = onScan) {
-                Icon(Icons.Outlined.Search, contentDescription = null)
-                Text(stringResource(R.string.forms_search_network), modifier = Modifier.padding(start = 8.dp))
+            else {
+                OutlinedButton(onClick = { onScan(false) }) {
+                    Icon(Icons.Outlined.Search, contentDescription = null)
+                    Text(stringResource(R.string.forms_search_network), modifier = Modifier.padding(start = 8.dp))
+                }
+                TextButton(onClick = { onScan(true) }) { Text(stringResource(R.string.forms_search_extended)) }
             }
-            if (scanning && progress != null) Text(stringResource(R.string.forms_scan_progress, progress.done, progress.total), style = MaterialTheme.typography.bodySmall)
+            if (scanning && progress != null) Text(
+                stringResource(
+                    if (progress.phase == ScanPhase.PORTS) R.string.forms_scan_progress_ports else R.string.forms_scan_progress_identify,
+                    progress.done, progress.total,
+                ),
+                style = MaterialTheme.typography.bodySmall,
+            )
             else if (!scanning && progress != null) Text(found.count { it.type != null }.let { pluralStringResource(R.plurals.forms_scan_found, it, it) }, style = MaterialTheme.typography.bodySmall)
         }
         if (scanning) {
@@ -484,14 +500,19 @@ private fun ScanSection(
             ) {
                 Column(Modifier.padding(horizontal = 16.dp, vertical = 10.dp)) {
                     Text(
-                        d.model, style = MaterialTheme.typography.titleSmall,
+                        when {
+                            d.alreadyIn != null || usable -> d.model
+                            d.identifying -> stringResource(R.string.forms_found_identifying)
+                            else -> stringResource(R.string.forms_found_unrecognised)
+                        },
+                        style = MaterialTheme.typography.titleSmall,
                         color = if (usable) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     val where = "${d.host}:${d.port}"
                     val details = when {
                         d.alreadyIn != null -> listOf(where, stringResource(R.string.forms_found_already_in, d.alreadyIn))
                         d.type != null -> listOfNotNull(
-                            d.type.displayName,
+                            SpecDevices.typeName(d.type, d.specId),
                             where,
                             stringResource(R.string.forms_found_unit, d.unitId),
                             if (d.serial.isNotBlank()) stringResource(R.string.forms_found_serial, d.serial) else null,

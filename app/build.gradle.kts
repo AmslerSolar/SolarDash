@@ -20,8 +20,8 @@ android {
         applicationId = "ch.amslersolar.dashboard"
         minSdk = 26
         targetSdk = 34
-        versionCode = 11
-        versionName = "0.6.0"
+        versionCode = 12
+        versionName = "0.6.1"
         // Shown in the app's About dialog, so it's clear which build a tablet runs.
         val built = ZonedDateTime.now(ZoneId.of("Europe/Zurich"))
             .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
