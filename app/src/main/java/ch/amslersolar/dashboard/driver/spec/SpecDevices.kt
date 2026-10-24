@@ -33,6 +33,8 @@ object SpecDevices {
         DeviceType.INEPRO_PRO380 to listOf("inepro-pro380"),
         DeviceType.ABB_B2X to listOf("abb-b23-b24"),
         DeviceType.SCHNEIDER_IEM to listOf("schneider-iem3000"),
+        DeviceType.JANITZA_UMG to listOf("janitza-umg"),
+        DeviceType.KOSTAL_PLENTICORE to listOf("kostal-plenticore"),
         DeviceType.SIEMENS_PAC to listOf("siemens-pac2200"),
         DeviceType.KOSTAL_KSEM to listOf("kostal-ksem"),
         DeviceType.SHELLY_PRO_3EM to listOf("shelly-pro-3em"),
@@ -162,25 +164,11 @@ object SpecDevices {
                 problems = problems,
             )
         },
-        // The heat generator's alarm / fault (18722) only when the WFA status shows no fault. An error code 64…191 that
-        // isn't in the guideline's W/B list (the file has no rule for it) is a fault, like the codes outside 64…254.
-        "hoval-toptronic-e" to SpecHooks { v, r ->
-            var problems = r.problems
-            if (problems.any { it.text.startsWith("Heat pump fault (WFA status") }) {
-                problems = problems.filterNot { it.text.startsWith("Heat generator alarm") || it.text.startsWith("Heat generator fault") }
-            }
-            val code = v["error_code"]?.takeIf { it.trusted }
-            val n = code?.number?.toInt()
-            if (n != null && n in 64..191 && code.enumText.let { it == null || it == "Unknown" }) problems = problems + DeviceProblem(DeviceProblem.Kind.FAULT, "Heat pump error code $n")
-            // The file's texts carry notes for readers of the file ("name in the error_code enum"): name the code
-            // instead, as the display should, e.g. "Heat pump error E12 (code 203)".
-            val name = code?.enumText?.takeIf { it != "Unknown" }
-            problems = problems.map { p ->
-                if (n != null && (p.text.startsWith("Heat pump error (code") || p.text.startsWith("Heat pump message (code"))) {
-                    p.copy(text = if (name != null) "Heat pump error $name (code $n)" else "Heat pump error code $n")
-                } else p
-            }.distinct()
-            r.copy(problems = problems)
+        // The heat generator's alarm / fault (18722) only when the WFA status shows no fault.
+        "hoval-toptronic-e" to SpecHooks { _, r ->
+            if (r.problems.any { it.text.startsWith("Heat pump fault (WFA status") }) {
+                r.copy(problems = r.problems.filterNot { it.text.startsWith("Heat generator alarm") || it.text.startsWith("Heat generator fault") })
+            } else r
         },
     )
 

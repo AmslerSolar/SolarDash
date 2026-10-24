@@ -7561,3 +7561,12 @@ var sys	var sistema
 waiting	in attesa
 {x} active fault(s) in the Conext system	{x} guasti attivi nel sistema Conext
 {x} active warning(s) in the Conext system	{x} avvisi attivi nel sistema Conext
+Freq	Freq.
+Heat pump message {x} (code {x})	Messaggio pompa di calore {x} (codice {x})
+Malaysian (Malaysia)	Malaysian (Malesia)
+Malaysian-MV480 (Malaysia)	Malaysian-MV480 (Malesia)
+Malaysian-MV800 (Malaysia)	Malaysian-MV800 (Malesia)
+Sungrow Version 1	Sungrow versione 1
+Sungrow Version 2	Sungrow versione 2
+Sungrow Version 3	Sungrow versione 3
+Sungrow Version 4 (Sungrow Battery)	Sungrow versione 4 (batteria Sungrow)

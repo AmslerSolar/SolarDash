@@ -7534,3 +7534,13 @@ tempchip (controller temperature)	tempchip (Reglertemperatur)
 waiting	Wartend
 {x} active fault(s) in the Conext system	{x} aktive Störung(en) im Conext-System
 {x} active warning(s) in the Conext system	{x} aktive Warnung(en) im Conext-System
+1 Phase	1-phasig
+Bulk UV (E010)	Zwischenkreis-Unterspannung (E010)
+China Station	China (Kraftwerk)
+Freq	Freq.
+Heat pump message {x} (code {x})	Wärmepumpen-Meldung {x} (Code {x})
+Holland	Niederlande
+Holland 16/20A	Niederlande 16/20A
+Init	Initialisierung
+Medium	Mittel
+Sungrow Version 4 (Sungrow Battery)	Sungrow Version 4 (Sungrow-Batterie)

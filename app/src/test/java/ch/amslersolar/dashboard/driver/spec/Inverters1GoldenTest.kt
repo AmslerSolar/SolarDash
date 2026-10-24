@@ -58,18 +58,6 @@ class Inverters1GoldenTest {
         }
     }
 
-    private fun same(old: DeviceDriver, new: DeviceDriver, label: String = "") = runBlocking {
-        val a = old.read()
-        val b = new.read()
-        assertEquals(label, essentials(a).joinToString("\n"), essentials(b).joinToString("\n"))
-        val ta = a.problems.map { "${it.kind}: ${it.text}" }
-        val tb = b.problems.map { "${it.kind}: ${it.text}" }
-        if (ta.sorted() != tb.sorted()) {
-            textDifferences += "$label old=$ta spec=$tb"
-            println("problem texts differ ($label): old=$ta spec=$tb")
-        }
-    }
-
     private fun rejects(d: DeviceDriver) = runBlocking {
         try {
             d.identify()
@@ -486,7 +474,7 @@ class Inverters1GoldenTest {
             "no 582: |216 × 200|" to { kostalMaster().apply { regs.remove(582) } },
         )
         for ((label, image) in cases) {
-            same(ch.amslersolar.dashboard.driver.kostal.KostalPlenticoreDriver(image(), 71), spec("kostal-plenticore", image(), 71), "KOSTAL $label")
+            same(spec("kostal-plenticore", image(), 71), "KOSTAL $label")
         }
     }
 
@@ -495,18 +483,10 @@ class Inverters1GoldenTest {
         assertEquals("90123ABC", spec("kostal-plenticore", kostalMaster(), 71).identify().serial)
     }
 
-    /**
-     * Fails on the format: the PLENTICORE's word order is register 5 (0 = CDAB, the default, 1 = ABCD); the file
-     * detects it from the grid frequency (152 plausible in 40–70 Hz), which can't tell while 152 reads 0 (e.g. at
-     * night), and then decodes a CDAB inverter big-endian. The format has no "word order from a register's value".
-     */
-    @org.junit.Ignore("kostal-plenticore: word order from register 5 can't be expressed (see the comment)")
+    /** The PLENTICORE states its word order in register 5 (0 = CDAB, 1 = ABCD): also right at night (152 reads 0 Hz). */
     @Test
     fun kostalWordSwappedWithoutFrequency() {
-        same(
-            ch.amslersolar.dashboard.driver.kostal.KostalPlenticoreDriver(kostalMaster().f32(152, 0.0), 71),
-            spec("kostal-plenticore", kostalMaster().f32(152, 0.0), 71), "KOSTAL word-swapped, 0 Hz",
-        )
+        same(spec("kostal-plenticore", kostalMaster().f32(152, 0.0), 71), "KOSTAL word-swapped, 0 Hz")
     }
 
     // ---------------------------------------------------------------- SMA (copied from SmaDriverTest)

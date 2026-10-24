@@ -7612,3 +7612,8 @@ var sys	var système
 waiting	en attente
 {x} active fault(s) in the Conext system	{x} défaut(s) actif(s) dans le système Conext
 {x} active warning(s) in the Conext system	{x} avertissement(s) actif(s) dans le système Conext
+Heat pump message {x} (code {x})	Message pompe à chaleur {x} (code {x})
+Init	Initialisation
+Sungrow Version 1	Sungrow version 1
+Sungrow Version 2	Sungrow version 2
+Sungrow Version 3	Sungrow version 3

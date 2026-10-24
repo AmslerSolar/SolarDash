@@ -5,8 +5,8 @@
 
     python3 -I tools/modbusspec_sync.py [--spec ~/dev/ModbusSpec]
 
-Reads the device ids from app/modbusspec.txt, takes devices/**/<file>.yaml with that id from a clean ModbusSpec
-checkout, checks each with ModbusSpec's validator, and writes app/src/main/assets/modbusspec/<id>.json plus the
+Reads the device ids from app/modbusspec.txt, takes devices/**/<file>.yaml with that id from the ModbusSpec
+checkout's last commit (HEAD; uncommitted work there is ignored), checks each with ModbusSpec's validator, and writes app/src/main/assets/modbusspec/<id>.json plus the
 vocabulary and a lock file (commit, date, files). The app build never reads ModbusSpec itself.
 
 The copies only hold what the app reads: write registers (`writable: true`) are left out unless a problem rule, a
@@ -57,19 +57,28 @@ def main() -> int:
     ap.add_argument("--spec", type=Path, default=Path.home() / "dev/ModbusSpec")
     a = ap.parse_args()
     spec = a.spec.resolve()
-    if subprocess.run(["git", "-C", str(spec), "status", "--porcelain", "--", "devices", "vocabulary.yaml"],
+    # Device files and the vocabulary are read from the commit, not the working tree, so unfinished work in a
+    # ModbusSpec checkout never reaches the app; the validator (tools/msp.py) must be committed as it is.
+    if subprocess.run(["git", "-C", str(spec), "status", "--porcelain", "--", "tools/msp.py"],
                       capture_output=True, text=True, check=True).stdout.strip():
-        print(f"{spec}: devices/ or vocabulary.yaml has uncommitted changes; commit them first", file=sys.stderr)
+        print(f"{spec}: tools/msp.py has uncommitted changes; commit them first", file=sys.stderr)
         return 1
     commit = subprocess.run(["git", "-C", str(spec), "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
     date = subprocess.run(["git", "-C", str(spec), "show", "-s", "--format=%cI", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
     sys.path.insert(0, str(spec / "tools"))
     import msp  # ModbusSpec's own loader and validator
 
+    import yaml
+
+    def at_head(path: str) -> str:
+        return subprocess.run(["git", "-C", str(spec), "show", f"HEAD:{path}"], capture_output=True, text=True, check=True).stdout
+
     by_id = {}
-    for f in sorted((spec / "devices").rglob("*.yaml")):
-        d = msp.load(f)
-        by_id[d["id"]] = (f, d)
+    listed = subprocess.run(["git", "-C", str(spec), "ls-tree", "-r", "--name-only", "HEAD", "devices"],
+                            capture_output=True, text=True, check=True).stdout.split()
+    for path in sorted(p for p in listed if p.endswith(".yaml")):
+        d = msp.expand(yaml.safe_load(at_head(path)))
+        by_id[d["id"]] = (spec / path, d)
     wanted, hook_keys = [], {}
     for line in LIST.read_text(encoding="utf-8").splitlines():
         words = line.split("#")[0].split()
@@ -93,7 +102,7 @@ def main() -> int:
         problems += msp.validate(d, str(f.relative_to(spec)))
         (OUT / f"{wid}.json").write_text(json.dumps(slim(d, hook_keys.get(wid, set())), ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
         files.append(str(f.relative_to(spec)))
-    vocab = msp.load(spec / "vocabulary.yaml")
+    vocab = yaml.safe_load(at_head("vocabulary.yaml"))
     (OUT / "vocabulary.json").write_text(json.dumps(vocab, ensure_ascii=False, sort_keys=True, indent=1) + "\n", encoding="utf-8")
     (OUT / "LOCK.json").write_text(json.dumps({"modbusspec_commit": commit, "date": date, "files": files}, indent=1) + "\n", encoding="utf-8")
     for p in problems:

@@ -138,8 +138,8 @@ shown in English, so new driver rows need a dictionary line in each language.
 
 Register maps come more and more from [ModbusSpec](~/dev/ModbusSpec), one YAML file per device family. The app
 bundles the files it uses as JSON (`app/src/main/assets/modbusspec/`, list in `app/modbusspec.txt`), copied at a
-pinned ModbusSpec commit by `python3 -I tools/modbusspec_sync.py` (it refuses uncommitted ModbusSpec changes and
-runs ModbusSpec's validator; `LOCK.json` records the commit). The build never reads ModbusSpec itself.
+pinned ModbusSpec commit by `python3 -I tools/modbusspec_sync.py` (it reads the files from ModbusSpec's last commit, so
+unfinished work there is ignored, and runs ModbusSpec's validator; `LOCK.json` records the commit). The build never reads ModbusSpec itself.
 
 - `driver/spec/SpecReader.kt` reads and decodes a device with its file (a port of ModbusSpec's `tools/msp.py`):
   word order and model detection, requests within the device's limits, scaling, sign normalisation, enums, flags,
@@ -152,15 +152,15 @@ runs ModbusSpec's validator; `LOCK.json` records the commit). The build never re
   spec driver against what the replaced hand-written driver read on the same register images, recorded before those
   drivers were removed (`test/resources/golden/`). Modbus devices that need logic (SunSpec chain,
   Victron's unit ids) and non-Modbus devices (Voltronic, LG, Enphase) stay hand-written.
-- Switched (33 device types): Eastron SDM, KEBA P30, Carlo Gavazzi (EM24-E1, EM300, EM210, EM24-DIN), inepro
-  PRO380, ABB B23/B24, Schneider iEM3000, Siemens PAC2200, KOSTAL KSEM, Shelly Pro 3EM, my-PV, Stiebel Eltron ISG,
-  Alfen Eve, MENNEKES/Bender ECU, go-e, NIBE S series (model picked in the device form: `model_choice: user`),
-  Hoval TopTronic E, FENECON, Huawei SUN2000, Growatt (SPH, TL-X, WIT), GoodWe ET, SMA, Sungrow (SHx, SG), KOSTAL
-  PIKO CI, Schneider Conext CL-60 and Gateway, CPS 403X, Power-One TRIO (asleep at night: `connection.sleeps`),
-  Ingeteam INGECON SUN, Riello central.
-- Still hand-written: Janitza UMG (an identify check went missing in ModbusSpec 301604b), KOSTAL Plenticore (word
-  order given by a register's value, which the format can't express), the SunSpec family (Fronius, SolarEdge, KACO,
-  FIMER, APsystems, Conext CL, LG SunSpec), Victron, and the non-Modbus Voltronic, LG ESS and Enphase.
+- Switched (35 device types): Eastron SDM, KEBA P30, Carlo Gavazzi (EM24-E1, EM300, EM210, EM24-DIN), inepro
+  PRO380, ABB B23/B24, Janitza UMG, Schneider iEM3000, Siemens PAC2200, KOSTAL KSEM, Shelly Pro 3EM, my-PV,
+  Stiebel Eltron ISG, Alfen Eve, MENNEKES/Bender ECU, go-e, NIBE S series (model picked in the device form:
+  `model_choice: user`), Hoval TopTronic E, FENECON, Huawei SUN2000, Growatt (SPH, TL-X, WIT), GoodWe ET, SMA,
+  Sungrow (SHx, SG), KOSTAL Plenticore (word order from register 5), KOSTAL PIKO CI, Schneider Conext CL-60 and
+  Gateway, CPS 403X, Power-One TRIO (asleep at night: `connection.sleeps`), Ingeteam INGECON SUN, Riello central.
+- Still hand-written: the SunSpec family (Fronius, SolarEdge, KACO, FIMER, APsystems, Conext CL, LG SunSpec; the
+  SunSpec chain is discovered at runtime), Victron (several unit ids), and the non-Modbus Voltronic, LG ESS and
+  Enphase.
 - The bundled copies leave out write registers (unless a hook reads one: `keep` in `app/modbusspec.txt`), notes and
   source details: 1.5 MB for 40 files.
 - History channels of switched devices get new detail row names (the detail rows follow the spec's labels), and

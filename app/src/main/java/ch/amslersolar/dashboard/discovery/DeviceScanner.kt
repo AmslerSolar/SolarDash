@@ -11,7 +11,6 @@ import ch.amslersolar.dashboard.driver.fimer.FimerSunSpecDriver
 import ch.amslersolar.dashboard.driver.fronius.FroniusGen24Driver
 import ch.amslersolar.dashboard.driver.kaco.KacoBlueplanetDriver
 import ch.amslersolar.dashboard.driver.schneider.ConextClDriver
-import ch.amslersolar.dashboard.driver.kostal.KostalPlenticoreDriver
 import ch.amslersolar.dashboard.driver.lg.LgEssSunSpecDriver
 import ch.amslersolar.dashboard.driver.modbus.ModbusTcpClient
 import ch.amslersolar.dashboard.driver.spec.SpecDevices
@@ -230,9 +229,9 @@ class DeviceScanner(
                     DeviceType.SOLAREDGE -> SunSpecInverterDriver(client, unitId, SunSpecProfiles.SOLAREDGE).identify()
                     DeviceType.SUNSPEC -> SunSpecInverterDriver(client, unitId, SunSpecProfiles.GENERIC).identify()
                     DeviceType.VICTRON -> VictronGxDriver(client, unitId).identify()
-                    DeviceType.KOSTAL_PLENTICORE -> KostalPlenticoreDriver(client, unitId).identify()
                     DeviceType.LG_ESS_SUNSPEC -> LgEssSunSpecDriver(client, unitId).identify()
-                    DeviceType.GOODWE_ET, DeviceType.CONEXT_CL60, DeviceType.CONEXT_GATEWAY, DeviceType.KOSTAL_PIKO_CI, DeviceType.POWER_ONE, DeviceType.GROWATT, DeviceType.SMA, DeviceType.SUNGROW, DeviceType.FENECON, DeviceType.HUAWEI ->
+                    DeviceType.GOODWE_ET, DeviceType.CONEXT_CL60, DeviceType.CONEXT_GATEWAY, DeviceType.KOSTAL_PIKO_CI, DeviceType.POWER_ONE, DeviceType.GROWATT, DeviceType.SMA, DeviceType.SUNGROW, DeviceType.FENECON, DeviceType.HUAWEI,
+                    DeviceType.KOSTAL_PLENTICORE ->
                         SpecDevices.create(type, client, unitId)!!.identify()
                     else -> throw UnsupportedOperationException()
                 }

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 Amsler Solar GmbH
 
-package ch.amslersolar.dashboard.driver.meter
+package ch.amslersolar.dashboard.driver.spec
 
 import ch.amslersolar.dashboard.driver.modbus.ModbusException
 import ch.amslersolar.dashboard.driver.modbus.RegisterBlock

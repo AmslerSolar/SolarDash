@@ -48,10 +48,13 @@ class Spec(
     )
     data class FixedBlock(val table: String, val unitId: Int?, val address: Int, val count: Int)
     data class Encoding(val byteOrder: String, val wordOrder: String, val detect: Condition?, val plausible: ClosedFloatingPointRange<Double>?)
-    /** [match]: all must hold; [matchAny]: at least one (as well). */
-    data class ModelDef(val id: String, val name: String, val match: List<Condition>, val matchAny: List<Condition>)
-    /** [checks] must all hold, of [any] at least one; [serials]: the serial register, per model where they differ. */
-    data class Identify(val serials: List<Pair<Condition, List<String>?>>, val checks: List<Condition>, val any: List<Condition>)
+    /**
+     * [match]: every group must hold, a group when one of its conditions does ("a plausible value or not
+     * connected"); [matchAny]: at least one group, a group when all its conditions do.
+     */
+    data class ModelDef(val id: String, val name: String, val match: List<List<Condition>>, val matchAny: List<List<Condition>>)
+    /** [checks] like [ModelDef.match], [any] like [ModelDef.matchAny]; [serials]: the serial register, per model where they differ. */
+    data class Identify(val serials: List<Pair<Condition, List<String>?>>, val checks: List<List<Condition>>, val any: List<List<Condition>>)
 
     /** A register reference with an optional test (model match, identify check, exponent register). */
     data class Condition(
@@ -63,6 +66,10 @@ class Spec(
         val answers: Boolean? = null,
         /** Text registers: "both" bytes, or only the "high" / "low" byte of each register is a character. */
         val chars: String = "both",
+        /** The text contains one of these (e.g. model tags in a serial number). */
+        val contains: List<String>? = null,
+        /** Detect only: the device states its word order in this register, value → "big" / "little". */
+        val wordOrders: Map<String, String>? = null,
     )
 
     data class DatePart(val register: Int, val bits: IntRange?, val offset: Int, val bcd: Boolean, val div: Long?, val mod: Long?)
@@ -84,7 +91,7 @@ class Spec(
     data class Term(val key: String, val factor: Double, val optional: Boolean = false)
     /** A weighted sum of [terms], or with [first] the first term that is present. */
     data class Derived(val key: String, val label: String, val unit: String?, val positive: String?, val models: List<String>?, val terms: List<Term>, val trusted: Boolean, val first: Boolean = false)
-    data class ProblemRule(val key: String, val equals: JsonPrimitive?, val not: JsonPrimitive?, val inList: List<JsonPrimitive>?, val range: ClosedFloatingPointRange<Double>?, val prefix: String?, val bit: Int?, val kind: String, val text: String)
+    data class ProblemRule(val key: String, val equals: JsonPrimitive?, val not: JsonPrimitive?, val inList: List<JsonPrimitive>?, val range: ClosedFloatingPointRange<Double>?, val prefix: String?, val bit: Int?, val kind: String, val text: String, val notIn: List<JsonPrimitive>? = null)
 
     companion object {
         private val json = Json { ignoreUnknownKeys = true }
@@ -110,12 +117,13 @@ class Spec(
             bits = o.bits(), signed = o.bool("signed") == true, negate = o.bool("negate") == true,
             not = o["not"] as? JsonPrimitive, notIn = o.arr("not_in")?.map { it.jsonPrimitive }, answers = o.bool("answers"),
             chars = o.str("chars") ?: "both",
+            contains = o.strings("contains"), wordOrders = o.obj("word_orders")?.mapValues { (_, v) -> v.jsonPrimitive.content },
         )
 
-        /** One condition or a list of them. */
-        private fun conditions(e: JsonElement?): List<Condition> = when (e) {
-            is JsonObject -> listOf(condition(e))
-            is JsonArray -> e.map { condition(it.jsonObject) }
+        /** A condition, or a list of them whose entries may themselves be lists (groups), as groups. */
+        private fun groups(e: JsonElement?): List<List<Condition>> = when (e) {
+            is JsonObject -> listOf(listOf(condition(e)))
+            is JsonArray -> e.map { item -> if (item is JsonArray) item.map { condition(it.jsonObject) } else listOf(condition(item.jsonObject)) }
             else -> emptyList()
         }
 
@@ -143,7 +151,7 @@ class Spec(
                     detect = detect?.let(::condition), plausible = detect?.range("plausible") ?: detect?.range("range"),
                 ),
                 models = o.arr("models")?.map { it.jsonObject }?.map { m ->
-                    ModelDef(m.str("id")!!, m.str("name").orEmpty(), conditions(m["match"]), conditions(m["match_any"]))
+                    ModelDef(m.str("id")!!, m.str("name").orEmpty(), groups(m["match"]), groups(m["match_any"]))
                 }.orEmpty(),
                 identify = o.obj("identify")?.let { i ->
                     val serials = when (val s = i["serial"]) {
@@ -151,7 +159,7 @@ class Spec(
                         is JsonArray -> s.map { it.jsonObject }.map { condition(it) to it.strings("models") }
                         else -> emptyList()
                     }
-                    Identify(serials, conditions(i["checks"]), conditions(i["any"]))
+                    Identify(serials, groups(i["checks"]), groups(i["any"]))
                 },
                 modelChoice = o.str("model_choice") ?: "auto",
                 points = o.arr("points")?.map { point(it.jsonObject) }.orEmpty(),
@@ -173,7 +181,7 @@ class Spec(
                     ProblemRule(
                         key = w.str("key")!!, equals = w["equals"] as? JsonPrimitive, not = w["not"] as? JsonPrimitive,
                         inList = w.arr("in")?.map { it.jsonPrimitive }, range = w.range("range"), prefix = w.str("prefix"),
-                        bit = w.int("bit"), kind = p.str("kind")!!, text = p.str("text").orEmpty(),
+                        bit = w.int("bit"), kind = p.str("kind")!!, text = p.str("text").orEmpty(), notIn = w.arr("not_in")?.map { it.jsonPrimitive },
                     )
                 }.orEmpty(),
             )

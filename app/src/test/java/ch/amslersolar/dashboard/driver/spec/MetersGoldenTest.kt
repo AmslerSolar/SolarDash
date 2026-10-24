@@ -4,9 +4,6 @@
 package ch.amslersolar.dashboard.driver.spec
 
 import ch.amslersolar.dashboard.driver.DeviceDriver
-import ch.amslersolar.dashboard.driver.meter.JanitzaUmgDriver
-import ch.amslersolar.dashboard.driver.meter.MeterRegisterFake
-import ch.amslersolar.dashboard.driver.meter.silentDevice
 import ch.amslersolar.dashboard.model.DeviceReading
 import java.io.File
 import java.util.Locale
@@ -54,17 +51,6 @@ class MetersGoldenTest {
         assertEquals(key, old[key], essentials(b).joinToString("\n"))
         val ta = old["$key:texts"]
         val tb = b.problems.map { it.text }.sorted().toString()
-        if (ta != tb) println("problem texts differ: old $ta, spec $tb")
-        b
-    }
-
-    /** Janitza's hand-written driver stays: compared live. */
-    private fun same(old: DeviceDriver, new: DeviceDriver) = runBlocking {
-        val a = old.read()
-        val b = new.read()
-        assertEquals(essentials(a).joinToString("\n"), essentials(b).joinToString("\n"))
-        val ta = a.problems.map { it.text }.sorted()
-        val tb = b.problems.map { it.text }.sorted()
         if (ta != tb) println("problem texts differ: old $ta, spec $tb")
         b
     }
@@ -189,7 +175,7 @@ class MetersGoldenTest {
     private fun umg96rme(p: List<Double>) = measurements(MeterRegisterFake(unitId = 1), p)
         .u16(750, 302).u32(754, 4_401_122).u32(756, 99).u16(761, 3)
 
-    private fun janitza(image: () -> MeterRegisterFake) = same(JanitzaUmgDriver(image(), 1), spec("janitza-umg", image(), 1))
+    private fun janitza(image: () -> MeterRegisterFake) = same(spec("janitza-umg", image(), 1))
 
     @Test
     fun janitzaModelsImportExportRejected() {
@@ -208,7 +194,6 @@ class MetersGoldenTest {
         fails { spec("janitza-umg", MeterRegisterFake(unitId = 1, lenient = true).f32(19050, 1234.0), 1).identify() }
     }
 
-    @Ignore("janitza-umg (ModbusSpec 301604b): identify lost the rotation-field check (19052 in -1/0/1); 19050 range [0, 70] alone takes a word-swapped 50 Hz (9e-33) as valid")
     @Test
     fun janitzaIdentifyRejectsSwappedWords() {
         val swapped = measurements(MeterRegisterFake(unitId = 1, lowWordFirst = true), listOf(1.0, 1.0, 1.0)).text(10072, 32, "X")

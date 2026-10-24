@@ -1,0 +1,10 @@
+[kostalWordSwappedWithoutFrequency/KOSTAL word-swapped, 0 Hz]
+(pv, 5000)
+(grid, 1200)
+(load, 800)
+(battery, [-3000, 56])
+(phases, [[L1, 231.00, 1.50, 330], [L2, 232.00, 1.40, 320], [L3, 230.00, 1.60, 350]])
+(lifetimePv, 23500.000)
+(todayPv, 18.400)
+(problemKinds, [])
+problems=[]

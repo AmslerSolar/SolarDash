@@ -1,0 +1,90 @@
+[kostalPlenticore/KOSTAL master, word-swapped]
+(pv, 5000)
+(grid, 1200)
+(load, 800)
+(battery, [-3000, 56])
+(phases, [[L1, 231.00, 1.50, 330], [L2, 232.00, 1.40, 320], [L3, 230.00, 1.60, 350]])
+(lifetimePv, 23500.000)
+(todayPv, 18.400)
+(problemKinds, [])
+problems=[]
+[kostalPlenticore/KOSTAL master, big-endian]
+(pv, 5000)
+(grid, 1200)
+(load, 800)
+(battery, [-3000, 56])
+(phases, [[L1, 231.00, 1.50, 330], [L2, 232.00, 1.40, 320], [L3, 230.00, 1.60, 350]])
+(lifetimePv, 23500.000)
+(todayPv, 18.400)
+(problemKinds, [])
+problems=[]
+[kostalPlenticore/KOSTAL slave: no battery, meter or 1066]
+(pv, 3000)
+(grid, null)
+(load, null)
+(battery, null)
+(phases, [])
+(lifetimePv, null)
+(todayPv, 9.000)
+(problemKinds, [])
+problems=[]
+[kostalPlenticore/KOSTAL emergency power, battery fuse failed]
+(pv, 5000)
+(grid, 1200)
+(load, 800)
+(battery, [-3000, 56])
+(phases, [[L1, 231.00, 1.50, 330], [L2, 232.00, 1.40, 320], [L3, 230.00, 1.60, 350]])
+(lifetimePv, 23500.000)
+(todayPv, 18.400)
+(problemKinds, [FAULT, BACKUP_MODE])
+problems=[BACKUP_MODE: Emergency power mode (state 17), FAULT: Battery fuse failed (PSSB)]
+[kostalPlenticore/KOSTAL overheating]
+(pv, 5000)
+(grid, 1200)
+(load, 800)
+(battery, [-3000, 56])
+(phases, [[L1, 231.00, 1.50, 330], [L2, 232.00, 1.40, 320], [L3, 230.00, 1.60, 350]])
+(lifetimePv, 23500.000)
+(todayPv, 18.400)
+(problemKinds, [WARNING])
+problems=[WARNING: Overheating (state 14)]
+[kostalPlenticore/KOSTAL fuse state 0 without a battery]
+(pv, 5000)
+(grid, 1200)
+(load, 800)
+(battery, null)
+(phases, [[L1, 231.00, 1.50, 330], [L2, 232.00, 1.40, 320], [L3, 230.00, 1.60, 350]])
+(lifetimePv, 23500.000)
+(todayPv, 18.400)
+(problemKinds, [])
+problems=[]
+[kostalPlenticore/KOSTAL discharging]
+(pv, 5000)
+(grid, 1200)
+(load, 800)
+(battery, [1840, 56])
+(phases, [[L1, 231.00, 1.50, 330], [L2, 232.00, 1.40, 320], [L3, 230.00, 1.60, 350]])
+(lifetimePv, 23500.000)
+(todayPv, 18.400)
+(problemKinds, [])
+problems=[]
+[kostalPlenticore/KOSTAL battery current ≈ 0: direction from 582]
+(pv, 5000)
+(grid, 1200)
+(load, 800)
+(battery, [-200, 56])
+(phases, [[L1, 231.00, 1.50, 330], [L2, 232.00, 1.40, 320], [L3, 230.00, 1.60, 350]])
+(lifetimePv, 23500.000)
+(todayPv, 18.400)
+(problemKinds, [])
+problems=[]
+[kostalPlenticore/KOSTAL no 582: |216 × 200|]
+(pv, 5000)
+(grid, 1200)
+(load, 800)
+(battery, [-2990, 56])
+(phases, [[L1, 231.00, 1.50, 330], [L2, 232.00, 1.40, 320], [L3, 230.00, 1.60, 350]])
+(lifetimePv, 23500.000)
+(todayPv, 18.400)
+(problemKinds, [])
+problems=[]

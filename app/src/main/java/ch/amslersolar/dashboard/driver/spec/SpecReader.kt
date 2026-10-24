@@ -110,7 +110,7 @@ class SpecReader(
     /** Word order and model; repeated until they're known (e.g. the meter had no voltage yet). */
     private suspend fun setup() {
         val e = spec.encoding
-        val conditions = listOfNotNull(e.detect) + if (userChoice) emptyList() else spec.models.flatMap { it.match + it.matchAny }
+        val conditions = listOfNotNull(e.detect) + if (userChoice) emptyList() else spec.models.flatMap { (it.match + it.matchAny).flatten() }
         fetchConditions(conditions)
         if (wordOrder == null) detectOrders()
         if (spec.models.isEmpty()) {
@@ -120,7 +120,7 @@ class SpecReader(
             modelDetected = true
         } else {
             model = spec.models.firstOrNull { m ->
-                m.match.all { holds(it) } && (m.matchAny.isEmpty() || m.matchAny.any { holds(it) })
+                allGroups(m.match) && (m.matchAny.isEmpty() || anyGroup(m.matchAny))
             }
             modelDetected = model != null
         }
@@ -132,6 +132,13 @@ class SpecReader(
      */
     private fun detectOrders() {
         val e = spec.encoding
+        e.detect?.wordOrders?.let { orders ->
+            // The device states its word order in a register.
+            byteOrder = if (e.byteOrder == "detect") "big" else e.byteOrder
+            val v = raw(e.detect, "big", byteOrder) ?: return // not read yet: next poll
+            wordOrder = orders[(v as? Double)?.toLong()?.toString() ?: v.toString()] ?: "big"
+            return
+        }
         val words = if (e.wordOrder == "detect") listOf("big", "little") else listOf(e.wordOrder)
         val bytes = if (e.byteOrder == "detect") listOf("big", "little") else listOf(e.byteOrder)
         val d = e.detect
@@ -167,9 +174,9 @@ class SpecReader(
     suspend fun identify(): Pair<Spec.ModelDef?, String?>? {
         setup()
         val id = spec.identify ?: return model to null
-        fetchConditions(id.checks + id.any + id.serials.map { it.first })
-        if (!id.checks.all { holds(it) }) return null
-        if (id.any.isNotEmpty() && id.any.none { holds(it) }) return null
+        fetchConditions(id.checks.flatten() + id.any.flatten() + id.serials.map { it.first })
+        if (!allGroups(id.checks)) return null
+        if (id.any.isNotEmpty() && !anyGroup(id.any)) return null
         val serialReg = id.serials.firstOrNull { (_, models) -> models == null || (model != null && model!!.id in models) }?.first
         val serial = serialReg?.let { c -> raw(c)?.let { if (it is Double) it.roundToLong().toString() else it.toString() } }
         return model to serial
@@ -307,11 +314,18 @@ class SpecReader(
         if (c.inList != null && c.inList.none { same(v, it) }) return false
         if (c.not != null && same(v, c.not)) return false
         if (c.notIn != null && c.notIn.any { same(v, it) }) return false
+        if (c.contains != null && c.contains.none { v.toString().contains(it) }) return false
         if (c.range != null && !(v is Double && v in c.range)) return false
         if (c.prefix != null && !v.toString().startsWith(c.prefix)) return false
         if (c.printable && !(v is String && v.isNotEmpty() && v.all { it.code in 32..126 || it.code >= 160 })) return false
         return true
     }
+
+    /** Every group holds, a group when one of its conditions does (model `match`, identify `checks`). */
+    private fun allGroups(groups: List<List<Spec.Condition>>) = groups.all { g -> g.any { holds(it) } }
+
+    /** At least one group holds, a group when all its conditions do (`match_any`, identify `any`). */
+    private fun anyGroup(groups: List<List<Spec.Condition>>) = groups.any { g -> g.all { holds(it) } }
 
     private fun same(v: Any, p: JsonPrimitive): Boolean = when (v) {
         is Double -> p.doubleOrNull == v
@@ -449,19 +463,21 @@ class SpecReader(
         val hit = (r.equals == null || matches(n, t, r.equals)) &&
             (r.not == null || !matches(n, t, r.not)) &&
             (r.inList == null || r.inList.any { matches(n, t, it) }) &&
+            (r.notIn == null || r.notIn.none { matches(n, t, it) }) &&
             (r.range == null || (n != null && n in r.range)) &&
             (r.prefix == null || (t ?: n?.toString().orEmpty()).startsWith(r.prefix)) &&
             (r.bit == null || (n != null && (n.toLong() shr r.bit) and 1L == 1L))
-        if (!hit) null else r.kind to format(r.text, n, t)
+        if (!hit) null else r.kind to format(r.text, n, t, v.enumText)
     }
 
     private fun matches(n: Double?, t: String?, p: JsonPrimitive) =
         if (n != null) p.doubleOrNull == n else t != null && p.content == t
 
-    /** "{value}" and "{value:X}" in a problem text. */
-    private fun format(text: String, n: Double?, t: String?): String {
+    /** "{value}", "{value:X}" and "{text}" (the value's name from the point's enum) in a problem text. */
+    private fun format(text: String, n: Double?, t: String?, enumText: String? = null): String {
         val value = n?.toLong()
-        return text.replace("{value:X}", value?.toString(16)?.uppercase() ?: t.orEmpty())
+        return text.replace("{text}", enumText ?: t ?: value?.toString().orEmpty())
+            .replace("{value:X}", value?.toString(16)?.uppercase() ?: t.orEmpty())
             .replace("{value:x}", value?.toString(16) ?: t.orEmpty())
             .replace("{value}", value?.toString() ?: t.orEmpty())
     }

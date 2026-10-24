@@ -297,7 +297,6 @@ class ConsumersGoldenTest {
         }
     }
 
-    @Ignore("Spec file: the old driver also accepts an ISG that doesn't answer 5002 by plausibility; stiebel-wpm doesn't use identify.any for it")
     @Test
     fun stiebelIdentifyWithoutControllerCode() = runBlocking {
         val i = wpm3().also { it.input.regs.remove(5002 - 1) }
@@ -349,7 +348,6 @@ class ConsumersGoldenTest {
         nibeSame("BT1 not connected", { s1255().inp(1, 0x8000).temp(1621, 7.5) })
     }
 
-    @Ignore("Spec file: identify needs BT1 (input 1) in −500…700; the old driver also accepts 0x8000 (not connected)")
     @Test
     fun nibeIdentifyWithoutOutdoorSensor() = runBlocking {
         val n = s1255().inp(1, 0x8000)

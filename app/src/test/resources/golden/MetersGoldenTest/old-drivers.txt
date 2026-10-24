@@ -473,3 +473,47 @@
 (problems, [WARNING])
 === carloGavazziOverflowAndWiring/5:texts
 [Wrong wiring: phase 2 inverted (bit 2)]
+=== janitzaModelsImportExportRejected/0
+(pv, null)
+(grid, -2000)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 3.48, -800], [L2, 231.20, 3.04, -700], [L3, 229.80, 2.17, -500]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== janitzaModelsImportExportRejected/0:texts
+[]
+=== janitzaModelsImportExportRejected/1
+(pv, null)
+(grid, 1500)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 4.35, 1000], [L2, 231.20, 2.61, 600], [L3, 229.80, 0.43, -100]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== janitzaModelsImportExportRejected/1:texts
+[]
+=== janitzaModelsImportExportRejected/2
+(pv, null)
+(grid, -300)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 0.43, -100], [L2, 231.20, 0.43, -100], [L3, 229.80, 0.43, -100]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== janitzaModelsImportExportRejected/2:texts
+[]
+=== janitzaModelsImportExportRejected/3
+(pv, null)
+(grid, -900)
+(load, null)
+(battery, null)
+(phases, [[L1, 230.10, 1.30, null], [L2, 231.20, 1.30, null], [L3, 229.80, 1.30, null]])
+(lifetimePv, null)
+(todayPv, null)
+(problems, [])
+=== janitzaModelsImportExportRejected/3:texts
+[]

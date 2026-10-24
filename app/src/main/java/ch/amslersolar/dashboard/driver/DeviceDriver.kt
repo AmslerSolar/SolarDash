@@ -13,10 +13,8 @@ import ch.amslersolar.dashboard.driver.enphase.EnphaseGatewayDriver
 import ch.amslersolar.dashboard.driver.fimer.FimerSunSpecDriver
 import ch.amslersolar.dashboard.driver.fronius.FroniusGen24Driver
 import ch.amslersolar.dashboard.driver.kaco.KacoBlueplanetDriver
-import ch.amslersolar.dashboard.driver.kostal.KostalPlenticoreDriver
 import ch.amslersolar.dashboard.driver.lg.LgEssDriver
 import ch.amslersolar.dashboard.driver.lg.LgEssSunSpecDriver
-import ch.amslersolar.dashboard.driver.meter.JanitzaUmgDriver
 import ch.amslersolar.dashboard.driver.modbus.ModbusConnections
 import ch.amslersolar.dashboard.driver.schneider.ConextClDriver
 import ch.amslersolar.dashboard.driver.sunspec.SunSpecInverterDriver
@@ -45,14 +43,12 @@ object DeviceDrivers {
 
     /** The hand-written drivers: everything not (yet) read through ModbusSpec. */
     private fun handWritten(config: DeviceConfig, connections: ModbusConnections): DeviceDriver = when (config.type) {
-        DeviceType.KOSTAL_PLENTICORE -> KostalPlenticoreDriver(connections.get(config.host, config.port), config.unitId)
         DeviceType.LG_ESS_SUNSPEC -> LgEssSunSpecDriver(connections.get(config.host, config.port), config.unitId)
         DeviceType.LG_ESS -> LgEssDriver(config.host, config.port, config.password)
         DeviceType.KACO_NX3 -> KacoBlueplanetDriver(connections.get(config.host, config.port), config.unitId)
         DeviceType.FIMER -> FimerSunSpecDriver(connections.get(config.host, config.port), config.unitId)
         DeviceType.APSYSTEMS_ECU -> ApsystemsEcuDriver(connections.get(config.host, config.port), config.unitId)
         DeviceType.CONEXT_CL -> ConextClDriver(connections.get(config.host, config.port), config.unitId)
-        DeviceType.JANITZA_UMG -> JanitzaUmgDriver(connections.get(config.host, config.port), config.unitId)
         DeviceType.DEMO_INVERTER -> DemoInverter()
         DeviceType.DEMO_BATTERY -> DemoBattery()
         DeviceType.DEMO_METER -> DemoMeter()
