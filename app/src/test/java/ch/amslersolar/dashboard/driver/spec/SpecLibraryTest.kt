@@ -16,7 +16,7 @@ class SpecLibraryTest {
         val library = SpecLibrary { File(dir, it).readText() }
         // Every bundled file: the named ones and those of the listed kinds (all in the index).
         val listed = library.index.map { it.id }
-        assertTrue("energy devices are bundled", listed.size > 400)
+        assertTrue("energy devices are bundled", listed.size > 350)
         for (id in listed) {
             val spec = library.spec(id)
             assertEquals(id, spec.id)

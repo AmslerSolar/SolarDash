@@ -480,7 +480,11 @@ class Inverters1GoldenTest {
 
     @Test
     fun kostalIdentify() = runBlocking {
-        assertEquals("90123ABC", spec("kostal-plenticore", kostalMaster(), 71).identify().serial)
+        // Its SunSpec header (always big-endian, whatever register 5 says) names it.
+        for (swapped in listOf(true, false)) {
+            val fake = kostalMaster(swapped).text(40000, 2, "SunS").text(40004, 16, "KOSTAL").text(40020, 16, "PLENTICORE plus")
+            assertEquals("90123ABC", spec("kostal-plenticore", fake, 71).identify().serial)
+        }
     }
 
     /** The PLENTICORE states its word order in register 5 (0 = CDAB, 1 = ABCD): also right at night (152 reads 0 Hz). */

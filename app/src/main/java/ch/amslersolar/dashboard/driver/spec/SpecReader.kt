@@ -300,7 +300,7 @@ class SpecReader(
     /** A condition's or point's raw value: Double for numbers, String for texts. */
     private fun raw(c: Spec.Condition, word: String = wordOrder ?: "big", byte: String = byteOrder): Any? {
         val w = words(c.table, c.unitId, c.address, size(c.type, c.length)) ?: return null
-        val v = decode(w, c.type, word, byte, c.chars) ?: return null
+        val v = decode(w, c.type, c.wordOrder ?: word, c.byteOrder ?: byte, c.chars) ?: return null
         return if (v is Double && c.bits != null) field(v.toLong(), c.bits, c.signed).toDouble() else v
     }
 

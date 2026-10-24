@@ -70,6 +70,9 @@ class Spec(
         val contains: List<String>? = null,
         /** Detect only: the device states its word order in this register, value → "big" / "little". */
         val wordOrders: Map<String, String>? = null,
+        /** This register's own word / byte order, when it differs from the device's. */
+        val wordOrder: String? = null,
+        val byteOrder: String? = null,
     )
 
     data class DatePart(val register: Int, val bits: IntRange?, val offset: Int, val bcd: Boolean, val div: Long?, val mod: Long?)
@@ -118,6 +121,7 @@ class Spec(
             not = o["not"] as? JsonPrimitive, notIn = o.arr("not_in")?.map { it.jsonPrimitive }, answers = o.bool("answers"),
             chars = o.str("chars") ?: "both",
             contains = o.strings("contains"), wordOrders = o.obj("word_orders")?.mapValues { (_, v) -> v.jsonPrimitive.content },
+            wordOrder = o.str("word_order"), byteOrder = o.str("byte_order"),
         )
 
         /** A condition, or a list of them whose entries may themselves be lists (groups), as groups. */
