@@ -106,8 +106,6 @@
     <string name="forms_hint_model">Dieses Gerät meldet sein Modell nicht über Modbus: Wähle es hier aus, damit die richtigen Werte gelesen werden.</string>
     <string name="forms_device">Gerät</string>
     <string name="forms_spec_search">Hersteller oder Modell suchen</string>
-    <string name="forms_spec_unverified">Community-Daten: nicht mit den Unterlagen des Herstellers geprüft</string>
-    <string name="forms_spec_unverified_short">nicht mit den Herstellerunterlagen geprüft</string>
     <plurals name="forms_spec_count">
         <item quantity="one">%d Gerät</item>
         <item quantity="other">%d Geräte</item>

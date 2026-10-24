@@ -198,13 +198,11 @@ fun AddDeviceScreen(
                     FilterChip(selected = type.kind == k, onClick = { browsing = k }, label = { Text(deviceKindName(k)) })
                 }
             }
-            val chosen = if (generic) SpecLibrary.current?.entry(specId) else null
             Box {
                 OutlinedTextField(
                     SpecDevices.typeName(type, specId), {}, readOnly = true, singleLine = true,
                     label = { Text(stringResource(R.string.forms_device)) },
                     trailingIcon = { Icon(Icons.Filled.ArrowDropDown, contentDescription = null) },
-                    supportingText = if (chosen != null && !chosen.documented) ({ Text(stringResource(R.string.forms_spec_unverified)) }) else null,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 // A read-only field swallows taps: this layer opens the list.
@@ -535,7 +533,7 @@ private val ConnectionTestSaver = Saver<ConnectionTest?, ArrayList<String>>(
 )
 
 /** One line of the device list: a built-in driver or a ModbusSpec file. */
-private class DeviceOption(val title: String, val enabled: Boolean, val unverified: Boolean, val pick: () -> Unit)
+private class DeviceOption(val title: String, val enabled: Boolean, val pick: () -> Unit)
 
 /** The devices of one kind (built-in drivers and ModbusSpec files), searchable by maker and name. */
 @Composable
@@ -544,13 +542,13 @@ private fun DevicePicker(kind: DeviceKind, onPickType: (DeviceType) -> Unit, onP
     val comingSoon = stringResource(R.string.forms_type_coming_soon, "%s")
     val all = remember(kind) {
         val named = DeviceType.entries.filter { it.kind == kind && it !in SpecDevices.GENERIC }.map { t ->
-            DeviceOption(if (t.supported) t.displayName else comingSoon.replace("%s", t.displayName), t.supported, false) { onPickType(t) }
+            DeviceOption(if (t.supported) t.displayName else comingSoon.replace("%s", t.displayName), t.supported) { onPickType(t) }
         }
         // Files behind a built-in driver are listed as that driver.
         val covered = SpecDevices.SPEC_IDS.values.flatten().toSet()
         val specs = SpecLibrary.current?.index.orEmpty()
             .filter { SpecDevices.genericType(it.kind).kind == kind && it.id !in covered }
-            .map { e -> DeviceOption(e.title, true, !e.documented) { onPickSpec(e) } }
+            .map { e -> DeviceOption(e.title, true) { onPickSpec(e) } }
         (named + specs).sortedWith(compareBy<DeviceOption> { !it.enabled }.thenBy { it.title.lowercase() })
     }
     val shown = remember(all, query) {
@@ -576,7 +574,6 @@ private fun DevicePicker(kind: DeviceKind, onPickType: (DeviceType) -> Unit, onP
                                 o.title, style = MaterialTheme.typography.bodyMedium,
                                 color = if (o.enabled) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.outline,
                             )
-                            if (o.unverified) Text(stringResource(R.string.forms_spec_unverified_short), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.outline)
                         }
                     }
                 }
