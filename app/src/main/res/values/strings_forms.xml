@@ -104,8 +104,7 @@
     <string name="forms_about_close">Close</string>
     <string name="forms_model">Model</string>
     <string name="forms_hint_model">This device can\'t report its model over Modbus: choose it here, so the right values are read.</string>
-    <string name="forms_spec_more">More devices from ModbusSpec…</string>
-    <string name="forms_spec_change">Other device…</string>
+    <string name="forms_device">Device</string>
     <string name="forms_spec_search">Search maker or model</string>
     <string name="forms_spec_unverified">Community data: not checked against the maker\'s documents</string>
     <string name="forms_spec_unverified_short">not checked against the maker\'s documents</string>

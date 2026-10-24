@@ -105,8 +105,7 @@
     <string name="forms_about_close">Fermer</string>
     <string name="forms_model">Modèle</string>
     <string name="forms_hint_model">Cet appareil n’indique pas son modèle via Modbus : choisissez-le ici pour que les bonnes valeurs soient lues.</string>
-    <string name="forms_spec_more">Autres appareils de ModbusSpec…</string>
-    <string name="forms_spec_change">Autre appareil…</string>
+    <string name="forms_device">Appareil</string>
     <string name="forms_spec_search">Rechercher fabricant ou modèle</string>
     <string name="forms_spec_unverified">Données communautaires : non vérifiées avec la documentation du fabricant</string>
     <string name="forms_spec_unverified_short">non vérifié avec la documentation du fabricant</string>

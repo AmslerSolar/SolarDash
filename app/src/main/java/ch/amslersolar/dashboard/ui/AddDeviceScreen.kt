@@ -23,6 +23,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.FilterChip
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Card
@@ -187,39 +192,38 @@ fun AddDeviceScreen(
                 singleLine = true, modifier = Modifier.fillMaxWidth(),
             )
 
-            Column(Modifier.selectableGroup()) {
-                DeviceKind.entries.forEach { kind ->
-                    Text(deviceKindName(kind), style = MaterialTheme.typography.titleSmall, modifier = Modifier.padding(top = 8.dp))
-                    DeviceType.entries.filter { it.kind == kind && it !in SpecDevices.GENERIC }.forEach { option ->
-                        TypeOption(option, selected = type == option) {
-                            type = option
-                            specId = ""
-                            serial = ""
-                            port = option.defaultPort.toString()
-                            unitId = option.defaultUnitId.toString()
-                            testResult = null
-                        }
-                    }
-                    // Every other device of this kind that ModbusSpec describes.
-                    val chosen = if (generic && type.kind == kind) SpecLibrary.current?.entry(specId) else null
-                    if (chosen != null) {
-                        Row(Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-                            RadioButton(selected = true, onClick = null)
-                            Column(Modifier.padding(start = 12.dp).weight(1f)) {
-                                Text(chosen.title)
-                                if (!chosen.documented) Hint(stringResource(R.string.forms_spec_unverified))
-                            }
-                        }
-                    }
-                    TextButton(onClick = { browsing = kind }) {
-                        Text(stringResource(if (chosen != null) R.string.forms_spec_change else R.string.forms_spec_more))
-                    }
+            // Kind as chips, the device as a field opening a searchable list (built-in drivers and ModbusSpec files).
+            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                DeviceKind.entries.forEach { k ->
+                    FilterChip(selected = type.kind == k, onClick = { browsing = k }, label = { Text(deviceKindName(k)) })
                 }
             }
+            val chosen = if (generic) SpecLibrary.current?.entry(specId) else null
+            Box {
+                OutlinedTextField(
+                    SpecDevices.typeName(type, specId), {}, readOnly = true, singleLine = true,
+                    label = { Text(stringResource(R.string.forms_device)) },
+                    trailingIcon = { Icon(Icons.Filled.ArrowDropDown, contentDescription = null) },
+                    supportingText = if (chosen != null && !chosen.documented) ({ Text(stringResource(R.string.forms_spec_unverified)) }) else null,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                // A read-only field swallows taps: this layer opens the list.
+                Spacer(Modifier.matchParentSize().clickable { browsing = type.kind })
+            }
             browsing?.let { kind ->
-                SpecDevicePicker(
+                DevicePicker(
                     kind = kind,
-                    onPick = { e ->
+                    onPickType = { option ->
+                        type = option
+                        specId = ""
+                        model = ""
+                        serial = ""
+                        port = option.defaultPort.toString()
+                        unitId = option.defaultUnitId.toString()
+                        testResult = null
+                        browsing = null
+                    },
+                    onPickSpec = { e ->
                         type = SpecDevices.genericType(e.kind)
                         specId = e.id
                         model = ""
@@ -434,24 +438,6 @@ fun AddDeviceScreen(
     }
 }
 
-@Composable
-private fun TypeOption(option: DeviceType, selected: Boolean, onSelect: () -> Unit) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .selectable(selected = selected, enabled = option.supported, role = Role.RadioButton, onClick = onSelect)
-            .padding(vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        RadioButton(selected = selected, onClick = null, enabled = option.supported)
-        Text(
-            if (option.supported) option.displayName else stringResource(R.string.forms_type_coming_soon, option.displayName),
-            modifier = Modifier.padding(start = 12.dp),
-            color = if (option.supported) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.outline,
-        )
-    }
-}
-
 /** "Search network" and its results; tapping a recognised device fills in the form below. */
 @Composable
 private fun ScanSection(
@@ -548,14 +534,28 @@ private val ConnectionTestSaver = Saver<ConnectionTest?, ArrayList<String>>(
     restore = { if (it[0] == "ok") ConnectionTest.Connected(it[1], it[2]) else ConnectionTest.Failed(it[1]) },
 )
 
-/** The ModbusSpec devices of one kind, searchable by maker and name. */
+/** One line of the device list: a built-in driver or a ModbusSpec file. */
+private class DeviceOption(val title: String, val enabled: Boolean, val unverified: Boolean, val pick: () -> Unit)
+
+/** The devices of one kind (built-in drivers and ModbusSpec files), searchable by maker and name. */
 @Composable
-private fun SpecDevicePicker(kind: DeviceKind, onPick: (SpecIndexEntry) -> Unit, onDismiss: () -> Unit) {
+private fun DevicePicker(kind: DeviceKind, onPickType: (DeviceType) -> Unit, onPickSpec: (SpecIndexEntry) -> Unit, onDismiss: () -> Unit) {
     var query by rememberSaveable { mutableStateOf("") }
-    val all = remember(kind) { SpecLibrary.current?.index.orEmpty().filter { SpecDevices.genericType(it.kind).kind == kind } }
+    val comingSoon = stringResource(R.string.forms_type_coming_soon, "%s")
+    val all = remember(kind) {
+        val named = DeviceType.entries.filter { it.kind == kind && it !in SpecDevices.GENERIC }.map { t ->
+            DeviceOption(if (t.supported) t.displayName else comingSoon.replace("%s", t.displayName), t.supported, false) { onPickType(t) }
+        }
+        // Files behind a built-in driver are listed as that driver.
+        val covered = SpecDevices.SPEC_IDS.values.flatten().toSet()
+        val specs = SpecLibrary.current?.index.orEmpty()
+            .filter { SpecDevices.genericType(it.kind).kind == kind && it.id !in covered }
+            .map { e -> DeviceOption(e.title, true, !e.documented) { onPickSpec(e) } }
+        (named + specs).sortedWith(compareBy<DeviceOption> { !it.enabled }.thenBy { it.title.lowercase() })
+    }
     val shown = remember(all, query) {
         val words = query.trim().lowercase().split(Regex("\\s+")).filter { it.isNotEmpty() }
-        all.filter { e -> words.all { w -> e.title.lowercase().contains(w) } }
+        all.filter { o -> words.all { w -> o.title.lowercase().contains(w) } }
     }
     androidx.compose.material3.AlertDialog(
         onDismissRequest = onDismiss,
@@ -570,18 +570,19 @@ private fun SpecDevicePicker(kind: DeviceKind, onPick: (SpecIndexEntry) -> Unit,
                 Text(pluralStringResource(R.plurals.forms_spec_count, shown.size, shown.size), style = MaterialTheme.typography.bodySmall)
                 androidx.compose.foundation.lazy.LazyColumn(Modifier.fillMaxWidth().heightIn(max = 420.dp)) {
                     items(shown.size) { i ->
-                        val e = shown[i]
-                        Column(Modifier.fillMaxWidth().clickable { onPick(e) }.padding(vertical = 8.dp)) {
-                            Text(e.manufacturer, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
-                            Text(e.name, style = MaterialTheme.typography.bodyMedium)
-                            if (!e.documented) Text(stringResource(R.string.forms_spec_unverified_short), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.outline)
+                        val o = shown[i]
+                        Column(Modifier.fillMaxWidth().clickable(enabled = o.enabled) { o.pick() }.padding(vertical = 8.dp)) {
+                            Text(
+                                o.title, style = MaterialTheme.typography.bodyMedium,
+                                color = if (o.enabled) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.outline,
+                            )
+                            if (o.unverified) Text(stringResource(R.string.forms_spec_unverified_short), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.outline)
                         }
                     }
                 }
             }
         },
         confirmButton = {},
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.forms_cancel)) } },
+        dismissButton = { TextButton(onClick = { onDismiss() }) { Text(stringResource(R.string.forms_cancel)) } },
     )
 }
-
