@@ -33,7 +33,8 @@ object FaultDetails {
             putJsonObject("device") {
                 put("name", device.name)
                 put("type", device.type.name)
-                put("type_name", device.type.displayName)
+                put("type_name", ch.amslersolar.dashboard.driver.spec.SpecDevices.typeName(device.type, device.specId))
+                if (device.specId.isNotBlank()) put("modbusspec", device.specId)
                 if (device.type.needsHost) {
                     put("host", device.host)
                     put("port", device.port)

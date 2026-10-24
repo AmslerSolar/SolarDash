@@ -101,4 +101,14 @@
     <string name="forms_about_close">Chiudi</string>
     <string name="forms_model">Modello</string>
     <string name="forms_hint_model">Questo dispositivo non comunica il suo modello via Modbus: sceglilo qui, così vengono letti i valori giusti.</string>
+    <string name="forms_spec_more">Altri dispositivi da ModbusSpec…</string>
+    <string name="forms_spec_change">Altro dispositivo…</string>
+    <string name="forms_spec_search">Cerca produttore o modello</string>
+    <string name="forms_spec_unverified">Dati della community: non verificati con la documentazione del produttore</string>
+    <string name="forms_spec_unverified_short">non verificato con la documentazione del produttore</string>
+    <plurals name="forms_spec_count">
+        <item quantity="one">%d dispositivo</item>
+        <item quantity="many">%d dispositivi</item>
+        <item quantity="other">%d dispositivi</item>
+    </plurals>
 </resources>

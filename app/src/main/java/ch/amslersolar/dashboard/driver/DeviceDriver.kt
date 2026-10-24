@@ -38,7 +38,7 @@ interface DeviceDriver {
 object DeviceDrivers {
     /** Connections come from [connections], so devices behind the same gateway share one TCP connection. */
     fun create(config: DeviceConfig, connections: ModbusConnections): DeviceDriver =
-        (if (config.type in SpecDevices.SPEC_IDS) SpecDevices.create(config.type, connections.get(config.host, config.port), config.unitId, config.model) else null)
+        (if (SpecDevices.handles(config.type)) SpecDevices.create(config.type, connections.get(config.host, config.port), config.unitId, config.model, config.specId) else null)
             ?: handWritten(config, connections)
 
     /** The hand-written drivers: everything not (yet) read through ModbusSpec. */

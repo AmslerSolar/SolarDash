@@ -84,6 +84,14 @@ enum class DeviceType(
     STIEBEL_ELTRON_ISG("Stiebel Eltron heat pump WPM 3 / 3i / WPMsystem (ISG Modbus TCP)", DeviceKind.CONSUMER, supported = true),
     NIBE_S("NIBE S-series heat pump (Modbus TCP)", DeviceKind.CONSUMER, supported = true),
     HOVAL_TOPTRONIC("Hoval heat pump (TopTronic E Modbus gateway)", DeviceKind.CONSUMER, supported = true),
+    /**
+     * Every other energy device ModbusSpec describes: the device's ModbusSpec file is [DeviceConfig.specId]; one
+     * type per kind, so the plant totals treat it like the named types of that kind.
+     */
+    MODBUS_SPEC_INVERTER("Other inverter or storage system (ModbusSpec)", DeviceKind.INVERTER, supported = true),
+    MODBUS_SPEC_BATTERY("Other battery (ModbusSpec)", DeviceKind.BATTERY, supported = true),
+    MODBUS_SPEC_METER("Other energy meter (ModbusSpec)", DeviceKind.METER, supported = true),
+    MODBUS_SPEC_CONSUMER("Other wallbox, heat pump or consumer (ModbusSpec)", DeviceKind.CONSUMER, supported = true),
     DEMO_INVERTER("Demo inverter", DeviceKind.INVERTER, supported = true, needsHost = false, modbus = false),
     DEMO_BATTERY("Demo battery", DeviceKind.BATTERY, supported = true, needsHost = false, modbus = false),
     DEMO_METER("Demo grid meter", DeviceKind.METER, supported = true, needsHost = false, modbus = false),
@@ -108,6 +116,8 @@ data class DeviceConfig(
     val meterRole: MeterRole = MeterRole.GRID,
     /** The model, for devices whose models can't be told apart over Modbus (ModbusSpec `model_choice: user`). */
     val model: String = "",
+    /** ModbusSpec types (MODBUS_SPEC_*): the id of the device's ModbusSpec file. */
+    val specId: String = "",
 ) {
     override fun toString() = "DeviceConfig(id=$id, name=$name, type=$type, host=$host, port=$port, unitId=$unitId, serial=$serial)"
 }

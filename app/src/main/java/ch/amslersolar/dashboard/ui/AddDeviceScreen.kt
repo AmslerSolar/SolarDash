@@ -3,12 +3,16 @@
 
 package ch.amslersolar.dashboard.ui
 
+import androidx.compose.material3.TextButton
+import ch.amslersolar.dashboard.driver.spec.SpecIndexEntry
+import ch.amslersolar.dashboard.driver.spec.SpecLibrary
 import ch.amslersolar.dashboard.driver.spec.SpecDevices
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
@@ -85,7 +89,10 @@ fun AddDeviceScreen(
     var invertGrid by rememberSaveable { mutableStateOf(existing?.invertGrid ?: false) }
     var meterRole by rememberSaveable { mutableStateOf(existing?.meterRole ?: MeterRole.GRID) }
     var model by rememberSaveable { mutableStateOf(existing?.model.orEmpty()) }
-    val models = remember(type) { SpecDevices.userModels(type) }
+    var specId by rememberSaveable { mutableStateOf(existing?.specId.orEmpty()) }
+    var browsing by rememberSaveable { mutableStateOf<DeviceKind?>(null) }
+    val models = remember(type, specId) { SpecDevices.userModels(type, specId) }
+    val generic = type in SpecDevices.GENERIC
     // Deliberately not saveable: kept out of the saved instance state.
     var password by remember { mutableStateOf(existing?.password.orEmpty()) }
     var testResult by rememberSaveable(stateSaver = ConnectionTestSaver) { mutableStateOf<ConnectionTest?>(null) }
@@ -126,7 +133,7 @@ fun AddDeviceScreen(
 
     fun build() = DeviceConfig(
         id = existing?.id ?: UUID.randomUUID().toString(),
-        name = name.ifBlank { type.displayName },
+        name = name.ifBlank { SpecDevices.typeName(type, specId) },
         type = type,
         host = host.trim(),
         port = port.toIntOrNull() ?: type.defaultPort,
@@ -135,6 +142,7 @@ fun AddDeviceScreen(
         invertGrid = (type.gridSignOption || type.kind == DeviceKind.METER) && invertGrid,
         meterRole = if (type.kind == DeviceKind.METER) meterRole else MeterRole.GRID,
         model = if (models.any { it.first == model }) model else "",
+        specId = if (generic) specId else "",
         // A changed type or unit id may be another device: drop a serial that came with the old settings.
         serial = if (existing != null && (type != existing.type || unitId != existing.unitId.toString()) && serial == existing.serial) "" else serial,
     )
@@ -175,16 +183,48 @@ fun AddDeviceScreen(
             Column(Modifier.selectableGroup()) {
                 DeviceKind.entries.forEach { kind ->
                     Text(deviceKindName(kind), style = MaterialTheme.typography.titleSmall, modifier = Modifier.padding(top = 8.dp))
-                    DeviceType.entries.filter { it.kind == kind }.forEach { option ->
+                    DeviceType.entries.filter { it.kind == kind && it !in SpecDevices.GENERIC }.forEach { option ->
                         TypeOption(option, selected = type == option) {
                             type = option
+                            specId = ""
                             serial = ""
                             port = option.defaultPort.toString()
                             unitId = option.defaultUnitId.toString()
                             testResult = null
                         }
                     }
+                    // Every other device of this kind that ModbusSpec describes.
+                    val chosen = if (generic && type.kind == kind) SpecLibrary.current?.entry(specId) else null
+                    if (chosen != null) {
+                        Row(Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                            RadioButton(selected = true, onClick = null)
+                            Column(Modifier.padding(start = 12.dp).weight(1f)) {
+                                Text(chosen.title)
+                                if (!chosen.documented) Hint(stringResource(R.string.forms_spec_unverified))
+                            }
+                        }
+                    }
+                    TextButton(onClick = { browsing = kind }) {
+                        Text(stringResource(if (chosen != null) R.string.forms_spec_change else R.string.forms_spec_more))
+                    }
                 }
+            }
+            browsing?.let { kind ->
+                SpecDevicePicker(
+                    kind = kind,
+                    onPick = { e ->
+                        type = SpecDevices.genericType(e.kind)
+                        specId = e.id
+                        model = ""
+                        serial = ""
+                        port = e.port.toString()
+                        unitId = e.unit.toString()
+                        if (name.isBlank() || existing == null) name = e.title
+                        testResult = null
+                        browsing = null
+                    },
+                    onDismiss = { browsing = null },
+                )
             }
 
             when (type.kind) {
@@ -486,3 +526,41 @@ private val ConnectionTestSaver = Saver<ConnectionTest?, ArrayList<String>>(
     },
     restore = { if (it[0] == "ok") ConnectionTest.Connected(it[1], it[2]) else ConnectionTest.Failed(it[1]) },
 )
+
+/** The ModbusSpec devices of one kind, searchable by maker and name. */
+@Composable
+private fun SpecDevicePicker(kind: DeviceKind, onPick: (SpecIndexEntry) -> Unit, onDismiss: () -> Unit) {
+    var query by rememberSaveable { mutableStateOf("") }
+    val all = remember(kind) { SpecLibrary.current?.index.orEmpty().filter { SpecDevices.genericType(it.kind).kind == kind } }
+    val shown = remember(all, query) {
+        val words = query.trim().lowercase().split(Regex("\\s+")).filter { it.isNotEmpty() }
+        all.filter { e -> words.all { w -> e.title.lowercase().contains(w) } }
+    }
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(deviceKindName(kind)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    query, { query = it }, singleLine = true, modifier = Modifier.fillMaxWidth(),
+                    label = { Text(stringResource(R.string.forms_spec_search)) },
+                    leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
+                )
+                Text(pluralStringResource(R.plurals.forms_spec_count, shown.size, shown.size), style = MaterialTheme.typography.bodySmall)
+                androidx.compose.foundation.lazy.LazyColumn(Modifier.fillMaxWidth().heightIn(max = 420.dp)) {
+                    items(shown.size) { i ->
+                        val e = shown[i]
+                        Column(Modifier.fillMaxWidth().clickable { onPick(e) }.padding(vertical = 8.dp)) {
+                            Text(e.manufacturer, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+                            Text(e.name, style = MaterialTheme.typography.bodyMedium)
+                            if (!e.documented) Text(stringResource(R.string.forms_spec_unverified_short), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.outline)
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {},
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.forms_cancel)) } },
+    )
+}
+

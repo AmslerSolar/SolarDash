@@ -455,9 +455,9 @@ class SpecReader(
         return t.toString()
     }
 
-    /** The problems the device reports, from trusted points only (a project's guess never raises an alarm). */
+    /** The problems the device reports (from document and project rules alike). */
     fun problems(values: Map<String, SpecValue>): List<Pair<String, String>> = spec.problems.mapNotNull { r ->
-        val v = values[r.key]?.takeIf { it.trusted } ?: return@mapNotNull null
+        val v = values[r.key] ?: return@mapNotNull null
         val n = v.number
         val t = v.text
         val hit = (r.equals == null || matches(n, t, r.equals)) &&

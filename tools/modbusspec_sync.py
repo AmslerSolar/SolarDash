@@ -84,6 +84,11 @@ def main() -> int:
         words = line.split("#")[0].split()
         if not words:
             continue
+        if words[0] == "kinds:":
+            # Every device file of these kinds (e.g. all energy devices), after the ids listed by name.
+            kinds = {k.strip() for k in " ".join(words[1:]).split(",") if k.strip()}
+            wanted += [i for i, (_, d) in sorted(by_id.items()) if d["kind"] in kinds]
+            continue
         wanted.append(words[0])
         if len(words) == 3 and words[1] == "keep":
             hook_keys[words[0]] = set(words[2].split(","))
@@ -93,17 +98,28 @@ def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     for old in OUT.glob("*.json"):
         old.unlink()
-    files, problems = [], []
+    wanted = list(dict.fromkeys(wanted))
+    files, problems, index = [], [], []
     for wid in wanted:
         if wid not in by_id:
             problems.append(f"{wid}: no device file with this id")
             continue
         f, d = by_id[wid]
         problems += msp.validate(d, str(f.relative_to(spec)))
-        (OUT / f"{wid}.json").write_text(json.dumps(slim(d, hook_keys.get(wid, set())), ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
+        slimmed = slim(d, hook_keys.get(wid, set()))
+        if not slimmed["points"]:
+            print(f"{wid}: only write registers, nothing to read: left out", file=sys.stderr)
+            continue
+        (OUT / f"{wid}.json").write_text(json.dumps(slimmed, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
         files.append(str(f.relative_to(spec)))
+        c = d["connection"]
+        index.append({"id": wid, "manufacturer": d["manufacturer"], "name": d["name"], "kind": d["kind"],
+                      "port": c["default_port"], "unit": c["default_unit"],
+                      "documented": any(not p.get("sources") or p.get("verified") for p in d["points"])})
     vocab = yaml.safe_load(at_head("vocabulary.yaml"))
     (OUT / "vocabulary.json").write_text(json.dumps(vocab, ensure_ascii=False, sort_keys=True, indent=1) + "\n", encoding="utf-8")
+    # The list the device form offers, without parsing every file.
+    (OUT / "index.json").write_text(json.dumps(sorted(index, key=lambda e: (e["manufacturer"].lower(), e["name"].lower())), ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
     (OUT / "LOCK.json").write_text(json.dumps({"modbusspec_commit": commit, "date": date, "files": files}, indent=1) + "\n", encoding="utf-8")
     for p in problems:
         print(p, file=sys.stderr)

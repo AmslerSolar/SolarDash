@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard.ui
 
+import ch.amslersolar.dashboard.driver.spec.SpecDevices
 import ch.amslersolar.dashboard.ui.status.FaultLogActivity
 import ch.amslersolar.dashboard.ui.status.rememberPlantStatus
 import ch.amslersolar.dashboard.ui.status.StatusCard
@@ -346,10 +347,10 @@ private fun DeviceRow(device: DeviceConfig, status: DeviceStatus?, onClick: () -
 
 @Composable
 fun deviceAddress(device: DeviceConfig): String = when {
-    !device.type.needsHost -> device.type.displayName
+    !device.type.needsHost -> SpecDevices.typeName(device.type, device.specId)
     device.type.modbus ->
-        "${device.type.displayName} · ${device.host}:${device.port} · ${stringResource(R.string.screens_unit_id, device.unitId)}"
-    else -> "${device.type.displayName} · ${device.host}:${device.port}"
+        "${SpecDevices.typeName(device.type, device.specId)} · ${device.host}:${device.port} · ${stringResource(R.string.screens_unit_id, device.unitId)}"
+    else -> "${SpecDevices.typeName(device.type, device.specId)} · ${device.host}:${device.port}"
 }
 
 @Composable

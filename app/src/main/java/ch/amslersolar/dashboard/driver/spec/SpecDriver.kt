@@ -3,6 +3,9 @@
 
 package ch.amslersolar.dashboard.driver.spec
 
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonArray
 import ch.amslersolar.dashboard.driver.DeviceDriver
 import ch.amslersolar.dashboard.driver.modbus.ModbusTcpClient
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
@@ -24,7 +27,7 @@ import kotlin.math.roundToInt
  * detail row. What the format can't express goes into [hooks] (per device family, in Kotlin).
  *
  * Values from points the manufacturer documents don't back (only open-source projects name them, not verified)
- * are shown under "Other sources (unverified)" and never feed the energy flow or the plant status.
+ * count like the others but are listed under "Other sources (unverified)" in the detail view.
  */
 class SpecDriver(
     spec: Spec,
@@ -76,7 +79,9 @@ class SpecDriver(
     }
 
     private fun reading(all: Map<String, SpecValue>): DeviceReading {
-        val v = all.filterValues { it.trusted }
+        // Every value counts, also those only open-source projects name (ModbusSpec keeps the documents' reading
+        // where both describe a register); the detail view still tells them apart.
+        val v = all
         fun n(key: String) = v[key]?.number
         fun w(key: String) = n(key)?.roundToInt()
         val consumer = spec.kind !in setOf("inverter", "meter", "battery")
@@ -169,9 +174,25 @@ fun interface SpecHooks {
     }
 }
 
+/** One bundled device file as the device form lists it; [documented]: it has values from the maker's documents. */
+data class SpecIndexEntry(val id: String, val manufacturer: String, val name: String, val kind: String, val port: Int, val unit: Int, val documented: Boolean) {
+    val title: String get() = "$manufacturer $name"
+}
+
 /** The ModbusSpec files the app bundles; [load] gives a file's text (assets in the app, files in tests). */
 class SpecLibrary(private val load: (String) -> String) {
     val vocabulary: Vocabulary by lazy { Vocabulary.parse(load("vocabulary.json")) }
+
+    /** Every bundled device file, for the device form (assets/modbusspec/index.json). */
+    val index: List<SpecIndexEntry> by lazy {
+        kotlinx.serialization.json.Json.parseToJsonElement(load("index.json")).jsonArray.map { e ->
+            val o = e.jsonObject
+            fun s(k: String) = o[k]?.jsonPrimitive?.content.orEmpty()
+            SpecIndexEntry(s("id"), s("manufacturer"), s("name"), s("kind"), s("port").toIntOrNull() ?: 502, s("unit").toIntOrNull() ?: 1, s("documented") == "true")
+        }
+    }
+
+    fun entry(id: String): SpecIndexEntry? = index.find { it.id == id }
     private val specs = HashMap<String, Spec>()
 
     @Synchronized

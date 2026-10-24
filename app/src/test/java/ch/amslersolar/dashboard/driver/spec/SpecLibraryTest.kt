@@ -13,19 +13,28 @@ class SpecLibraryTest {
 
     @Test
     fun everyListedSpecIsBundledAndParses() {
-        val listed = File("modbusspec.txt").readLines().map { it.substringBefore("#").trim().substringBefore(" ") }.filter { it.isNotEmpty() }
         val library = SpecLibrary { File(dir, it).readText() }
+        // Every bundled file: the named ones and those of the listed kinds (all in the index).
+        val listed = library.index.map { it.id }
+        assertTrue("energy devices are bundled", listed.size > 400)
         for (id in listed) {
             val spec = library.spec(id)
             assertEquals(id, spec.id)
             assertTrue("$id has points", spec.points.isNotEmpty())
         }
         assertTrue(File(dir, "LOCK.json").readText().contains("modbusspec_commit"))
+        assertEquals(listed.size, dir.listFiles()!!.count { it.name.endsWith(".json") && it.name !in setOf("index.json", "vocabulary.json", "LOCK.json") })
+    }
+
+    @Test
+    fun everyIndexEntryHasAGenericType() {
+        val library = SpecLibrary { File(dir, it).readText() }
+        for (e in library.index) assertTrue(e.id, SpecDevices.genericType(e.kind) in SpecDevices.GENERIC)
     }
 
     @Test
     fun everyMappedSpecIsListed() {
-        val listed = File("modbusspec.txt").readLines().map { it.substringBefore("#").trim().substringBefore(" ") }.toSet()
+        val listed = SpecLibrary { File(dir, it).readText() }.index.map { it.id }.toSet()
         for ((type, ids) in SpecDevices.SPEC_IDS) for (id in ids) assertTrue("$type → $id is in modbusspec.txt", id in listed)
     }
 

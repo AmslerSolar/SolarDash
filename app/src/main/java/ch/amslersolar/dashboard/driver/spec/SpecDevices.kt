@@ -173,8 +173,29 @@ object SpecDevices {
     )
 
     /** The spec driver for [type], or null when it has none (or no spec library is loaded, e.g. in some tests). */
-    fun create(type: DeviceType, client: ModbusTcpClient, unitId: Int, model: String? = null): DeviceDriver? {
-        val ids = SPEC_IDS[type] ?: return null
+    /** The generic types that read any ModbusSpec file ([DeviceConfig.specId]), by the app's device kind. */
+    val GENERIC: Set<DeviceType> = setOf(
+        DeviceType.MODBUS_SPEC_INVERTER, DeviceType.MODBUS_SPEC_BATTERY, DeviceType.MODBUS_SPEC_METER, DeviceType.MODBUS_SPEC_CONSUMER,
+    )
+
+    /** The generic type for a ModbusSpec `kind`: wallboxes, heat pumps, heating rods, boilers and UPSs are consumers. */
+    fun genericType(kind: String): DeviceType = when (kind) {
+        "inverter" -> DeviceType.MODBUS_SPEC_INVERTER
+        "battery" -> DeviceType.MODBUS_SPEC_BATTERY
+        "meter" -> DeviceType.MODBUS_SPEC_METER
+        else -> DeviceType.MODBUS_SPEC_CONSUMER
+    }
+
+    /** The name to show for a device's type: its ModbusSpec file's maker and name for the generic types. */
+    fun typeName(type: DeviceType, specId: String): String =
+        if (type in GENERIC) SpecLibrary.current?.entry(specId)?.title ?: type.displayName else type.displayName
+
+    /** Whether [type] reads through ModbusSpec. */
+    fun handles(type: DeviceType) = type in SPEC_IDS || type in GENERIC
+
+    fun create(type: DeviceType, client: ModbusTcpClient, unitId: Int, model: String? = null, specId: String = ""): DeviceDriver? {
+        val ids = (if (type in GENERIC) listOf(specId).filter { it.isNotBlank() } else SPEC_IDS[type]) ?: return null
+        if (ids.isEmpty()) return null
         val library = SpecLibrary.current ?: return null
         CONNECT_DELAY_MS[type]?.let { client.connectDelayMs = maxOf(client.connectDelayMs, it) }
         val offsets = ADDRESS_OFFSETS[type] ?: listOf(0)
@@ -327,9 +348,10 @@ object SpecDevices {
      * The models the user picks from, (id, name), for a type whose spec file can't tell its models apart over
      * Modbus (`model_choice: user`); empty for every other type.
      */
-    fun userModels(type: DeviceType): List<Pair<String, String>> {
+    fun userModels(type: DeviceType, specId: String = ""): List<Pair<String, String>> {
         val library = SpecLibrary.current ?: return emptyList()
-        return SPEC_IDS[type].orEmpty().map { library.spec(it) }.filter { it.modelChoice == "user" }
+        val ids = if (type in GENERIC) listOf(specId).filter { it.isNotBlank() } else SPEC_IDS[type].orEmpty()
+        return ids.map { library.spec(it) }.filter { it.modelChoice == "user" }
             .flatMap { s -> s.models.map { it.id to it.name } }
     }
 }

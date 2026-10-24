@@ -161,6 +161,13 @@ unfinished work there is ignored, and runs ModbusSpec's validator; `LOCK.json` r
 - Still hand-written: the SunSpec family (Fronius, SolarEdge, KACO, FIMER, APsystems, Conext CL, LG SunSpec; the
   SunSpec chain is discovered at runtime), Victron (several unit ids), and the non-Modbus Voltronic, LG ESS and
   Enphase.
+- Every other energy device in ModbusSpec (inverters, batteries, meters, wallboxes, heat pumps, heating rods,
+  UPSs, boilers: `kinds:` in `app/modbusspec.txt`, 438 files) is available through four generic device types
+  (`MODBUS_SPEC_INVERTER`, `…_BATTERY`, `…_METER`, `…_CONSUMER`, by the file's kind) with the file's id in
+  `DeviceConfig.specId`. The device form lists them under "More devices from ModbusSpec…", searchable by maker and
+  model (`assets/modbusspec/index.json`); files without values from the maker's documents are marked as community
+  data. All values count, also those only open-source projects name (ModbusSpec keeps the documents' reading where
+  both describe a register); the detail view lists them under "Other sources (unverified)".
 - The bundled copies leave out write registers (unless a hook reads one: `keep` in `app/modbusspec.txt`), notes and
   source details: 1.5 MB for 40 files.
 - History channels of switched devices get new detail row names (the detail rows follow the spec's labels), and

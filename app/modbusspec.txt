@@ -40,3 +40,5 @@ powerone-trio-50
 ingeteam-ingecon-sun
 ingeteam-ingecon-sun-legacy
 riello-central
+# All energy devices besides the ones above (the device form offers them as "More devices").
+kinds: inverter, meter, battery, charger, heat_pump, heating_rod, ups, boiler
