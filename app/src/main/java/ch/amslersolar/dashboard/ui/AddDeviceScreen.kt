@@ -66,6 +66,7 @@ import ch.amslersolar.dashboard.model.DeviceKind
 import ch.amslersolar.dashboard.model.DeviceType
 import ch.amslersolar.dashboard.model.MeterRole
 import ch.amslersolar.dashboard.discovery.FoundDevice
+import ch.amslersolar.dashboard.discovery.DeviceScanner
 import ch.amslersolar.dashboard.discovery.ScanEvent
 import ch.amslersolar.dashboard.discovery.ScanPhase
 import kotlinx.coroutines.Job
@@ -78,8 +79,8 @@ import java.util.UUID
 fun AddDeviceScreen(
     plantName: String,
     onTest: suspend (DeviceConfig) -> ConnectionTest,
-    /** The network search; extended: all ports devices use, not only 502. */
-    onScan: (extended: Boolean) -> Flow<ScanEvent>,
+    /** The network search; extended: all ports devices use, not only 502; range: another network (blank: the own). */
+    onScan: (extended: Boolean, range: String) -> Flow<ScanEvent>,
     onSave: (DeviceConfig) -> Unit,
     onBack: () -> Unit,
     /** Set when editing: the form starts from it, and saving keeps its id (history and chart channels stay). */
@@ -109,6 +110,7 @@ fun AddDeviceScreen(
     var progress by remember { mutableStateOf<ScanEvent.Progress?>(null) }
     var scanError by remember { mutableStateOf<String?>(null) }
     val found = remember { mutableStateListOf<FoundDevice>() }
+    var range by rememberSaveable { mutableStateOf("") }
 
     fun startScan(extended: Boolean) {
         scan?.cancel()
@@ -116,7 +118,7 @@ fun AddDeviceScreen(
         scanError = null
         progress = null
         scan = scope.launch {
-            onScan(extended).collect { e ->
+            onScan(extended, range).collect { e ->
                 when (e) {
                     is ScanEvent.Progress -> progress = e
                     is ScanEvent.Found -> {
@@ -182,6 +184,8 @@ fun AddDeviceScreen(
                 error = scanError,
                 found = found.sortedWith(compareBy<FoundDevice> { it.type == null }.thenBy { it.alreadyIn != null }.thenBy { it.identifying }.thenBy { it.host }.thenBy { it.port }),
                 onScan = ::startScan,
+                range = range,
+                onRange = { range = it },
                 onStop = { scan?.cancel(); scan = null },
                 onPick = ::pick,
             )
@@ -446,16 +450,21 @@ private fun ScanSection(
     onScan: (extended: Boolean) -> Unit,
     onStop: () -> Unit,
     onPick: (FoundDevice) -> Unit,
+    range: String,
+    onRange: (String) -> Unit,
 ) {
+    var otherNetwork by rememberSaveable { mutableStateOf(range.isNotBlank()) }
+    val rangeValid = range.isBlank() || DeviceScanner.parseRange(range) != null
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             if (scanning) OutlinedButton(onClick = onStop) { Text(stringResource(R.string.forms_stop_search)) }
             else {
-                OutlinedButton(onClick = { onScan(false) }) {
+                OutlinedButton(onClick = { onScan(false) }, enabled = rangeValid) {
                     Icon(Icons.Outlined.Search, contentDescription = null)
                     Text(stringResource(R.string.forms_search_network), modifier = Modifier.padding(start = 8.dp))
                 }
-                TextButton(onClick = { onScan(true) }) { Text(stringResource(R.string.forms_search_extended)) }
+                TextButton(onClick = { onScan(true) }, enabled = rangeValid) { Text(stringResource(R.string.forms_search_extended)) }
+                if (!otherNetwork) TextButton(onClick = { otherNetwork = true }) { Text(stringResource(R.string.forms_search_other_network)) }
             }
             if (scanning && progress != null) Text(
                 stringResource(
@@ -465,6 +474,17 @@ private fun ScanSection(
                 style = MaterialTheme.typography.bodySmall,
             )
             else if (!scanning && progress != null) Text(found.count { it.type != null }.let { pluralStringResource(R.plurals.forms_scan_found, it, it) }, style = MaterialTheme.typography.bodySmall)
+        }
+        if (otherNetwork && !scanning) {
+            // E.g. a gateway still on its factory address, or the emulator, whose own network is a virtual one.
+            OutlinedTextField(
+                range, onRange, singleLine = true, modifier = Modifier.fillMaxWidth(),
+                label = { Text(stringResource(R.string.forms_search_range)) },
+                placeholder = { Text("192.168.1") },
+                isError = !rangeValid,
+                supportingText = { Text(stringResource(if (rangeValid) R.string.forms_search_range_hint else R.string.forms_search_range_invalid)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
+            )
         }
         if (scanning) {
             LinearProgressIndicator(

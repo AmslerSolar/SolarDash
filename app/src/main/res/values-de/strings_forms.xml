@@ -36,6 +36,10 @@
     <string name="forms_type_coming_soon">%1$s (demnächst)</string>
     <string name="forms_stop_search">Suche stoppen</string>
     <string name="forms_search_network">Netzwerk durchsuchen</string>
+    <string name="forms_search_other_network">Anderes Netzwerk …</string>
+    <string name="forms_search_range">Zu durchsuchendes Netzwerk</string>
+    <string name="forms_search_range_hint">Leer: das eigene Netzwerk dieses Tablets. Z. B. 192.168.1 (alle Adressen), 192.168.1.0/24 oder eine Adresse wie 192.168.1.200.</string>
+    <string name="forms_search_range_invalid">Kein Netzwerk: z. B. 192.168.1, 192.168.1.0/24 oder 192.168.1.200 (höchstens 254 Adressen)</string>
     <string name="forms_search_extended">Erweiterte Suche</string>
     <string name="forms_scan_progress_ports">Ports: %1$d von %2$d</string>
     <string name="forms_scan_progress_identify">Erkennen: %1$d von %2$d</string>

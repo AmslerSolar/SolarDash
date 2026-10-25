@@ -131,6 +131,32 @@ class DeviceScannerTest {
     }
 
     @Test
+    fun aSilentUnitBehindAGatewayIsAskedOnce() = runBlocking {
+        val asked = mutableListOf<Pair<DeviceType, Int>>()
+        val scanner = DeviceScanner(
+            portOpen = { _, _ -> true },
+            identify = { type, _, _, unit -> asked += type to unit; throw java.net.SocketTimeoutException("no answer") },
+        )
+        scanner.probe("192.168.0.200", 4196, DeviceScanner.CANDIDATES.values.flatten())
+        assertEquals(asked.map { it.second }.distinct(), asked.map { it.second }) // one try per unit id
+        asked.clear()
+        scanner.probe("192.168.0.201", 502) // a known port: every driver still gets its try
+        assertEquals(DeviceScanner.CANDIDATES.getValue(502).size, asked.size)
+    }
+
+    @Test
+    fun aTypedNetworkGivesItsAddresses() {
+        assertEquals(254, DeviceScanner.parseRange("192.168.1")!!.size)
+        assertEquals("192.168.1.1", DeviceScanner.parseRange("192.168.1.0/24")!!.first())
+        assertEquals("192.168.1.254", DeviceScanner.parseRange(" 192.168.1.77/24 ")!!.last())
+        assertEquals(listOf("192.168.1.200"), DeviceScanner.parseRange("192.168.1.200"))
+        assertEquals(listOf("192.168.1.201", "192.168.1.202"), DeviceScanner.parseRange("192.168.1.200/30"))
+        for (bad in listOf("", "192.168", "192.168.1.0/16", "192.168.1.300", "gateway", "192.168.1.0/x")) {
+            assertNull(bad, DeviceScanner.parseRange(bad))
+        }
+    }
+
+    @Test
     fun findsAMovedDeviceBySerialWithoutTouchingConfiguredOnes() = runBlocking {
         val asked = mutableListOf<String>()
         val serials = mapOf("192.168.0.50" to "OTHER", "192.168.0.61" to "9012ABC", "192.168.0.70" to "9012ABC")

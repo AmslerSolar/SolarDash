@@ -36,6 +36,10 @@
     <string name="forms_type_coming_soon">%1$s (in arrivo)</string>
     <string name="forms_stop_search">Interrompi ricerca</string>
     <string name="forms_search_network">Cerca nella rete</string>
+    <string name="forms_search_other_network">Altra rete…</string>
+    <string name="forms_search_range">Rete da cercare</string>
+    <string name="forms_search_range_hint">Vuoto: la rete di questo tablet. Ad es. 192.168.1 (tutti i suoi indirizzi), 192.168.1.0/24 o un indirizzo come 192.168.1.200.</string>
+    <string name="forms_search_range_invalid">Non è una rete: ad es. 192.168.1, 192.168.1.0/24 o 192.168.1.200 (al massimo 254 indirizzi)</string>
     <string name="forms_search_extended">Ricerca estesa</string>
     <string name="forms_scan_progress_ports">Porte: %1$d di %2$d</string>
     <string name="forms_scan_progress_identify">Identificazione: %1$d di %2$d</string>

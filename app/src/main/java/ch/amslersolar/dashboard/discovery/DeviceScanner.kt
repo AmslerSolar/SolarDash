@@ -184,11 +184,19 @@ class DeviceScanner(
 
     /** Tries each driver in [candidates] (by default the ones that use [port]) in turn; the first plausible identity wins. */
     suspend fun probe(host: String, port: Int, candidates: List<Pair<DeviceType, Int>> = CANDIDATES[port].orEmpty()): FoundDevice {
+        // On a port no driver knows (a gateway's 4196, 8899 …) every driver is tried: a unit id that didn't answer
+        // in time is silent for the others too (nothing at that address behind the gateway), so it's skipped.
+        val gatewayPort = port !in CANDIDATES
+        val silent = HashSet<Int>()
         for ((type, unitId) in candidates) {
+            if (unitId in silent) continue
             val info = try {
                 identify(type, host, port, unitId)
             } catch (e: CancellationException) {
                 throw e
+            } catch (e: java.io.InterruptedIOException) {
+                if (gatewayPort) silent += unitId
+                continue
             } catch (_: Exception) {
                 continue
             }
@@ -262,7 +270,34 @@ class DeviceScanner(
         fun localHosts(context: Context): List<String>? = localNetwork(context)?.let { (own, prefix) -> hosts(own, prefix) }
 
         /** Scans the phone's local network; fails with a message when it isn't on one. */
-        fun scanLocalNetwork(context: Context, known: Map<String, String>, extended: Boolean = false): Flow<ScanEvent> {
+        /**
+         * The addresses of a network the user typed: "192.168.1" or "192.168.1.0/24" (/24 to /32), or one address
+         * "192.168.1.200". Null when it isn't one of these.
+         */
+        fun parseRange(text: String): List<String>? {
+            val t = text.trim()
+            val (addr, prefix) = when {
+                "/" in t -> t.substringBefore("/") to (t.substringAfter("/").toIntOrNull() ?: return null)
+                t.count { it == '.' } == 2 -> "$t.0" to 24
+                else -> t to 32
+            }
+            if (prefix !in 24..32) return null
+            val parts = addr.split(".").map { it.toIntOrNull() ?: return null }
+            if (parts.size != 4 || parts.any { it !in 0..255 }) return null
+            val ip = parts.fold(0L) { acc, p -> (acc shl 8) or p.toLong() }
+            fun dotted(a: Long) = listOf(24, 16, 8, 0).joinToString(".") { ((a shr it) and 0xFF).toString() }
+            if (prefix >= 31) return listOf(dotted(ip))
+            val mask = (0xFFFFFFFFL shl (32 - prefix)) and 0xFFFFFFFFL
+            val network = ip and mask
+            return (network + 1 until (network or (mask.inv() and 0xFFFFFFFFL))).map(::dotted)
+        }
+
+        /** [range]: another network to search (see [parseRange]) instead of the tablet's own, e.g. a gateway's factory one. */
+        fun scanLocalNetwork(context: Context, known: Map<String, String>, extended: Boolean = false, range: String = ""): Flow<ScanEvent> {
+            if (range.isNotBlank()) {
+                val hosts = parseRange(range) ?: return channelFlow { send(ScanEvent.Failed("Can't read the network to search: $range")) }
+                return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs).scan(hosts, known, extended)
+            }
             val (own, prefix) = localNetwork(context) ?: return channelFlow {
                 send(ScanEvent.Failed("Not connected to a local network. Connect to the plant's Wi-Fi and try again."))
             }
