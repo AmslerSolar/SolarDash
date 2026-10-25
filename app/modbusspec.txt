@@ -42,3 +42,5 @@ ingeteam-ingecon-sun-legacy
 riello-central
 # All energy devices besides the ones above (the device form offers them as "More devices").
 kinds: inverter, meter, battery, charger, heat_pump, heating_rod, ups, boiler
+# Not energy devices, though filed under those kinds.
+not: primat-ultrasonic-water, vzlet-em-expert-9xxm, vzlet-em-profi-m, paw-fc310

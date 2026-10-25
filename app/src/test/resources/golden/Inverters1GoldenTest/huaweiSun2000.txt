@@ -83,8 +83,8 @@ problems=[]
 (phases, [[L1, 231.10, 5.12, -400], [L2, 232.00, 4.98, -420], [L3, 229.80, 5.05, -414]])
 (lifetimePv, 12345.670)
 (todayPv, 23.450)
-(problemKinds, [FAULT, FAULT, WARNING, WARNING, MAINS_LOST, BACKUP_MODE])
-problems=[BACKUP_MODE: Off-grid (0x0203), FAULT: Battery fault (ID 17), FAULT: Grid overvoltage (2034), MAINS_LOST: Grid loss (2032), WARNING: Alarm 3 bit 12, WARNING: Overtemperature (2063)]
+(problemKinds, [FAULT, FAULT, FAULT, WARNING, MAINS_LOST, BACKUP_MODE])
+problems=[BACKUP_MODE: Off-grid (0x0203), FAULT: Battery fault (ID 17), FAULT: Grid overvoltage (2034), MAINS_LOST: Grid loss (2032), FAULT: CT wiring abnormal (2092), WARNING: Overtemperature (2063)]
 
 [huaweiSun2000/Huawei battery status 3 without fault ID]
 (pv, 6125)

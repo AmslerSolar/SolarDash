@@ -287,7 +287,10 @@ class SpecReader(
                 keys += key
             }
         }
-        return out.mapIndexed { i, b -> Triple(keys[i], b[0], b[1]) }
+        // A text longer than one request may ask for: several requests of at most max_registers.
+        return out.flatMapIndexed { i, b ->
+            (0 until b[1] step c.maxRegisters).map { o -> Triple(keys[i], b[0] + o, minOf(c.maxRegisters, b[1] - o)) }
+        }
     }
 
     // ---------------------------------------------------------------- decoding
@@ -358,6 +361,7 @@ class SpecReader(
             "s16" -> n.toShort().toDouble()
             "s32" -> n.toInt().toDouble()
             "s64" -> n.toDouble()
+            "f16" -> half(n.toInt())
             "f32" -> java.lang.Float.intBitsToFloat(n.toInt()).toDouble()
             "f64" -> java.lang.Double.longBitsToDouble(n)
             "sm16", "sm32" -> {
@@ -369,6 +373,18 @@ class SpecReader(
                 if (digits.any { it > 9 }) null else digits.fold(0L) { acc, d -> acc * 10 + d }.toDouble()
             }
             else -> null
+        }
+    }
+
+    /** IEEE 754 half precision: sign, 5 exponent bits, 10 fraction bits. */
+    private fun half(h: Int): Double {
+        val sign = if (h and 0x8000 != 0) -1.0 else 1.0
+        val exp = (h shr 10) and 0x1F
+        val frac = (h and 0x3FF).toDouble()
+        return sign * when (exp) {
+            0 -> frac / 1024.0 * Math.pow(2.0, -14.0) // subnormal
+            0x1F -> if (frac == 0.0) Double.POSITIVE_INFINITY else Double.NaN
+            else -> (1 + frac / 1024.0) * Math.pow(2.0, exp - 15.0)
         }
     }
 

@@ -25,7 +25,8 @@ OUT = APP / "app/src/main/assets/modbusspec"
 LIST = APP / "app/modbusspec.txt"
 
 
-DROP_POINT = ("note", "conflicts", "writable", "verified_by")
+DROP_POINT = ("note", "conflicts", "writable", "verified_by",
+              "write_address", "write_multiple", "write_single", "min", "max", "persistent")
 
 
 def referenced(d: dict) -> set:
@@ -53,10 +54,12 @@ def slim(d: dict, hook_keys: set = frozenset()) -> dict:
     keep = referenced(d) | set(hook_keys)
     points = []
     for p in d["points"]:
-        if p.get("writable") and p["key"] not in keep:
-            continue
+        if p.get("write_only") or (p.get("writable") and p["key"] not in keep):
+            continue  # write-only points can't be read at all
         points.append({k: v for k, v in p.items() if k not in DROP_POINT})
-    out = {k: v for k, v in d.items() if k not in ("notes", "points")}
+    out = {k: v for k, v in d.items() if k not in ("notes", "points", "reserved")}
+    if "connection" in out:
+        out["connection"] = {k: v for k, v in out["connection"].items() if k not in ("write_multiple", "write_single")}
     out["points"] = points
     out["sources"] = [{k: v for k, v in s.items() if k in ("id", "title")} for s in d.get("sources", [])]
     for dv in out.get("derived", []):
@@ -91,7 +94,7 @@ def main() -> int:
     for path in sorted(p for p in listed if p.endswith(".yaml")):
         d = msp.expand(yaml.safe_load(at_head(path)))
         by_id[d["id"]] = (spec / path, d)
-    wanted, hook_keys = [], {}
+    wanted, hook_keys, excluded = [], {}, set()
     for line in LIST.read_text(encoding="utf-8").splitlines():
         words = line.split("#")[0].split()
         if not words:
@@ -101,12 +104,17 @@ def main() -> int:
             kinds = {k.strip() for k in " ".join(words[1:]).split(",") if k.strip()}
             wanted += [i for i, (_, d) in sorted(by_id.items()) if d["kind"] in kinds]
             continue
+        if words[0] == "not:":
+            # Files of those kinds that aren't energy devices (water and flow meters …).
+            excluded |= {k.strip() for k in " ".join(words[1:]).split(",") if k.strip()}
+            continue
         wanted.append(words[0])
         if len(words) == 3 and words[1] == "keep":
             hook_keys[words[0]] = set(words[2].split(","))
         elif len(words) != 1:
             print(f"app/modbusspec.txt: can't read {line!r} (expected '<id>' or '<id> keep <key>,<key>')", file=sys.stderr)
             return 1
+    wanted = [i for i in wanted if i not in excluded]
     OUT.mkdir(parents=True, exist_ok=True)
     for old in OUT.glob("*.json"):
         old.unlink()
