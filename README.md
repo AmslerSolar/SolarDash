@@ -55,7 +55,7 @@ address is tried on Modbus TCP port 502, and each open port is listed at once ("
 identified, first with the named drivers, then with the bundled ModbusSpec files that have an identify check for
 their port (each unit's registers are read once and shared by all files). Open ports nothing recognises stay listed
 as "Modbus TCP device, not recognised". **Extended search** also tries the other ports devices use: 503, 1502, 6502,
-8899 (RS485/Wi-Fi gateways) and the ports of the ModbusSpec files (4701, 4702, 5555, 8080, 10001, 30502); it takes
+8899 and 4196 (RS485 gateways: Elfin / USR Wi-Fi, Waveshare Ethernet) and the ports of the ModbusSpec files (4701, 4702, 5555, 8080, 10001, 30502); it takes
 longer. Tap a recognised result to fill in the form. Devices already in a plant are listed but not contacted, since
 some accept only one Modbus client. The LG HTTPS API (port 443) isn't searched for; its unit shows up via SunSpec.
 Devices without an identify check (many meters, heat pumps and wallboxes) are added by hand. A device the generic SunSpec driver

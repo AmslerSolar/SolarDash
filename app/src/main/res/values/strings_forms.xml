@@ -45,7 +45,7 @@
     <string name="forms_found_unit">unit %1$d</string>
     <string name="forms_found_serial">S/N %1$s</string>
     <string name="forms_found_via_mdns">found via mDNS</string>
-    <string name="forms_hint_scan">Search network tries Modbus TCP port 502 on every address of this Wi-Fi network, then identifies what answered (the named inverters and the ModbusSpec devices that can tell what they are). Every open port is listed, also unrecognised ones. Extended search also tries the other ports devices use (503, 1502, 6502, 8899 …) and takes longer. Devices that can’t be recognised are added by hand.</string>
+    <string name="forms_hint_scan">Search network tries Modbus TCP port 502 on every address of this Wi-Fi network, then identifies what answered (the named inverters and the ModbusSpec devices that can tell what they are). Every open port is listed, also unrecognised ones. Extended search also tries the other ports devices use (503, 1502, 6502, 8899, 4196 …) and takes longer. Devices that can’t be recognised are added by hand.</string>
     <string name="forms_hint_kind_battery">Only add standalone batteries here. A battery on a hybrid inverter is already read through the inverter, and adding it again would count it twice.</string>
     <string name="forms_hint_kind_meter">A meter at the grid connection replaces the inverters\' grid values. A PV meter adds production (e.g. an inverter without communication); a consumer sub-meter shows a single load.</string>
     <string name="forms_hint_kind_consumer">Consumers are shown as parts of the home load. They don\'t change the plant totals: the grid meter or the balance already includes them.</string>

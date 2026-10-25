@@ -90,7 +90,7 @@ class DeviceScanner(
 ) {
     /**
      * Two phases. First every address of [hosts] is tried on Modbus TCP port 502, then, with [extended], on the other
-     * ports devices use (1502, 503, 6502, the gateways' 8899, …): every open port is reported at once (identifying).
+     * ports devices use (1502, 503, 6502, the gateways' 8899 and 4196, …): every open port is reported at once (identifying).
      * Then each one is identified: the named drivers for its port, then the ModbusSpec files that can recognise a
      * device; what nothing recognises stays listed as an open port.
      */
@@ -228,9 +228,9 @@ class DeviceScanner(
         const val MDNS_WINDOW_MS = 8_000L
         const val MODBUS_PORT = 502
 
-        /** The extended search: 502, the named drivers' ports, RS485/Wi-Fi gateways (8899) and the ModbusSpec files' ports. */
+        /** The extended search: 502, the named drivers' ports, RS485 gateways (8899: Elfin / USR Wi-Fi, 4196: Waveshare Ethernet) and the ModbusSpec files' ports. */
         val EXTENDED_PORTS: List<Int> by lazy {
-            (listOf(MODBUS_PORT) + CANDIDATES.keys + listOf(8899) +
+            (listOf(MODBUS_PORT) + CANDIDATES.keys + listOf(8899, 4196) +
                 (SpecLibrary.current?.index?.map { it.port }.orEmpty())).distinct()
         }
         private const val PARALLEL_CONNECTS = 64
