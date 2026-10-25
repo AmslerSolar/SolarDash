@@ -25,6 +25,7 @@
     <string name="history_add_channel">Aggiungi canale…</string>
     <string name="history_chart_hint">Pizzica per lo zoom, trascina per spostare, doppio tocco per ripristinare</string>
     <string name="history_totals">Totali</string>
+    <string name="history_whole_plant">Intero impianto</string>
     <string name="history_solar_yield">Produzione solare</string>
     <string name="history_self_sufficiency">Autosufficienza</string>
     <string name="history_self_consumption">Autoconsumo</string>

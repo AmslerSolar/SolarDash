@@ -167,6 +167,7 @@ class MainActivity : ComponentActivity() {
                                         )
                                         val historyState by vm.state.collectAsStateWithLifecycle()
                                         val generating by vm.generating.collectAsStateWithLifecycle()
+                                        val shownDevice by vm.selectedDevice.collectAsStateWithLifecycle()
                                         HistoryTab(
                                             hasDemoDevices = plant.devices.any { !it.type.needsHost },
                                             state = historyState,
@@ -179,6 +180,8 @@ class MainActivity : ComponentActivity() {
                                             catalog = vm::catalog,
                                             onAddChannels = { selection, onRefused -> vm.addChannels(selection, onRefused) },
                                             onRemoveChannel = { deviceId, key -> vm.removeChannel(deviceId, key) },
+                                            selectedDevice = shownDevice,
+                                            onDevice = vm::setDevice,
                                             modifier = modifier,
                                         )
                                     }

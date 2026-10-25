@@ -25,6 +25,7 @@
     <string name="history_add_channel">Add channel…</string>
     <string name="history_chart_hint">Pinch to zoom, drag to pan, double-tap to reset</string>
     <string name="history_totals">Totals</string>
+    <string name="history_whole_plant">Whole plant</string>
     <string name="history_solar_yield">Solar yield</string>
     <string name="history_self_sufficiency">Self-sufficiency</string>
     <string name="history_self_consumption">Self-consumption</string>

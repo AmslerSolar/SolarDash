@@ -25,6 +25,7 @@
     <string name="history_add_channel">Kanal hinzufügen…</string>
     <string name="history_chart_hint">Zum Zoomen zwei Finger spreizen, zum Verschieben ziehen, doppeltippen setzt zurück</string>
     <string name="history_totals">Summen</string>
+    <string name="history_whole_plant">Ganze Anlage</string>
     <string name="history_solar_yield">Solarertrag</string>
     <string name="history_self_sufficiency">Autarkie</string>
     <string name="history_self_consumption">Eigenverbrauch</string>

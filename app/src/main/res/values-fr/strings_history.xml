@@ -25,6 +25,7 @@
     <string name="history_add_channel">Ajouter un canal…</string>
     <string name="history_chart_hint">Pincez pour zoomer, glissez pour déplacer, touchez deux fois pour réinitialiser</string>
     <string name="history_totals">Totaux</string>
+    <string name="history_whole_plant">Toute l\'installation</string>
     <string name="history_solar_yield">Production solaire</string>
     <string name="history_self_sufficiency">Autonomie</string>
     <string name="history_self_consumption">Autoconsommation</string>

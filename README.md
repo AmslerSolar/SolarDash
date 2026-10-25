@@ -115,6 +115,11 @@ The edit icon on a device opens its settings (name, IP, port, unit id, password)
   **Add channel…** adds up to three device channels, picked per device and grouped like the detail view. Each
   unit gets its own y-axis (at most four: left, right, second left, second right); % is always 0–100. Long
   names are shortened in the legend; long-press a chip for the full name, tap its × to remove it.
+- **One device:** with more than one device, chips above the periods choose the whole plant or one device. A
+  device's curves (solar, consumption, battery, grid, charge) and its energy come from its own recorded channels:
+  energy per day is integrated from its power values, its own "today" counters winning where it has them, and
+  kept in `device_daily` once a day is over. Like the channels, a device's history only covers the time the plant
+  was open in the app.
 - **Views:** Day and Week show power curves; Month shows daily energy bars; Year shows monthly bars; Lifetime
   shows yearly bars. Pinch to zoom, drag to pan, tap for values, double-tap to reset. The table button shows the
   same data as text.

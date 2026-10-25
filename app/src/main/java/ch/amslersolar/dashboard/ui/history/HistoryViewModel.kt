@@ -79,13 +79,20 @@ class HistoryViewModel(
     private val history: HistoryRepository,
 ) : ViewModel() {
     private val range = MutableStateFlow(HistoryRange(HistoryPeriod.DAY, LocalDate.now()))
+    /** The device shown on its own; null: the whole plant. */
+    private val device = MutableStateFlow<String?>(null)
+    val selectedDevice: StateFlow<String?> = device
     private val _generating = MutableStateFlow(false)
     val generating: StateFlow<Boolean> = _generating
 
     /** Null until the first load. Reloads when the range changes or new samples are recorded. */
-    val state: StateFlow<HistoryUiState?> = combine(range, history.version, plants.plant(plantId)) { r, _, plant -> r to plant }
-        .mapLatest { (r, plant) -> load(r, plant) }
+    val state: StateFlow<HistoryUiState?> = combine(range, device, history.version, plants.plant(plantId)) { r, d, _, plant -> Triple(r, d, plant) }
+        .mapLatest { (r, d, plant) -> load(r, plant, d?.takeIf { id -> plant?.devices?.any { it.id == id } == true }) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    fun setDevice(deviceId: String?) {
+        device.value = deviceId
+    }
 
     fun setPeriod(period: HistoryPeriod) {
         range.value = HistoryRange(period, range.value.anchor)
@@ -159,22 +166,34 @@ class HistoryViewModel(
         }
     }
 
-    private suspend fun load(r: HistoryRange, plant: Plant?): HistoryUiState {
+    /** The plant's figures, or [deviceId]'s alone (worked out from its recorded values). */
+    private suspend fun load(r: HistoryRange, plant: Plant?, deviceId: String?): HistoryUiState {
         val today = LocalDate.now()
         val zone = ZoneId.systemDefault()
         val hasAnyData = history.firstDay(plantId) != null
+        suspend fun samples(from: Long, to: Long) =
+            if (deviceId == null) history.samples(plantId, from, to) else history.deviceSamples(deviceId, from, to)
+        suspend fun days(from: LocalDate, to: LocalDate) =
+            if (deviceId == null) history.days(plantId, from, to) else history.deviceDays(deviceId, from, to)
+        suspend fun months(year: Int): Map<YearMonth, EnergyTotals> =
+            if (deviceId == null) history.months(plantId, year)
+            else days(LocalDate.of(year, 1, 1), LocalDate.of(year, 12, 31)).groupBy { YearMonth.from(it.day) }
+                .mapValues { (_, d) -> HistoryMath.sum(d.map { it.energy }) }
+        suspend fun years(): Map<Int, EnergyTotals> =
+            if (deviceId == null) history.years(plantId)
+            else days(LocalDate.of(2000, 1, 1), today).groupBy { it.day.year }.mapValues { (_, d) -> HistoryMath.sum(d.map { it.energy }) }
         return when (r.period) {
             HistoryPeriod.DAY -> {
                 val start = r.anchor.atStartOfDay(zone).toEpochSecond()
                 val end = r.anchor.plusDays(1).atStartOfDay(zone).toEpochSecond()
-                val totals = history.days(plantId, r.anchor, r.anchor).firstOrNull()?.energy ?: EnergyTotals()
-                val chart = HistoryChart.Power(start, end, history.samples(plantId, start, end), channels = channelSeries(plant, start, end))
+                val totals = days(r.anchor, r.anchor).firstOrNull()?.energy ?: EnergyTotals()
+                val chart = HistoryChart.Power(start, end, samples(start, end), channels = channelSeries(plant, start, end))
                 HistoryUiState(r, today, totals, chart, hasAnyData)
             }
             HistoryPeriod.WEEK, HistoryPeriod.MONTH -> {
                 val start = r.start!!
                 val end = r.end!!
-                val byDay = history.days(plantId, start, end).associate { it.day to it.energy }
+                val byDay = days(start, end).associate { it.day to it.energy }
                 val pattern = if (r.period == HistoryPeriod.WEEK) "EEE" else "d"
                 val slots = generateSequence(start) { it.plusDays(1) }.takeWhile { it <= end }.map { day ->
                     EnergySlot(
@@ -187,14 +206,14 @@ class HistoryViewModel(
                 val chart = if (r.period == HistoryPeriod.WEEK) {
                     val from = start.atStartOfDay(zone).toEpochSecond()
                     val to = end.plusDays(1).atStartOfDay(zone).toEpochSecond()
-                    HistoryChart.Power(from, to, history.samples(plantId, from, to), days = slots, channels = channelSeries(plant, from, to))
+                    HistoryChart.Power(from, to, samples(from, to), days = slots, channels = channelSeries(plant, from, to))
                 } else {
                     HistoryChart.Energy(slots)
                 }
                 HistoryUiState(r, today, totals, chart, hasAnyData)
             }
             HistoryPeriod.YEAR -> {
-                val months = history.months(plantId, r.anchor.year)
+                val months = months(r.anchor.year)
                 val slots = Month.entries.map { m ->
                     EnergySlot(
                         label = "${m.getDisplayName(TextStyle.FULL, Locale.getDefault())} ${r.anchor.year}",
@@ -205,7 +224,7 @@ class HistoryViewModel(
                 HistoryUiState(r, today, HistoryMath.sum(months.values.toList()), HistoryChart.Energy(slots), hasAnyData)
             }
             HistoryPeriod.LIFETIME -> {
-                val years = history.years(plantId)
+                val years = years()
                 val firstYear = years.keys.minOrNull() ?: today.year
                 val slots = (firstYear..today.year).map { y ->
                     EnergySlot(label = y.toString(), shortLabel = y.toString(), energy = years[y] ?: EnergyTotals())

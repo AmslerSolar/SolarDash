@@ -6,6 +6,8 @@ package ch.amslersolar.dashboard.ui.history
 import androidx.compose.foundation.background
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.AlertDialog
@@ -105,6 +107,9 @@ fun HistoryTab(
     onAddChannels: (List<Pair<String, String>>, (ChannelRefusal) -> Unit) -> Unit,
     onRemoveChannel: (String, String) -> Unit,
     modifier: Modifier = Modifier,
+    /** The device shown on its own; null: the whole plant. */
+    selectedDevice: String? = null,
+    onDevice: (String?) -> Unit = {},
 ) {
     var showTable by rememberSaveable { mutableStateOf(false) }
     var hiddenPower by rememberSaveable { mutableStateOf(setOf<String>()) }
@@ -122,6 +127,17 @@ fun HistoryTab(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        if (devices.size > 1) {
+            item {
+                // The whole plant, or one device's own curves and energy.
+                Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    FilterChip(selected = selectedDevice == null, onClick = { onDevice(null) }, label = { Text(stringResource(R.string.history_whole_plant)) })
+                    devices.forEach { d ->
+                        FilterChip(selected = selectedDevice == d.id, onClick = { onDevice(d.id) }, label = { Text(d.name) })
+                    }
+                }
+            }
+        }
         item {
             SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
                 HistoryPeriod.entries.forEachIndexed { i, period ->

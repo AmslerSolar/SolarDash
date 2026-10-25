@@ -37,7 +37,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
 
-private class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, "history.db", null, 5) {
+private class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, "history.db", null, 6) {
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
             """CREATE TABLE samples (
@@ -55,6 +55,7 @@ private class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, "his
         createChannelTables(db)
         createDeviceTable(db)
         createEventTable(db)
+        createDeviceDailyTable(db)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -66,6 +67,20 @@ private class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, "his
             db.execSQL("ALTER TABLE events ADD COLUMN details TEXT")
             db.execSQL("ALTER TABLE events ADD COLUMN end_details TEXT")
         }
+        if (oldVersion < 6) createDeviceDailyTable(db)
+    }
+
+    /**
+     * Each device's energy per day, worked out from its recorded values (see HistoryRepository.deviceDays) and
+     * kept for past days; a row of nulls: nothing was recorded that day.
+     */
+    private fun createDeviceDailyTable(db: SQLiteDatabase) {
+        db.execSQL(
+            """CREATE TABLE IF NOT EXISTS device_daily (
+                device_id TEXT NOT NULL, day TEXT NOT NULL,
+                pv REAL, load REAL, export REAL, import REAL,
+                PRIMARY KEY (device_id, day))""",
+        )
     }
 
     /**
@@ -110,6 +125,12 @@ private class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, "his
 }
 
 private const val EVENT_COLUMNS = "id, plant_id, key, kind, severity, device_id, device_name, detail, percent, started, ended, details, end_details"
+
+/** The channels a device's history view is drawn from (see Channels.extract). */
+private val DEVICE_KEYS = listOf(
+    "r:pv_power", "r:load_power", "r:battery_power", "r:grid_power", "r:battery_soc",
+    "r:today_pv", "r:today_export", "r:today_import", "r:today_load",
+)
 
 /** All channels of a device, every minute (roughly 300–500 MB per device and year). */
 const val DEVICE_SAMPLE_INTERVAL_S = 60L
@@ -223,6 +244,7 @@ class HistoryRepository(context: Context) : EventStore {
     suspend fun deleteDevices(deviceIds: List<String>) = write { w ->
         deviceIds.forEach { id ->
             w.delete("device_samples", "device_id = ?", arrayOf(id))
+            w.delete("device_daily", "device_id = ?", arrayOf(id))
             w.delete("channels", "device_id = ?", arrayOf(id))
             w.delete("devices", "device_id = ?", arrayOf(id))
         }
@@ -286,6 +308,8 @@ class HistoryRepository(context: Context) : EventStore {
         }
         w.delete("device_samples", "device_id = ?", arrayOf(from))
         w.delete("devices", "device_id = ?", arrayOf(from))
+        // Worked out again from the merged samples.
+        w.delete("device_daily", "device_id IN (?, ?)", arrayOf(from, to))
     }
 
     private fun compress(text: String): ByteArray {
@@ -376,6 +400,104 @@ class HistoryRepository(context: Context) : EventStore {
     suspend fun firstDay(plantId: String): LocalDate? = query {
         it.rawQuery("SELECT MIN(day) FROM daily WHERE plant_id = ?", arrayOf(plantId)).use { c ->
             if (c.moveToFirst() && !c.isNull(0)) LocalDate.parse(c.getString(0)) else null
+        }
+    }
+
+    /** A device's main values (and its day counters) as plant-style samples, from its recorded channels. */
+    suspend fun deviceSamples(deviceId: String, fromEpoch: Long, toEpoch: Long): List<Sample> =
+        deviceRows(deviceId, fromEpoch, toEpoch).map { (ts, m) -> m.sample(ts) }
+
+    private suspend fun deviceRows(deviceId: String, fromEpoch: Long, toEpoch: Long): List<Pair<Long, Map<String, Double>>> {
+        val byTs = sortedMapOf<Long, MutableMap<String, Double>>()
+        for ((key, points) in channelSeries(deviceId, DEVICE_KEYS, fromEpoch, toEpoch)) {
+            for ((ts, v) in points) byTs.getOrPut(ts) { HashMap() }[key] = v
+        }
+        return byTs.map { (ts, m) -> ts to m }
+    }
+
+    private fun Map<String, Double>.sample(ts: Long) = Sample(
+        ts, this["r:pv_power"]?.let(Math::round)?.toInt(), this["r:load_power"]?.let(Math::round)?.toInt(),
+        this["r:battery_power"]?.let(Math::round)?.toInt(), this["r:grid_power"]?.let(Math::round)?.toInt(),
+        this["r:battery_soc"]?.let(Math::round)?.toInt(),
+    )
+
+    /**
+     * A device's energy per day from [from] to [to] (not after today, not before its first recording): integrated
+     * from its power values like the plant's, a day counter of its own winning where it has one. Past days are
+     * kept in device_daily once worked out; today is worked out each time.
+     */
+    suspend fun deviceDays(deviceId: String, from: LocalDate, to: LocalDate): List<DailyEnergy> {
+        val first = firstDeviceDay(deviceId) ?: return emptyList()
+        val today = LocalDate.now(zone)
+        val start = maxOf(from, first)
+        val end = minOf(to, today)
+        if (start > end) return emptyList()
+        val stored = query { db ->
+            db.rawQuery(
+                "SELECT day, pv, load, export, import FROM device_daily WHERE device_id = ? AND day >= ? AND day <= ?",
+                arrayOf(deviceId, start.toString(), end.toString()),
+            ).use { c -> c.map { LocalDate.parse(c.getString(0)) to readEnergy(c, 1) }.toMap() }
+        }
+        val out = mutableListOf<DailyEnergy>()
+        val computed = mutableListOf<DailyEnergy>()
+        var day = start
+        while (day <= end) {
+            val energy = stored[day] ?: deviceDay(deviceId, day).also { if (day < today) computed += DailyEnergy(day, it) }
+            if (listOf(energy.pvKwh, energy.loadKwh, energy.exportKwh, energy.importKwh).any { it != null }) out += DailyEnergy(day, energy)
+            day = day.plusDays(1)
+        }
+        if (computed.isNotEmpty()) cache { w -> computed.forEach { upsertDeviceDaily(w, deviceId, it.day, it.energy) } }
+        return out
+    }
+
+    private suspend fun deviceDay(deviceId: String, day: LocalDate): EnergyTotals {
+        val from = day.atStartOfDay(zone).toEpochSecond()
+        val to = day.plusDays(1).atStartOfDay(zone).toEpochSecond()
+        var total: EnergyTotals? = null
+        var prev: Sample? = null
+        for ((ts, m) in deviceRows(deviceId, from, to)) {
+            val sample = m.sample(ts)
+            val time = java.time.Instant.ofEpochSecond(ts).atZone(zone).toLocalTime()
+            val counters = EnergyTotals(
+                pvKwh = m["r:today_pv"], exportKwh = m["r:today_export"], importKwh = m["r:today_import"], loadKwh = m["r:today_load"],
+            ).takeIf { HistoryMath.countersUsable(time) }
+            total = HistoryMath.merge(total, counters, HistoryMath.integrate(prev, sample))
+            prev = sample
+        }
+        return total ?: EnergyTotals()
+    }
+
+    private suspend fun firstDeviceDay(deviceId: String): LocalDate? = query { db ->
+        db.rawQuery("SELECT MIN(ts) FROM device_samples WHERE device_id = ?", arrayOf(deviceId)).use { c ->
+            if (c.moveToFirst() && !c.isNull(0)) java.time.Instant.ofEpochSecond(c.getLong(0)).atZone(zone).toLocalDate() else null
+        }
+    }
+
+    private fun upsertDeviceDaily(db: SQLiteDatabase, deviceId: String, day: LocalDate, e: EnergyTotals) {
+        val cv = ContentValues().apply {
+            put("device_id", deviceId)
+            put("day", day.toString())
+            putDouble("pv", e.pvKwh)
+            putDouble("load", e.loadKwh)
+            putDouble("export", e.exportKwh)
+            putDouble("import", e.importKwh)
+        }
+        db.insertWithOnConflict("device_daily", null, cv, SQLiteDatabase.CONFLICT_REPLACE)
+    }
+
+    /** Like [write], but for derived data: open history screens aren't told to reload. */
+    private suspend fun cache(block: (SQLiteDatabase) -> Unit) {
+        writeLock.withLock {
+            withContext(Dispatchers.IO) {
+                val w = db.writableDatabase
+                w.beginTransaction()
+                try {
+                    block(w)
+                    w.setTransactionSuccessful()
+                } finally {
+                    w.endTransaction()
+                }
+            }
         }
     }
 
