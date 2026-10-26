@@ -120,14 +120,10 @@
     </plurals>
     <string name="forms_sweep_open">Scansione registri…</string>
     <string name="forms_sweep_title">Scansione registri</string>
-    <string name="forms_hint_sweep">Per documentare un dispositivo: legge ogni registro dell\'intervallo, in sola lettura (funzione 03 o 04, non viene scritto nulla), e salva i valori grezzi come JSON nella cartella dell\'app (Android/data/ch.amslersolar.dashboard/files/register-sweeps). Indirizzi di protocollo, da 0. Un dispositivo interrogato riceve nel frattempo una seconda connessione.</string>
-    <string name="forms_sweep_holding">03 holding</string>
-    <string name="forms_sweep_input">04 input</string>
-    <string name="forms_sweep_from">Dal registro</string>
-    <string name="forms_sweep_to">Al registro</string>
+    <string name="forms_hint_sweep">Per documentare un dispositivo: legge tutti i registri da 0 a 65535 con la funzione 03 (holding), poi 04 (input), in sola lettura, non viene scritto nulla. Salva i valori grezzi come JSON nella cartella dell\'app (Android/data/ch.amslersolar.dashboard/files/register-sweeps), anche se interrotta. Può durare ore; lo schermo resta acceso nel frattempo. Un dispositivo interrogato riceve una seconda connessione.</string>
     <string name="forms_sweep_start">Avvia scansione</string>
     <string name="forms_sweep_stop">Ferma scansione</string>
-    <string name="forms_sweep_progress">%1$d di %2$d registri, %3$d con risposta</string>
-    <string name="forms_sweep_no_answer">Interrotta, nessuna risposta: %1$s</string>
-    <string name="forms_sweep_saved">%1$d registri con risposta (%2$d di %3$d scansionati), salvato in %4$s</string>
+    <string name="forms_sweep_progress">Funzione %1$s · %2$d di %3$d registri · %4$d con risposta</string>
+    <string name="forms_sweep_no_answer">Funzione %1$s interrotta, nessuna risposta: %2$s</string>
+    <string name="forms_sweep_saved">Con risposta: %1$d registri holding (03), %2$d input (04), salvato in %3$s</string>
 </resources>

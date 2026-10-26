@@ -27,43 +27,48 @@ import java.time.format.DateTimeFormatter
  */
 object RegisterSweeps {
     const val FORMAT = "register-sweep"
-    const val VERSION = 1
+    const val VERSION = 2
+
+    /** What a sweep reads: function 03, then 04, each over all registers. */
+    val FUNCTIONS = listOf(ModbusTcp.READ_HOLDING_REGISTERS, ModbusTcp.READ_INPUT_REGISTERS)
 
     /**
-     * Sweeps [device] over its own connection (closed afterwards) and saves the result, also when the sweep is
-     * stopped (cancelled) or the connection fails: [onSaved] gets the file.
+     * Sweeps [device] with each function of [sweeps] in turn, over its own connection (closed afterwards), and
+     * saves all of it in one file, also when stopped (cancelled) or the connection fails: [onSaved] gets the file.
      */
-    suspend fun run(context: Context, device: DeviceConfig, function: Int, sweep: RegisterSweep, progress: () -> Unit, onSaved: (File) -> Unit) {
-        require(function == ModbusTcp.READ_HOLDING_REGISTERS || function == ModbusTcp.READ_INPUT_REGISTERS) { "Read functions only" }
+    suspend fun run(context: Context, device: DeviceConfig, sweeps: Map<Int, RegisterSweep>, progress: () -> Unit, onSaved: (File) -> Unit) {
+        require(sweeps.keys.all { it in FUNCTIONS }) { "Read functions only" }
         val started = Instant.now()
         try {
             ModbusConnections().use { connections ->
                 val client = connections.get(device)
-                sweep.run(
-                    read = { start, count ->
-                        if (function == ModbusTcp.READ_INPUT_REGISTERS) client.readInputRegisters(device.unitId, start, count)
-                        else client.readHoldingRegisters(device.unitId, start, count)
-                    },
-                    progress = progress,
-                )
+                for ((function, sweep) in sweeps) {
+                    sweep.run(
+                        read = { start, count ->
+                            if (function == ModbusTcp.READ_INPUT_REGISTERS) client.readInputRegisters(device.unitId, start, count)
+                            else client.readHoldingRegisters(device.unitId, start, count)
+                        },
+                        progress = progress,
+                    )
+                }
             }
         } finally {
-            withContext(NonCancellable) { onSaved(save(context, device, function, sweep, started)) }
+            withContext(NonCancellable) { onSaved(save(context, device, sweeps, started)) }
         }
     }
 
     fun dir(context: Context): File = File(context.getExternalFilesDir(null) ?: context.filesDir, "register-sweeps")
 
-    suspend fun save(context: Context, device: DeviceConfig, function: Int, sweep: RegisterSweep, startedAt: Instant): File =
+    suspend fun save(context: Context, device: DeviceConfig, sweeps: Map<Int, RegisterSweep>, startedAt: Instant): File =
         withContext(Dispatchers.IO) {
             val stamp = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss").withZone(ZoneId.systemDefault()).format(startedAt)
             val label = device.name.replace(Regex("[^A-Za-z0-9._-]+"), "_").trim('_').take(40).ifEmpty { "device" }
-            val file = File(dir(context).apply { mkdirs() }, "$stamp-$label-fc%02d-${sweep.from}-${sweep.to}.json".format(function))
-            file.writeText(encode(device, function, sweep, startedAt).toString())
+            val file = File(dir(context).apply { mkdirs() }, "$stamp-$label.json")
+            file.writeText(encode(device, sweeps, startedAt).toString())
             file
         }
 
-    fun encode(device: DeviceConfig, function: Int, sweep: RegisterSweep, startedAt: Instant): JsonObject = buildJsonObject {
+    fun encode(device: DeviceConfig, sweeps: Map<Int, RegisterSweep>, startedAt: Instant): JsonObject = buildJsonObject {
         put("format", FORMAT)
         put("version", VERSION)
         put("started", startedAt.toString())
@@ -80,9 +85,15 @@ object RegisterSweeps {
             put("unit_id", device.unitId)
             put("rtu_over_tcp", device.rtuOverTcp)
         }
+        put("complete", sweeps.values.all { it.complete })
+        put("functions", JsonArray(sweeps.map { (function, sweep) -> encode(function, sweep) }))
+    }
+
+    private fun encode(function: Int, sweep: RegisterSweep): JsonObject = buildJsonObject {
         put("function", function)
         put("from", sweep.from)
         put("to", sweep.to)
+        put("done", sweep.done)
         put("complete", sweep.complete)
         sweep.stopped?.let { put("stopped", it) }
         // Protocol addresses (from 0), raw 16-bit values.

@@ -123,8 +123,8 @@ class MainActivity : ComponentActivity() {
                                         if (editing != null) plantsVm.updateDevice(plant.id, it) else plantsVm.addDevice(plant.id, it)
                                         back()
                                     },
-                                    onSweep = { device, function, sweep, progress, onSaved ->
-                                        RegisterSweeps.run(applicationContext, device, function, sweep, progress) { onSaved(it.path) }
+                                    onSweep = { device, sweeps, progress, onSaved ->
+                                        RegisterSweeps.run(applicationContext, device, sweeps, progress) { onSaved(it.path) }
                                     },
                                     onBack = back,
                                     existing = editing,

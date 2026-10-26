@@ -118,14 +118,10 @@
     </plurals>
     <string name="forms_sweep_open">Register auslesen …</string>
     <string name="forms_sweep_title">Register auslesen</string>
-    <string name="forms_hint_sweep">Zum Dokumentieren eines Geräts: liest jedes Register im Bereich, nur lesend (Funktion 03 oder 04, es wird nichts geschrieben), und speichert die Rohwerte als JSON im Ordner der App (Android/data/ch.amslersolar.dashboard/files/register-sweeps). Protokolladressen, ab 0. Ein Gerät, das gerade abgefragt wird, erhält währenddessen eine zweite Verbindung.</string>
-    <string name="forms_sweep_holding">03 Holding</string>
-    <string name="forms_sweep_input">04 Input</string>
-    <string name="forms_sweep_from">Ab Register</string>
-    <string name="forms_sweep_to">Bis Register</string>
+    <string name="forms_hint_sweep">Zum Dokumentieren eines Geräts: liest alle Register 0 bis 65535 mit Funktion 03 (Holding), dann 04 (Input), nur lesend, es wird nichts geschrieben. Speichert die Rohwerte als JSON im Ordner der App (Android/data/ch.amslersolar.dashboard/files/register-sweeps), auch beim Stoppen. Kann Stunden dauern; der Bildschirm bleibt so lange an. Ein Gerät, das gerade abgefragt wird, erhält eine zweite Verbindung.</string>
     <string name="forms_sweep_start">Auslesen starten</string>
     <string name="forms_sweep_stop">Auslesen stoppen</string>
-    <string name="forms_sweep_progress">%1$d von %2$d Registern, %3$d beantwortet</string>
-    <string name="forms_sweep_no_answer">Abgebrochen, keine Antwort mehr: %1$s</string>
-    <string name="forms_sweep_saved">%1$d Register beantwortet (%2$d von %3$d gelesen), gespeichert in %4$s</string>
+    <string name="forms_sweep_progress">Funktion %1$s · %2$d von %3$d Registern · %4$d beantwortet</string>
+    <string name="forms_sweep_no_answer">Funktion %1$s abgebrochen, keine Antwort mehr: %2$s</string>
+    <string name="forms_sweep_saved">Beantwortet: %1$d Holding- (03), %2$d Input-Register (04), gespeichert in %3$s</string>
 </resources>

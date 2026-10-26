@@ -44,6 +44,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -54,6 +55,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -69,7 +71,7 @@ import ch.amslersolar.dashboard.discovery.FoundDevice
 import ch.amslersolar.dashboard.discovery.DeviceScanner
 import ch.amslersolar.dashboard.discovery.ScanEvent
 import ch.amslersolar.dashboard.discovery.ScanPhase
-import ch.amslersolar.dashboard.driver.modbus.ModbusTcp
+import ch.amslersolar.dashboard.data.RegisterSweeps
 import ch.amslersolar.dashboard.driver.modbus.RegisterSweep
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
@@ -85,8 +87,8 @@ fun AddDeviceScreen(
     /** The network search; extended: all ports devices use, not only 502; range: another network (blank: the own). */
     onScan: (extended: Boolean, range: String) -> Flow<ScanEvent>,
     onSave: (DeviceConfig) -> Unit,
-    /** Reads the registers of [sweep] with function 03 or 04 and saves them; [onSaved] gets the file, also when stopped. */
-    onSweep: suspend (device: DeviceConfig, function: Int, sweep: RegisterSweep, progress: () -> Unit, onSaved: (String) -> Unit) -> Unit,
+    /** Reads all registers with function 03, then 04 ([sweeps]) and saves them; [onSaved] gets the file, also when stopped. */
+    onSweep: suspend (device: DeviceConfig, sweeps: Map<Int, RegisterSweep>, progress: () -> Unit, onSaved: (String) -> Unit) -> Unit,
     onBack: () -> Unit,
     /** Set when editing: the form starts from it, and saving keeps its id (history and chart channels stay). */
     existing: DeviceConfig? = null,
@@ -457,35 +459,37 @@ fun AddDeviceScreen(
             }
 
             if (type.modbus && type.needsHost) {
-                SweepSection(enabled = valid) { function, sweep, progress, onSaved -> onSweep(build(), function, sweep, progress, onSaved) }
+                SweepSection(enabled = valid) { sweeps, progress, onSaved -> onSweep(build(), sweeps, progress, onSaved) }
             }
         }
     }
 }
 
 /**
- * Register sweep, for documenting a device: reads a range of registers (function 03 or 04 only, nothing is
- * written) and saves the values as JSON. Folded away behind a button: it's not part of adding a device.
+ * Register sweep, for documenting a device: reads all registers 0..65535 with function 03, then 04 (read only,
+ * nothing is written), and saves the values as JSON. Folded away behind a button: it's not part of adding a device.
  */
 @Composable
 private fun SweepSection(
     enabled: Boolean,
-    onSweep: suspend (function: Int, sweep: RegisterSweep, progress: () -> Unit, onSaved: (String) -> Unit) -> Unit,
+    onSweep: suspend (sweeps: Map<Int, RegisterSweep>, progress: () -> Unit, onSaved: (String) -> Unit) -> Unit,
 ) {
     var open by rememberSaveable { mutableStateOf(false) }
-    var function by rememberSaveable { mutableStateOf(ModbusTcp.READ_HOLDING_REGISTERS) }
-    var from by rememberSaveable { mutableStateOf("0") }
-    var to by rememberSaveable { mutableStateOf("999") }
     val scope = rememberCoroutineScope()
     var job by remember { mutableStateOf<Job?>(null) }
-    var sweep by remember { mutableStateOf<RegisterSweep?>(null) }
-    // Bumped on each progress call: the sweep itself isn't Compose state.
+    var sweeps by remember { mutableStateOf<Map<Int, RegisterSweep>?>(null) }
+    // Bumped on each progress call: the sweeps themselves aren't Compose state.
     var tick by remember { mutableStateOf(0) }
     var saved by rememberSaveable { mutableStateOf<String?>(null) }
     var error by rememberSaveable { mutableStateOf<String?>(null) }
-    val first = from.toIntOrNull()
-    val last = to.toIntOrNull()
-    val rangeValid = first != null && last != null && first in 0..0xFFFF && last in first..0xFFFF
+    val running = job != null
+
+    // A full sweep takes a long time: keep the screen on meanwhile.
+    val view = LocalView.current
+    DisposableEffect(running) {
+        view.keepScreenOn = running
+        onDispose { view.keepScreenOn = false }
+    }
 
     if (!open) {
         TextButton(onClick = { open = true }) { Text(stringResource(R.string.forms_sweep_open)) }
@@ -494,40 +498,19 @@ private fun SweepSection(
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(stringResource(R.string.forms_sweep_title), style = MaterialTheme.typography.titleSmall)
         Hint(stringResource(R.string.forms_hint_sweep))
-        val running = job != null
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            listOf(
-                ModbusTcp.READ_HOLDING_REGISTERS to R.string.forms_sweep_holding,
-                ModbusTcp.READ_INPUT_REGISTERS to R.string.forms_sweep_input,
-            ).forEach { (f, label) ->
-                FilterChip(selected = function == f, enabled = !running, onClick = { function = f }, label = { Text(stringResource(label)) })
-            }
-        }
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            OutlinedTextField(
-                from, { from = it.filter(Char::isDigit).take(5) }, enabled = !running, singleLine = true, isError = !rangeValid,
-                label = { Text(stringResource(R.string.forms_sweep_from)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), modifier = Modifier.weight(1f),
-            )
-            OutlinedTextField(
-                to, { to = it.filter(Char::isDigit).take(5) }, enabled = !running, singleLine = true, isError = !rangeValid,
-                label = { Text(stringResource(R.string.forms_sweep_to)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), modifier = Modifier.weight(1f),
-            )
-        }
         if (running) {
             OutlinedButton(onClick = { job?.cancel() }) { Text(stringResource(R.string.forms_sweep_stop)) }
         } else {
             OutlinedButton(
-                enabled = enabled && rangeValid,
+                enabled = enabled,
                 onClick = {
-                    val s = RegisterSweep(first!!, last!!)
-                    sweep = s
+                    val s = RegisterSweeps.FUNCTIONS.associateWith { RegisterSweep() }
+                    sweeps = s
                     saved = null
                     error = null
                     job = scope.launch {
                         try {
-                            onSweep(function, s, { tick++ }, { saved = it })
+                            onSweep(s, { tick++ }, { saved = it })
                         } catch (e: CancellationException) {
                             throw e
                         } catch (e: Exception) {
@@ -539,15 +522,27 @@ private fun SweepSection(
                 },
             ) { Text(stringResource(R.string.forms_sweep_start)) }
         }
-        sweep?.let { s ->
+        sweeps?.let { all ->
             tick // read, so progress recomposes
-            val total = s.to - s.from + 1
+            val total = all.values.sumOf { it.to - it.from + 1 }
+            val done = all.values.sumOf { it.done }
             if (running) {
-                LinearProgressIndicator(progress = { s.done.toFloat() / total }, modifier = Modifier.fillMaxWidth())
-                Text(stringResource(R.string.forms_sweep_progress, s.done, total, s.values.size), style = MaterialTheme.typography.bodySmall)
-            } else {
-                s.stopped?.let { Text(stringResource(R.string.forms_sweep_no_answer, it), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium) }
-                saved?.let { Text(stringResource(R.string.forms_sweep_saved, s.values.size, s.done, total, it), style = MaterialTheme.typography.bodyMedium) }
+                LinearProgressIndicator(progress = { done.toFloat() / total }, modifier = Modifier.fillMaxWidth())
+                // The function being read: the first one not through yet.
+                val current = all.entries.firstOrNull { !it.value.complete && it.value.stopped == null }?.key ?: all.keys.last()
+                Text(
+                    stringResource(R.string.forms_sweep_progress, "%02d".format(current), done, total, all.values.sumOf { it.values.size }),
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
+            all.forEach { (function, s) ->
+                s.stopped?.let {
+                    Text(stringResource(R.string.forms_sweep_no_answer, "%02d".format(function), it), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium)
+                }
+            }
+            if (!running) saved?.let {
+                val (holding, input) = RegisterSweeps.FUNCTIONS.map { f -> all[f]?.values?.size ?: 0 }
+                Text(stringResource(R.string.forms_sweep_saved, holding, input, it), style = MaterialTheme.typography.bodyMedium)
             }
         }
         error?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium) }

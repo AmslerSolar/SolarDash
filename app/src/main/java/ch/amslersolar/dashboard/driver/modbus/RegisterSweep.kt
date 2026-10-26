@@ -9,13 +9,14 @@ import java.io.IOException
 /**
  * Reads every register of a range, only with a read function (03 or 04): for documenting a device's register map.
  *
- * Blocks of [BLOCK] registers; a block the device refuses (Modbus exception, or no answer) is halved until single
- * registers are left, so the answered ones are found between the missing ones. Many meters don't answer registers
+ * Blocks of [BLOCK] registers; a block the device refuses (Modbus exception, or no answer) is read again one register
+ * at a time, so the answered ones are found between the missing ones. (Not halved: most of a full 0..65535 sweep is
+ * empty, and a refused block costs 1 + 32 requests that way instead of 63.) Many meters don't answer registers
  * they don't have, so a silent stretch is normal; the sweep only ends early, with what it has, after [MAX_SILENT]
  * requests in a row without an answer from a device that hasn't answered at all yet (unreachable, wrong unit id),
  * or [MAX_SILENT_REGISTERS] single registers in a row once it has.
  */
-class RegisterSweep(val from: Int, val to: Int) {
+class RegisterSweep(val from: Int = 0, val to: Int = 0xFFFF) {
     init {
         require(from in 0..0xFFFF && to in from..0xFFFF) { "Register range $from..$to" }
     }
@@ -86,8 +87,8 @@ class RegisterSweep(val from: Int, val to: Int) {
                 return false
             }
             if (count > 1) {
-                val half = count / 2
-                return sweep(start, half, read, pauseMs, progress) && sweep(start + half, count - half, read, pauseMs, progress)
+                for (r in start until start + count) if (!sweep(r, 1, read, pauseMs, progress)) return false
+                return true
             }
             if (failure is ModbusException) exceptions[start] = failure.code else silent += start
         }
