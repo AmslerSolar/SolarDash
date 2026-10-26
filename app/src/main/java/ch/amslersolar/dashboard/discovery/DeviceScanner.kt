@@ -8,6 +8,7 @@ import ch.amslersolar.dashboard.driver.modbus.RegisterBlock
 import ch.amslersolar.dashboard.driver.sunspec.RegisterReader
 import ch.amslersolar.dashboard.driver.spec.SpecTables
 import ch.amslersolar.dashboard.driver.spec.SpecDriver
+import ch.amslersolar.dashboard.driver.spec.SpecIndexEntry
 import ch.amslersolar.dashboard.driver.spec.SpecLibrary
 import ch.amslersolar.dashboard.net.LocalNetworks
 import ch.amslersolar.dashboard.driver.net.DeviceNetwork
@@ -61,6 +62,8 @@ data class FoundDevice(
     val specId: String = "",
     /** The port answered; identification is still to come (a later event for the same host:port replaces it). */
     val identifying: Boolean = false,
+    /** Recognised with Modbus RTU frames: an RS485 gateway in transparent mode. */
+    val rtuOverTcp: Boolean = false,
 ) {
     val key: String get() = "$host:$port"
 }
@@ -238,13 +241,16 @@ class DeviceScanner(
 
         /** The extended search: 502, the named drivers' ports, RS485 gateways (8899: Elfin / USR Wi-Fi, 4196: Waveshare Ethernet) and the ModbusSpec files' ports. */
         val EXTENDED_PORTS: List<Int> by lazy {
-            (listOf(MODBUS_PORT) + CANDIDATES.keys + listOf(8899, 4196) +
+            (listOf(MODBUS_PORT) + CANDIDATES.keys + GATEWAY_PORTS +
                 (SpecLibrary.current?.index?.map { it.port }.orEmpty())).distinct()
         }
         private const val PARALLEL_CONNECTS = 64
         private const val PARALLEL_PROBES = 8
         private const val CONNECT_TIMEOUT_MS = 400
         private const val PROBE_TIMEOUT_MS = 2_000
+        /** RS485 gateways' own ports: 8899 (Elfin / USR Wi-Fi), 4196 (Waveshare Ethernet). */
+        val GATEWAY_PORTS = setOf(8899, 4196)
+        private const val GATEWAY_TIMEOUT_MS = 1_000
 
         /** Text that reads like a model name, not register noise from a device of another make. */
         fun plausible(model: String): Boolean =
@@ -315,13 +321,25 @@ class DeviceScanner(
          * The ModbusSpec files that can recognise their device (an identify check naming it) and use [port], tried on
          * their usual unit ids; each unit's registers are read once and shared by all files (a unit that doesn't
          * answer in time is skipped). A file of a named device type gives that type, others the generic ModbusSpec type.
+         * On an RS485 gateway's port ([GATEWAY_PORTS]) the files of RS485 devices are tried too, with Modbus TCP
+         * frames (a gateway translating) and then with RTU frames (a gateway in transparent mode).
          */
         suspend fun identifyFromSpecs(host: String, port: Int): FoundDevice? {
             val library = SpecLibrary.current ?: return null
-            val entries = library.index.filter { it.identifies && it.port == port }
+            val gateway = port in GATEWAY_PORTS
+            val entries = library.index.filter { it.identifies && (it.port == port || (gateway && it.rs485)) }
             if (entries.isEmpty()) return null
+            for (rtu in if (gateway) listOf(false, true) else listOf(false)) {
+                identifyFromSpecs(library, entries, host, port, rtu)?.let { return it }
+            }
+            return null
+        }
+
+        private suspend fun identifyFromSpecs(library: SpecLibrary, entries: List<SpecIndexEntry>, host: String, port: Int, rtu: Boolean): FoundDevice? {
             val named = SpecDevices.SPEC_IDS.entries.flatMap { (t, ids) -> ids.map { it to t } }.toMap()
-            return ModbusTcpClient(host, port, PROBE_TIMEOUT_MS).use { client ->
+            // behind a gateway an answer takes some 50 ms; every silent unit id costs the whole timeout
+            val timeout = if (port in GATEWAY_PORTS) GATEWAY_TIMEOUT_MS else PROBE_TIMEOUT_MS
+            return ModbusTcpClient(host, port, timeout, rtu = rtu).use { client ->
                 for ((unit, files) in entries.groupBy { it.unit }) {
                     val holding = CachingReader { u, r, c -> client.readHoldingRegisters(u, r, c) }
                     val input = CachingReader { u, r, c -> client.readInputRegisters(u, r, c) }
@@ -336,7 +354,7 @@ class DeviceScanner(
                             continue
                         }
                         val type = named[e.id] ?: SpecDevices.genericType(e.kind)
-                        return@use FoundDevice(host, port, type, unit, info.model.ifBlank { e.title }, info.serial, specId = if (type in SpecDevices.GENERIC) e.id else "")
+                        return@use FoundDevice(host, port, type, unit, info.model.ifBlank { e.title }, info.serial, specId = if (type in SpecDevices.GENERIC) e.id else "", rtuOverTcp = rtu)
                     }
                 }
                 null

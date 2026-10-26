@@ -179,6 +179,8 @@ data class SpecIndexEntry(
     val id: String, val manufacturer: String, val name: String, val kind: String, val port: Int, val unit: Int, val documented: Boolean,
     /** The file can recognise its device on the network (an identify check naming it). */
     val identifies: Boolean = false,
+    /** The device sits on an RS485 bus: reached through a gateway, on the gateway's port. */
+    val rs485: Boolean = false,
 ) {
     val title: String get() = "$manufacturer $name"
 }
@@ -192,7 +194,7 @@ class SpecLibrary(private val load: (String) -> String) {
         kotlinx.serialization.json.Json.parseToJsonElement(load("index.json")).jsonArray.map { e ->
             val o = e.jsonObject
             fun s(k: String) = o[k]?.jsonPrimitive?.content.orEmpty()
-            SpecIndexEntry(s("id"), s("manufacturer"), s("name"), s("kind"), s("port").toIntOrNull() ?: 502, s("unit").toIntOrNull() ?: 1, s("documented") == "true", s("identifies") == "true")
+            SpecIndexEntry(s("id"), s("manufacturer"), s("name"), s("kind"), s("port").toIntOrNull() ?: 502, s("unit").toIntOrNull() ?: 1, s("documented") == "true", s("identifies") == "true", s("rs485") == "true")
         }
     }
 

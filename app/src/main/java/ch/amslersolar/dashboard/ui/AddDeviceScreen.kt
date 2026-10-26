@@ -149,6 +149,7 @@ fun AddDeviceScreen(
         unitId = d.unitId.toString()
         serial = d.serial
         specId = d.specId
+        rtuOverTcp = d.rtuOverTcp
         if (name.isBlank()) name = d.model
         testResult = null
     }

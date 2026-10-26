@@ -136,7 +136,9 @@ def main() -> int:
         index.append({"id": wid, "manufacturer": d["manufacturer"], "name": d["name"], "kind": d["kind"],
                       "port": c["default_port"], "unit": c["default_unit"],
                       "documented": any(not p.get("sources") or p.get("verified") for p in d["points"]),
-                      "identifies": identifies(d)})
+                      "identifies": identifies(d),
+                      # on an RS485 bus: reached through a gateway, on the gateway's port rather than its own
+                      "rs485": bool({"rtu", "ascii"} & set(c.get("transports", [])))})
     vocab = yaml.safe_load(at_head("vocabulary.yaml"))
     (OUT / "vocabulary.json").write_text(json.dumps(vocab, ensure_ascii=False, sort_keys=True, indent=1) + "\n", encoding="utf-8")
     # The list the device form offers, without parsing every file.
