@@ -118,6 +118,8 @@ data class DeviceConfig(
     val model: String = "",
     /** ModbusSpec types (MODBUS_SPEC_*): the id of the device's ModbusSpec file. */
     val specId: String = "",
+    /** Behind an RS485 gateway in transparent mode: Modbus RTU frames over the TCP connection ("RTU over TCP"). */
+    val rtuOverTcp: Boolean = false,
 ) {
     override fun toString() = "DeviceConfig(id=$id, name=$name, type=$type, host=$host, port=$port, unitId=$unitId, serial=$serial)"
 }

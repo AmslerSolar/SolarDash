@@ -38,27 +38,27 @@ interface DeviceDriver {
 object DeviceDrivers {
     /** Connections come from [connections], so devices behind the same gateway share one TCP connection. */
     fun create(config: DeviceConfig, connections: ModbusConnections): DeviceDriver =
-        (if (SpecDevices.handles(config.type)) SpecDevices.create(config.type, connections.get(config.host, config.port), config.unitId, config.model, config.specId) else null)
+        (if (SpecDevices.handles(config.type)) SpecDevices.create(config.type, connections.get(config), config.unitId, config.model, config.specId) else null)
             ?: handWritten(config, connections)
 
     /** The hand-written drivers: everything not (yet) read through ModbusSpec. */
     private fun handWritten(config: DeviceConfig, connections: ModbusConnections): DeviceDriver = when (config.type) {
-        DeviceType.LG_ESS_SUNSPEC -> LgEssSunSpecDriver(connections.get(config.host, config.port), config.unitId)
+        DeviceType.LG_ESS_SUNSPEC -> LgEssSunSpecDriver(connections.get(config), config.unitId)
         DeviceType.LG_ESS -> LgEssDriver(config.host, config.port, config.password)
-        DeviceType.KACO_NX3 -> KacoBlueplanetDriver(connections.get(config.host, config.port), config.unitId)
-        DeviceType.FIMER -> FimerSunSpecDriver(connections.get(config.host, config.port), config.unitId)
-        DeviceType.APSYSTEMS_ECU -> ApsystemsEcuDriver(connections.get(config.host, config.port), config.unitId)
-        DeviceType.CONEXT_CL -> ConextClDriver(connections.get(config.host, config.port), config.unitId)
+        DeviceType.KACO_NX3 -> KacoBlueplanetDriver(connections.get(config), config.unitId)
+        DeviceType.FIMER -> FimerSunSpecDriver(connections.get(config), config.unitId)
+        DeviceType.APSYSTEMS_ECU -> ApsystemsEcuDriver(connections.get(config), config.unitId)
+        DeviceType.CONEXT_CL -> ConextClDriver(connections.get(config), config.unitId)
         DeviceType.DEMO_INVERTER -> DemoInverter()
         DeviceType.DEMO_BATTERY -> DemoBattery()
         DeviceType.DEMO_METER -> DemoMeter()
         DeviceType.DEMO_HEAT_PUMP -> DemoHeatPump()
-        DeviceType.FRONIUS -> FroniusGen24Driver(connections.get(config.host, config.port), config.unitId, config.invertGrid)
+        DeviceType.FRONIUS -> FroniusGen24Driver(connections.get(config), config.unitId, config.invertGrid)
         DeviceType.SOLAREDGE ->
-            SunSpecInverterDriver(connections.get(config.host, config.port), config.unitId, SunSpecProfiles.SOLAREDGE.invertedGrid(config.invertGrid))
+            SunSpecInverterDriver(connections.get(config), config.unitId, SunSpecProfiles.SOLAREDGE.invertedGrid(config.invertGrid))
         DeviceType.SUNSPEC ->
-            SunSpecInverterDriver(connections.get(config.host, config.port), config.unitId, SunSpecProfiles.GENERIC.invertedGrid(config.invertGrid))
-        DeviceType.VICTRON -> VictronGxDriver(connections.get(config.host, config.port), config.unitId)
+            SunSpecInverterDriver(connections.get(config), config.unitId, SunSpecProfiles.GENERIC.invertedGrid(config.invertGrid))
+        DeviceType.VICTRON -> VictronGxDriver(connections.get(config), config.unitId)
         DeviceType.VOLTRONIC -> VoltronicAxpertDriver(config.host, config.port)
         DeviceType.ENPHASE -> EnphaseGatewayDriver(config.host, config.port, config.password)
         else -> error("${config.type} is read through ModbusSpec")

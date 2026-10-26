@@ -98,6 +98,7 @@ fun AddDeviceScreen(
     var meterRole by rememberSaveable { mutableStateOf(existing?.meterRole ?: MeterRole.GRID) }
     var model by rememberSaveable { mutableStateOf(existing?.model.orEmpty()) }
     var specId by rememberSaveable { mutableStateOf(existing?.specId.orEmpty()) }
+    var rtuOverTcp by rememberSaveable { mutableStateOf(existing?.rtuOverTcp ?: false) }
     var browsing by rememberSaveable { mutableStateOf<DeviceKind?>(null) }
     val models = remember(type, specId) { SpecDevices.userModels(type, specId) }
     val generic = type in SpecDevices.GENERIC
@@ -157,6 +158,7 @@ fun AddDeviceScreen(
         meterRole = if (type.kind == DeviceKind.METER) meterRole else MeterRole.GRID,
         model = if (models.any { it.first == model }) model else "",
         specId = if (generic) specId else "",
+        rtuOverTcp = type.modbus && rtuOverTcp,
         // A changed type or unit id may be another device: drop a serial that came with the old settings.
         serial = if (existing != null && (type != existing.type || unitId != existing.unitId.toString()) && serial == existing.serial) "" else serial,
     )
@@ -338,7 +340,19 @@ fun AddDeviceScreen(
                         )
                     }
                 }
-                if (type.modbus) Hint(stringResource(R.string.forms_hint_shared_gateway))
+                if (type.modbus) {
+                    Hint(stringResource(R.string.forms_hint_shared_gateway))
+                    Row(
+                        Modifier.fillMaxWidth().toggleable(rtuOverTcp, role = Role.Checkbox) { rtuOverTcp = it; testResult = null },
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Checkbox(checked = rtuOverTcp, onCheckedChange = null)
+                        Column(Modifier.padding(start = 12.dp)) {
+                            Text(stringResource(R.string.forms_rtu_over_tcp))
+                            Hint(stringResource(R.string.forms_hint_rtu_over_tcp))
+                        }
+                    }
+                }
                 if (type.needsPassword) {
                     OutlinedTextField(
                         password, { password = it; testResult = null },

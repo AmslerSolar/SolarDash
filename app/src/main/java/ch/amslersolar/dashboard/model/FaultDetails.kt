@@ -40,6 +40,7 @@ object FaultDetails {
                     put("port", device.port)
                 }
                 if (device.type.modbus) put("unit_id", device.unitId)
+                if (device.rtuOverTcp) put("rtu_over_tcp", true)
                 if (device.serial.isNotBlank()) put("serial", device.serial)
                 if (device.type.kind == DeviceKind.METER) put("meter_role", device.meterRole.name)
             }

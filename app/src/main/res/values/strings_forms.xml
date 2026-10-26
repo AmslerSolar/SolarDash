@@ -53,6 +53,8 @@
     <string name="forms_hint_kind_battery">Only add standalone batteries here. A battery on a hybrid inverter is already read through the inverter, and adding it again would count it twice.</string>
     <string name="forms_hint_kind_meter">A meter at the grid connection replaces the inverters\' grid values. A PV meter adds production (e.g. an inverter without communication); a consumer sub-meter shows a single load.</string>
     <string name="forms_hint_kind_consumer">Consumers are shown as parts of the home load. They don\'t change the plant totals: the grid meter or the balance already includes them.</string>
+    <string name="forms_rtu_over_tcp">RS485 gateway in transparent mode (Modbus RTU over TCP)</string>
+    <string name="forms_hint_rtu_over_tcp">For gateways that pass the RS485 bytes on as they are (Waveshare, USR and Elfin often ship like this, e.g. on port 4196 or 8899). Leave it off when the gateway converts to Modbus TCP.</string>
     <string name="forms_hint_shared_gateway">Several devices behind the same gateway share its IP address and port, and differ by unit id.</string>
     <string name="forms_hint_enphase_token">Gateway software 7 and later needs a token: create an owner token (valid one year) at entrez.enphaseenergy.com for this gateway\'s serial number and paste it here. When it expires the device shows \"token expired or missing\".</string>
     <string name="forms_hint_mac_password">The user password is the unit\'s MAC address, lowercase without colons (e.g. 001122aabbcc). Find it in your router\'s list of connected devices, or on a computer with `ip neigh` after pinging the unit. Android doesn\'t let apps look it up.</string>
