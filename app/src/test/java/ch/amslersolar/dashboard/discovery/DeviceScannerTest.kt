@@ -103,8 +103,8 @@ class DeviceScannerTest {
         val scanner = DeviceScanner(
             portOpen = { _, _ -> true },
             identify = { _, _, _, _ -> throw java.io.IOException("no") },
-            specIdentify = { h, p, onTry -> repeat(5) { onTry() }; FoundDevice(h, p, DeviceType.MODBUS_SPEC_METER, 11, "Huawei DTSU666-H") },
-            specCount = { 5 },
+            specIdentify = { h, p, _, onTry -> repeat(5) { onTry() }; FoundDevice(h, p, DeviceType.MODBUS_SPEC_METER, 11, "Huawei DTSU666-H") },
+            specCount = { _, _ -> 5 },
         )
         val events = scanner.scan(listOf("192.168.0.1"), emptyMap()).toList()
         val counts = events.filterIsInstance<ScanEvent.Found>().map { it.device }.filter { it.identifying && it.toTry > 0 }
@@ -115,12 +115,35 @@ class DeviceScannerTest {
     }
 
     @Test
+    fun behindAGatewayOnlyTheUnitsThatAnswerAreIdentified() = runBlocking {
+        val driversTried = mutableListOf<Int>()
+        var seenLive: Map<Int, Set<Boolean>>? = null
+        val scanner = DeviceScanner(
+            portOpen = { _, p -> p == 4196 },
+            identify = { _, _, _, unit -> synchronized(driversTried) { driversTried += unit }; throw java.io.IOException("no") },
+            specIdentify = { h, p, live, _ -> seenLive = live; FoundDevice(h, p, DeviceType.MODBUS_SPEC_METER, 11, "Huawei DTSU666-H", rtuOverTcp = true) },
+            specCount = { _, live -> if (live == null) 214 else 2 },
+            specUnits = { listOf(1, 11, 247) },
+            // only unit 11 answers, and only to RTU frames (a gateway in transparent mode)
+            rollCall = { _, _, units, onTry -> units.forEach { _ -> onTry(); onTry() }; mapOf(11 to setOf(true)) },
+        )
+        val events = scanner.scan(listOf("192.168.0.200"), emptyMap(), extended = true).toList()
+        val result = latest(events).single()
+        assertEquals("Huawei DTSU666-H", result.model)
+        assertTrue(result.rtuOverTcp)
+        assertEquals(mapOf(11 to setOf(true)), seenLive)
+        assertTrue(driversTried.isEmpty()) // no unit answered Modbus TCP frames: the drivers aren't asked
+        val counts = events.filterIsInstance<ScanEvent.Found>().map { it.device }.filter { it.identifying && it.toTry > 0 }
+        assertTrue(counts.isNotEmpty() && counts.last().tried <= counts.last().toTry)
+    }
+
+    @Test
     fun normalSearchTriesOnly502AndListsEveryOpenPort() = runBlocking {
         val tried = mutableListOf<Int>()
         val scanner = DeviceScanner(
             portOpen = { h, p -> synchronized(tried) { tried += p }; h != "192.168.0.9" },
             identify = { _, h, _, _ -> if (h == "192.168.0.1") DeviceInfo("GoodWe GW10K-ET", "9010KETU000W0000") else throw java.io.IOException("no") },
-            specIdentify = { h, p, _ -> if (h == "192.168.0.2") FoundDevice(h, p, DeviceType.MODBUS_SPEC_METER, 1, "Carlo Gavazzi EM24", specId = "carlo-gavazzi/em24") else null },
+            specIdentify = { h, p, _, _ -> if (h == "192.168.0.2") FoundDevice(h, p, DeviceType.MODBUS_SPEC_METER, 1, "Carlo Gavazzi EM24", specId = "carlo-gavazzi/em24") else null },
         )
         val events = scanner.scan(listOf("192.168.0.1", "192.168.0.2", "192.168.0.3", "192.168.0.9"), emptyMap()).toList()
         assertEquals(setOf(502), tried.toSet())
@@ -140,7 +163,7 @@ class DeviceScannerTest {
         val scanner = DeviceScanner(
             portOpen = { _, p -> p == 502 },
             identify = { type, _, _, _ -> if (type == DeviceType.SUNSPEC) DeviceInfo("SCHNEIDER Conext CL", "ZX1") else throw java.io.IOException("no") },
-            specIdentify = { h, p, _ -> FoundDevice(h, p, DeviceType.MODBUS_SPEC_INVERTER, 10, "Schneider Conext CL", "ZX1", specId = "schneider-conext-cl") },
+            specIdentify = { h, p, _, _ -> FoundDevice(h, p, DeviceType.MODBUS_SPEC_INVERTER, 10, "Schneider Conext CL", "ZX1", specId = "schneider-conext-cl") },
         )
         val found = latest(scanner.scan(listOf("192.168.0.5"), emptyMap()).toList()).single()
         assertEquals("schneider-conext-cl", found.specId)

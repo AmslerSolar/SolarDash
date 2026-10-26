@@ -29,6 +29,8 @@ class ModbusTcpClient(
     private val port: Int,
     private val timeoutMs: Int = 3_000,
     private val rtu: Boolean = false,
+    /** Send a request again on a new connection when it got no answer (off for quick presence checks). */
+    private val retry: Boolean = true,
 ) : Closeable {
     private val mutex = Mutex()
     private var socket: Socket? = null
@@ -60,6 +62,10 @@ class ModbusTcpClient(
             } catch (e: ModbusException) {
                 throw e
             } catch (e: IOException) {
+                if (!retry) {
+                    disconnect()
+                    throw e
+                }
                 // Dongles drop idle or stale connections; reconnect once before giving up.
                 retrying?.invoke(e.message ?: e::class.simpleName.orEmpty())
                 disconnect()
