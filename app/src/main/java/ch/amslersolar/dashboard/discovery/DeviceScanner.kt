@@ -64,6 +64,9 @@ data class FoundDevice(
     val identifying: Boolean = false,
     /** Recognised with Modbus RTU frames: an RS485 gateway in transparent mode. */
     val rtuOverTcp: Boolean = false,
+    /** While identifying: device descriptions (drivers, ModbusSpec files) tried so far, of [toTry]. */
+    val tried: Int = 0,
+    val toTry: Int = 0,
 ) {
     val key: String get() = "$host:$port"
 }
@@ -88,8 +91,12 @@ class DeviceScanner(
     private val identify: suspend (type: DeviceType, host: String, port: Int, unitId: Int) -> DeviceInfo = ::identifyWith,
     /** mDNS announcements, listened to for the first [MDNS_WINDOW_MS] of a scan. */
     private val mdns: () -> Flow<MdnsService> = { emptyFlow() },
-    /** Recognises a device the named drivers don't, with the ModbusSpec files' identify checks (null: not recognised). */
-    private val specIdentify: suspend (host: String, port: Int) -> FoundDevice? = { _, _ -> null },
+    /**
+     * Recognises a device the named drivers don't, with the ModbusSpec files' identify checks (null: not recognised);
+     * calls onTry for each file it tries (or skips), [specCount] of them on a port at most.
+     */
+    private val specIdentify: suspend (host: String, port: Int, onTry: () -> Unit) -> FoundDevice? = { _, _, _ -> null },
+    private val specCount: (port: Int) -> Int = { 0 },
 ) {
     /**
      * Two phases. First every address of [hosts] is tried on Modbus TCP port 502, then, with [extended], on the other
@@ -141,9 +148,18 @@ class DeviceScanner(
             for ((host, port, mdnsCandidates) in toProbe) launch {
                 val key = "$host:$port"
                 val device = probes.withPermit {
-                    val named = probe(host, port, mdnsCandidates ?: CANDIDATES[port] ?: CANDIDATES.values.flatten().distinct())
+                    val candidates = mdnsCandidates ?: CANDIDATES[port] ?: CANDIDATES.values.flatten().distinct()
+                    // "identifying 7/300": the drivers, then the ModbusSpec files, tried for this address
+                    val toTry = candidates.size + specCount(port)
+                    val tried = AtomicInteger()
+                    val onTry = {
+                        trySend(ScanEvent.Found(FoundDevice(host, port, null, 0, "Port open", viaMdns = key in viaMdns,
+                            identifying = true, tried = tried.incrementAndGet().coerceAtMost(toTry), toTry = toTry)))
+                        Unit
+                    }
+                    val named = probe(host, port, candidates, onTry)
                     // A SunSpec device the generic driver took: its ModbusSpec file may know it better.
-                    if (named.type != null && named.type != DeviceType.SUNSPEC) named else (runCatching { specIdentify(host, port) }.getOrNull() ?: named)
+                    if (named.type != null && named.type != DeviceType.SUNSPEC) named else (runCatching { specIdentify(host, port, onTry) }.getOrNull() ?: named)
                 }
                 send(ScanEvent.Found(device.copy(viaMdns = key in viaMdns, identifying = false)))
                 send(ScanEvent.Progress(identified.incrementAndGet(), toProbe.size, ScanPhase.IDENTIFY))
@@ -186,12 +202,13 @@ class DeviceScanner(
     }
 
     /** Tries each driver in [candidates] (by default the ones that use [port]) in turn; the first plausible identity wins. */
-    suspend fun probe(host: String, port: Int, candidates: List<Pair<DeviceType, Int>> = CANDIDATES[port].orEmpty()): FoundDevice {
+    suspend fun probe(host: String, port: Int, candidates: List<Pair<DeviceType, Int>> = CANDIDATES[port].orEmpty(), onTry: () -> Unit = {}): FoundDevice {
         // On a port no driver knows (a gateway's 4196, 8899 …) every driver is tried: a unit id that didn't answer
         // in time is silent for the others too (nothing at that address behind the gateway), so it's skipped.
         val gatewayPort = port !in CANDIDATES
         val silent = HashSet<Int>()
         for ((type, unitId) in candidates) {
+            onTry()
             if (unitId in silent) continue
             val info = try {
                 identify(type, host, port, unitId)
@@ -302,12 +319,12 @@ class DeviceScanner(
         fun scanLocalNetwork(context: Context, known: Map<String, String>, extended: Boolean = false, range: String = ""): Flow<ScanEvent> {
             if (range.isNotBlank()) {
                 val hosts = parseRange(range) ?: return channelFlow { send(ScanEvent.Failed("Can't read the network to search: $range")) }
-                return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs).scan(hosts, known, extended)
+                return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs, specCount = ::specFilesToTry).scan(hosts, known, extended)
             }
             val (own, prefix) = localNetwork(context) ?: return channelFlow {
                 send(ScanEvent.Failed("Not connected to a local network. Connect to the plant's Wi-Fi and try again."))
             }
-            return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs).scan(hosts(own, prefix), known, extended)
+            return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs, specCount = ::specFilesToTry).scan(hosts(own, prefix), known, extended)
         }
 
         private fun tcpOpen(host: String, port: Int): Boolean = try {
@@ -324,18 +341,28 @@ class DeviceScanner(
          * On an RS485 gateway's port ([GATEWAY_PORTS]) the files of RS485 devices are tried too, with Modbus TCP
          * frames (a gateway translating) and then with RTU frames (a gateway in transparent mode).
          */
-        suspend fun identifyFromSpecs(host: String, port: Int): FoundDevice? {
+        suspend fun identifyFromSpecs(host: String, port: Int, onTry: () -> Unit = {}): FoundDevice? {
             val library = SpecLibrary.current ?: return null
-            val gateway = port in GATEWAY_PORTS
-            val entries = library.index.filter { it.identifies && (it.port == port || (gateway && it.rs485)) }
+            val entries = specEntries(library, port)
             if (entries.isEmpty()) return null
-            for (rtu in if (gateway) listOf(false, true) else listOf(false)) {
-                identifyFromSpecs(library, entries, host, port, rtu)?.let { return it }
+            for (rtu in framings(port)) {
+                identifyFromSpecs(library, entries, host, port, rtu, onTry)?.let { return it }
             }
             return null
         }
 
-        private suspend fun identifyFromSpecs(library: SpecLibrary, entries: List<SpecIndexEntry>, host: String, port: Int, rtu: Boolean): FoundDevice? {
+        private fun specEntries(library: SpecLibrary, port: Int): List<SpecIndexEntry> =
+            library.index.filter { it.identifies && (it.port == port || (port in GATEWAY_PORTS && it.rs485)) }
+
+        /** Modbus TCP frames; on a gateway's port also RTU frames (transparent mode). */
+        private fun framings(port: Int) = if (port in GATEWAY_PORTS) listOf(false, true) else listOf(false)
+
+        /** How many ModbusSpec files [identifyFromSpecs] tries on [port] at most (each framing counts). */
+        fun specFilesToTry(port: Int): Int = SpecLibrary.current?.let { specEntries(it, port).size * framings(port).size } ?: 0
+
+        private suspend fun identifyFromSpecs(
+            library: SpecLibrary, entries: List<SpecIndexEntry>, host: String, port: Int, rtu: Boolean, onTry: () -> Unit,
+        ): FoundDevice? {
             val named = SpecDevices.SPEC_IDS.entries.flatMap { (t, ids) -> ids.map { it to t } }.toMap()
             // behind a gateway an answer takes some 50 ms; every silent unit id costs the whole timeout
             val timeout = if (port in GATEWAY_PORTS) GATEWAY_TIMEOUT_MS else PROBE_TIMEOUT_MS
@@ -343,13 +370,16 @@ class DeviceScanner(
                 for ((unit, files) in entries.groupBy { it.unit }) {
                     val holding = CachingReader { u, r, c -> client.readHoldingRegisters(u, r, c) }
                     val input = CachingReader { u, r, c -> client.readInputRegisters(u, r, c) }
-                    for (e in files.sortedByDescending { it.documented }) {
+                    val ordered = files.sortedByDescending { it.documented }
+                    for ((i, e) in ordered.withIndex()) {
+                        onTry()
                         val info = try {
                             SpecDriver(library.spec(e.id), library.vocabulary, SpecTables(holding, input), unit, requestGapMs = 0).identify()
                         } catch (e2: CancellationException) {
                             throw e2
                         } catch (_: java.io.InterruptedIOException) {
-                            break // this unit id doesn't answer
+                            repeat(ordered.size - i - 1) { onTry() } // this unit id doesn't answer: its other files are done too
+                            break
                         } catch (_: Exception) {
                             continue
                         }

@@ -622,6 +622,7 @@ private fun ScanSection(
                     Text(
                         when {
                             d.alreadyIn != null || usable -> d.model
+                            d.identifying && d.toTry > 0 -> stringResource(R.string.forms_found_identifying_count, d.tried, d.toTry)
                             d.identifying -> stringResource(R.string.forms_found_identifying)
                             else -> stringResource(R.string.forms_found_unrecognised)
                         },

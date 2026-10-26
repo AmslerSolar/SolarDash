@@ -99,12 +99,28 @@ class DeviceScannerTest {
         events.filterIsInstance<ScanEvent.Found>().map { it.device }.associateBy { it.key }.values.toList()
 
     @Test
+    fun identifyingCountsTheDescriptionsTried() = runBlocking {
+        val scanner = DeviceScanner(
+            portOpen = { _, _ -> true },
+            identify = { _, _, _, _ -> throw java.io.IOException("no") },
+            specIdentify = { h, p, onTry -> repeat(5) { onTry() }; FoundDevice(h, p, DeviceType.MODBUS_SPEC_METER, 11, "Huawei DTSU666-H") },
+            specCount = { 5 },
+        )
+        val events = scanner.scan(listOf("192.168.0.1"), emptyMap()).toList()
+        val counts = events.filterIsInstance<ScanEvent.Found>().map { it.device }.filter { it.identifying && it.toTry > 0 }
+        val total = DeviceScanner.CANDIDATES.getValue(502).size + 5
+        assertEquals((1..total).toList(), counts.map { it.tried })
+        assertTrue(counts.all { it.toTry == total })
+        assertEquals("Huawei DTSU666-H", latest(events).single().model) // the result replaces the counter
+    }
+
+    @Test
     fun normalSearchTriesOnly502AndListsEveryOpenPort() = runBlocking {
         val tried = mutableListOf<Int>()
         val scanner = DeviceScanner(
             portOpen = { h, p -> synchronized(tried) { tried += p }; h != "192.168.0.9" },
             identify = { _, h, _, _ -> if (h == "192.168.0.1") DeviceInfo("GoodWe GW10K-ET", "9010KETU000W0000") else throw java.io.IOException("no") },
-            specIdentify = { h, p -> if (h == "192.168.0.2") FoundDevice(h, p, DeviceType.MODBUS_SPEC_METER, 1, "Carlo Gavazzi EM24", specId = "carlo-gavazzi/em24") else null },
+            specIdentify = { h, p, _ -> if (h == "192.168.0.2") FoundDevice(h, p, DeviceType.MODBUS_SPEC_METER, 1, "Carlo Gavazzi EM24", specId = "carlo-gavazzi/em24") else null },
         )
         val events = scanner.scan(listOf("192.168.0.1", "192.168.0.2", "192.168.0.3", "192.168.0.9"), emptyMap()).toList()
         assertEquals(setOf(502), tried.toSet())
@@ -124,7 +140,7 @@ class DeviceScannerTest {
         val scanner = DeviceScanner(
             portOpen = { _, p -> p == 502 },
             identify = { type, _, _, _ -> if (type == DeviceType.SUNSPEC) DeviceInfo("SCHNEIDER Conext CL", "ZX1") else throw java.io.IOException("no") },
-            specIdentify = { h, p -> FoundDevice(h, p, DeviceType.MODBUS_SPEC_INVERTER, 10, "Schneider Conext CL", "ZX1", specId = "schneider-conext-cl") },
+            specIdentify = { h, p, _ -> FoundDevice(h, p, DeviceType.MODBUS_SPEC_INVERTER, 10, "Schneider Conext CL", "ZX1", specId = "schneider-conext-cl") },
         )
         val found = latest(scanner.scan(listOf("192.168.0.5"), emptyMap()).toList()).single()
         assertEquals("schneider-conext-cl", found.specId)

@@ -44,6 +44,7 @@
     <string name="forms_scan_progress_ports">Ports: %1$d von %2$d</string>
     <string name="forms_scan_progress_identify">Erkennen: %1$d von %2$d</string>
     <string name="forms_found_identifying">Wird erkannt …</string>
+    <string name="forms_found_identifying_count">Wird erkannt … %1$d/%2$d</string>
     <string name="forms_found_unrecognised">Modbus-TCP-Gerät, nicht erkannt</string>
     <string name="forms_found_already_in">bereits in %1$s</string>
     <string name="forms_found_unit">Unit-ID %1$d</string>
