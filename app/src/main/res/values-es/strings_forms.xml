@@ -118,4 +118,16 @@
         <item quantity="many">%d dispositivos</item>
         <item quantity="other">%d dispositivos</item>
     </plurals>
+    <string name="forms_sweep_open">Barrido de registros…</string>
+    <string name="forms_sweep_title">Barrido de registros</string>
+    <string name="forms_hint_sweep">Para documentar un dispositivo: lee cada registro del rango, solo lectura (función 03 o 04, no se escribe nada), y guarda los valores en bruto como JSON en la carpeta de la app (Android/data/ch.amslersolar.dashboard/files/register-sweeps). Direcciones de protocolo, desde 0. Un dispositivo que se está consultando recibe mientras tanto una segunda conexión.</string>
+    <string name="forms_sweep_holding">03 holding</string>
+    <string name="forms_sweep_input">04 input</string>
+    <string name="forms_sweep_from">Desde registro</string>
+    <string name="forms_sweep_to">Hasta registro</string>
+    <string name="forms_sweep_start">Iniciar barrido</string>
+    <string name="forms_sweep_stop">Detener barrido</string>
+    <string name="forms_sweep_progress">%1$d de %2$d registros, %3$d respondidos</string>
+    <string name="forms_sweep_no_answer">Detenido, ya no hay respuesta: %1$s</string>
+    <string name="forms_sweep_saved">%1$d registros respondidos (%2$d de %3$d barridos), guardado en %4$s</string>
 </resources>

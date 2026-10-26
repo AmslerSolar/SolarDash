@@ -69,6 +69,9 @@ import ch.amslersolar.dashboard.discovery.FoundDevice
 import ch.amslersolar.dashboard.discovery.DeviceScanner
 import ch.amslersolar.dashboard.discovery.ScanEvent
 import ch.amslersolar.dashboard.discovery.ScanPhase
+import ch.amslersolar.dashboard.driver.modbus.ModbusTcp
+import ch.amslersolar.dashboard.driver.modbus.RegisterSweep
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -82,6 +85,8 @@ fun AddDeviceScreen(
     /** The network search; extended: all ports devices use, not only 502; range: another network (blank: the own). */
     onScan: (extended: Boolean, range: String) -> Flow<ScanEvent>,
     onSave: (DeviceConfig) -> Unit,
+    /** Reads the registers of [sweep] with function 03 or 04 and saves them; [onSaved] gets the file, also when stopped. */
+    onSweep: suspend (device: DeviceConfig, function: Int, sweep: RegisterSweep, progress: () -> Unit, onSaved: (String) -> Unit) -> Unit,
     onBack: () -> Unit,
     /** Set when editing: the form starts from it, and saving keeps its id (history and chart channels stay). */
     existing: DeviceConfig? = null,
@@ -450,7 +455,102 @@ fun AddDeviceScreen(
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
+
+            if (type.modbus && type.needsHost) {
+                SweepSection(enabled = valid) { function, sweep, progress, onSaved -> onSweep(build(), function, sweep, progress, onSaved) }
+            }
         }
+    }
+}
+
+/**
+ * Register sweep, for documenting a device: reads a range of registers (function 03 or 04 only, nothing is
+ * written) and saves the values as JSON. Folded away behind a button: it's not part of adding a device.
+ */
+@Composable
+private fun SweepSection(
+    enabled: Boolean,
+    onSweep: suspend (function: Int, sweep: RegisterSweep, progress: () -> Unit, onSaved: (String) -> Unit) -> Unit,
+) {
+    var open by rememberSaveable { mutableStateOf(false) }
+    var function by rememberSaveable { mutableStateOf(ModbusTcp.READ_HOLDING_REGISTERS) }
+    var from by rememberSaveable { mutableStateOf("0") }
+    var to by rememberSaveable { mutableStateOf("999") }
+    val scope = rememberCoroutineScope()
+    var job by remember { mutableStateOf<Job?>(null) }
+    var sweep by remember { mutableStateOf<RegisterSweep?>(null) }
+    // Bumped on each progress call: the sweep itself isn't Compose state.
+    var tick by remember { mutableStateOf(0) }
+    var saved by rememberSaveable { mutableStateOf<String?>(null) }
+    var error by rememberSaveable { mutableStateOf<String?>(null) }
+    val first = from.toIntOrNull()
+    val last = to.toIntOrNull()
+    val rangeValid = first != null && last != null && first in 0..0xFFFF && last in first..0xFFFF
+
+    if (!open) {
+        TextButton(onClick = { open = true }) { Text(stringResource(R.string.forms_sweep_open)) }
+        return
+    }
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(stringResource(R.string.forms_sweep_title), style = MaterialTheme.typography.titleSmall)
+        Hint(stringResource(R.string.forms_hint_sweep))
+        val running = job != null
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            listOf(
+                ModbusTcp.READ_HOLDING_REGISTERS to R.string.forms_sweep_holding,
+                ModbusTcp.READ_INPUT_REGISTERS to R.string.forms_sweep_input,
+            ).forEach { (f, label) ->
+                FilterChip(selected = function == f, enabled = !running, onClick = { function = f }, label = { Text(stringResource(label)) })
+            }
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            OutlinedTextField(
+                from, { from = it.filter(Char::isDigit).take(5) }, enabled = !running, singleLine = true, isError = !rangeValid,
+                label = { Text(stringResource(R.string.forms_sweep_from)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), modifier = Modifier.weight(1f),
+            )
+            OutlinedTextField(
+                to, { to = it.filter(Char::isDigit).take(5) }, enabled = !running, singleLine = true, isError = !rangeValid,
+                label = { Text(stringResource(R.string.forms_sweep_to)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), modifier = Modifier.weight(1f),
+            )
+        }
+        if (running) {
+            OutlinedButton(onClick = { job?.cancel() }) { Text(stringResource(R.string.forms_sweep_stop)) }
+        } else {
+            OutlinedButton(
+                enabled = enabled && rangeValid,
+                onClick = {
+                    val s = RegisterSweep(first!!, last!!)
+                    sweep = s
+                    saved = null
+                    error = null
+                    job = scope.launch {
+                        try {
+                            onSweep(function, s, { tick++ }, { saved = it })
+                        } catch (e: CancellationException) {
+                            throw e
+                        } catch (e: Exception) {
+                            error = e.message ?: e::class.simpleName
+                        } finally {
+                            job = null
+                        }
+                    }
+                },
+            ) { Text(stringResource(R.string.forms_sweep_start)) }
+        }
+        sweep?.let { s ->
+            tick // read, so progress recomposes
+            val total = s.to - s.from + 1
+            if (running) {
+                LinearProgressIndicator(progress = { s.done.toFloat() / total }, modifier = Modifier.fillMaxWidth())
+                Text(stringResource(R.string.forms_sweep_progress, s.done, total, s.values.size), style = MaterialTheme.typography.bodySmall)
+            } else {
+                s.stopped?.let { Text(stringResource(R.string.forms_sweep_no_answer, it), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium) }
+                saved?.let { Text(stringResource(R.string.forms_sweep_saved, s.values.size, s.done, total, it), style = MaterialTheme.typography.bodyMedium) }
+            }
+        }
+        error?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium) }
     }
 }
 

@@ -116,4 +116,16 @@
         <item quantity="one">%d device</item>
         <item quantity="other">%d devices</item>
     </plurals>
+    <string name="forms_sweep_open">Register sweep…</string>
+    <string name="forms_sweep_title">Register sweep</string>
+    <string name="forms_hint_sweep">For documenting a device: reads every register in the range, read only (function 03 or 04, nothing is written), and saves the raw values as JSON in the app\'s folder (Android/data/ch.amslersolar.dashboard/files/register-sweeps). Protocol addresses, from 0. A device being polled gets a second connection meanwhile.</string>
+    <string name="forms_sweep_holding">03 holding</string>
+    <string name="forms_sweep_input">04 input</string>
+    <string name="forms_sweep_from">From register</string>
+    <string name="forms_sweep_to">To register</string>
+    <string name="forms_sweep_start">Start sweep</string>
+    <string name="forms_sweep_stop">Stop sweep</string>
+    <string name="forms_sweep_progress">%1$d of %2$d registers, %3$d answered</string>
+    <string name="forms_sweep_no_answer">Stopped, no answer any more: %1$s</string>
+    <string name="forms_sweep_saved">%1$d registers answered (%2$d of %3$d swept), saved to %4$s</string>
 </resources>

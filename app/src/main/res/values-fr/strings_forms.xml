@@ -118,4 +118,16 @@
         <item quantity="many">%d appareils</item>
         <item quantity="other">%d appareils</item>
     </plurals>
+    <string name="forms_sweep_open">Balayage des registres…</string>
+    <string name="forms_sweep_title">Balayage des registres</string>
+    <string name="forms_hint_sweep">Pour documenter un appareil : lit chaque registre de la plage, en lecture seule (fonction 03 ou 04, rien n\'est écrit), et enregistre les valeurs brutes en JSON dans le dossier de l\'app (Android/data/ch.amslersolar.dashboard/files/register-sweeps). Adresses de protocole, à partir de 0. Un appareil interrogé reçoit entre-temps une seconde connexion.</string>
+    <string name="forms_sweep_holding">03 holding</string>
+    <string name="forms_sweep_input">04 input</string>
+    <string name="forms_sweep_from">Du registre</string>
+    <string name="forms_sweep_to">Au registre</string>
+    <string name="forms_sweep_start">Lancer le balayage</string>
+    <string name="forms_sweep_stop">Arrêter le balayage</string>
+    <string name="forms_sweep_progress">%1$d sur %2$d registres, %3$d ont répondu</string>
+    <string name="forms_sweep_no_answer">Arrêté, plus de réponse : %1$s</string>
+    <string name="forms_sweep_saved">%1$d registres ont répondu (%2$d sur %3$d balayés), enregistré dans %4$s</string>
 </resources>

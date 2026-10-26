@@ -22,6 +22,7 @@ import ch.amslersolar.dashboard.data.HistoryRepository
 import ch.amslersolar.dashboard.discovery.DeviceScanner
 import ch.amslersolar.dashboard.kiosk.Kiosk
 import ch.amslersolar.dashboard.data.PlantRepository
+import ch.amslersolar.dashboard.data.RegisterSweeps
 import ch.amslersolar.dashboard.ui.AddDeviceScreen
 import ch.amslersolar.dashboard.ui.DeviceScreen
 import ch.amslersolar.dashboard.ui.DashboardTab
@@ -121,6 +122,9 @@ class MainActivity : ComponentActivity() {
                                     onSave = {
                                         if (editing != null) plantsVm.updateDevice(plant.id, it) else plantsVm.addDevice(plant.id, it)
                                         back()
+                                    },
+                                    onSweep = { device, function, sweep, progress, onSaved ->
+                                        RegisterSweeps.run(applicationContext, device, function, sweep, progress) { onSaved(it.path) }
                                     },
                                     onBack = back,
                                     existing = editing,
