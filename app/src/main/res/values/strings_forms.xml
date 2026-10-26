@@ -118,10 +118,10 @@
     </plurals>
     <string name="forms_sweep_open">Register sweep…</string>
     <string name="forms_sweep_title">Register sweep</string>
-    <string name="forms_hint_sweep">For documenting a device: reads all registers 0 to 65535 with function 03 (holding), then 04 (input), read only, nothing is written. Saves the raw values as JSON in the app\'s folder (Android/data/ch.amslersolar.dashboard/files/register-sweeps), also when stopped. Can take hours; the screen stays on meanwhile. A device being polled gets a second connection.</string>
+    <string name="forms_hint_sweep">For documenting a device: reads registers 0 to 65535 with functions 03 (holding) and 04 (input), read only, nothing is written. Goes from coarse to fine, so stopping early keeps the most useful part: first the registers known from device files (only its own file when the device is identified), then the whole range in blocks of 64, then blocks of 16, then single registers and the edges of what answered. Records every request and answer with its time, in hex, in a text file in the app\'s folder (Android/data/ch.amslersolar.dashboard/files/register-sweeps), also when stopped. The screen stays on meanwhile. A device being polled gets a second connection.</string>
     <string name="forms_sweep_start">Start sweep</string>
     <string name="forms_sweep_stop">Stop sweep</string>
-    <string name="forms_sweep_progress">Function %1$s · %2$d of %3$d registers · %4$d answered</string>
+    <string name="forms_sweep_progress">Pass %1$d of %2$d · function %3$s · %4$d of %5$d requests · %6$d registers answered</string>
     <string name="forms_sweep_no_answer">Function %1$s stopped, no answer any more: %2$s</string>
     <string name="forms_sweep_saved">Answered: %1$d holding (03), %2$d input (04) registers, saved to %3$s</string>
 </resources>

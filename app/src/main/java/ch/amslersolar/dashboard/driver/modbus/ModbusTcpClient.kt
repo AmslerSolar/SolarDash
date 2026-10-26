@@ -36,6 +36,10 @@ class ModbusTcpClient(
     /** Some devices (Huawei) ignore requests sent right after the TCP connection opens. */
     @Volatile
     var connectDelayMs: Long = 0
+
+    /** Gets every frame as it goes out ([outgoing]) or comes in, for recording the raw traffic (register sweeps). */
+    @Volatile
+    var traffic: ((outgoing: Boolean, frame: ByteArray) -> Unit)? = null
     private var nextTransactionId = 1
 
     suspend fun readHoldingRegisters(unitId: Int, register: Int, count: Int): RegisterBlock =
@@ -77,7 +81,9 @@ class ModbusTcpClient(
         nextTransactionId = (nextTransactionId + 1) and 0xFFFF
 
         s.getOutputStream().apply {
-            write(ModbusTcp.readRequest(transactionId, unitId, register, count, function))
+            val request = ModbusTcp.readRequest(transactionId, unitId, register, count, function)
+            traffic?.invoke(true, request)
+            write(request)
             flush()
         }
         val input = DataInputStream(s.getInputStream())
@@ -85,6 +91,7 @@ class ModbusTcpClient(
             val header = ByteArray(ModbusTcp.MBAP_SIZE).also(input::readFully)
             val body = ByteArray(ModbusTcp.remainingLength(header)).also(input::readFully)
             val frame = header + body
+            traffic?.invoke(false, frame)
             // A late answer to an earlier request that timed out: skip it.
             if (ModbusTcp.transactionId(frame) != transactionId) continue
             return RegisterBlock(register, ModbusTcp.parseReadResponse(frame, transactionId, count, function))
@@ -93,12 +100,15 @@ class ModbusTcpClient(
 
     private fun exchangeRtu(s: Socket, unitId: Int, register: Int, count: Int, function: Int): RegisterBlock {
         s.getOutputStream().apply {
-            write(ModbusRtu.readRequest(unitId, register, count, function))
+            val request = ModbusRtu.readRequest(unitId, register, count, function)
+            traffic?.invoke(true, request)
+            write(request)
             flush()
         }
         val input = DataInputStream(s.getInputStream())
         val head = ByteArray(3).also(input::readFully)
         val rest = ByteArray(ModbusRtu.remainingLength(head)).also(input::readFully)
+        traffic?.invoke(false, head + rest)
         return RegisterBlock(register, ModbusRtu.parseReadResponse(head + rest, unitId, count, function))
     }
 

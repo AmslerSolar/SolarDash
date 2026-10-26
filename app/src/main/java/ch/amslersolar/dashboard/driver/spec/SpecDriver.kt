@@ -197,6 +197,32 @@ class SpecLibrary(private val load: (String) -> String) {
     }
 
     fun entry(id: String): SpecIndexEntry? = index.find { it.id == id }
+
+    /**
+     * Table ("holding", "input") → every register range the bundled device files read there (points on the
+     * device's own unit id), for register sweeps; only those of [ids] when given. Parses only what it needs.
+     */
+    fun knownRegisters(ids: List<String> = index.map { it.id }): Map<String, List<IntRange>> {
+        val out = mutableMapOf<String, MutableSet<IntRange>>()
+        for (id in ids) {
+            val points = kotlinx.serialization.json.Json.parseToJsonElement(load("$id.json")).jsonObject["points"]?.jsonArray ?: continue
+            for (p in points) {
+                val o = p.jsonObject
+                if (o["unit_id"] != null) continue
+                val table = o["table"]?.jsonPrimitive?.content ?: continue
+                val address = o["address"]?.jsonPrimitive?.content?.toIntOrNull() ?: continue
+                val type = o["type"]?.jsonPrimitive?.content ?: continue
+                val n = when (type) {
+                    "str", "datetime" -> o["length"]?.jsonPrimitive?.content?.toIntOrNull() ?: 1
+                    "u32", "s32", "f32", "sm32", "bcd32" -> 2
+                    "u64", "s64", "f64", "bcd64" -> 4
+                    else -> 1
+                }
+                out.getOrPut(table) { mutableSetOf() } += address until address + n
+            }
+        }
+        return out.mapValues { it.value.toList() }
+    }
     private val specs = HashMap<String, Spec>()
 
     @Synchronized

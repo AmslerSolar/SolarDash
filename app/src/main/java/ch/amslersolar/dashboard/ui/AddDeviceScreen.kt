@@ -466,8 +466,9 @@ fun AddDeviceScreen(
 }
 
 /**
- * Register sweep, for documenting a device: reads all registers 0..65535 with function 03, then 04 (read only,
- * nothing is written), and saves the values as JSON. Folded away behind a button: it's not part of adding a device.
+ * Register sweep, for documenting a device: reads registers 0..65535 with functions 03 and 04 in passes from coarse to
+ * fine (read only, nothing is written), and records the raw traffic. Folded away behind a button: it's not part of
+ * adding a device.
  */
 @Composable
 private fun SweepSection(
@@ -524,14 +525,19 @@ private fun SweepSection(
         }
         sweeps?.let { all ->
             tick // read, so progress recomposes
-            val total = all.values.sumOf { it.to - it.from + 1 }
-            val done = all.values.sumOf { it.done }
             if (running) {
-                LinearProgressIndicator(progress = { done.toFloat() / total }, modifier = Modifier.fillMaxWidth())
-                // The function being read: the first one not through yet.
-                val current = all.entries.firstOrNull { !it.value.complete && it.value.stopped == null }?.key ?: all.keys.last()
+                // The function being read: the last one that has reached the furthest pass.
+                val furthest = all.values.filter { it.stopped == null }.maxOfOrNull { it.pass } ?: 0
+                val current = all.entries.lastOrNull { it.value.stopped == null && it.value.pass == furthest }
+                val passes = RegisterSweeps.passCount
+                val s = current?.value
+                val within = if (s == null || s.passTotal == 0) 0f else s.passDone.toFloat() / s.passTotal
+                LinearProgressIndicator(progress = { ((furthest - 1).coerceAtLeast(0) + within) / passes }, modifier = Modifier.fillMaxWidth())
                 Text(
-                    stringResource(R.string.forms_sweep_progress, "%02d".format(current), done, total, all.values.sumOf { it.values.size }),
+                    stringResource(
+                        R.string.forms_sweep_progress, furthest.coerceAtLeast(1), passes, "%02d".format(current?.key ?: all.keys.first()),
+                        s?.passDone ?: 0, s?.passTotal ?: 0, all.values.sumOf { it.values.size },
+                    ),
                     style = MaterialTheme.typography.bodySmall,
                 )
             }
