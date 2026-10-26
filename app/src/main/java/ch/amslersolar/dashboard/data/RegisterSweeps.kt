@@ -28,7 +28,8 @@ import java.time.format.DateTimeFormatter
  *
  * One line per frame: local time with milliseconds, `>` for a request or `<` for an answer, the frame in hex (RTU
  * frames with their CRC, Modbus TCP frames with their header). `!` lines are requests without an answer, `#` lines
- * comments (the device, the passes, the end).
+ * comments (the device, the passes, the end). A request that got no answer and was sent again on a new connection
+ * shows as `!` (… sent again), then the same request once more.
  */
 object RegisterSweeps {
     /** What a sweep reads: function 03, then 04, each over all registers. */
@@ -79,6 +80,7 @@ object RegisterSweeps {
         ModbusConnections(timeoutMs = RegisterSweep.TIMEOUT_MS).use { connections ->
             val client = connections.get(device)
             client.traffic = { outgoing, frame -> log.frame(outgoing, frame) }
+            client.retrying = { why -> log.noAnswer("$why; sent again") }
             fun reader(function: Int): suspend (Int, Int) -> RegisterBlock = { start, count ->
                 try {
                     if (function == ModbusTcp.READ_INPUT_REGISTERS) client.readInputRegisters(device.unitId, start, count)

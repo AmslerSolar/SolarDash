@@ -52,4 +52,28 @@ class ModbusRtuTest {
             assertEquals(ModbusRtu.readRequest(11, 2110, 2).joinToString("") { "%02x".format(it) }, asked.first())
         }
     }
+
+    /** A lost answer: the client says so, connects anew and sends the request again; the traffic shows both. */
+    @Test
+    fun aLostAnswerIsToldAndSentAgain() = runBlocking {
+        ServerSocket(0).use { server ->
+            thread(isDaemon = true) {
+                val first = server.accept() // never answers; the client gives up on it and connects again
+                thread(isDaemon = true) { first.use { it.getInputStream().read(ByteArray(8)); Thread.sleep(2_000) } }
+                server.accept().use { s ->
+                    s.getInputStream().read(ByteArray(8))
+                    s.getOutputStream().write(ModbusRtu.withCrc(hex("0b0304436bcccd")))
+                }
+            }
+            val told = mutableListOf<String>()
+            val frames = mutableListOf<Boolean>()
+            ModbusTcpClient("127.0.0.1", server.localPort, timeoutMs = 300, rtu = true).use { c ->
+                c.retrying = { told += it }
+                c.traffic = { outgoing, _ -> frames += outgoing }
+                assertEquals(235.8f, c.readHoldingRegisters(11, 2110, 2).f32(2110), 0.01f)
+            }
+            assertEquals(1, told.size)
+            assertEquals(listOf(true, true, false), frames)
+        }
+    }
 }

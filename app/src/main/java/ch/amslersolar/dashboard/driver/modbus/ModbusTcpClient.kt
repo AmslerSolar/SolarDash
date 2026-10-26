@@ -40,6 +40,10 @@ class ModbusTcpClient(
     /** Gets every frame as it goes out ([outgoing]) or comes in, for recording the raw traffic (register sweeps). */
     @Volatile
     var traffic: ((outgoing: Boolean, frame: ByteArray) -> Unit)? = null
+
+    /** Told when a request got no answer and is sent again on a new connection (with why). */
+    @Volatile
+    var retrying: ((why: String) -> Unit)? = null
     private var nextTransactionId = 1
 
     suspend fun readHoldingRegisters(unitId: Int, register: Int, count: Int): RegisterBlock =
@@ -55,8 +59,9 @@ class ModbusTcpClient(
                 exchange(unitId, register, count, function)
             } catch (e: ModbusException) {
                 throw e
-            } catch (_: IOException) {
+            } catch (e: IOException) {
                 // Dongles drop idle or stale connections; reconnect once before giving up.
+                retrying?.invoke(e.message ?: e::class.simpleName.orEmpty())
                 disconnect()
                 try {
                     exchange(unitId, register, count, function)
