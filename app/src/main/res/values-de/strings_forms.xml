@@ -125,4 +125,13 @@
     <string name="forms_sweep_progress">Durchgang %1$d von %2$d · Funktion %3$s · %4$d von %5$d Anfragen · %6$d Register beantwortet</string>
     <string name="forms_sweep_no_answer">Funktion %1$s abgebrochen, keine Antwort mehr: %2$s</string>
     <string name="forms_sweep_saved">Beantwortet: %1$d Holding- (03), %2$d Input-Register (04), gespeichert in %3$s</string>
+    <string name="forms_upload_open">Protokoll hochladen …</string>
+    <string name="forms_upload_running">Wird hochgeladen …</string>
+    <string name="forms_upload_title">Sweep-Protokoll hochladen?</string>
+    <string name="forms_upload_what">Damit wird die Datei %1$s (%2$s) an %3$s gesendet.\n\nSie enthält Name, IP-Adresse, Port und Unit-ID des Geräts sowie jede Anfrage und Antwort des Sweeps: alle Registerwerte, die das Gerät geliefert hat, möglicherweise auch seine Seriennummer. Sonst wird nichts aus der App gesendet.</string>
+    <string name="forms_upload_server">Server</string>
+    <string name="forms_upload_invalid">Eine https://-Adresse</string>
+    <string name="forms_upload_confirm">Hochladen</string>
+    <string name="forms_upload_done">%1$s an %2$s hochgeladen</string>
+    <string name="forms_upload_failed">Hochladen fehlgeschlagen: %1$s</string>
 </resources>

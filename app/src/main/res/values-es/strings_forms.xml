@@ -127,4 +127,13 @@
     <string name="forms_sweep_progress">Pasada %1$d de %2$d · función %3$s · %4$d de %5$d solicitudes · %6$d registros respondidos</string>
     <string name="forms_sweep_no_answer">Función %1$s detenida, ya no hay respuesta: %2$s</string>
     <string name="forms_sweep_saved">Respondidos: %1$d registros holding (03), %2$d input (04), guardado en %3$s</string>
+    <string name="forms_upload_open">Subir registro…</string>
+    <string name="forms_upload_running">Subiendo…</string>
+    <string name="forms_upload_title">¿Subir el registro del barrido?</string>
+    <string name="forms_upload_what">Se enviará el archivo %1$s (%2$s) a %3$s.\n\nContiene el nombre, la dirección IP, el puerto y el unit id del equipo, y cada solicitud y respuesta del barrido: todos los valores de registros que devolvió el equipo, posiblemente también su número de serie. No se envía nada más de la app.</string>
+    <string name="forms_upload_server">Servidor</string>
+    <string name="forms_upload_invalid">Una dirección https://</string>
+    <string name="forms_upload_confirm">Subir</string>
+    <string name="forms_upload_done">%1$s subido a %2$s</string>
+    <string name="forms_upload_failed">Error al subir: %1$s</string>
 </resources>

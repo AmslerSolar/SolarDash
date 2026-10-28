@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard.ui
 
+import ch.amslersolar.dashboard.data.LogUpload
 import androidx.compose.material3.TextButton
 import ch.amslersolar.dashboard.driver.spec.SpecIndexEntry
 import ch.amslersolar.dashboard.driver.spec.SpecLibrary
@@ -551,10 +552,72 @@ private fun SweepSection(
             if (!running) saved?.let {
                 val (holding, input) = RegisterSweeps.FUNCTIONS.map { f -> all[f]?.values?.size ?: 0 }
                 Text(stringResource(R.string.forms_sweep_saved, holding, input, it), style = MaterialTheme.typography.bodyMedium)
+                UploadLog(java.io.File(it))
             }
         }
         error?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium) }
     }
+}
+
+/**
+ * Uploads a sweep log after the user confirmed it: the dialog names the file, what's in it and the server (Amsler
+ * Solar by default, changeable and remembered). Nothing is sent without that confirmation.
+ */
+@Composable
+private fun UploadLog(file: java.io.File) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val scope = rememberCoroutineScope()
+    var asking by rememberSaveable(file.path) { mutableStateOf(false) }
+    var url by rememberSaveable(file.path) { mutableStateOf(LogUpload.url(context)) }
+    var uploading by remember(file.path) { mutableStateOf(false) }
+    var result by rememberSaveable(file.path) { mutableStateOf<String?>(null) }
+    var failed by rememberSaveable(file.path) { mutableStateOf(false) }
+
+    OutlinedButton(enabled = !uploading && file.exists(), onClick = { asking = true }) {
+        Text(stringResource(if (uploading) R.string.forms_upload_running else R.string.forms_upload_open))
+    }
+    result?.let { Text(it, color = if (failed) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodyMedium) }
+    if (!asking) return
+    val size = android.text.format.Formatter.formatShortFileSize(context, file.length())
+    val shown = url.trim()
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = { asking = false },
+        title = { Text(stringResource(R.string.forms_upload_title)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(stringResource(R.string.forms_upload_what, file.name, size, shown.ifEmpty { "–" }))
+                OutlinedTextField(
+                    url, { url = it }, singleLine = true, modifier = Modifier.fillMaxWidth(),
+                    label = { Text(stringResource(R.string.forms_upload_server)) },
+                    isError = !LogUpload.valid(url),
+                    supportingText = { if (!LogUpload.valid(url)) Text(stringResource(R.string.forms_upload_invalid)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
+                )
+            }
+        },
+        confirmButton = {
+            Button(enabled = LogUpload.valid(url), onClick = {
+                asking = false
+                uploading = true
+                LogUpload.setUrl(context, shown)
+                scope.launch {
+                    try {
+                        LogUpload.upload(file, shown)
+                        failed = false
+                        result = context.getString(R.string.forms_upload_done, file.name, shown)
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        failed = true
+                        result = context.getString(R.string.forms_upload_failed, e.message ?: e::class.simpleName.orEmpty())
+                    } finally {
+                        uploading = false
+                    }
+                }
+            }) { Text(stringResource(R.string.forms_upload_confirm)) }
+        },
+        dismissButton = { TextButton(onClick = { asking = false }) { Text(stringResource(R.string.forms_cancel)) } },
+    )
 }
 
 /** "Search network" and its results; tapping a recognised device fills in the form below. */

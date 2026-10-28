@@ -127,4 +127,13 @@
     <string name="forms_sweep_progress">Passe %1$d sur %2$d · fonction %3$s · %4$d sur %5$d requêtes · %6$d registres ont répondu</string>
     <string name="forms_sweep_no_answer">Fonction %1$s arrêtée, plus de réponse : %2$s</string>
     <string name="forms_sweep_saved">Ont répondu : %1$d registres holding (03), %2$d input (04), enregistré dans %3$s</string>
+    <string name="forms_upload_open">Envoyer le journal…</string>
+    <string name="forms_upload_running">Envoi…</string>
+    <string name="forms_upload_title">Envoyer le journal du balayage ?</string>
+    <string name="forms_upload_what">Le fichier %1$s (%2$s) sera envoyé à %3$s.\n\nIl contient le nom, l’adresse IP, le port et l’unit id de l’appareil, ainsi que chaque requête et réponse du balayage : toutes les valeurs de registres renvoyées par l’appareil, y compris éventuellement son numéro de série. Rien d’autre de l’application n’est envoyé.</string>
+    <string name="forms_upload_server">Serveur</string>
+    <string name="forms_upload_invalid">Une adresse https://</string>
+    <string name="forms_upload_confirm">Envoyer</string>
+    <string name="forms_upload_done">%1$s envoyé à %2$s</string>
+    <string name="forms_upload_failed">Échec de l’envoi : %1$s</string>
 </resources>

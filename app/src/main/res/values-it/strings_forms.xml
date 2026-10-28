@@ -127,4 +127,13 @@
     <string name="forms_sweep_progress">Passaggio %1$d di %2$d · funzione %3$s · %4$d di %5$d richieste · %6$d registri con risposta</string>
     <string name="forms_sweep_no_answer">Funzione %1$s interrotta, nessuna risposta: %2$s</string>
     <string name="forms_sweep_saved">Con risposta: %1$d registri holding (03), %2$d input (04), salvato in %3$s</string>
+    <string name="forms_upload_open">Carica registro…</string>
+    <string name="forms_upload_running">Caricamento…</string>
+    <string name="forms_upload_title">Caricare il registro della scansione?</string>
+    <string name="forms_upload_what">Il file %1$s (%2$s) verrà inviato a %3$s.\n\nContiene nome, indirizzo IP, porta e unit id del dispositivo e ogni richiesta e risposta della scansione: tutti i valori dei registri restituiti dal dispositivo, eventualmente anche il numero di serie. Nient’altro dell’app viene inviato.</string>
+    <string name="forms_upload_server">Server</string>
+    <string name="forms_upload_invalid">Un indirizzo https://</string>
+    <string name="forms_upload_confirm">Carica</string>
+    <string name="forms_upload_done">%1$s caricato su %2$s</string>
+    <string name="forms_upload_failed">Caricamento non riuscito: %1$s</string>
 </resources>

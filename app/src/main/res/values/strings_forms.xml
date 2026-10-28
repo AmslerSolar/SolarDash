@@ -125,4 +125,13 @@
     <string name="forms_sweep_progress" tools:ignore="PluralsCandidate">Pass %1$d of %2$d · function %3$s · %4$d of %5$d requests · %6$d registers answered</string>
     <string name="forms_sweep_no_answer">Function %1$s stopped, no answer any more: %2$s</string>
     <string name="forms_sweep_saved" tools:ignore="PluralsCandidate">Answered: %1$d holding (03), %2$d input (04) registers, saved to %3$s</string>
+    <string name="forms_upload_open">Upload log…</string>
+    <string name="forms_upload_running">Uploading…</string>
+    <string name="forms_upload_title">Upload the sweep log?</string>
+    <string name="forms_upload_what">This sends the file %1$s (%2$s) to %3$s.\n\nIt contains the device’s name, IP address, port and unit id, and every request and answer of the sweep: all register values the device returned, which can include its serial number. Nothing else from the app is sent.</string>
+    <string name="forms_upload_server">Server</string>
+    <string name="forms_upload_invalid">An https:// address</string>
+    <string name="forms_upload_confirm">Upload</string>
+    <string name="forms_upload_done">%1$s uploaded to %2$s</string>
+    <string name="forms_upload_failed">Upload failed: %1$s</string>
 </resources>
