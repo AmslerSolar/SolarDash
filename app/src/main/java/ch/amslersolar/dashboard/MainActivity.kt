@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard
 
+import ch.amslersolar.dashboard.driver.TrafficPause
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -124,7 +125,8 @@ class MainActivity : ComponentActivity() {
                                         back()
                                     },
                                     onSweep = { device, sweeps, progress, onSaved ->
-                                        RegisterSweeps.run(applicationContext, device, sweeps, progress) { onSaved(it.path) }
+                                        // All other device traffic waits meanwhile: the sweep goes faster, single-client gateways are free.
+                                        TrafficPause.during { RegisterSweeps.run(applicationContext, device, sweeps, progress) { onSaved(it.path) } }
                                     },
                                     onBack = back,
                                     existing = editing,

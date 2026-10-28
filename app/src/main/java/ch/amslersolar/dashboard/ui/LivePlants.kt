@@ -10,13 +10,13 @@ import ch.amslersolar.dashboard.data.HistoryRepository
 import ch.amslersolar.dashboard.data.PlantRepository
 import ch.amslersolar.dashboard.driver.ActivePolling
 import ch.amslersolar.dashboard.driver.PlantReader
+import ch.amslersolar.dashboard.driver.TrafficPause
 import ch.amslersolar.dashboard.model.DeviceConfig
 import ch.amslersolar.dashboard.model.EnergyTotals
 import ch.amslersolar.dashboard.model.PlantSnapshot
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -84,27 +84,33 @@ class LivePlants(
     private fun poll(plantId: String, devices: List<DeviceConfig>): Flow<PlantState> = flow {
         ActivePolling.start(plantId)
         try {
-            PlantReader(devices).use { reader ->
-                var lastRecorded = 0L
-                var recordedToday: EnergyTotals? = null
+            var lastRecorded = 0L
+            var recordedToday: EnergyTotals? = null
+            registry.rememberAll(devices)
+            while (true) {
+                // A register sweep has the devices to itself: no connection meanwhile (the last reading stays shown).
+                TrafficPause.awaitResumed()
+                // Silence during the pause isn't a device gone missing.
                 val started = System.currentTimeMillis()
-                registry.rememberAll(devices)
-                while (true) {
-                    val snapshot = reader.read()
-                    reader.learnSerials().forEach { (deviceId, serial) ->
-                        repository.setDeviceSerial(plantId, deviceId, serial)
-                        // Re-added before its serial was known: back to its stored id and data (restarts polling).
-                        devices.find { it.id == deviceId }?.let { registry.claim(plantId, it.copy(serial = serial)) }
+                devices.forEach { d -> lastAnswer.computeIfPresent(d.id) { _, _ -> started } }
+                PlantReader(devices).use { reader ->
+                    while (!TrafficPause.isPaused) {
+                        val snapshot = reader.read()
+                        reader.learnSerials().forEach { (deviceId, serial) ->
+                            repository.setDeviceSerial(plantId, deviceId, serial)
+                            // Re-added before its serial was known: back to its stored id and data (restarts polling).
+                            devices.find { it.id == deviceId }?.let { registry.claim(plantId, it.copy(serial = serial)) }
+                        }
+                        lookForMovedDevices(plantId, snapshot, started)
+                        if (snapshot.readAt.epochSecond - lastRecorded >= RECORD_INTERVAL_S) {
+                            lastRecorded = snapshot.readAt.epochSecond
+                            record(plantId, snapshot)
+                            recordedToday = recordedToday(plantId)
+                        }
+                        logFaults(plantId, snapshot)
+                        emit(PlantState.Live(snapshot.copy(today = withRecorded(snapshot.today, recordedToday))))
+                        TrafficPause.pauseWithin(POLL_INTERVAL_MS) // a pause ends the wait, and the connections
                     }
-                    lookForMovedDevices(plantId, snapshot, started)
-                    if (snapshot.readAt.epochSecond - lastRecorded >= RECORD_INTERVAL_S) {
-                        lastRecorded = snapshot.readAt.epochSecond
-                        record(plantId, snapshot)
-                        recordedToday = recordedToday(plantId)
-                    }
-                    logFaults(plantId, snapshot)
-                    emit(PlantState.Live(snapshot.copy(today = withRecorded(snapshot.today, recordedToday))))
-                    delay(POLL_INTERVAL_MS)
                 }
             }
         } finally {
@@ -128,6 +134,7 @@ class LivePlants(
             if (!d.type.modbus || !d.type.needsHost || d.serial.isBlank()) continue
             if (now - (lastAnswer[d.id] ?: started) < MOVED_AFTER_MS) continue
             if (now - (lastSearch[d.id] ?: 0L) < SEARCH_EVERY_MS) continue
+            if (TrafficPause.isPaused) continue
             lastSearch[d.id] = now
             scope.launch {
                 try {

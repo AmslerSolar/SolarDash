@@ -13,6 +13,7 @@ import androidx.work.WorkerParameters
 import ch.amslersolar.dashboard.SolarApp
 import ch.amslersolar.dashboard.driver.ActivePolling
 import ch.amslersolar.dashboard.driver.PlantReader
+import ch.amslersolar.dashboard.driver.TrafficPause
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
 import java.util.concurrent.TimeUnit
@@ -24,6 +25,7 @@ import java.util.concurrent.TimeUnit
 class HistoryWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
         val app = applicationContext as SolarApp
+        if (TrafficPause.isPaused) return Result.success() // a register sweep is running: the next run records
         for (plant in app.repository.plants.first()) {
             if (plant.devices.isEmpty() || ActivePolling.isActive(plant.id)) continue
             try {
