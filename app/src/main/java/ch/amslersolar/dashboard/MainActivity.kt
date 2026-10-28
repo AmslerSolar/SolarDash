@@ -3,6 +3,7 @@
 
 package ch.amslersolar.dashboard
 
+import ch.amslersolar.dashboard.work.RecordingService
 import ch.amslersolar.dashboard.driver.TrafficPause
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -60,6 +61,8 @@ class MainActivity : ComponentActivity() {
         val history = app.history
         // A wall-mounted tablet goes back into kiosk mode when the app is started again (reboot, crash, update).
         if (savedInstanceState == null) Kiosk.plantId(this)?.let { Kiosk.start(this, it) }
+        // The plants are read and recorded for as long as the app runs, not only while a plant is on screen.
+        RecordingService.start(this)
 
         setContent {
             SolarTheme {

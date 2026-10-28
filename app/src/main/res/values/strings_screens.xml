@@ -79,4 +79,7 @@
     <string name="screens_home_hint_text">So that this display comes back by itself after a power outage or a restart, choose Solar Dashboard as the home app. Android then opens it after every start. You can change this later in the settings under Apps → Default apps.</string>
     <string name="screens_home_hint_choose">Choose home app</string>
     <string name="screens_home_hint_later">Not now</string>
+    <string name="screens_recording_channel">Recording</string>
+    <string name="screens_recording_title">Recording the solar plants</string>
+    <string name="screens_recording_text">Read every few seconds, recorded once a minute</string>
 </resources>

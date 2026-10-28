@@ -79,4 +79,7 @@
     <string name="screens_home_hint_text">Damit diese Anzeige nach einem Stromausfall oder Neustart von selbst wieder erscheint, wähle Solar Dashboard als Startbildschirm-App. Android öffnet sie dann nach jedem Start. Du kannst das später in den Einstellungen unter Apps → Standard-Apps ändern.</string>
     <string name="screens_home_hint_choose">Startbildschirm wählen</string>
     <string name="screens_home_hint_later">Später</string>
+    <string name="screens_recording_channel">Aufzeichnung</string>
+    <string name="screens_recording_title">Solaranlagen werden aufgezeichnet</string>
+    <string name="screens_recording_text">Alle paar Sekunden gelesen, einmal pro Minute aufgezeichnet</string>
 </resources>

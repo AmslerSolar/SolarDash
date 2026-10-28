@@ -80,4 +80,7 @@
     <string name="screens_home_hint_text">Para que esta pantalla vuelva sola tras un corte de luz o un reinicio, elige Solar Dashboard como aplicación de inicio. Android la abrirá en cada arranque. Puedes cambiarlo más tarde en los ajustes, en Aplicaciones → Aplicaciones predeterminadas.</string>
     <string name="screens_home_hint_choose">Elegir aplicación de inicio</string>
     <string name="screens_home_hint_later">Ahora no</string>
+    <string name="screens_recording_channel">Registro</string>
+    <string name="screens_recording_title">Registrando las instalaciones solares</string>
+    <string name="screens_recording_text">Leídas cada pocos segundos, registradas una vez por minuto</string>
 </resources>

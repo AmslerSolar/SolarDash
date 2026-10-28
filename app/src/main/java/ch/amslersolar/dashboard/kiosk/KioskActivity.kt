@@ -64,6 +64,7 @@ class KioskActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         hideSystemBars()
         Kiosk.startService(this, plantId)
+        ch.amslersolar.dashboard.work.RecordingService.start(this) // the other plants, too
         if (Build.VERSION.SDK_INT >= 33 && savedInstanceState == null &&
             checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) {

@@ -74,5 +74,13 @@
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                 android:value="Wall-mounted solar plant display: polls the plant's inverters on the local network once every few seconds and records history while the kiosk display is on." />
         </service>
+        <service
+            android:name=".work.RecordingService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Solar plant monitoring: reads the plant's inverters, batteries and meters on the local network every few seconds and records their history once a minute while the app runs, also with the screen off (off-grid systems without a display of their own)." />
+        </service>
     </application>
 </manifest>

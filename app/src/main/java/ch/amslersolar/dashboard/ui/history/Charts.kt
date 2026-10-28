@@ -303,7 +303,7 @@ private fun fitScale(lo: Float, hi: Float, includeZero: Boolean, target: Int = 4
 /**
  * Curves over a day or a week with one y-axis per unit (up to four): first unit on the left, second on the
  * right, then a second left and a second right axis. Each axis fits its own visible data; % is fixed to 0–100.
- * Gaps longer than the recording gap limit break the line.
+ * Gaps longer than the recording gap limit break the line; a sample alone between two gaps is a dot.
  */
 @Composable
 fun PowerChart(
@@ -405,10 +405,16 @@ fun PowerChart(
                 val scale = scales[line.unit] ?: continue
                 val path = Path()
                 var prev: Long? = null
-                for ((t, v) in line.points) {
+                val pts = line.points
+                for ((i, p) in pts.withIndex()) {
+                    val (t, v) = p
                     val px = x(fraction(t))
                     val py = y(scale, v)
                     if (prev == null || t - prev > HistoryMath.MAX_GAP_SECONDS) path.moveTo(px, py) else path.lineTo(px, py)
+                    // A sample with nothing near it on either side (e.g. from the background job) makes no line: a dot.
+                    val before = pts.getOrNull(i - 1)?.let { t - it.first <= HistoryMath.MAX_GAP_SECONDS } == true
+                    val after = pts.getOrNull(i + 1)?.let { it.first - t <= HistoryMath.MAX_GAP_SECONDS } == true
+                    if (!before && !after) drawCircle(line.color, radius = 2.5.dp.toPx(), center = Offset(px, py))
                     prev = t
                 }
                 drawPath(

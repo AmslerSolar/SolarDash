@@ -80,4 +80,7 @@
     <string name="screens_home_hint_text">Perché questa schermata torni da sola dopo un’interruzione di corrente o un riavvio, scegli Solar Dashboard come app della schermata Home. Android la aprirà a ogni avvio. Puoi cambiarlo in seguito nelle impostazioni, in App → App predefinite.</string>
     <string name="screens_home_hint_choose">Scegli app Home</string>
     <string name="screens_home_hint_later">Non ora</string>
+    <string name="screens_recording_channel">Registrazione</string>
+    <string name="screens_recording_title">Registrazione degli impianti solari</string>
+    <string name="screens_recording_text">Letti ogni pochi secondi, registrati una volta al minuto</string>
 </resources>

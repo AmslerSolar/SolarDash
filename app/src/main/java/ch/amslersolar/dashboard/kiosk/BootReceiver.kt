@@ -18,6 +18,8 @@ import android.content.Intent
 class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action !in ACTIONS) return
+        // An app update ends the running app: recording carries on (after a restart the app isn't running yet).
+        if (intent.action == Intent.ACTION_MY_PACKAGE_REPLACED) runCatching { ch.amslersolar.dashboard.work.RecordingService.start(context) }
         val plantId = Kiosk.plantId(context) ?: return
         runCatching { Kiosk.startService(context, plantId) }
         runCatching { context.startActivity(KioskActivity.intent(context, plantId)) } // allowed on some tablets only
