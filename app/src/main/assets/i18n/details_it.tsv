@@ -7574,3 +7574,29 @@ Warning 0x{x}	Avviso 0x{x}
 Warning (extended) 0x{x}	Avviso (esteso) 0x{x}
 Warning Message	Messaggio di avviso
 Warning Message Extend	Messaggio di avviso esteso
+System control mode	Modalità di controllo del sistema
+Beta Version_DSP_Slave	Versione beta DSP (slave)
+ISO Value	Valore di isolamento
+Meter Frequence	Frequenza del contatore
+Battery Capacity	Capacità della batteria
+Controller Status Code	Codice di stato del controller
+Battery Total Charge	Carica totale della batteria
+Battery Total Discharge Energy	Energia totale scaricata dalla batteria
+battery SN	N. di serie della batteria
+BMS1 Rated Capacity	BMS1 capacità nominale
+BMS1 Cluster NUM	BMS1 numero di cluster
+BMS1 Register Cluster number + BMS1 Online Cluster number	BMS1 cluster registrati + online
+Battery1 Connect Status	Batteria1 stato di collegamento
+Battery1 Communication Status	Batteria1 stato di comunicazione
+Battery1 Type Index	Batteria1 indice del tipo
+Battery1 Protocol	Batteria1 protocollo
+Battery1 Strings	Batteria1 stringhe
+Battery1 SOC	Batteria1 SOC
+Battery1 SOH	Batteria1 SOH
+Battery2 Connect Status	Batteria2 stato di collegamento
+Battery2 Communication Status	Batteria2 stato di comunicazione
+Default	Predefinito
+Power set fast, without step size adjustment	Potenza impostata rapidamente, senza regolazione del passo
+Communication lost	Comunicazione persa
+Communication normal	Comunicazione normale
+Reversed polarity	Polarità invertita
