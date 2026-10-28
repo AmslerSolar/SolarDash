@@ -47,6 +47,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -481,7 +482,7 @@ private fun SweepSection(
     var job by remember { mutableStateOf<Job?>(null) }
     var sweeps by remember { mutableStateOf<Map<Int, RegisterSweep>?>(null) }
     // Bumped on each progress call: the sweeps themselves aren't Compose state.
-    var tick by remember { mutableStateOf(0) }
+    var tick by remember { mutableIntStateOf(0) }
     var saved by rememberSaveable { mutableStateOf<String?>(null) }
     var error by rememberSaveable { mutableStateOf<String?>(null) }
     val running = job != null

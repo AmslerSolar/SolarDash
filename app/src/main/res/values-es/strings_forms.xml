@@ -44,6 +44,7 @@
     <string name="forms_scan_progress_ports">Puertos: %1$d de %2$d</string>
     <string name="forms_scan_progress_identify">Identificando: %1$d de %2$d</string>
     <string name="forms_found_identifying">Identificando…</string>
+    <string name="forms_found_identifying_count">Identificando… %1$d/%2$d</string>
     <string name="forms_found_unrecognised">Equipo Modbus TCP no reconocido</string>
     <string name="forms_found_already_in">ya en %1$s</string>
     <string name="forms_found_unit">ID de unidad %1$d</string>
@@ -123,7 +124,7 @@
     <string name="forms_hint_sweep">Para documentar un dispositivo: lee todos los registros de 0 a 65535 con la función 03 (holding) y luego 04 (input), solo lectura, no se escribe nada. Guarda los valores en bruto como JSON en la carpeta de la app (Android/data/ch.amslersolar.dashboard/files/register-sweeps), también al detenerlo. Puede tardar horas; la pantalla permanece encendida mientras tanto. Un dispositivo que se está consultando recibe una segunda conexión.</string>
     <string name="forms_sweep_start">Iniciar barrido</string>
     <string name="forms_sweep_stop">Detener barrido</string>
-    <string name="forms_sweep_progress">Función %1$s · %2$d de %3$d registros · %4$d respondidos</string>
+    <string name="forms_sweep_progress">Pasada %1$d de %2$d · función %3$s · %4$d de %5$d solicitudes · %6$d registros respondidos</string>
     <string name="forms_sweep_no_answer">Función %1$s detenida, ya no hay respuesta: %2$s</string>
     <string name="forms_sweep_saved">Respondidos: %1$d registros holding (03), %2$d input (04), guardado en %3$s</string>
 </resources>
