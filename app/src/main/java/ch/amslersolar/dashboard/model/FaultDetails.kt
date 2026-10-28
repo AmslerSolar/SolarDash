@@ -81,6 +81,12 @@ object FaultDetails {
         }
     }
 
+    /** A measured value with at most three decimals, without trailing zeros: 38.800000000000004 → "38.8". */
+    fun short(d: Double): String =
+        if (!d.isFinite()) d.toString() else java.math.BigDecimal(d).setScale(3, java.math.RoundingMode.HALF_UP).stripTrailingZeros().toPlainString()
+
+    private fun r3(d: Double?): Double? = d?.let { if (it.isFinite()) Math.round(it * 1000) / 1000.0 else it }
+
     private fun reading(r: DeviceReading): JsonObject = buildJsonObject {
         put("status", r.status)
         if (r.problems.isNotEmpty()) putJsonArray("problems") {
@@ -89,19 +95,19 @@ object FaultDetails {
         put("pv_w", r.pvPowerW)
         put("grid_w", r.gridPowerW)
         put("load_w", r.loadPowerW)
-        put("temperature_c", r.temperatureC)
+        put("temperature_c", r3(r.temperatureC))
         r.battery?.let { b ->
             putJsonObject("battery") {
-                put("w", b.powerW); put("soc", b.socPercent); put("v", b.voltageV); put("mode", b.mode)
+                put("w", b.powerW); put("soc", b.socPercent); put("v", r3(b.voltageV)); put("mode", b.mode)
             }
         }
         if (r.phases.isNotEmpty()) putJsonArray("phases") {
             r.phases.forEach { p ->
-                add(buildJsonObject { put("name", p.name); put("v", p.voltageV); put("a", p.currentA); put("hz", p.frequencyHz); put("w", p.powerW) })
+                add(buildJsonObject { put("name", p.name); put("v", r3(p.voltageV)); put("a", r3(p.currentA)); put("hz", r3(p.frequencyHz)); put("w", p.powerW) })
             }
         }
         if (r.pvStrings.isNotEmpty()) putJsonArray("pv_strings") {
-            r.pvStrings.forEach { s -> add(buildJsonObject { put("index", s.index); put("v", s.voltageV); put("a", s.currentA); put("w", s.powerW) }) }
+            r.pvStrings.forEach { s -> add(buildJsonObject { put("index", s.index); put("v", r3(s.voltageV)); put("a", r3(s.currentA)); put("w", s.powerW) }) }
         }
         if (r.details.isNotEmpty()) putJsonArray("details") {
             r.details.forEach { section ->

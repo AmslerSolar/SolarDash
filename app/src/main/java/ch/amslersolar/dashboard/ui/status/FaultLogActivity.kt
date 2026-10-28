@@ -3,6 +3,9 @@
 
 package ch.amslersolar.dashboard.ui.status
 
+import ch.amslersolar.dashboard.model.FaultDetails
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.doubleOrNull
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -280,6 +283,8 @@ private fun detailBlocks(json: String?, prefix: String): List<Block> {
     fun yesNo(e: JsonElement?) = when ((e as? JsonPrimitive)?.booleanOrNull) { true -> yes; false -> no; null -> null }
     fun JsonObject.str(k: String) = this[k].text()
     fun JsonObject.w(k: String) = this[k].text()?.let { "$it W" }
+    // Measured values: at most three decimals ("38.800000000000004" was stored by earlier versions).
+    fun JsonObject.num(k: String) = (this[k] as? JsonPrimitive)?.let { p -> p.doubleOrNull?.let(FaultDetails::short) ?: p.contentOrNull }
     val out = mutableListOf<Block>()
 
     (root["device"] as? JsonObject)?.let { d ->
@@ -315,17 +320,17 @@ private fun detailBlocks(json: String?, prefix: String): List<Block> {
         r.w("load_w")?.let { rows += stringResource(R.string.screens_home) to it }
         (r["battery"] as? JsonObject)?.let { b ->
             rows += stringResource(R.string.screens_battery) to listOfNotNull(
-                b.w("w"), b.str("soc")?.let { "$it %" }, b.str("v")?.let { "$it V" }, b.str("mode")?.let { DetailTexts.tr(it) },
+                b.w("w"), b.str("soc")?.let { "$it %" }, b.num("v")?.let { "$it V" }, b.str("mode")?.let { DetailTexts.tr(it) },
             ).joinToString(" · ")
         }
-        r.str("temperature_c")?.let { rows += stringResource(R.string.screens_temperature) to "$it °C" }
+        r.num("temperature_c")?.let { rows += stringResource(R.string.screens_temperature) to "$it °C" }
         (r["phases"] as? JsonArray)?.forEach { p ->
             val o = p.jsonObject
-            rows += (o.str("name") ?: "") to listOfNotNull(o.str("v")?.let { "$it V" }, o.str("a")?.let { "$it A" }, o.w("w"), o.str("hz")?.let { "$it Hz" }).joinToString(" · ")
+            rows += (o.str("name") ?: "") to listOfNotNull(o.num("v")?.let { "$it V" }, o.num("a")?.let { "$it A" }, o.w("w"), o.num("hz")?.let { "$it Hz" }).joinToString(" · ")
         }
         (r["pv_strings"] as? JsonArray)?.forEach { p ->
             val o = p.jsonObject
-            rows += "PV${o.str("index")}" to listOfNotNull(o.str("v")?.let { "$it V" }, o.str("a")?.let { "$it A" }, o.w("w")).joinToString(" · ")
+            rows += "PV${o.str("index")}" to listOfNotNull(o.num("v")?.let { "$it V" }, o.num("a")?.let { "$it A" }, o.w("w")).joinToString(" · ")
         }
         if (rows.isNotEmpty()) out += Block("$prefix: " + stringResource(R.string.log_reported), rows)
         (r["details"] as? JsonArray)?.forEach { s ->
