@@ -38,7 +38,7 @@ class RegisterSweepTest {
     private suspend fun RegisterSweep.all(read: suspend (Int, Int) -> RegisterBlock, known: List<IntRange> = emptyList()) {
         known(known, read, pauseMs = 0)
         blocks(RegisterSweep.LARGE, read, pauseMs = 0)
-        blocks(RegisterSweep.SMALL, read, pauseMs = 0)
+        blocks(RegisterSweep.SMALL, read)
         probes(read, pauseMs = 0)
         edges(read, pauseMs = 0)
     }
@@ -71,6 +71,17 @@ class RegisterSweepTest {
         assertNull(sweep.stopped)
         assertEquals(answers.sorted(), sweep.values.keys.toList())
         assertEquals(1042, sweep.values[42])
+    }
+
+    @Test
+    fun theTimeoutFollowsTheAnswerTimesWithinItsBounds() {
+        val t = AnswerTimeout()
+        assertEquals(RegisterSweep.TIMEOUT_MS, t.ms)  // until the first answer
+        assertEquals(AnswerTimeout.MIN_MS, t.answered(20))
+        assertEquals(450, t.answered(150))
+        assertEquals(RegisterSweep.TIMEOUT_MS, t.answered(900))
+        repeat(AnswerTimeout.WINDOW) { t.answered(50) }  // the slow answer has left the window
+        assertEquals(AnswerTimeout.MIN_MS, t.ms)
     }
 
     @Test

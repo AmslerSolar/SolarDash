@@ -121,7 +121,7 @@
     </plurals>
     <string name="forms_sweep_open">Scansione registri…</string>
     <string name="forms_sweep_title">Scansione registri</string>
-    <string name="forms_hint_sweep">Per documentare un dispositivo: legge tutti i registri da 0 a 65535 con la funzione 03 (holding), poi 04 (input), in sola lettura, non viene scritto nulla. Salva i valori grezzi come JSON nella cartella dell\'app (Android/data/ch.amslersolar.dashboard/files/register-sweeps), anche se interrotta. Può durare ore; lo schermo resta acceso nel frattempo. Un dispositivo interrogato riceve una seconda connessione. Nel frattempo i valori in tempo reale, la registrazione in background e la ricerca dei dispositivi sono in pausa, così la scansione ha i dispositivi tutti per sé.</string>
+    <string name="forms_hint_sweep">Legge tutti i registri con la funzione 03, poi 04, senza scrivere nulla, e salva il traffico in un file nella cartella dell\'app.</string>
     <string name="forms_sweep_start">Avvia scansione</string>
     <string name="forms_sweep_stop">Ferma scansione</string>
     <string name="forms_sweep_progress">Passaggio %1$d di %2$d · funzione %3$s · %4$d di %5$d richieste · %6$d registri con risposta</string>

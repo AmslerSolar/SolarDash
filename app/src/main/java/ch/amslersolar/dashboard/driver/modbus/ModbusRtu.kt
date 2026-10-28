@@ -34,6 +34,14 @@ object ModbusRtu {
         return frame.copyOfRange(3, 3 + byteCount)
     }
 
+    /** Checks a whole answer's CRC and unit, and returns its PDU (function code onwards, without the CRC). */
+    fun pdu(frame: ByteArray, unitId: Int): ByteArray {
+        if (frame.size < 4) throw ProtocolException("Response too short (${frame.size} bytes)")
+        if (!crc(frame, frame.size - 2).contentEquals(frame.copyOfRange(frame.size - 2, frame.size))) throw ProtocolException("CRC mismatch")
+        if (frame[0].toInt() and 0xFF != unitId) throw ProtocolException("Answer from unit ${frame[0].toInt() and 0xFF}, asked $unitId")
+        return frame.copyOfRange(1, frame.size - 2)
+    }
+
     fun withCrc(b: ByteArray): ByteArray = b + crc(b, b.size)
 
     /** CRC-16/Modbus of the first [n] bytes, low byte first as on the wire. */

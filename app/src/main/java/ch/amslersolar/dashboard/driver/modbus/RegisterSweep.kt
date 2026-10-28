@@ -33,7 +33,7 @@ class RegisterSweep(val from: Int = 0, val to: Int = 0xFFFF) {
         private set
     /** The pass running (1…), set by whoever runs the passes, for the display. */
     var pass = 0
-    /** Requests in the current pass, done and planned. */
+    /** Steps in the current pass (requests, blocks or stretches), done and planned. */
     var passDone = 0
         private set
     var passTotal = 0
@@ -113,7 +113,7 @@ class RegisterSweep(val from: Int = 0, val to: Int = 0xFFFF) {
         ranges: Collection<IntRange>,
         read: suspend (Int, Int) -> RegisterBlock,
         split: Boolean = false,
-        pauseMs: Long = PAUSE_MS,
+        pauseMs: Long = 0,
         progress: () -> Unit = {},
     ): Boolean {
         val regs = sortedSetOf<Int>()
@@ -147,20 +147,24 @@ class RegisterSweep(val from: Int = 0, val to: Int = 0xFFFF) {
     }
 
     /** Passes 2 and 3: aligned blocks of [size] that still hold an unanswered register. */
-    suspend fun blocks(size: Int, read: suspend (Int, Int) -> RegisterBlock, pauseMs: Long = PAUSE_MS, progress: () -> Unit = {}): Boolean {
-        val plan = mutableListOf<Pair<Int, Int>>()
+    suspend fun blocks(size: Int, read: suspend (Int, Int) -> RegisterBlock, pauseMs: Long = 0, progress: () -> Unit = {}): Boolean =
+        each(unanswered(size).map { it.first to it.last - it.first + 1 }, read, pauseMs, progress)
+
+    /** The aligned blocks of [size], cut to the range, that still hold an unanswered register. */
+    private fun unanswered(size: Int): List<IntRange> {
+        val plan = mutableListOf<IntRange>()
         var start = from - from % size
         while (start <= to) {
             val first = maxOf(start, from)
             val last = minOf(start + size - 1, to)
-            if ((first..last).any { it !in values }) plan += first to last - first + 1
+            if ((first..last).any { it !in values }) plan += first..last
             start += size
         }
-        return each(plan, read, pauseMs, progress)
+        return plan
     }
 
     /** Pass 4: the first register of every block of [SMALL] without any answer, alone. */
-    suspend fun probes(read: suspend (Int, Int) -> RegisterBlock, pauseMs: Long = PAUSE_MS, progress: () -> Unit = {}): Boolean {
+    suspend fun probes(read: suspend (Int, Int) -> RegisterBlock, pauseMs: Long = 0, progress: () -> Unit = {}): Boolean {
         val plan = mutableListOf<Pair<Int, Int>>()
         var start = from - from % SMALL
         while (start <= to) {
@@ -175,7 +179,7 @@ class RegisterSweep(val from: Int = 0, val to: Int = 0xFFFF) {
      * Pass 5: from each answered stretch outwards, the furthest register that still answers, found by halving (a
      * read reaching into a gap, or starting in one, is refused), at most [SMALL] registers each side.
      */
-    suspend fun edges(read: suspend (Int, Int) -> RegisterBlock, pauseMs: Long = PAUSE_MS, progress: () -> Unit = {}): Boolean {
+    suspend fun edges(read: suspend (Int, Int) -> RegisterBlock, pauseMs: Long = 0, progress: () -> Unit = {}): Boolean {
         val stretches = mutableListOf<IntRange>()
         for (r in values.keys) {
             val last = stretches.lastOrNull()
@@ -216,9 +220,40 @@ class RegisterSweep(val from: Int = 0, val to: Int = 0xFFFF) {
         const val MAX_SILENT = 64
         /** Silent requests in a row after which a register that answered before is read again. */
         const val GONE_CHECK = 32
-        /** Pause between requests: meters behind an RS485 gateway are slow, and may be polled at the same time. */
-        const val PAUSE_MS = 30L
-        /** Timeout per request while sweeping. */
+        /**
+         * The most a device's file can make the sweep wait between requests (its min_interval_ms, meant for polling);
+         * other traffic is paused during a sweep, so devices without one get none.
+         */
+        const val MAX_GAP_MS = 30L
+        /** Timeout per request while sweeping, at most (and until the device has answered); see [AnswerTimeout]. */
         const val TIMEOUT_MS = 1_000
+    }
+}
+
+/**
+ * The timeout per request while sweeping, from how long the device takes to answer: [FACTOR] times the slowest of
+ * its last [WINDOW] answers (refusals included), at least [MIN_MS] and at most [RegisterSweep.TIMEOUT_MS].
+ */
+class AnswerTimeout {
+    private val recent = ArrayDeque<Long>()
+
+    @Volatile
+    var ms = RegisterSweep.TIMEOUT_MS
+        private set
+
+    /** Takes an answer that came after [elapsedMs]; the new timeout. */
+    @Synchronized
+    fun answered(elapsedMs: Long): Int {
+        recent.addLast(elapsedMs)
+        if (recent.size > WINDOW) recent.removeFirst()
+        ms = (recent.max() * FACTOR).coerceIn(MIN_MS.toLong(), RegisterSweep.TIMEOUT_MS.toLong()).toInt()
+        return ms
+    }
+
+    companion object {
+        const val FACTOR = 3
+        const val WINDOW = 32
+        /** Wi-Fi hiccups, and a block of 64 registers takes ~140 ms to come back over RS485 at 9600 baud. */
+        const val MIN_MS = 300
     }
 }

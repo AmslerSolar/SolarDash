@@ -46,6 +46,14 @@ class ModbusTcpClient(
     /** Told when a request got no answer and is sent again on a new connection (with why). */
     @Volatile
     var retrying: ((why: String) -> Unit)? = null
+
+    /** How long to wait for an answer; [timeoutMs] unless changed (register sweeps set it from [answered]). */
+    @Volatile
+    var answerTimeoutMs: Int = timeoutMs
+
+    /** Told how long each answer (or refusal) took, in ms, from the request going out until it was in. */
+    @Volatile
+    var answered: ((ms: Long) -> Unit)? = null
     private var nextTransactionId = 1
 
     suspend fun readHoldingRegisters(unitId: Int, register: Int, count: Int): RegisterBlock =
@@ -55,10 +63,18 @@ class ModbusTcpClient(
     suspend fun readInputRegisters(unitId: Int, register: Int, count: Int): RegisterBlock =
         read(unitId, register, count, ModbusTcp.READ_INPUT_REGISTERS)
 
-    private suspend fun read(unitId: Int, register: Int, count: Int, function: Int): RegisterBlock = mutex.withLock {
+    /** Function 43/14: one answer of the device's identification objects ([ModbusDeviceId]), read only. */
+    suspend fun readDeviceIdentification(unitId: Int, readCode: Int, objectId: Int): ModbusDeviceId.Answer =
+        call { ModbusDeviceId.parse(exchangePdu(unitId, ModbusDeviceId.pdu(readCode, objectId))) }
+
+    private suspend fun read(unitId: Int, register: Int, count: Int, function: Int): RegisterBlock =
+        call { exchange(unitId, register, count, function) }
+
+    /** Runs [exchange] alone on the connection, once more on a new connection when it got no answer. */
+    private suspend fun <T> call(exchange: () -> T): T = mutex.withLock {
         withContext(Dispatchers.IO) {
             try {
-                exchange(unitId, register, count, function)
+                exchange()
             } catch (e: ModbusException) {
                 throw e
             } catch (e: IOException) {
@@ -70,7 +86,7 @@ class ModbusTcpClient(
                 retrying?.invoke(e.message ?: e::class.simpleName.orEmpty())
                 disconnect()
                 try {
-                    exchange(unitId, register, count, function)
+                    exchange()
                 } catch (e: IOException) {
                     if (e !is ModbusException) disconnect()
                     throw e
@@ -79,7 +95,7 @@ class ModbusTcpClient(
         }
     }
 
-    private fun exchange(unitId: Int, register: Int, count: Int, function: Int): RegisterBlock {
+    private fun connected(): Socket {
         val s = socket ?: DeviceNetwork.current.socket(host).also {
             it.connect(InetSocketAddress(host, port), timeoutMs)
             it.soTimeout = timeoutMs
@@ -87,6 +103,47 @@ class ModbusTcpClient(
             socket = it
             if (connectDelayMs > 0) Thread.sleep(connectDelayMs) // runs on Dispatchers.IO
         }
+        s.soTimeout = answerTimeoutMs
+        return s
+    }
+
+    /** Sends [pdu] to [unitId] and returns the answer's PDU (function code onwards); only for device identification. */
+    private fun exchangePdu(unitId: Int, pdu: ByteArray): ByteArray {
+        val s = connected()
+        val request = if (rtu) ModbusRtu.withCrc(byteArrayOf(unitId.toByte()) + pdu) else {
+            val transactionId = nextTransactionId
+            nextTransactionId = (nextTransactionId + 1) and 0xFFFF
+            byteArrayOf(
+                (transactionId shr 8).toByte(), transactionId.toByte(), 0, 0,
+                ((pdu.size + 1) shr 8).toByte(), (pdu.size + 1).toByte(), unitId.toByte(),
+            ) + pdu
+        }
+        s.getOutputStream().apply {
+            traffic?.invoke(true, request)
+            write(request)
+            flush()
+        }
+        val sent = System.nanoTime()
+        val input = DataInputStream(s.getInputStream())
+        if (rtu) {
+            val frame = ModbusDeviceId.readRtuFrame(input)
+            traffic?.invoke(false, frame)
+            answered?.invoke((System.nanoTime() - sent) / 1_000_000)
+            return ModbusRtu.pdu(frame, unitId)
+        }
+        val transactionId = ModbusTcp.transactionId(request)
+        while (true) {
+            val header = ByteArray(ModbusTcp.MBAP_SIZE).also(input::readFully)
+            val body = ByteArray(ModbusTcp.remainingLength(header)).also(input::readFully)
+            traffic?.invoke(false, header + body)
+            if (ModbusTcp.transactionId(header) != transactionId) continue // a late answer to an earlier request
+            answered?.invoke((System.nanoTime() - sent) / 1_000_000)
+            return body
+        }
+    }
+
+    private fun exchange(unitId: Int, register: Int, count: Int, function: Int): RegisterBlock {
+        val s = connected()
         if (rtu) return exchangeRtu(s, unitId, register, count, function)
         val transactionId = nextTransactionId
         nextTransactionId = (nextTransactionId + 1) and 0xFFFF
@@ -97,6 +154,7 @@ class ModbusTcpClient(
             write(request)
             flush()
         }
+        val sent = System.nanoTime()
         val input = DataInputStream(s.getInputStream())
         while (true) {
             val header = ByteArray(ModbusTcp.MBAP_SIZE).also(input::readFully)
@@ -105,6 +163,7 @@ class ModbusTcpClient(
             traffic?.invoke(false, frame)
             // A late answer to an earlier request that timed out: skip it.
             if (ModbusTcp.transactionId(frame) != transactionId) continue
+            answered?.invoke((System.nanoTime() - sent) / 1_000_000)
             return RegisterBlock(register, ModbusTcp.parseReadResponse(frame, transactionId, count, function))
         }
     }
@@ -116,10 +175,12 @@ class ModbusTcpClient(
             write(request)
             flush()
         }
+        val sent = System.nanoTime()
         val input = DataInputStream(s.getInputStream())
         val head = ByteArray(3).also(input::readFully)
         val rest = ByteArray(ModbusRtu.remainingLength(head)).also(input::readFully)
         traffic?.invoke(false, head + rest)
+        answered?.invoke((System.nanoTime() - sent) / 1_000_000)
         return RegisterBlock(register, ModbusRtu.parseReadResponse(head + rest, unitId, count, function))
     }
 

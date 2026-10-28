@@ -529,17 +529,21 @@ private fun SweepSection(
         sweeps?.let { all ->
             tick // read, so progress recomposes
             if (running) {
-                // The function being read: the last one that has reached the furthest pass.
-                val furthest = all.values.filter { it.stopped == null }.maxOfOrNull { it.pass } ?: 0
-                val current = all.entries.lastOrNull { it.value.stopped == null && it.value.pass == furthest }
+                // The function being read: they run one after the other (03, then 04), so the last one that has started.
+                val order = RegisterSweeps.FUNCTIONS.filter { it in all }
+                val index = order.indexOfLast { all.getValue(it).pass > 0 }.coerceAtLeast(0)
+                val function = order[index]
+                val s = all.getValue(function)
                 val passes = RegisterSweeps.passCount
-                val s = current?.value
-                val within = if (s == null || s.passTotal == 0) 0f else s.passDone.toFloat() / s.passTotal
-                LinearProgressIndicator(progress = { ((furthest - 1).coerceAtLeast(0) + within) / passes }, modifier = Modifier.fillMaxWidth())
+                val within = if (s.passTotal == 0) 0f else s.passDone.toFloat() / s.passTotal
+                LinearProgressIndicator(
+                    progress = { (index * passes + (s.pass - 1).coerceAtLeast(0) + within) / (order.size * passes) },
+                    modifier = Modifier.fillMaxWidth(),
+                )
                 Text(
                     stringResource(
-                        R.string.forms_sweep_progress, furthest.coerceAtLeast(1), passes, "%02d".format(current?.key ?: all.keys.first()),
-                        s?.passDone ?: 0, s?.passTotal ?: 0, all.values.sumOf { it.values.size },
+                        R.string.forms_sweep_progress, s.pass.coerceAtLeast(1), passes, "%02d".format(function),
+                        s.passDone, s.passTotal, all.values.sumOf { it.values.size },
                     ),
                     style = MaterialTheme.typography.bodySmall,
                 )
