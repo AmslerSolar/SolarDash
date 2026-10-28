@@ -211,6 +211,9 @@ class Inverters1GoldenTest {
         assertEquals(emptyList<ch.amslersolar.dashboard.model.DeviceProblem>(), quiet.problems)
         val warned = spec("goodwe-et", goodWe(warnings = true).u16(35185, 0x40).u16(35329, 0x0100), 247).read()
         assertEquals(listOf("Warning 0x100"), warned.problems.map { it.text })
+        // As the real ET answers: 0x40 in 35328 and 35185, 35335 not available (all ones): no warning.
+        val real = goodWe(warnings = true).u16(35185, 0x40).u16(35329, 0x40).u16(35335, 0xFFFF).u16(35336, 0xFFFF)
+        assertEquals(emptyList<ch.amslersolar.dashboard.model.DeviceProblem>(), spec("goodwe-et", real, 247).read().problems)
     }
 
     @Test
