@@ -178,9 +178,13 @@ object SpecDevices {
         DeviceType.MODBUS_SPEC_INVERTER, DeviceType.MODBUS_SPEC_BATTERY, DeviceType.MODBUS_SPEC_METER, DeviceType.MODBUS_SPEC_CONSUMER,
     )
 
-    /** The generic type for a ModbusSpec `kind`: wallboxes, heat pumps, heating rods, boilers and UPSs are consumers. */
+    /**
+     * The generic type for a ModbusSpec `kind`: energy managers and data loggers (Huawei EMMA, SMA Data Manager …)
+     * report the whole site like an inverter or system controller; wallboxes, heat pumps, heating rods, boilers
+     * and UPSs are consumers.
+     */
     fun genericType(kind: String): DeviceType = when (kind) {
-        "inverter" -> DeviceType.MODBUS_SPEC_INVERTER
+        "inverter", "energy_manager" -> DeviceType.MODBUS_SPEC_INVERTER
         "battery" -> DeviceType.MODBUS_SPEC_BATTERY
         "meter" -> DeviceType.MODBUS_SPEC_METER
         else -> DeviceType.MODBUS_SPEC_CONSUMER

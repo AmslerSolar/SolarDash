@@ -84,7 +84,7 @@ class SpecDriver(
         val v = all
         fun n(key: String) = v[key]?.number
         fun w(key: String) = n(key)?.roundToInt()
-        val consumer = spec.kind !in setOf("inverter", "meter", "battery")
+        val consumer = spec.kind !in setOf("inverter", "meter", "battery", "energy_manager")
 
         // A consumer (wallbox, heat pump …) has no PV, grid or battery of its own: values it reports under those keys
         // (e.g. the grid meter reading a heating rod works from) are details, not energy flow.

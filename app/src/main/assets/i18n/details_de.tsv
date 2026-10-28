@@ -7574,3 +7574,1008 @@ Power set fast, without step size adjustment	Leistung schnell gesetzt, ohne Schr
 Communication lost	Kommunikation unterbrochen
 Communication normal	Kommunikation normal
 Reversed polarity	Verpolt
+Externel Model Name	Externer Modellname
+Safety Detailed Error Message	Sicherheit detaillierte Fehlermeldung
+Inverter Detailed Error Message	Wechselrichter detaillierte Fehlermeldung
+Inverter Detailed Status Message	Wechselrichter detaillierte Statusmeldung
+Grid10minAvgVoltR	Netz 10-min-Mittel Spannung R
+Grid10minAvgVoltS	Netz 10-min-Mittel Spannung S
+Grid10minAvgVoltT	Netz 10-min-Mittel Spannung T
+MPPT Number	Anzahl MPPT
+ARC Software Version	ARC-Softwareversion
+Meter Connect Status	Zähler Verbindungsstatus
+Energy-Total-Sell	Energie gesamt eingespeist
+Energy-Total-Buy	Energie gesamt bezogen
+Meter Active Power R	Zähler Wirkleistung R
+Meter Active Power S	Zähler Wirkleistung S
+Meter Active Power T	Zähler Wirkleistung T
+Meter Total Active Power	Zähler Wirkleistung gesamt
+Meter Voltage R	Zähler Spannung R
+Meter Voltage S	Zähler Spannung S
+Meter Voltage T	Zähler Spannung T
+Meter Current R	Zähler Strom R
+Meter Current S	Zähler Strom S
+Meter Current T	Zähler Strom T
+Real-Time Clock (meter block)	Echtzeituhr (Zählerblock)
+Meter Internal/External	Zähler intern/extern
+Int Meter Communication Status	Interner Zähler Kommunikationsstatus
+CT Self Check Status	CT-Selbstprüfung Status
+Ext Meter Communication Status	Externer Zähler Kommunikationsstatus
+Inverter Quantity	Anzahl Wechselrichter
+Online Quantity	Anzahl online
+Battery Total power	Batterie Gesamtleistung
+Meter Power	Zählerleistung
+Battery Mode	Batteriemodus
+Total Inverter Power (rated)	Wechselrichterleistung gesamt (Nenn)
+BackUp Enable	Backup aktiviert
+Feed Power Enable	Einspeisung aktiviert
+EV Communication lost flag	EV-Kommunikation verloren (Flag)
+Relay Status	Relaisstatus
+Box Com Loss	Box-Kommunikation verloren
+SOC	SOC
+BMS SOH	BMS SOH
+modbus_version	Modbus-Version
+ac_output_type	AC-Ausgangstyp
+dsp_svn_version	DSP-SVN-Version
+arm_svn_version	ARM-SVN-Version
+arm_firmware	ARM-Firmware
+Commode	Kommunikationsmodus
+RSSI	RSSI
+Standby	Standby
+Powercube H1 / Force H1 / Force H2	Powercube H1 / Force H1 / Force H2
+Byd box h	Byd box h
+Resu_hv_type-r	Resu_hv_type-r
+Byd box premium hvm / hvl	Byd box premium hvm / hvl
+Byd box premium hvs	Byd box premium hvs
+SECU-S / LX S-H / LX F-H	SECU-S / LX S-H / LX F-H
+Communication OK	Kommunikation OK
+Not met	Nicht erfüllt
+Met	Erfüllt
+Dred 8	DRED 8
+Dred 5	DRED 5
+Dred 0	DRED 0
+Dred 6	DRED 6
+Dred 7	DRED 7
+Generator	Generator
+Load control	Laststeuerung
+Auto	Auto
+No generator	Kein Generator
+Led Off	LED aus
+Led On	LED ein
+OK	OK
+External	Extern
+3-phase 3-wire	3-phasig 3-Leiter
+3-phase 4-wire	3-phasig 4-Leiter
+HomeKit	HomeKit
+GM1000D	GM1000D
+GoodWe single-phase meter	GoodWe einphasiger Zähler
+North American 4-CT meter	Nordamerikanischer 4-CT-Zähler
+GoodWe three-phase three-wire meter	GoodWe dreiphasiger Dreileiter-Zähler
+Acrel meter	Acrel-Zähler
+GoodWe three-phase four-wire meter	GoodWe dreiphasiger Vierleiter-Zähler
+Internal CT, three-phase three-wire	Interner CT, dreiphasig Dreileiter
+Internal CT, three-phase four-wire	Interner CT, dreiphasig Vierleiter
+Internal CT, single-phase	Interner CT, einphasig
+Internal CT, three-phase two-wire	Interner CT, dreiphasig Zweileiter
+GoodWe 2-CT meter	GoodWe 2-CT-Zähler
+Split-phase meter	Split-Phase-Zähler
+No PV	Kein PV
+CZECH	Tschechien
+China	China
+EN50549	EN50549
+AustraliaL	Australien L
+Thailand MEA	Thailand MEA
+Thailand PEA	Thailand PEA
+Mauritius	Mauritius
+GERMANY	Deutschland
+Korea	Korea
+SPAIN	Spanien
+Taiwan	Taiwan
+Barbados	Barbados
+GREECE MAINLAND	Griechenland Festland
+G59/3	G59/3
+Chile	Chile
+IEEE1547 208Vac	IEEE1547 208Vac
+IEEE1547 220Vac	IEEE1547 220Vac
+IEEE1547 240Vac	IEEE1547 240Vac
+DENMARK	Dänemark
+JP_50Hz	JP_50Hz
+JP_60Hz	JP_60Hz
+DEWA LV	DEWA LV
+DEWA MV	DEWA MV
+GreenGrid	GreenGrid
+BELGIUM	Belgien
+Ergon30K	Ergon30K
+Energe30K	Energe30K
+IEEE1547_230VAC	IEEE1547_230VAC
+IEC61727_60Hz	IEC61727_60Hz
+CEI_016	CEI_016
+ROMANIA	Rumänien
+208 V	208 V
+220 V	220 V
+240 V	240 V
+230 V	230 V
+Grid undervoltage level 1	Netzunterspannung Stufe 1
+Islanding protection underfrequency	Inselschutz Unterfrequenz
+Grid overfrequency level 1	Netzüberfrequenz Stufe 1
+Grid overfrequency level 2	Netzüberfrequenz Stufe 2
+Islanding protection overfrequency	Inselschutz Überfrequenz
+Grid frequency shift	Netzfrequenzverschiebung
+Grid waveform check	Netz-Kurvenformprüfung
+Grid line voltage fault	Netz-Aussenleiterspannungsfehler
+Low voltage ride-through fault	Fehler Unterspannungs-Durchfahren (LVRT)
+High voltage ride-through fault	Fehler Überspannungs-Durchfahren (HVRT)
+Grid voltage above the sampling limit	Netzspannung über Messbereichsgrenze
+Grid undervoltage level 2	Netzunterspannung Stufe 2
+Grid undervoltage level 3	Netzunterspannung Stufe 3
+Grid overvoltage level 1	Netzüberspannung Stufe 1
+Grid overvoltage level 2	Netzüberspannung Stufe 2
+Grid overvoltage level 3	Netzüberspannung Stufe 3
+Grid underfrequency level 1	Netzunterfrequenz Stufe 1
+Grid underfrequency level 2	Netzunterfrequenz Stufe 2
+LLC hardware overcurrent	LLC-Hardware-Überstrom
+Battery boost hardware overcurrent	Batterie-Boost Hardware-Überstrom
+Inverter hardware overcurrent	Wechselrichter Hardware-Überstrom
+Inverter software overcurrent	Wechselrichter Software-Überstrom
+PV boost hardware overcurrent	PV-Boost Hardware-Überstrom
+PV boost software overcurrent	PV-Boost Software-Überstrom
+Grid backflow	Netzrückspeisung
+Off-grid battery voltage low	Netzunabhängig: Batteriespannung tief
+Off-grid AC voltage too high	Netzunabhängig: AC-Spannung zu hoch
+Off-grid AC voltage too low	Netzunabhängig: AC-Spannung zu tief
+Off-grid zero crossing error	Netzunabhängig: Nulldurchgangsfehler
+Battery boost software overcurrent	Batterie-Boost Software-Überstrom
+Back-up bypass relay switch error	Backup-Bypassrelais Schaltfehler
+Back-up load relay switch error	Backup-Lastrelais Schaltfehler
+Battery BMS fault	Batterie-BMS-Fehler
+Battery BMS discharge disabled	Batterie-BMS Entladen gesperrt
+Battery RMS overcurrent	Batterie RMS-Überstrom
+Off-grid load above the BMS current limit	Netzunabhängige Last über BMS-Stromgrenze
+Bus soft start failed	Bus-Sanftanlauf fehlgeschlagen
+Bus voltage too low	Busspannung zu tief
+Bus sampled voltage too high	Gemessene Busspannung zu hoch
+Over-frequency curve active	Überfrequenz-Kennlinie aktiv
+Under-frequency curve active	Unterfrequenz-Kennlinie aktiv
+Australian DRED export limit	Australien DRED Einspeisebegrenzung
+Australian DRED import limit	Australien DRED Bezugsbegrenzung
+70 % derating (Germany) on	70 %-Reduktion (Deutschland) ein
+CEI 0-21 self-test running	CEI 0-21 Selbsttest läuft
+Derating before level 1 overvoltage protection	Leistungsreduktion vor Überspannungsschutz Stufe 1
+Forced off-grid	Erzwungen netzunabhängig
+Forced stop	Erzwungener Stopp
+Off-grid PV charging, back-up output off	Netzunabhängiges PV-Laden, Backup-Ausgang aus
+Q(U) curve overvoltage	Q(U)-Kennlinie Überspannung
+Leaving the frequency curve (recovery)	Verlassen der Frequenzkennlinie (Erholung)
+Q(U) curve undervoltage	Q(U)-Kennlinie Unterspannung
+P(U) overvoltage curve active	P(U)-Überspannungskennlinie aktiv
+P(U) undervoltage curve active	P(U)-Unterspannungskennlinie aktiv
+Q(U) curve active	Q(U)-Kennlinie aktiv
+PF curve active	PF-Kennlinie aktiv
+Fixed power factor set	Fester Leistungsfaktor eingestellt
+Fixed reactive power set	Feste Blindleistung eingestellt
+Utility loss (error bit 9)	Netzausfall (Fehlerbit 9)
+Grid fault (grid mode 2)	Netzfehler (Netzmodus 2)
+Fault mode (work mode 3)	Fehlermodus (Betriebsmodus 3)
+Off-grid mode (work mode 2)	Netzunabhängiger Modus (Betriebsmodus 2)
+Plant status	Anlagenstatus
+Expected inverter count	Erwartete Anzahl Wechselrichter
+Expected meter count	Erwartete Anzahl Zähler
+Expected car charger count	Erwartete Anzahl Ladestationen
+Discharge slot 1 start	Entladefenster 1 Start
+Discharge slot 1 end	Entladefenster 1 Ende
+Discharge target 1	Entladeziel 1
+Discharge slot 2 start	Entladefenster 2 Start
+Discharge slot 2 end	Entladefenster 2 Ende
+Discharge target 2	Entladeziel 2
+Discharge slot 3 start	Entladefenster 3 Start
+Discharge slot 3 end	Entladefenster 3 Ende
+Discharge target 3	Entladeziel 3
+Charge slot 1 start	Ladefenster 1 Start
+Charge slot 1 end	Ladefenster 1 Ende
+Charge target 1	Ladeziel 1
+Charge slot 2 start	Ladefenster 2 Start
+Charge slot 2 end	Ladefenster 2 Ende
+Charge target 2	Ladeziel 2
+Charge slot 3 start	Ladefenster 3 Start
+Charge slot 3 end	Ladefenster 3 Ende
+Charge target 3	Ladeziel 3
+Export slot 1 start	Einspeisefenster 1 Start
+Export slot 1 end	Einspeisefenster 1 Ende
+Export target 1	Einspeiseziel 1
+Export slot 2 start	Einspeisefenster 2 Start
+Export slot 2 end	Einspeisefenster 2 Ende
+Export target 2	Einspeiseziel 2
+Export slot 3 start	Einspeisefenster 3 Start
+Export slot 3 end	Einspeisefenster 3 Ende
+Export target 3	Einspeiseziel 3
+Export power limit	Einspeiseleistungsgrenze
+Car charge mode	Fahrzeug-Lademodus
+Car charge boost	Fahrzeug-Laden Boost
+Plant charge compensation	Anlage Ladekompensation
+Plant discharge compensation	Anlage Entladekompensation
+Energy active generation total	Erzeugte Wirkenergie gesamt
+Ems status	EMS-Status
+Meter count	Anzahl Zähler
+Meter types	Zählertypen
+Meter 1 status	Zähler 1 Status
+Meter 2 status	Zähler 2 Status
+Meter 3 status	Zähler 3 Status
+Meter 4 status	Zähler 4 Status
+Meter 5 status	Zähler 5 Status
+Meter 6 status	Zähler 6 Status
+Meter 7 status	Zähler 7 Status
+Meter 8 status	Zähler 8 Status
+Inverter count	Anzahl Wechselrichter
+Inverter 1 status	Wechselrichter 1 Status
+Inverter 2 status	Wechselrichter 2 Status
+Inverter 3 status	Wechselrichter 3 Status
+Inverter 4 status	Wechselrichter 4 Status
+Meter 1 power	Zähler 1 Leistung
+Meter 2 power	Zähler 2 Leistung
+Meter 3 power	Zähler 3 Leistung
+Meter 4 power	Zähler 4 Leistung
+Meter 5 power	Zähler 5 Leistung
+Meter 6 power	Zähler 6 Leistung
+Meter 7 power	Zähler 7 Leistung
+Meter 8 power	Zähler 8 Leistung
+Inverter 1 power	Wechselrichter 1 Leistung
+Inverter 2 power	Wechselrichter 2 Leistung
+Inverter 3 power	Wechselrichter 3 Leistung
+Inverter 4 power	Wechselrichter 4 Leistung
+Inverter 1 soc	Wechselrichter 1 SOC
+Inverter 2 soc	Wechselrichter 2 SOC
+Inverter 3 soc	Wechselrichter 3 SOC
+Inverter 4 soc	Wechselrichter 4 SOC
+Inverter 1 temp	Wechselrichter 1 Temp.
+Inverter 2 temp	Wechselrichter 2 Temp.
+Inverter 3 temp	Wechselrichter 3 Temp.
+Inverter 4 temp	Wechselrichter 4 Temp.
+Inverter 1 serial number	Wechselrichter 1 Seriennummer
+Inverter 2 serial number	Wechselrichter 2 Seriennummer
+Inverter 3 serial number	Wechselrichter 3 Seriennummer
+Inverter 4 serial number	Wechselrichter 4 Seriennummer
+Calc load power	Berechnete Lastleistung
+Measured load power	Gemessene Lastleistung
+Total generation load power	Gesamte Erzeugungs-Lastleistung
+Grid meter power	Netzzählerleistung
+Total battery power	Batterieleistung gesamt
+Remaining battery wh	Verbleibende Batterie-Wh
+Other battery power	Leistung andere Batterien
+Absent	Nicht vorhanden
+Online	Online
+Offline	Offline
+Normal	Normal
+Flashing firmware update	Firmware-Update wird geschrieben
+Voltage grid	Spannung Netz
+Current grid	Strom Netz
+Voltage load	Spannung Last
+Current load	Strom Last
+Current pv	Strom PV
+Power ac1	Leistung AC1
+Power pv	Leistung PV
+Power load	Leistung Last
+Power liberty	Leistung Liberty
+Fault protection	Fehlerschutz
+Gateway fault codes	Gateway-Fehlercodes
+Voltage grid relay	Spannung Netzrelais
+Voltage inverter relay	Spannung Wechselrichterrelais
+First inverter serial number	Seriennummer erster Wechselrichter
+Energy grid import today	Netzbezug heute
+Energy grid import total	Netzbezug gesamt
+Energy pv today	Energie PV heute
+Energy pv total	Energie PV gesamt
+Energy grid export today	Netzeinspeisung heute
+Energy grid export total	Netzeinspeisung gesamt
+Energy aio charge today	AIO geladen heute
+Energy aio charge total	AIO geladen gesamt
+Energy aio discharge today	AIO entladen heute
+Energy aio discharge total	AIO entladen gesamt
+Energy load today	Energie Last heute
+Energy load total	Energie Last gesamt
+Parallel aio num	Anzahl parallele AIO
+Parallel aio online num	Anzahl parallele AIO online
+Power aio total	Leistung AIO gesamt
+Aio state	AIO-Zustand
+Battery firmware version	Batterie-Firmwareversion
+Energy aio1 charge today	AIO1 geladen heute
+Energy aio1 charge total	AIO1 geladen gesamt
+Energy aio2 charge today	AIO2 geladen heute
+Energy aio2 charge total	AIO2 geladen gesamt
+Energy aio3 charge today	AIO3 geladen heute
+Energy aio3 charge total	AIO3 geladen gesamt
+Energy aio1 discharge today	AIO1 entladen heute
+Energy aio1 discharge total	AIO1 entladen gesamt
+Energy aio2 discharge today	AIO2 entladen heute
+Energy aio2 discharge total	AIO2 entladen gesamt
+Energy aio3 discharge today	AIO3 entladen heute
+Energy aio3 discharge total	AIO3 entladen gesamt
+Energy battery charge today	Batterie geladen heute
+Energy battery charge total	Batterie geladen gesamt
+Energy battery discharge today	Batterie entladen heute
+Energy battery discharge total	Batterie entladen gesamt
+Aio1 soc	AIO1 SOC
+Aio2 soc	AIO2 SOC
+Aio3 soc	AIO3 SOC
+Power aio1 inverter	Leistung AIO1 Wechselrichter
+Power aio2 inverter	Leistung AIO2 Wechselrichter
+Power aio3 inverter	Leistung AIO3 Wechselrichter
+Aio1 serial number	AIO1 Seriennummer
+Aio2 serial number	AIO2 Seriennummer
+Aio3 serial number	AIO3 Seriennummer
+Static	Statisch
+Initialising	Initialisierung
+Off grid	Netzunabhängig
+On grid	Netzgekoppelt
+Update	Update
+Grid mode Off	Netzmodus aus
+AC over voltage constant	AC-Überspannung konstant
+AC under frequency constant	AC-Unterfrequenz konstant
+AC over frequency constant	AC-Überfrequenz konstant
+Over AC voltage long-time	AC-Überspannung Langzeit
+Under quarter AC voltage	Viertel-AC-Unterspannung
+Over quarter AC voltage	Viertel-AC-Überspannung
+No zero-point protection	Kein Nullpunktschutz
+AC under voltage 2	AC-Unterspannung 2
+AC over voltage 2	AC-Überspannung 2
+AC under frequency 2	AC-Unterfrequenz 2
+AC over frequency 2	AC-Überfrequenz 2
+AC under voltage 1	AC-Unterspannung 1
+AC over voltage 1	AC-Überspannung 1
+AC under frequency 1	AC-Unterfrequenz 1
+AC over frequency 1	AC-Überfrequenz 1
+Relay 3&4 disconnect	Relais 3&4 getrennt
+Relay 1&2 disconnect	Relais 1&2 getrennt
+Relay 3&4 bonding	Relais 3&4 geschlossen
+Relay 1&2 bonding	Relais 1&2 geschlossen
+model_name	Modellname
+serial_number	Seriennummer
+emma_software_version	EMMA-Softwareversion
+emma_model	EMMA-Modell
+inverter_total_absorbed_energy	Wechselrichter aufgenommene Energie gesamt
+energy_charged_today	Heute geladen
+total_charged_energy	Gesamt geladen
+total_discharged_energy	Gesamt entladen
+ess_chargeable_energy	ESS ladbare Energie
+ess_dischargeable_energy	ESS entladbare Energie
+rated_ess_capacity	ESS-Nennkapazität
+consumption_today	Verbrauch heute
+total_energy_consumption	Verbrauch gesamt
+feed_in_to_grid_today	Netzeinspeisung heute
+total_feed_in_to_grid	Netzeinspeisung gesamt
+supply_from_grid_today	Netzbezug heute
+total_supply_from_grid	Netzbezug gesamt
+inverter_energy_yield_today	Wechselrichterertrag heute
+inverter_total_energy_yield	Wechselrichterertrag gesamt
+pv_yield_today	PV-Ertrag heute
+load_power	Lastleistung
+feed_in_power	Einspeiseleistung
+inverter_rated_power	Wechselrichter-Nennleistung
+inverter_active_power	Wechselrichter-Wirkleistung
+ess_chargeable_capacity	ESS ladbare Kapazität
+ess_dischargeable_capacity	ESS entladbare Kapazität
+backup_power_state_of_charge	Backup-Reserve SOC
+yield_this_month	Ertrag diesen Monat
+monthly_energy_consumption	Verbrauch diesen Monat
+monthly_feed_in_to_grid	Netzeinspeisung diesen Monat
+yield_this_year	Ertrag dieses Jahr
+annual_energy_consumption	Verbrauch dieses Jahr
+yearly_feed_in_to_grid	Netzeinspeisung dieses Jahr
+monthly_supply_from_grid	Netzbezug diesen Monat
+yearly_supply_from_grid	Netzbezug dieses Jahr
+backup_time_notification_threshold	Backup-Zeit Benachrichtigungsschwelle
+energy_charged_this_month	Geladen diesen Monat
+energy_discharged_this_month	Entladen diesen Monat
+emma_external_meter_running_status	EMMA externer Zähler Betriebsstatus
+emma_external_meter_phase_a_voltage	EMMA externer Zähler Spannung Phase A
+emma_external_meter_phase_b_voltage	EMMA externer Zähler Spannung Phase B
+emma_external_meter_phase_c_voltage	EMMA externer Zähler Spannung Phase C
+emma_external_meter_line_voltage_a_b	EMMA externer Zähler Aussenleiterspannung A-B
+emma_external_meter_line_voltage_b_c	EMMA externer Zähler Aussenleiterspannung B-C
+emma_external_meter_line_voltage_c_a	EMMA externer Zähler Aussenleiterspannung C-A
+emma_external_meter_phase_a_current	EMMA externer Zähler Strom Phase A
+emma_external_meter_phase_b_current	EMMA externer Zähler Strom Phase B
+emma_external_meter_phase_c_current	EMMA externer Zähler Strom Phase C
+emma_external_meter_active_power	EMMA externer Zähler Wirkleistung
+emma_external_meter_power_factor	EMMA externer Zähler Leistungsfaktor
+emma_external_meter_apparent_power	EMMA externer Zähler Scheinleistung
+emma_external_meter_phase_a_active_power	EMMA externer Zähler Wirkleistung Phase A
+emma_external_meter_phase_b_active_power	EMMA externer Zähler Wirkleistung Phase B
+emma_external_meter_phase_c_active_power	EMMA externer Zähler Wirkleistung Phase C
+emma_external_meter_total_active_energy	EMMA externer Zähler Wirkenergie gesamt
+emma_external_meter_total_negative_active_energy	EMMA externer Zähler negative Wirkenergie gesamt
+emma_external_meter_total_positive_active_energy	EMMA externer Zähler positive Wirkenergie gesamt
+number_of_inverters_found	Anzahl gefundene Wechselrichter
+number_of_chargers_found	Anzahl gefundene Ladestationen
+emma_dst_state	EMMA Sommerzeit-Status
+emma_local_time	EMMA Ortszeit
+line_voltage_a_b_built_in_energy	Aussenleiterspannung A-B (interner Zähler)
+line_voltage_b_c_built_in_energy	Aussenleiterspannung B-C (interner Zähler)
+line_voltage_c_a_built_in_energy	Aussenleiterspannung C-A (interner Zähler)
+power_factor_built_in_energy	Leistungsfaktor (interner Zähler)
+apparent_power_built_in_energy	Scheinleistung (interner Zähler)
+total_active_energy_built_in_energy	Wirkenergie gesamt (interner Zähler)
+Grid return energy	Netzrückspeiseenergie
+phase_a_voltage_external_energy	Spannung Phase A (externer Zähler)
+phase_b_voltage_external_energy	Spannung Phase B (externer Zähler)
+phase_c_voltage_external_energy	Spannung Phase C (externer Zähler)
+line_voltage_a_b_external_energy	Aussenleiterspannung A-B (externer Zähler)
+line_voltage_b_c_external_energy	Aussenleiterspannung B-C (externer Zähler)
+line_voltage_c_a_external_energy	Aussenleiterspannung C-A (externer Zähler)
+phase_a_current_external_energy	Strom Phase A (externer Zähler)
+phase_b_current_external_energy	Strom Phase B (externer Zähler)
+phase_c_current_external_energy	Strom Phase C (externer Zähler)
+active_power_external_energy	Wirkleistung (externer Zähler)
+power_factor_external_energy	Leistungsfaktor (externer Zähler)
+apparent_power_external_energy	Scheinleistung (externer Zähler)
+phase_a_active_power_external_energy	Wirkleistung Phase A (externer Zähler)
+phase_b_active_power_external_energy	Wirkleistung Phase B (externer Zähler)
+phase_c_active_power_external_energy	Wirkleistung Phase C (externer Zähler)
+total_active_energy_external_energy	Wirkenergie gesamt (externer Zähler)
+total_negative_active_energy_external_energy	Negative Wirkenergie gesamt (externer Zähler)
+total_positive_active_energy_external_energy	Positive Wirkenergie gesamt (externer Zähler)
+Reserved 1	Reserviert 1
+Maximum self consumption	Maximaler Eigenverbrauch
+Reserved 3	Reserviert 3
+Third party dispatch	Steuerung durch Dritte
+Mains only	Nur Netz
+Mains and generator	Netz und Generator
+Generator only	Nur Generator
+software_version	Softwareversion
+sdongle_wireless_route_access_signal_strength	SDongle WLAN-Router Signalstärke
+sdongle_monthly_used_traffic_4g	SDongle 4G Datenverbrauch Monat
+sdongle_monthly_remaining_traffic_4g	SDongle 4G Restdatenvolumen Monat
+sdongle_average_daily_used_traffic_4g	SDongle 4G durchschn. Datenverbrauch pro Tag
+sdongle_traffic_status_4g	SDongle 4G Datenvolumen-Status
+sdongle_imei_4g	SDongle 4G IMEI
+sdongle_signal_strength_4g	SDongle 4G Signalstärke
+sdongle_system_4g	SDongle 4G Netzstandard
+sdongle_type	SDongle-Typ
+sdongle_device_search_status	SDongle Gerätesuche Status
+sdongle_change_sequence_number	SDongle Änderungszähler
+sdongle_maximum_devices_allowed	SDongle max. zulässige Geräte
+sdongle_carrier_4g	SDongle 4G Netzbetreiber
+sdongle_total_input_power	SDongle Eingangsleistung gesamt
+sdongle_load_power	SDongle Lastleistung
+sdongle_grid_power	SDongle Netzleistung
+sdongle_total_battery_power	SDongle Batterieleistung gesamt
+sdongle_total_active_power	SDongle Wirkleistung gesamt
+sdongle_monthly_used_traffic_correction_4g	SDongle 4G Korrektur Datenverbrauch Monat
+sdongle_4g_signal_strength	SDongle 4G Signalstärke
+sdongle_4g_module_status	SDongle 4G-Modulstatus
+sdongle_device_operation	SDongle Gerätebetrieb
+sdongle_device_operation_command	SDongle Gerätebefehl
+sdongle_start_device_search	SDongle Gerätesuche starten
+Pap	PAP
+Chap	CHAP
+Pap or chap	PAP oder CHAP
+No sim card	Keine SIM-Karte
+Sim registration failed	SIM-Registrierung fehlgeschlagen
+Sim present	SIM vorhanden
+Pin required	PIN erforderlich
+Puk required	PUK erforderlich
+No connection	Keine Verbindung
+Module not inserted	Modul nicht eingesteckt
+Auto 4g 3g 2g	Auto 4G/3G/2G
+Auto 3g 2g	Auto 3G/2G
+Only 2g	Nur 2G
+No signal	Kein Signal
+Very weak	Sehr schwach
+Weak	Schwach
+Strong	Stark
+Very strong	Sehr stark
+Search completed	Suche abgeschlossen
+Searching	Suche läuft
+Search failed	Suche fehlgeschlagen
+Auto select 4g 3g 2g	Automatische Wahl 4G/3G/2G
+Auto select 3g 2g	Automatische Wahl 3G/2G
+Dual port	Zwei Ports
+Single port	Ein Port
+Used up	Aufgebraucht
+No package configured	Kein Datenpaket konfiguriert
+Na	k. A.
+Wlan	WLAN
+4g	4G
+Wlan fe	WLAN FE
+Connect success	Verbindung erfolgreich
+Connecting or connection failed	Verbindung läuft oder fehlgeschlagen
+Disconnected due to authentication failure	Getrennt wegen Authentifizierungsfehler
+Counter voltage L1	Zählerspannung L1
+Counter voltage L2	Zählerspannung L2
+Counter voltage L3	Zählerspannung L3
+Counter power L1	Zählerleistung L1
+Counter power L2	Zählerleistung L2
+Counter power L3	Zählerleistung L3
+ESN	ESN
+Time Zone	Zeitzone
+DST state	Sommerzeit-Status
+DST offset	Sommerzeit-Versatz
+The Local Time	Ortszeit
+Input power	Eingangsleistung
+DC current 2	DC-Strom 2
+Uab	Uab
+Ubc	Ubc
+Uca	Uca
+Inverter Efficiency	Wechselrichter-Wirkungsgrad
+E-Total	E-Gesamt
+E-Daily	E-Tag
+Duration of daily power generation	Tägliche Erzeugungsdauer
+CO2 reduction	CO2-Einsparung
+DI status	DI-Status
+Plant status (Qinghai)	Anlagenstatus (Qinghai)
+Plant status (Xinjiang)	Anlagenstatus (Xinjiang)
+Plant status (Ningxia)	Anlagenstatus (Ningxia)
+Active alarm sequence number	Laufnummer aktive Alarme
+Historical alarm sequence number	Laufnummer historische Alarme
+Device access status	Gerätezugriffsstatus
+Active power control mode	Wirkleistungs-Regelmodus
+Active power scheduling target value	Wirkleistungs-Sollwert Steuerung
+Active scheduling percentage	Wirkleistungs-Steuerung Prozent
+Reactive power control mode	Blindleistungs-Regelmodus
+Reactive power scheduling curve mode	Blindleistungs-Steuerung Kennlinienmodus
+Reactive power scheduling target value	Blindleistungs-Sollwert Steuerung
+Max. reactive adjustment	Max. Blindleistungsanpassung
+Min. reactive adjustment	Min. Blindleistungsanpassung
+Max. active adjustment	Max. Wirkleistungsanpassung
+PV module capacity	PV-Modulleistung
+Rated plant capacity	Anlagen-Nennleistung
+Total rated capacity of grid-connected inverters	Nennleistung netzgekoppelte Wechselrichter gesamt
+Conversion coefficient	Umrechnungsfaktor
+Communication status	Kommunikationsstatus
+Alarm Info 1	Alarminfo 1
+Alarm Info 2	Alarminfo 2
+Alarm Info 3	Alarminfo 3
+Device list change number	Änderungsnummer Geräteliste
+Port number	Portnummer
+Device Address	Geräteadresse
+Device connection status	Geräte-Verbindungsstatus
+smartlogger_software_package_name	SmartLogger Softwarepaketname
+smartlogger_quantity_of_running_pv_inverters	SmartLogger Anzahl laufende PV-Wechselrichter
+smartlogger_quantity_of_running_ess_pcss	SmartLogger Anzahl laufende ESS-PCS
+smartlogger_ess_end_of_discharge_soc	SmartLogger ESS Entladeschluss-SOC
+smartlogger_ess_end_of_charge_soc	SmartLogger ESS Ladeschluss-SOC
+smartlogger_active_pv_power_adjustment_in_fixed_value	SmartLogger PV-Wirkleistungsanpassung fester Wert
+smartlogger_active_pv_power_adjustment_in_percentage	SmartLogger PV-Wirkleistungsanpassung Prozent
+smartlogger_active_ess_power_adjustment_in_fixed_value	SmartLogger ESS-Wirkleistungsanpassung fester Wert
+smartlogger_active_ess_power_adjustment_in_percentage	SmartLogger ESS-Wirkleistungsanpassung Prozent
+smartlogger_reactive_pv_power_adjustment_in_fixed_value	SmartLogger PV-Blindleistungsanpassung fester Wert
+smartlogger_reactive_ess_power_adjustment_in_fixed_value	SmartLogger ESS-Blindleistungsanpassung fester Wert
+smartlogger_active_pv_power	SmartLogger PV-Wirkleistung
+smartlogger_reactive_pv_power	SmartLogger PV-Blindleistung
+smartlogger_active_ess_power	SmartLogger ESS-Wirkleistung
+smartlogger_reactive_ess_power	SmartLogger ESS-Blindleistung
+smartlogger_rated_pv_power	SmartLogger PV-Nennleistung
+smartlogger_rated_ess_power	SmartLogger ESS-Nennleistung
+smartlogger_maximum_active_pv_power_adjustment_value	SmartLogger max. PV-Wirkleistungsanpassung
+smartlogger_maximum_reactive_pv_power_adjustment_value	SmartLogger max. PV-Blindleistungsanpassung
+smartlogger_minimum_reactive_pv_power_adjustment_value	SmartLogger min. PV-Blindleistungsanpassung
+smartlogger_maximum_reactive_ess_power_adjustment_value	SmartLogger max. ESS-Blindleistungsanpassung
+smartlogger_minimum_reactive_ess_power_adjustment_value	SmartLogger min. ESS-Blindleistungsanpassung
+smartlogger_minimum_active_power_adjustment_value	SmartLogger min. Wirkleistungsanpassung
+smartlogger_active_power_adjustment_highest_priority	SmartLogger Wirkleistungsanpassung höchste Priorität
+smartlogger_reactive_power_adjustment_highest_priority	SmartLogger Blindleistungsanpassung höchste Priorität
+smartlogger_power_supply_from_grid_today	SmartLogger Netzbezug heute
+smartlogger_total_power_supply_from_grid	SmartLogger Netzbezug gesamt
+smartlogger_energy_charged_today	SmartLogger heute geladen
+smartlogger_energy_discharged_today	SmartLogger heute entladen
+smartlogger_total_energy_charged	SmartLogger gesamt geladen
+smartlogger_total_energy_discharge_d	SmartLogger gesamt entladen
+smartlogger_chargeable_capacity	SmartLogger ladbare Kapazität
+smartlogger_dischargeable_capacity	SmartLogger entladbare Kapazität
+smartlogger_rated_ess_capacity	SmartLogger ESS-Nennkapazität
+smartlogger_maximum_ess_charge_power	SmartLogger max. ESS-Ladeleistung
+smartlogger_maximum_ess_discharge_power	SmartLogger max. ESS-Entladeleistung
+smartlogger_highest_stable_charge_power_of_ess	SmartLogger höchste stabile ESS-Ladeleistung
+smartlogger_highest_stable_discharge_power_of_ess	SmartLogger höchste stabile ESS-Entladeleistung
+smartlogger_soc	SmartLogger SOC
+smartlogger_soh	SmartLogger SOH
+smartlogger_soe	SmartLogger SOE
+smartlogger_rated_ess_capacity_in_ah	SmartLogger ESS-Nennkapazität in Ah
+smartlogger_array_in_operation	SmartLogger Array in Betrieb
+smartlogger_array_shut_down	SmartLogger Array abgeschaltet
+smartlogger_pv_inverter_in_operation	SmartLogger PV-Wechselrichter in Betrieb
+smartlogger_pv_inverter_shut_down	SmartLogger PV-Wechselrichter abgeschaltet
+smartlogger_ess_pcs_in_operation	SmartLogger ESS-PCS in Betrieb
+smartlogger_ess_pcs_shut_down	SmartLogger ESS-PCS abgeschaltet
+smartlogger_plant_status_qinghai	SmartLogger Anlagenstatus Qinghai
+smartlogger_plant_status_shaanxi	SmartLogger Anlagenstatus Shaanxi
+smartlogger_status_information	SmartLogger Statusinformation
+smartlogger_reserved	SmartLogger reserviert
+smartlogger_system_reset	SmartLogger System-Reset
+smartlogger_fast_device_access	SmartLogger schneller Gerätezugriff
+smartlogger_device_operation	SmartLogger Gerätebetrieb
+smartlogger_active_power_control_mode_plant	SmartLogger Wirkleistungs-Regelmodus Anlage
+smartlogger_array_black_start_status	SmartLogger Array Schwarzstart-Status
+smartlogger_pv_array_pcs_working_mode	SmartLogger PV-Array PCS-Betriebsmodus
+Abnormal Active Schedule (alarm 1100, Major)	Wirkleistungssteuerung gestört (Alarm 1100, schwer)
+Abnormal Reactive Schedule (alarm 1101, Major)	Blindleistungssteuerung gestört (Alarm 1101, schwer)
+MCB Disconnect (alarm 1103, Major)	Leitungsschutzschalter getrennt (Alarm 1103, schwer)
+Abnormal Cubicle (alarm 1104, Major)	Schaltschrank gestört (Alarm 1104, schwer)
+Device Address Conflict (alarm 1105, Major)	Geräteadresskonflikt (Alarm 1105, schwer)
+AC SPD Fault (alarm 1106, Major)	AC-Überspannungsschutz-Fehler (Alarm 1106, schwer)
+DI1 Custom Alarm (alarm 1107, Adaptable)	DI1 benutzerdefinierter Alarm (Alarm 1107, anpassbar)
+DI2 Custom Alarm (alarm 1108, Adaptable)	DI2 benutzerdefinierter Alarm (Alarm 1108, anpassbar)
+DI3 Custom Alarm (alarm 1109, Adaptable)	DI3 benutzerdefinierter Alarm (Alarm 1109, anpassbar)
+DI4 Custom Alarm (alarm 1110, Adaptable)	DI4 benutzerdefinierter Alarm (Alarm 1110, anpassbar)
+DI5 Custom Alarm (alarm 1111, Adaptable)	DI5 benutzerdefinierter Alarm (Alarm 1111, anpassbar)
+DI6 Custom Alarm (alarm 1112, Adaptable)	DI6 benutzerdefinierter Alarm (Alarm 1112, anpassbar)
+DI7 Custom Alarm (alarm 1113, Adaptable)	DI7 benutzerdefinierter Alarm (Alarm 1113, anpassbar)
+DI8 Custom Alarm (alarm 1114, Adaptable)	DI8 benutzerdefinierter Alarm (Alarm 1114, anpassbar)
+24V Power Failure (alarm 1115, Major)	24-V-Versorgungsausfall (Alarm 1115, schwer)
+License Expired (alarm 1119, Warning)	Lizenz abgelaufen (Alarm 1119, Warnung)
+WebUI Certificate Invalid (alarm 1116, Warning)	WebUI-Zertifikat ungültig (Alarm 1116, Warnung)
+WebUI Certificate To Expire (alarm 1117, Warning)	WebUI-Zertifikat läuft bald ab (Alarm 1117, Warnung)
+WebUI Certificate Expired (alarm 1118, Major)	WebUI-Zertifikat abgelaufen (Alarm 1118, schwer)
+Mgmt System Certificate Invalid (alarm 1120, Warning)	Managementsystem-Zertifikat ungültig (Alarm 1120, Warnung)
+Mgmt System Certificate To Expire (alarm 1121, Warning)	Managementsystem-Zertifikat läuft bald ab (Alarm 1121, Warnung)
+Mgmt System Certificate Expired (alarm 1122, Major)	Managementsystem-Zertifikat abgelaufen (Alarm 1122, schwer)
+SmartLogger Certificate Invalid (alarm 1129, Warning)	SmartLogger-Zertifikat ungültig (Alarm 1129, Warnung)
+SmartLogger Certificate About To Expire (alarm 1130, Warning)	SmartLogger-Zertifikat läuft bald ab (Alarm 1130, Warnung)
+SmartLogger Certificate Expired (alarm 1131, Major)	SmartLogger-Zertifikat abgelaufen (Alarm 1131, schwer)
+Smart Rack Controller Cables Not Connected (alarm 1132, Major)	Smart-Rack-Controller-Kabel nicht angeschlossen (Alarm 1132, schwer)
+Mgmt System 1 Certificate Invalid (alarm 1120, Warning)	Managementsystem 1 Zertifikat ungültig (Alarm 1120, Warnung)
+Mgmt System 1 Certificate To Expire (alarm 1121, Warning)	Managementsystem 1 Zertifikat läuft bald ab (Alarm 1121, Warnung)
+Mgmt System 1 Certificate Expired (alarm 1122, Major)	Managementsystem 1 Zertifikat abgelaufen (Alarm 1122, schwer)
+Smart PCS Cables Not Connected (alarm 1134, Major)	Smart-PCS-Kabel nicht angeschlossen (Alarm 1134, schwer)
+Array Black Start Failed - Command Timing (alarm 1140, Minor)	Array-Schwarzstart fehlgeschlagen - Befehls-Timing (Alarm 1140, leicht)
+Array Black Start Failed - Condition Not Met (alarm 1140, Minor)	Array-Schwarzstart fehlgeschlagen - Bedingung nicht erfüllt (Alarm 1140, leicht)
+Array Black Start Failed - No ESS (alarm 1140, Minor)	Array-Schwarzstart fehlgeschlagen - kein ESS (Alarm 1140, leicht)
+Array Black Start Failed - ESS No Support (alarm 1140, Minor)	Array-Schwarzstart fehlgeschlagen - ESS nicht unterstützt (Alarm 1140, leicht)
+Array Black Start Failed - PCS No Support (alarm 1140, Minor)	Array-Schwarzstart fehlgeschlagen - PCS nicht unterstützt (Alarm 1140, leicht)
+Array Black Start Failed - ESS Failed (alarm 1140, Minor)	Array-Schwarzstart fehlgeschlagen - ESS-Fehler (Alarm 1140, leicht)
+Array Black Start Failed - No PCS (alarm 1140, Minor)	Array-Schwarzstart fehlgeschlagen - kein PCS (Alarm 1140, leicht)
+Array Black Start Failed - PCS Failed (alarm 1140, Minor)	Array-Schwarzstart fehlgeschlagen - PCS-Fehler (Alarm 1140, leicht)
+ESS Shutdown upon STS Switch-off (alarm 1141, Major)	ESS-Abschaltung bei STS-Ausschaltung (Alarm 1141, schwer)
+ESS Shutdown - Battery EPO (alarm 1141, Minor)	ESS-Abschaltung - Batterie-Notaus (Alarm 1141, leicht)
+ESS Shutdown - Logger Disconnected from BMS (alarm 1141, Major)	ESS-Abschaltung - Logger vom BMS getrennt (Alarm 1141, schwer)
+PV Array Topology Abnormal - Cable Check (alarm 1163, Minor)	PV-Array-Topologie gestört - Kabelprüfung (Alarm 1163, leicht)
+PV Array Topology Abnormal - DC Bus PCS Mismatch (alarm 1163, Major)	PV-Array-Topologie gestört - DC-Bus/PCS-Abweichung (Alarm 1163, schwer)
+ESS Control Abnormal (alarm 1164, Minor)	ESS-Steuerung gestört (Alarm 1164, leicht)
+Inconsistent PCS Parameters - VSG (alarm 1165, Major)	Inkonsistente PCS-Parameter - VSG (Alarm 1165, schwer)
+Inconsistent PCS Parameters - GFM (alarm 1165, Major)	Inkonsistente PCS-Parameter - GFM (Alarm 1165, schwer)
+No limit	Keine Begrenzung
+DI active scheduling	DI-Wirkleistungssteuerung
+Remote output control	Fernsteuerung Ausgang
+Percentage fixed-value limitation (open loop)	Prozentuale Festwertbegrenzung (offener Regelkreis)
+Remote scheduling	Fernsteuerung
+Export limitation (kW)	Einspeisebegrenzung (kW)
+Slave SmartLogger	Slave-SmartLogger
+No scheduling	Keine Steuerung
+Connection success	Verbindung erfolgreich
+Connection failed	Verbindung fehlgeschlagen
+DST not in effect	Sommerzeit nicht aktiv
+DST in effect	Sommerzeit aktiv
+Outage	Ausfall
+Maintenance	Wartung
+Unlimited power operation	Betrieb ohne Leistungsbegrenzung
+Limited power operation	Betrieb mit Leistungsbegrenzung
+Outage (fault, maintenance etc.)	Ausfall (Fehler, Wartung usw.)
+Communication interrupt	Kommunikationsunterbruch
+On-grid: self derating	Netzgekoppelt: Eigenreduktion
+On-grid: power limit	Netzgekoppelt: Leistungsbegrenzung
+Planned outage	Geplanter Ausfall
+Power limit outage	Ausfall wegen Leistungsbegrenzung
+Fault outage	Ausfall wegen Fehler
+Reactive power fixed value	Blindleistung Festwert
+DI reactive scheduling	DI-Blindleistungssteuerung
+Power factor closed-loop control	Leistungsfaktor-Regelung (geschlossener Regelkreis)
+Reactive power fixed control	Blindleistung Festwertregelung
+Power factor fixed control	Leistungsfaktor Festwertregelung
+Q-U characteristic curve	Q-U-Kennlinie
+cos(Phi)-P/Pn characteristic curve	cos(Phi)-P/Pn-Kennlinie
+Q-U hysteresis curve (CEI0-16)	Q-U-Hysteresekennlinie (CEI0-16)
+Power factor closed-loop control (old policy)	Leistungsfaktor-Regelung (geschlossener Regelkreis, alte Methode)
+Search in progress	Suche läuft
+Master	Master
+Slave	Slave
+In operation	In Betrieb
+Abnormal reactive schedule (1101)	Blindleistungssteuerung gestört (1101)
+Abnormal active schedule (1100)	Wirkleistungssteuerung gestört (1100)
+MCB disconnect (1103)	Leitungsschutzschalter getrennt (1103)
+DI6 custom alarm (1112)	DI6 benutzerdefinierter Alarm (1112)
+DI7 custom alarm (1113)	DI7 benutzerdefinierter Alarm (1113)
+DI8 custom alarm (1114)	DI8 benutzerdefinierter Alarm (1114)
+24V power failure (1115)	24-V-Versorgungsausfall (1115)
+License expired (1119)	Lizenz abgelaufen (1119)
+Abnormal cubicle (1104)	Schaltschrank gestört (1104)
+Device address conflict (1105)	Geräteadresskonflikt (1105)
+AC SPD fault (1106)	AC-Überspannungsschutz-Fehler (1106)
+DI1 custom alarm (1107)	DI1 benutzerdefinierter Alarm (1107)
+DI2 custom alarm (1108)	DI2 benutzerdefinierter Alarm (1108)
+DI3 custom alarm (1109)	DI3 benutzerdefinierter Alarm (1109)
+DI4 custom alarm (1110)	DI4 benutzerdefinierter Alarm (1110)
+DI5 custom alarm (1111)	DI5 benutzerdefinierter Alarm (1111)
+WebUI server certificate invalid (1116)	WebUI-Serverzertifikat ungültig (1116)
+WebUI server certificate about to expire (1117)	WebUI-Serverzertifikat läuft bald ab (1117)
+ESGCC certificate about to expire (1127)	ESGCC-Zertifikat läuft bald ab (1127)
+ESGCC certificate expired (1128)	ESGCC-Zertifikat abgelaufen (1128)
+SmartLogger certificate invalid (1129)	SmartLogger-Zertifikat ungültig (1129)
+SmartLogger certificate about to expire (1130)	SmartLogger-Zertifikat läuft bald ab (1130)
+SmartLogger certificate expired (1131)	SmartLogger-Zertifikat abgelaufen (1131)
+WebUI server certificate expired (1118)	WebUI-Serverzertifikat abgelaufen (1118)
+Management system certificate invalid (1120)	Managementsystem-Zertifikat ungültig (1120)
+Management system certificate about to expire (1121)	Managementsystem-Zertifikat läuft bald ab (1121)
+Management system certificate expired (1122)	Managementsystem-Zertifikat abgelaufen (1122)
+Remote control certificate invalid (1123)	Fernsteuerungszertifikat ungültig (1123)
+Remote control certificate about to expire (1124)	Fernsteuerungszertifikat läuft bald ab (1124)
+Remote control certificate expired (1125)	Fernsteuerungszertifikat abgelaufen (1125)
+ESGCC certificate invalid (1126)	ESGCC-Zertifikat ungültig (1126)
+DI1	DI1
+DI2	DI2
+DI3	DI3
+DI4	DI4
+DI5	DI5
+DI6	DI6
+DI7	DI7
+DI8	DI8
+Plant: fault outage (Xinjiang status 6)	Anlage: Ausfall wegen Fehler (Xinjiang-Status 6)
+Current timestamp of device	Aktueller Zeitstempel des Geräts
+Agreed connected active power PAV	Vereinbarte Anschluss-Wirkleistung PAV
+Agreed connected apparent power SAV	Vereinbarte Anschluss-Scheinleistung SAV
+Total installed active power Pinst	Installierte Wirkleistung gesamt Pinst
+Total maximum apparent power Smax	Maximale Scheinleistung gesamt Smax
+Agreed supply voltage Vc	Vereinbarte Versorgungsspannung Vc
+Active power setpoint (grid operator)	Wirkleistungs-Sollwert (Netzbetreiber)
+Absolute active power setpoint (grid operator)	Absoluter Wirkleistungs-Sollwert (Netzbetreiber)
+Active power setpoint (3rd party)	Wirkleistungs-Sollwert (Dritte)
+Active power control method	Wirkleistungs-Regelverfahren
+Absolute reactive power setpoint	Absoluter Blindleistungs-Sollwert
+Reactive power control method	Blindleistungs-Regelverfahren
+Actual active power (Active power meter)	Aktuelle Wirkleistung (Wirkleistungszähler)
+Actual power factor cos φ (Active power meter)	Aktueller Leistungsfaktor cos φ (Wirkleistungszähler)
+Actual reactive power (Active power meter)	Aktuelle Blindleistung (Wirkleistungszähler)
+Actual apparent power (Active power meter)	Aktuelle Scheinleistung (Wirkleistungszähler)
+Actual grid frequency (Active power meter)	Aktuelle Netzfrequenz (Wirkleistungszähler)
+Actual phase voltage VPhA-PhB	Aktuelle Aussenleiterspannung VPhA-PhB
+Actual phase voltage VPhB-PhC	Aktuelle Aussenleiterspannung VPhB-PhC
+Actual phase voltage VPhC-PhA	Aktuelle Aussenleiterspannung VPhC-PhA
+Actual current IPhA	Aktueller Strom IPhA
+Actual current IPhB	Aktueller Strom IPhB
+Actual current IPhC	Aktueller Strom IPhC
+Line-to-neutral voltage VPhA-N	Strangspannung VPhA-N
+Line-to-neutral voltage VPhB-N	Strangspannung VPhB-N
+Line-to-neutral voltage VPhC-N	Strangspannung VPhC-N
+Actual global irradiation	Aktuelle Globalstrahlung
+Actual ambient temperature	Aktuelle Umgebungstemperatur
+Inverter active power	Wechselrichter-Wirkleistung
+Inverter reactive power	Wechselrichter-Blindleistung
+Available theoretical active power	Verfügbare theoretische Wirkleistung
+Available theoretical reactive power	Verfügbare theoretische Blindleistung
+Number of installed inverters	Anzahl installierte Wechselrichter
+Number of active inverters	Anzahl aktive Wechselrichter
+Q (V) Lower / upper limit reached	Q(V) untere / obere Grenze erreicht
+Sum of inverter active power (battery)	Summe Wechselrichter-Wirkleistung (Batterie)
+Sum of inverter active power (PV)	Summe Wechselrichter-Wirkleistung (PV)
+State of charge relative	Ladestand relativ
+State of charge absolute	Ladestand absolut
+Status of Frequency Sensitive Mode (FSM)	Status Frequency Sensitive Mode (FSM)
+Ramp rate limiter status	Status Rampenbegrenzer
+Installed active power PV Pinst,PV	Installierte Wirkleistung PV Pinst,PV
+Installed active power battery Pinst,bat	Installierte Wirkleistung Batterie Pinst,bat
+Active power feed-in limitation (grid operator, relative)	Wirkleistungs-Einspeisebegrenzung (Netzbetreiber, relativ)
+Active power feed-in limitation (grid operator, absolute)	Wirkleistungs-Einspeisebegrenzung (Netzbetreiber, absolut)
+Active power import limitation (grid operator, relative)	Wirkleistungs-Bezugsbegrenzung (Netzbetreiber, relativ)
+Active power import limitation (grid operator, absolute)	Wirkleistungs-Bezugsbegrenzung (Netzbetreiber, absolut)
+Reactive setpoint command mode	Blindleistungs-Sollwert Befehlsmodus
+Active power generation limitation PV (grid operator, relative)	Wirkleistungs-Erzeugungsbegrenzung PV (Netzbetreiber, relativ)
+Active power generation limitation PV (grid operator, absolute)	Wirkleistungs-Erzeugungsbegrenzung PV (Netzbetreiber, absolut)
+Sum of inverter active power PV	Summe Wechselrichter-Wirkleistung PV
+Sum of inverter reactive power (PV)	Summe Wechselrichter-Blindleistung (PV)
+Number of installed inverters (PV)	Anzahl installierte Wechselrichter (PV)
+Number of active inverters (PV)	Anzahl aktive Wechselrichter (PV)
+Active power charge limitation battery (grid operator, relative)	Wirkleistungs-Ladebegrenzung Batterie (Netzbetreiber, relativ)
+Active power discharge limitation (grid operator, relative)	Wirkleistungs-Entladebegrenzung (Netzbetreiber, relativ)
+Sum of inverter active power battery	Summe Wechselrichter-Wirkleistung Batterie
+Sum of inverter reactive power battery	Summe Wechselrichter-Blindleistung Batterie
+State of charge (relative)	Ladestand (relativ)
+State of charge (absolute)	Ladestand (absolut)
+Actual active power	Aktuelle Wirkleistung
+Actual power factor cos φ	Aktueller Leistungsfaktor cos φ
+Actual reactive power	Aktuelle Blindleistung
+Actual apparent power	Aktuelle Scheinleistung
+Actual grid frequency	Aktuelle Netzfrequenz
+No configuration found	Keine Konfiguration gefunden
+Variable fixed value Pvar fix	Variabler Festwert Pvar fix
+LFSM-O	LFSM-O
+LFSM-U	LFSM-U
+FSM	FSM
+RPC & FSM	RPC & FSM
+Controller freeze (undervoltage)	Regler eingefroren (Unterspannung)
+Controller freeze (overvoltage)	Regler eingefroren (Überspannung)
+Variable fixed value Pvar DI	Variabler Festwert Pvar DI
+Fail-safe operation (hold last setpoint)	Fail-Safe-Betrieb (letzten Sollwert halten)
+Fail-safe operation (default setpoint)	Fail-Safe-Betrieb (Standard-Sollwert)
+Fail-safe operation (system fallback value)	Fail-Safe-Betrieb (System-Rückfallwert)
+Fail-safe operation (automatic grid disconnection)	Fail-Safe-Betrieb (automatische Netztrennung)
+Variable fixed value Pvar AI	Variabler Festwert Pvar AI
+Variable fixed value Pvar Modbus	Variabler Festwert Pvar Modbus
+Remote Power Control (RPC)	Remote Power Control (RPC)
+Variable fixed value cos φ fix	Variabler Festwert cos φ fix
+Variable fixed value Q Modbus	Variabler Festwert Q Modbus
+Reactive power compensation	Blindleistungskompensation
+Characteristic curve Q (P)	Kennlinie Q (P)
+Characteristic curve Q (V)	Kennlinie Q (V)
+Characteristic curve Q (tan φ)	Kennlinie Q (tan φ)
+Voltage control Q (V droop)	Spannungsregelung Q (V-Statik)
+Characteristic curve Q(V) Modbus	Kennlinie Q(V) Modbus
+Characteristic curve cos φ (P) Modbus	Kennlinie cos φ (P) Modbus
+Variable fixed value cos φ DI	Variabler Festwert cos φ DI
+Variable fixed value cos φ AI	Variabler Festwert cos φ AI
+Variable fixed value cos φ Modbus	Variabler Festwert cos φ Modbus
+Characteristic curve cos φ (P)	Kennlinie cos φ (P)
+Characteristic curve cos φ (V)	Kennlinie cos φ (V)
+Variable fixed value Q fix	Variabler Festwert Q fix
+Variable fixed value Q DI	Variabler Festwert Q DI
+Variable fixed value Q AI	Variabler Festwert Q AI
+Fail-safe operation (setpoint failure)	Fail-Safe-Betrieb (Sollwertausfall)
+Fail-safe operation (meter failure)	Fail-Safe-Betrieb (Zählerausfall)
+Fail-safe operation (system fallback)	Fail-Safe-Betrieb (System-Rückfall)
+Limit not reached	Grenze nicht erreicht
+Lower limit reached	Untere Grenze erreicht
+Upper limit reached	Obere Grenze erreicht
+Active power control in fail-safe operation ({x})	Wirkleistungsregelung im Fail-Safe-Betrieb ({x})
+Reactive power control in fail-safe operation ({x})	Blindleistungsregelung im Fail-Safe-Betrieb ({x})
+Total Production	Produktion gesamt
+Production Exponent	Produktion Exponent
+Total Consumption	Verbrauch gesamt
+Consumption Exponent	Verbrauch Exponent
+Grid power (part 3)	Netzleistung (Teil 3)
+Counter power (part)	Zählerleistung (Teil)
+Version number of the SMA profile	Versionsnummer des SMA-Profils
+SUSyID (Device ID)	SUSyID (Geräte-ID)
+Modbus data change counter	Modbus-Datenänderungszähler
+UTC system time	UTC-Systemzeit
+Current state of health (5-minute value)	Aktueller Gerätezustand (5-Minuten-Wert)
+Accumulated connected power of the PV inverters	Kumulierte Anschlussleistung der PV-Wechselrichter
+Total energy fed in on all line conductors	Gesamte eingespeiste Energie über alle Aussenleiter
+Energy fed in on the current day on all line conductors	Heute eingespeiste Energie über alle Aussenleiter
+Current PV feed-in active power on all line conductors	Aktuelle PV-Einspeisewirkleistung über alle Aussenleiter
+Reactive power on all line conductors	Blindleistung über alle Aussenleiter
+Power limitation via digital input	Leistungsbegrenzung über Digitaleingang
+Setpoint of active power limitation P via analog input	Sollwert Wirkleistungsbegrenzung P über Analogeingang
+PV power limitation via communication	PV-Leistungsbegrenzung über Kommunikation
+PV power limitation via communication for direct marketing	PV-Leistungsbegrenzung über Kommunikation für Direktvermarktung
+Maximum active power setpoint	Maximaler Wirkleistungs-Sollwert
+Internal PV power limitation	Interne PV-Leistungsbegrenzung
+Active power of system at PCC	Wirkleistung der Anlage am Netzverknüpfungspunkt
+Reactive power of system at PCC	Blindleistung der Anlage am Netzverknüpfungspunkt
+Current battery charge	Aktuelle Batterieladung
+Current battery discharge	Aktuelle Batterieentladung
+Battery charge	Batterieladung
+Battery discharge	Batterieentladung
+Feed-in of power into grid: L1 at PCC	Einspeiseleistung ins Netz: L1 am Netzverknüpfungspunkt
+Feed-in of power into grid: L2 at PCC	Einspeiseleistung ins Netz: L2 am Netzverknüpfungspunkt
+Feed-in of power into grid: L3 at PCC	Einspeiseleistung ins Netz: L3 am Netzverknüpfungspunkt
+Feed-in of reactive power into grid: L1 at PCC	Blindleistungseinspeisung ins Netz: L1 am Netzverknüpfungspunkt
+Feed-in of reactive power into grid: L2 at PCC	Blindleistungseinspeisung ins Netz: L2 am Netzverknüpfungspunkt
+Feed-in of reactive power into grid: L3 at PCC	Blindleistungseinspeisung ins Netz: L3 am Netzverknüpfungspunkt
+System voltage: L1 - L2 at PCC	Anlagenspannung: L1 - L2 am Netzverknüpfungspunkt
+System voltage: L2 - L3 at PCC	Anlagenspannung: L2 - L3 am Netzverknüpfungspunkt
+System voltage: L3 - L1 at PCC	Anlagenspannung: L3 - L1 am Netzverknüpfungspunkt
+Mean value of grid voltage L-N at PCC	Mittelwert Netzspannung L-N am Netzverknüpfungspunkt
+Mean value of grid voltage L-L at PCC	Mittelwert Netzspannung L-L am Netzverknüpfungspunkt
+Displacement power factor at PCC	Verschiebungsfaktor am Netzverknüpfungspunkt
+Grid frequency at PCC	Netzfrequenz am Netzverknüpfungspunkt
+System voltage: L1 at PCC	Anlagenspannung: L1 am Netzverknüpfungspunkt
+System voltage: L2 at PCC	Anlagenspannung: L2 am Netzverknüpfungspunkt
+System voltage: L3 at PCC	Anlagenspannung: L3 am Netzverknüpfungspunkt
+System current: L1 at PCC	Anlagenstrom: L1 am Netzverknüpfungspunkt
+System current: L2 at PCC	Anlagenstrom: L2 am Netzverknüpfungspunkt
+System current: L3 at PCC	Anlagenstrom: L3 am Netzverknüpfungspunkt
+Power value of the generating system when all generating units are in operation	Leistung der Erzeugungsanlage bei Betrieb aller Erzeugungseinheiten
+Available active power of all inverters	Verfügbare Wirkleistung aller Wechselrichter
+Theoretically available power output	Theoretisch verfügbare Leistung
+Availability of generating system	Verfügbarkeit der Erzeugungsanlage
+External active power limitation	Externe Wirkleistungsbegrenzung
+Global wind speed	Windgeschwindigkeit
+PV module temperature	PV-Modultemperatur
+Total irradiation on the external sensor	Gesamteinstrahlung am externen Sensor
+Digital input group 1	Digitaleingangsgruppe 1
+DI1 DI2	DI1 DI2
+DI1 DI2 DI3	DI1 DI2 DI3
+DI1 DI2 DI3 DI4	DI1 DI2 DI3 DI4
+DI1 DI2 DI4	DI1 DI2 DI4
+DI1 DI3	DI1 DI3
+DI1 DI3 DI4	DI1 DI3 DI4
+DI1 DI4	DI1 DI4
+DI2 DI3	DI2 DI3
+DI2 DI3 DI4	DI2 DI3 DI4
+DI2 DI4	DI2 DI4
+DI3 DI4	DI3 DI4
+Start	Start
+Full stop (AC and DC sides)	Vollständiger Stopp (AC- und DC-Seite)
+Wait for PV voltage	Warten auf PV-Spannung
+Wait for valid AC grid	Warten auf gültiges AC-Netz
+Wait after grid interruption	Warten nach Netzunterbruch
+Wait for electric utility company	Warten auf Energieversorger
+Instantaneous value	Momentanwert
+MPP	MPP
+Contact the manufacturer	Hersteller kontaktieren
+Contact the installer	Installateur kontaktieren
+System warning (state of health 455)	Systemwarnung (Gerätezustand 455)
+System error (state of health 1392)	Systemfehler (Gerätezustand 1392)
+Last update time	Letzte Aktualisierung
+Pdc	Pdc
+Udc	Udc
+Yesterday yield	Ertrag gestern
+Active consumption energy	Verbrauchte Wirkenergie
+Yesterday yield cons	Verbrauch gestern
+Monthly yield cons	Verbrauch diesen Monat
+Yearly yield cons	Verbrauch dieses Jahr
+Total yield cons	Verbrauch gesamt
+Status	Status
+P limit	P-Limit
+Interface not active	Schnittstelle nicht aktiv
+No limitation active (100 %)	Keine Begrenzung aktiv (100 %)
+Fixed limitation active in %	Feste Begrenzung aktiv in %
+Limitation in %, considering self-sufficiency	Begrenzung in %, unter Berücksichtigung des Eigenverbrauchs
+Ok	OK
+License not sufficient for size of installation	Lizenz für Anlagengrösse nicht ausreichend
+Application software version	Anwendungs-Softwareversion
+Total number of connected devices	Anzahl verbundene Geräte gesamt
+Total number of connected devices in fault	Anzahl verbundene Geräte mit Fehler
+Total rated active power	Nenn-Wirkleistung gesamt
+Total rated battery capacity	Nenn-Batteriekapazität gesamt
+Battery charging/discharging upper limit range	Bereich Batterie-Lade-/Entlade-Obergrenze
+Maximum allowable battery charging power	Maximal zulässige Batterie-Ladeleistung
+Minimum allowable battery charge power	Minimal zulässige Batterie-Ladeleistung
+Maximum allowable battery discharge power	Maximal zulässige Batterie-Entladeleistung
+Minimum allowable battery discharge power	Minimal zulässige Batterie-Entladeleistung
+Total active power of inverter	Wechselrichter-Wirkleistung gesamt
+Total active power of grid connection point	Wirkleistung am Netzanschlusspunkt gesamt
+Total load active power	Last-Wirkleistung gesamt
+Battery level (SOC)	Batteriestand (SOC)
+Import energy at the grid connection point	Bezogene Energie am Netzanschlusspunkt
+Export energy at the grid connection point	Eingespeiste Energie am Netzanschlusspunkt
+Charging status of charger	Ladestatus Ladestation
+A-B line voltage / A-phase voltage	Aussenleiterspannung A-B / Spannung Phase A
+B-C line voltage / B-phase voltage	Aussenleiterspannung B-C / Spannung Phase B
+C-A line voltage / C-phase voltage	Aussenleiterspannung C-A / Spannung Phase C
+Channel 2 A-B line voltage / A-phase voltage	Kanal 2 Aussenleiterspannung A-B / Spannung Phase A
+Channel 2 B-C line voltage / B-phase voltage	Kanal 2 Aussenleiterspannung B-C / Spannung Phase B
+Channel 2 C-A line voltage / C-phase voltage	Kanal 2 Aussenleiterspannung C-A / Spannung Phase C
+Channel 2 grid frequency	Kanal 2 Netzfrequenz
+Fast charging	Schnellladen
+Eco charging	Eco-Laden
+Idle (unplugged)	Leerlauf (nicht eingesteckt)
+Standby (plugged)	Standby (eingesteckt)
+Charging completed	Laden abgeschlossen
+VPP	VPP
+Compulsory mode	Zwangsmodus
+Three-phase four-wire	Dreiphasig Vierleiter
+Three-phase three-wire	Dreiphasig Dreileiter
+Boot	Bootvorgang
+{x} connected device(s) in fault	{x} verbundene(s) Gerät(e) mit Fehler
+Grid limiting status	Netzbegrenzungsstatus
+ESS BatteryLife SoC limit (read only)	ESS BatteryLife SOC-Grenze (nur lesen)
+Notify when restore is complete	Benachrichtigen, wenn Wiederherstellung abgeschlossen
+Enable PV inverters	PV-Wechselrichter aktivieren
+Disable PV inverters	PV-Wechselrichter deaktivieren
+Feed-in limiting is inactive	Einspeisebegrenzung inaktiv
+Feed-in limiting is active	Einspeisebegrenzung aktiv
+Restore	Wiederherstellen
+Above minimum SOC only	Nur über minimalem SOC
+Always	Immer
+Unused, BL disabled	Nicht verwendet, BL deaktiviert
+BL Disabled	BL deaktiviert
+BL Disabled (Low SoC)	BL deaktiviert (tiefer SOC)
+BL Disabled (Low SOC recharge)	BL deaktiviert (Nachladen bei tiefem SOC)
+Force charge	Zwangsladen
+Low Soc Recharge	Nachladen bei tiefem SOC
+Keep batteries charged	Batterien geladen halten
+ESS with Phase Compensation	ESS mit Phasenkompensation
+ESS without phase compensation	ESS ohne Phasenkompensation
+Disabled/External Control	Deaktiviert/externe Steuerung
+Don’t feed excess DC-tied PV into grid	Überschüssige DC-gekoppelte PV nicht ins Netz einspeisen
+Feed excess DC-tied PV into the grid	Überschüssige DC-gekoppelte PV ins Netz einspeisen
+Feed excess AC-tied PV into grid	Überschüssige AC-gekoppelte PV ins Netz einspeisen
+Don’t feed excess AC-tied PV into the grid	Überschüssige AC-gekoppelte PV nicht ins Netz einspeisen
+External meter	Externer Zähler
+Inverter/Charger	Wechselrichter/Ladegerät
+Node-RED	Node-RED
+No restrictions between battery and the grid	Keine Einschränkung zwischen Batterie und Netz
+Battery to grid energy flow is restricted	Energiefluss Batterie zu Netz eingeschränkt
+Grid to battery energy flow is restricted	Energiefluss Netz zu Batterie eingeschränkt
+No energy flow between battery and grid	Kein Energiefluss zwischen Batterie und Netz
+Unused	Nicht verwendet
+Genset	Generator
+Shore	Landstrom
