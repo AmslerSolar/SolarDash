@@ -3,7 +3,9 @@
 
 package ch.amslersolar.dashboard.data
 
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -16,6 +18,14 @@ class LogUploadTest {
         for (bad in listOf("http://amsler-solar.ch/", "amsler-solar.ch", "", "https://", "ftp://x.ch/", "https:///path")) {
             assertFalse(bad, LogUpload.valid(bad))
         }
+    }
+
+    @Test
+    fun onlyTheReceiversConfirmationCounts() {
+        assertEquals("20261028-091800-a1b2c3d4-meter.txt", LogUpload.storedName("stored 20261028-091800-a1b2c3d4-meter.txt\n"))
+        assertNull(LogUpload.storedName("<!DOCTYPE html><html>…"))
+        assertNull(LogUpload.storedName("stored "))
+        assertNull(LogUpload.storedName(""))
     }
 
     @Test
