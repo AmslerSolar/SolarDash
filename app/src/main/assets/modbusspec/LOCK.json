@@ -1,6 +1,6 @@
 {
- "modbusspec_commit": "e47ba5702c1b4a8aed8c7c7e479d63fbf92314b7",
- "date": "2026-10-26T14:30:38+01:00",
+ "modbusspec_commit": "021f0e21b2ce67d789b9594f67e7e851134a50be",
+ "date": "2026-10-28T08:54:18+01:00",
  "files": [
   "devices/eastron/sdm.yaml",
   "devices/keba/kecontact-p30.yaml",

@@ -7570,3 +7570,7 @@ Sungrow Version 1	Sungrow versione 1
 Sungrow Version 2	Sungrow versione 2
 Sungrow Version 3	Sungrow versione 3
 Sungrow Version 4 (Sungrow Battery)	Sungrow versione 4 (batteria Sungrow)
+Warning 0x{x}	Avviso 0x{x}
+Warning (extended) 0x{x}	Avviso (esteso) 0x{x}
+Warning Message	Messaggio di avviso
+Warning Message Extend	Messaggio di avviso esteso

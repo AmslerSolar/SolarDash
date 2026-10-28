@@ -162,9 +162,10 @@ class Inverters1GoldenTest {
         }
     }
 
-    private fun goodWe(pvExtended: Boolean = true, battery2: Boolean = false): Image {
+    private fun goodWe(pvExtended: Boolean = true, battery2: Boolean = false, warnings: Boolean = false): Image {
         val ranges = listOf(35000..35032, 35100..35224) + listOfNotNull(
             if (battery2) 35262..35266 else null, if (pvExtended) 35301..35307 else null, 37000..37023,
+            if (warnings) 35328..35336 else null, // firmware with the 32-bit warning registers
         )
         val i = Image(ranges).u16(35001, 10_000).text(35003, 8, "9010KETU224W0001").text(35011, 5, "GW10K-ET")
             .u16(35100, 0x1A0A).u16(35101, 0x180C).u16(35102, 0x1E00)
@@ -201,6 +202,15 @@ class Inverters1GoldenTest {
         goodWeSame("work mode 3") { goodWe().u16(35187, 3) }
         goodWeSame("waiting, grid disconnected") { goodWe().u16(35187, 0).u16(35136, 0) }
         goodWeSame("error bit fault + work mode 3") { goodWe().u16(35189, 0x0001).u16(35187, 3) }
+    }
+
+    /** 35185 = 0x40, as on a real ET whose own web page showed no warning: no problem. 35328 is a documented warning. */
+    @Test
+    fun goodWeEtWarningRegisters() = runBlocking {
+        val quiet = spec("goodwe-et", goodWe().u16(35185, 0x40), 247).read()
+        assertEquals(emptyList<ch.amslersolar.dashboard.model.DeviceProblem>(), quiet.problems)
+        val warned = spec("goodwe-et", goodWe(warnings = true).u16(35185, 0x40).u16(35329, 0x0100), 247).read()
+        assertEquals(listOf("Warning 0x100"), warned.problems.map { it.text })
     }
 
     @Test

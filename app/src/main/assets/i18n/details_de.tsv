@@ -7544,3 +7544,7 @@ Holland 16/20A	Niederlande 16/20A
 Init	Initialisierung
 Medium	Mittel
 Sungrow Version 4 (Sungrow Battery)	Sungrow Version 4 (Sungrow-Batterie)
+Warning 0x{x}	Warnung 0x{x}
+Warning (extended) 0x{x}	Warnung (erweitert) 0x{x}
+Warning Message	Warnmeldung
+Warning Message Extend	Warnmeldung erweitert

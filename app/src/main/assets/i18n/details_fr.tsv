@@ -7617,3 +7617,7 @@ Init	Initialisation
 Sungrow Version 1	Sungrow version 1
 Sungrow Version 2	Sungrow version 2
 Sungrow Version 3	Sungrow version 3
+Warning 0x{x}	Avertissement 0x{x}
+Warning (extended) 0x{x}	Avertissement (étendu) 0x{x}
+Warning Message	Message d'avertissement
+Warning Message Extend	Message d'avertissement étendu

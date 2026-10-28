@@ -7587,3 +7587,7 @@ var sys	var sist.
 {x} active fault(s) in the Conext system	{x} fallo(s) activo(s) en el sistema Conext
 {x} active warning(s) in the Conext system	{x} aviso(s) activo(s) en el sistema Conext
 Heat pump message {x} (code {x})	Mensaje bomba de calor {x} (código {x})
+Warning 0x{x}	Advertencia 0x{x}
+Warning (extended) 0x{x}	Advertencia (ampliada) 0x{x}
+Warning Message	Mensaje de advertencia
+Warning Message Extend	Mensaje de advertencia ampliado
