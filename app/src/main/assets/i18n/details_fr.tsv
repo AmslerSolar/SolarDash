@@ -8640,3 +8640,5 @@ No energy flow between battery and grid	Aucun flux d'énergie entre batterie et 
 Unused	Inutilisé
 Genset	Groupe électrogène
 Shore	Alimentation de quai
+Charge state	Statut de recharge
+User ID (OCPP IdTag) of the current session	ID utilisateur (IdTag OCPP) de la session en cours

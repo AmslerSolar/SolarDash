@@ -8579,3 +8579,5 @@ No energy flow between battery and grid	Kein Energiefluss zwischen Batterie und 
 Unused	Nicht verwendet
 Genset	Generator
 Shore	Landstrom
+Charge state	Ladestatus
+User ID (OCPP IdTag) of the current session	Benutzer-ID (OCPP IdTag) der laufenden Sitzung

@@ -8611,3 +8611,5 @@ No energy flow between battery and grid	Nessun flusso di energia tra batteria e 
 Unused	Non usato
 Genset	Gruppo elettrogeno
 Shore	Banchina
+Charge state	Stato di ricarica
+User ID (OCPP IdTag) of the current session	ID utente (IdTag OCPP) della sessione corrente

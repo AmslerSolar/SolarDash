@@ -8625,3 +8625,5 @@ No energy flow between battery and grid	Sin flujo de energía entre batería y r
 Unused	Sin uso
 Genset	Grupo electrógeno
 Shore	Toma de puerto
+Charge state	Estado de recarga
+User ID (OCPP IdTag) of the current session	ID de usuario (IdTag OCPP) de la sesión actual
