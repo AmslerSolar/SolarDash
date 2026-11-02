@@ -76,7 +76,7 @@ private val EDGE = 8.dp
 /**
  * Energy flow between solar, grid, home and battery through a central point. Dots travel in the direction
  * energy flows, faster at higher power; the figures in the circles are magnitudes. Sign conventions as in
- * [ch.amslersolar.solardash.model.DeviceReading].
+ * [ch.amslersolar.solardash.model.DeviceReading]. With [gridFailure] the grid's line is broken, a bold cross in the gap.
  */
 @Composable
 fun EnergyFlowDiagram(
@@ -89,8 +89,10 @@ fun EnergyFlowDiagram(
     maxHeight: Dp = Dp.Infinity,
     /** Largest circle; above the dashboard's [MAX_NODE], text, icons and lines grow with the circles (kiosk). */
     maxNode: Dp = MAX_NODE,
+    gridFailure: Boolean = false,
 ) {
     val colors = LocalSeriesColors.current
+    val cut = MaterialTheme.colorScheme.onSurface
     val idle = MaterialTheme.colorScheme.outlineVariant
 
     // Power flowing *into* the centre on each branch; negative flows out to the node.
@@ -102,7 +104,7 @@ fun EnergyFlowDiagram(
     // Read only inside the Canvas, so each frame redraws the dots without recomposing the nodes.
     val clock = animationClock()
 
-    val description = flowDescription(pvW, loadW, battery, gridW)
+    val description = flowDescription(pvW, loadW, battery, gridW, gridFailure)
 
     BoxWithConstraints(
         modifier.fillMaxWidth().clearAndSetSemantics { contentDescription = description },
@@ -152,7 +154,25 @@ fun EnergyFlowDiagram(
                     }
                 }
                 branch(solar, solarIn, colors.solar)
-                branch(grid, gridIn, colors.grid)
+                if (gridFailure) {
+                    // The line broken in the middle, with a cross in the gap: the connection is cut.
+                    val end = Offset(grid.x.toPx(), grid.y.toPx())
+                    val dir = (centre - end) / (centre - end).getDistance()
+                    val across = Offset(-dir.y, dir.x)
+                    // Halfway along the visible part, between the grid circle's edge and the centre.
+                    val radius = node.toPx() / 2
+                    val mid = end + dir * ((radius + (centre - end).getDistance()) / 2)
+                    val gap = 18.dp.toPx() * scale
+                    val arm = 13.dp.toPx() * scale
+                    val bold = 5.dp.toPx() * scale
+                    val line = 3.dp.toPx() * scale
+                    drawLine(idle, end, mid - dir * gap, strokeWidth = line, cap = StrokeCap.Round)
+                    drawLine(idle, mid + dir * gap, centre, strokeWidth = line, cap = StrokeCap.Round)
+                    drawLine(cut, mid - (dir + across) * arm, mid + (dir + across) * arm, strokeWidth = bold, cap = StrokeCap.Round)
+                    drawLine(cut, mid - (dir - across) * arm, mid + (dir - across) * arm, strokeWidth = bold, cap = StrokeCap.Round)
+                } else {
+                    branch(grid, gridIn, colors.grid)
+                }
                 branch(home, homeIn, colors.consumption)
                 if (battery != null) branch(batteryPos, batteryIn, colors.battery)
                 drawCircle(idle, radius = 5.dp.toPx() * scale, center = centre)
@@ -173,7 +193,7 @@ fun EnergyFlowDiagram(
 
 /** What the diagram shows, read out by screen readers in place of the drawing. */
 @Composable
-private fun flowDescription(pvW: Int?, loadW: Int?, battery: PlantBattery?, gridW: Int?): String {
+private fun flowDescription(pvW: Int?, loadW: Int?, battery: PlantBattery?, gridW: Int?, gridFailure: Boolean): String {
     val unknown = stringResource(R.string.screens_flow_desc_unknown)
     val idle = stringResource(R.string.screens_flow_desc_idle)
     val parts = mutableListOf(
@@ -191,6 +211,7 @@ private fun flowDescription(pvW: Int?, loadW: Int?, battery: PlantBattery?, grid
             ?: stringResource(R.string.screens_flow_desc_battery, state)
     }
     val grid = when {
+        gridFailure -> stringResource(R.string.screens_flow_desc_grid_failed)
         gridW == null -> unknown
         gridW > 0 -> stringResource(R.string.screens_flow_desc_exporting, formatPower(gridW))
         gridW < 0 -> stringResource(R.string.screens_flow_desc_importing, formatPower(-gridW))

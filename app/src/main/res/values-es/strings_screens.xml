@@ -56,6 +56,7 @@
     <string name="screens_flow_desc_battery">Batería %1$s.</string>
     <string name="screens_flow_desc_battery_soc">Batería al %1$d %%, %2$s.</string>
     <string name="screens_flow_desc_grid">Red %1$s.</string>
+    <string name="screens_flow_desc_grid_failed">caída</string>
     <string name="screens_flow_desc_charging">cargando %1$s</string>
     <string name="screens_flow_desc_discharging">descargando %1$s</string>
     <string name="screens_flow_desc_exporting">exportando %1$s</string>

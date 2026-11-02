@@ -155,7 +155,7 @@ fun DashboardTab(
                     StatusLine(state.snapshot, onShowDevices)
                     StatusCard(status, onGuide, onHide = onHideProblem, onMore = onShowFaults)
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        PlantEnergyFlow(state.snapshot, flowHeight, Modifier.weight(3f))
+                        PlantEnergyFlow(state.snapshot, flowHeight, status.gridFailure, Modifier.weight(3f))
                         Column(Modifier.weight(2f), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                             TodayCard(state.snapshot)
                             ConsumersCard(state.snapshot)
@@ -169,7 +169,7 @@ fun DashboardTab(
                 ) {
                     item { StatusLine(state.snapshot, onShowDevices) }
                     item { StatusCard(status, onGuide, onHide = onHideProblem, onMore = onShowFaults) }
-                    item { PlantEnergyFlow(state.snapshot, flowHeight) }
+                    item { PlantEnergyFlow(state.snapshot, flowHeight, status.gridFailure) }
                     item { TodayCard(state.snapshot) }
                     if (state.snapshot.consumers.isNotEmpty()) item { ConsumersCard(state.snapshot) }
                 }
@@ -270,7 +270,7 @@ private fun StatusLine(snapshot: PlantSnapshot, onShowDevices: () -> Unit) {
 private val WIDE_LAYOUT = 720.dp
 
 @Composable
-private fun PlantEnergyFlow(s: PlantSnapshot, maxHeight: Dp, modifier: Modifier = Modifier) {
+private fun PlantEnergyFlow(s: PlantSnapshot, maxHeight: Dp, gridFailure: Boolean, modifier: Modifier = Modifier) {
     Card(modifier.fillMaxWidth()) {
         EnergyFlowDiagram(
             pvW = s.pvPowerW,
@@ -279,6 +279,7 @@ private fun PlantEnergyFlow(s: PlantSnapshot, maxHeight: Dp, modifier: Modifier 
             gridW = s.gridPowerW,
             modifier = Modifier.padding(vertical = 16.dp),
             maxHeight = maxHeight - 32.dp,
+            gridFailure = gridFailure,
         )
     }
 }

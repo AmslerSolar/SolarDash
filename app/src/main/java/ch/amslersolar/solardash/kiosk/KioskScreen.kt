@@ -132,7 +132,7 @@ private fun Content(plantName: String, state: PlantState, status: PlantStatus?, 
             Header(plantName, snapshot, status, onExit, onStatus = { showIssues = true })
             if (landscape) {
                 Row(Modifier.weight(1f).fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Flow(state, Modifier.weight(1f).fillMaxSize())
+                    Flow(state, status?.gridFailure == true, Modifier.weight(1f).fillMaxSize())
                     snapshot?.let {
                         Column(
                             Modifier.width(sideWidth).padding(start = 16.dp),
@@ -141,7 +141,7 @@ private fun Content(plantName: String, state: PlantState, status: PlantStatus?, 
                     }
                 }
             } else {
-                Flow(state, Modifier.weight(1f).fillMaxWidth())
+                Flow(state, status?.gridFailure == true, Modifier.weight(1f).fillMaxWidth())
                 snapshot?.let {
                     // Portrait: two by two under the flow.
                     val figures = todayFigures(it)
@@ -183,7 +183,7 @@ private fun Header(plantName: String, s: PlantSnapshot?, status: PlantStatus?, o
 }
 
 @Composable
-private fun Flow(state: PlantState, modifier: Modifier) {
+private fun Flow(state: PlantState, gridFailure: Boolean, modifier: Modifier) {
     BoxWithConstraints(modifier, Alignment.Center) {
         when (state) {
             PlantState.Loading -> CircularProgressIndicator()
@@ -197,6 +197,7 @@ private fun Flow(state: PlantState, modifier: Modifier) {
                     gridW = s.gridPowerW,
                     maxHeight = maxHeight,
                     maxNode = KIOSK_MAX_NODE,
+                    gridFailure = gridFailure,
                 )
             }
         }

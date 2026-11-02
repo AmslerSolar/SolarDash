@@ -77,6 +77,9 @@ data class PlantStatus(val issues: List<Issue>, val hidden: List<Issue> = emptyL
 
     /** Nothing that needs looking at (information only, like "no internet", is fine). */
     val ok: Boolean get() = issues.none { it.severity != Severity.INFO }
+
+    /** The public grid is gone (a grid-tied plant; off-grid plants have no grid to lose). */
+    val gridFailure: Boolean get() = issues.any { it.kind == IssueKind.MAINS_LOST || it.kind == IssueKind.BACKUP_MODE }
 }
 
 /**

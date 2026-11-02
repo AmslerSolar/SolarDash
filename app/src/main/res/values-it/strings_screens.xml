@@ -56,6 +56,7 @@
     <string name="screens_flow_desc_battery">Batteria %1$s.</string>
     <string name="screens_flow_desc_battery_soc">Batteria al %1$d %%, %2$s.</string>
     <string name="screens_flow_desc_grid">Rete %1$s.</string>
+    <string name="screens_flow_desc_grid_failed">interrotta</string>
     <string name="screens_flow_desc_charging">in carica, %1$s</string>
     <string name="screens_flow_desc_discharging">in scarica, %1$s</string>
     <string name="screens_flow_desc_exporting">immette %1$s in rete</string>
