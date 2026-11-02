@@ -19,11 +19,6 @@
     <string name="screens_show">Mostrar</string>
     <string name="screens_waiting_for_data">Esperando datos…</string>
     <string name="screens_unit_id">ID de unidad %1$d</string>
-    <string name="screens_summary_pv">FV %1$s</string>
-    <string name="screens_summary_battery">Batería %1$s</string>
-    <string name="screens_summary_battery_soc">Batería %1$s (%2$d %%)</string>
-    <string name="screens_summary_grid">Red %1$s</string>
-    <string name="screens_ok">OK</string>
     <string name="screens_in_the_home">En casa</string>
     <string name="screens_rest_of_home">Resto de la casa</string>
     <string name="screens_today">Hoy</string>
@@ -83,4 +78,15 @@
     <string name="screens_recording_channel">Registro</string>
     <string name="screens_recording_title">Registrando las instalaciones solares</string>
     <string name="screens_recording_text">Leídas cada pocos segundos, registradas una vez por minuto</string>
+    <string name="screens_card_running">En marcha</string>
+    <string name="screens_card_online">En línea</string>
+    <string name="screens_card_sleeping">En reposo</string>
+    <string name="screens_card_no_connection">Sin conexión</string>
+    <string name="screens_card_warning">Aviso</string>
+    <string name="screens_card_fault">Fallo</string>
+    <plurals name="screens_device_count">
+        <item quantity="one">%1$d equipo</item>
+        <item quantity="many">%1$d equipos</item>
+        <item quantity="other">%1$d equipos</item>
+    </plurals>
 </resources>

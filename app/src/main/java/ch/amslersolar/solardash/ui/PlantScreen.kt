@@ -219,24 +219,27 @@ fun DevicesTab(
         NoDevices(onAddDevice, modifier)
     } else {
         val statusById = (state as? PlantState.Live)?.snapshot?.devices?.associateBy { it.device.id }.orEmpty()
-        LazyColumn(
+        // Cards, two across on a phone, more on a tablet; inverters first, then batteries, meters, consumers.
+        val devices = DeviceKind.entries.flatMap { kind -> plant.devices.filter { it.type.kind == kind } }
+        androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
+            columns = androidx.compose.foundation.lazy.grid.GridCells.Adaptive(minSize = 168.dp),
             modifier = modifier,
             contentPadding = PaddingValues(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            DeviceKind.entries.forEach { kind ->
-                val devices = plant.devices.filter { it.type.kind == kind }
-                if (devices.isNotEmpty()) {
-                    item(key = kind.name) {
-                        Text(deviceKindName(kind), style = MaterialTheme.typography.titleSmall, modifier = Modifier.padding(top = 8.dp))
-                    }
-                    items(devices, key = { it.id }) { device ->
-                        DeviceRow(
-                            device, statusById[device.id], onClick = { onOpenDevice(device) },
-                            onEdit = { onEditDevice(device) }, onRemove = { pendingDelete = device },
-                        )
-                    }
-                }
+            item(key = "count", span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {
+                Text(
+                    pluralStringResource(R.plurals.screens_device_count, devices.size, devices.size),
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            }
+            items(devices.size, key = { devices[it].id }) { i ->
+                val device = devices[i]
+                DeviceCard(
+                    device, statusById[device.id], onOpen = { onOpenDevice(device) },
+                    onEdit = { onEditDevice(device) }, onRemove = { pendingDelete = device },
+                )
             }
         }
     }
@@ -330,42 +333,12 @@ private fun TodayCard(s: PlantSnapshot) {
 }
 
 @Composable
-private fun DeviceRow(device: DeviceConfig, status: DeviceStatus?, onClick: () -> Unit, onEdit: () -> Unit, onRemove: () -> Unit) {
-    Card(Modifier.fillMaxWidth().clickable(onClick = onClick)) {
-        Row(Modifier.padding(start = 16.dp, top = 12.dp, bottom = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f)) {
-                Text(device.name, style = MaterialTheme.typography.titleMedium)
-                Text(deviceAddress(device), style = MaterialTheme.typography.bodySmall)
-                when {
-                    status == null -> Text(stringResource(R.string.screens_waiting_for_data), style = MaterialTheme.typography.bodyMedium)
-                    status.error != null -> Text(status.error, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.error)
-                    status.reading != null -> Text(summary(status.reading), style = MaterialTheme.typography.bodyMedium)
-                }
-            }
-            IconButton(onClick = onEdit) { Icon(Icons.Outlined.Edit, contentDescription = stringResource(R.string.screens_edit_device, device.name)) }
-            IconButton(onClick = onRemove) { Icon(Icons.Outlined.Delete, contentDescription = stringResource(R.string.screens_remove_device, device.name)) }
-        }
-    }
-}
-
-@Composable
 fun deviceAddress(device: DeviceConfig): String = when {
     !device.type.needsHost -> SpecDevices.typeName(device.type, device.specId)
     device.type.modbus ->
         "${SpecDevices.typeName(device.type, device.specId)} · ${device.host}:${device.port} · ${stringResource(R.string.screens_unit_id, device.unitId)}"
     else -> "${SpecDevices.typeName(device.type, device.specId)} · ${device.host}:${device.port}"
 }
-
-@Composable
-private fun summary(r: DeviceReading): String = listOfNotNull(
-    r.pvPowerW?.let { stringResource(R.string.screens_summary_pv, formatPower(it)) },
-    r.battery?.let { b ->
-        val power = formatPower(b.powerW)
-        b.socPercent?.let { stringResource(R.string.screens_summary_battery_soc, power, it) }
-            ?: stringResource(R.string.screens_summary_battery, power)
-    },
-    r.gridPowerW?.let { stringResource(R.string.screens_summary_grid, formatPower(it)) },
-).joinToString(" · ").ifEmpty { r.status?.let(DetailTexts::tr) ?: stringResource(R.string.screens_ok) }
 
 @Composable
 fun batteryDirection(powerW: Int): String = stringResource(

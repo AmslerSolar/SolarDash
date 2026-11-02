@@ -19,11 +19,6 @@
     <string name="screens_show">Show</string>
     <string name="screens_waiting_for_data">Waiting for data…</string>
     <string name="screens_unit_id">unit %1$d</string>
-    <string name="screens_summary_pv">PV %1$s</string>
-    <string name="screens_summary_battery">Battery %1$s</string>
-    <string name="screens_summary_battery_soc">Battery %1$s (%2$d %%)</string>
-    <string name="screens_summary_grid">Grid %1$s</string>
-    <string name="screens_ok">OK</string>
     <string name="screens_in_the_home">In the home</string>
     <string name="screens_rest_of_home">Rest of the home</string>
     <string name="screens_today">Today</string>
@@ -82,4 +77,14 @@
     <string name="screens_recording_channel">Recording</string>
     <string name="screens_recording_title">Recording the solar plants</string>
     <string name="screens_recording_text">Read every few seconds, recorded once a minute</string>
+    <string name="screens_card_running">Running</string>
+    <string name="screens_card_online">Online</string>
+    <string name="screens_card_sleeping">Sleeping</string>
+    <string name="screens_card_no_connection">No connection</string>
+    <string name="screens_card_warning">Warning</string>
+    <string name="screens_card_fault">Fault</string>
+    <plurals name="screens_device_count">
+        <item quantity="one">%1$d device</item>
+        <item quantity="other">%1$d devices</item>
+    </plurals>
 </resources>
