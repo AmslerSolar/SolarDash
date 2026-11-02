@@ -55,7 +55,10 @@ Unit tests (drivers, Modbus framing, plant totals, history, discovery; database 
 address is tried on Modbus TCP port 502, and each open port is listed at once ("Identifying…"); then each one is
 identified, first with the named drivers, then with the bundled ModbusSpec files that have an identify check for
 their port (each unit's registers are read once and shared by all files). Open ports nothing recognises stay listed
-as "Modbus TCP device, not recognised". **Extended search** also tries the other ports devices use: 503, 1502, 6502,
+as "Modbus TCP device, not recognised". An energy manager that reaches other devices on its own unit ids (Huawei EMMA)
+also gets those listed (e.g. the SUN2000 inverter and the SCharger wallbox behind it); when the EMMA is already in a
+plant, polling pauses for the few seconds this takes, since the EMMA accepts one Modbus client only. "Test connection"
+pauses polling for the same reason. **Extended search** also tries the other ports devices use: 503, 1502, 6502,
 8899 and 4196 (RS485 gateways: Elfin / USR Wi-Fi, Waveshare Ethernet) and the ports of the ModbusSpec files (4701, 4702, 5555, 8080, 10001, 30502); it takes
 longer. Tap a recognised result to fill in the form. Devices already in a plant are listed but not contacted, since
 some accept only one Modbus client. The LG HTTPS API (port 443) isn't searched for; its unit shows up via SunSpec.

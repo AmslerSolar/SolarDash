@@ -121,7 +121,12 @@ class MainActivity : ComponentActivity() {
                                             p.devices.filter { it.type.needsHost && it.id != editing?.id }
                                                 .map { "${it.host}:${it.port}" to "${p.name} · ${it.name}" }
                                         }.toMap()
-                                        DeviceScanner.scanLocalNetwork(applicationContext, known, extended, range)
+                                        // Configured energy managers: the devices behind them are still listed (other unit ids).
+                                        val configured = plants.orEmpty().flatMap { it.devices }.filter { it.type.needsHost && it.id != editing?.id }
+                                        val hubs = configured.filter { it.specId in DeviceScanner.HUBS }.associate { hub ->
+                                            "${hub.host}:${hub.port}" to (hub.specId to configured.filter { it.host == hub.host && it.port == hub.port }.map { it.unitId }.toSet())
+                                        }
+                                        DeviceScanner.scanLocalNetwork(applicationContext, known, extended, range, hubs)
                                     },
                                     onSave = {
                                         if (editing != null) plantsVm.updateDevice(plant.id, it) else plantsVm.addDevice(plant.id, it)

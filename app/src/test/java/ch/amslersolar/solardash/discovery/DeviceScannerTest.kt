@@ -265,4 +265,50 @@ class DeviceScannerTest {
         assertEquals("192.168.0.61", found)
         assertFalse("192.168.0.70" in asked)
     }
+
+    /** An EMMA at 192.168.0.30 with an inverter on unit 2 and a wallbox on unit 4, as on a real one. */
+    private val behindEmma: suspend (String, Int, String, Set<Int>) -> List<FoundDevice> = { h, p, hub, skip ->
+        assertEquals("huawei-emma", hub)
+        listOf(
+            FoundDevice(h, p, DeviceType.HUAWEI, 2, "Huawei SUN2000-15K-MB0", "HV1"),
+            FoundDevice(h, p, DeviceType.MODBUS_SPEC_CONSUMER, 4, "Huawei SCharger", "NS2", specId = "huawei-scharger"),
+        ).filter { it.unitId !in skip }
+    }
+
+    @Test
+    fun anEnergyManagerListsTheDevicesBehindIt() = runBlocking {
+        val skipped = mutableListOf<Set<Int>>()
+        val scanner = DeviceScanner(
+            portOpen = { h, p -> h == "192.168.0.30" && p == 502 },
+            identify = { _, _, _, _ -> throw java.io.IOException("no") },
+            specIdentify = { h, p, _, _ -> FoundDevice(h, p, DeviceType.MODBUS_SPEC_INVERTER, 0, "Huawei EMMA", "NS0", specId = "huawei-emma") },
+            behind = { h, p, hub, skip -> skipped += skip; behindEmma(h, p, hub, skip) },
+        )
+        val found = latest(scanner.scan(listOf("192.168.0.30"), emptyMap()).toList())
+        assertEquals(listOf(setOf(0)), skipped) // the EMMA's own unit isn't asked again
+        assertEquals(listOf(0, 2, 4), found.map { it.unitId }.sorted()) // three entries on one host:port
+        assertEquals(3, found.map { it.key }.distinct().size)
+        assertEquals("huawei-scharger", found.single { it.unitId == 4 }.specId)
+        assertTrue(found.filter { it.unitId != 0 }.all { it.behindHub })
+    }
+
+    @Test
+    fun aConfiguredEnergyManagerIsNotProbedButItsOtherUnitsAreListed() = runBlocking {
+        val probed = mutableListOf<String>()
+        val scanner = DeviceScanner(
+            portOpen = { _, _ -> true },
+            identify = { _, h, _, _ -> probed += h; throw java.io.IOException("no") },
+            specIdentify = { _, _, _, _ -> error("a configured device must not be identified") },
+            behind = behindEmma,
+        )
+        val known = mapOf("192.168.0.30:502" to "Home · EMMA")
+        val events = scanner.scan(listOf("192.168.0.30"), known, hubs = mapOf("192.168.0.30:502" to ("huawei-emma" to setOf(0, 2)))).toList()
+        val found = latest(events)
+        assertTrue(probed.isEmpty())
+        assertEquals("Home · EMMA", found.single { !it.behindHub }.alreadyIn)
+        assertEquals(listOf(4), found.filter { it.behindHub }.map { it.unitId }) // the configured inverter isn't offered again
+        val last = events.filterIsInstance<ScanEvent.Progress>().last()
+        assertEquals(ScanPhase.IDENTIFY, last.phase)
+        assertEquals(last.total, last.done)
+    }
 }

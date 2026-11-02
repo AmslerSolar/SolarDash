@@ -3,6 +3,7 @@
 
 package ch.amslersolar.solardash.discovery
 
+import ch.amslersolar.solardash.driver.TrafficPause
 import ch.amslersolar.solardash.driver.modbus.ModbusException
 import ch.amslersolar.solardash.driver.modbus.RegisterBlock
 import ch.amslersolar.solardash.driver.sunspec.RegisterReader
@@ -28,6 +29,7 @@ import ch.amslersolar.solardash.model.DeviceInfo
 import ch.amslersolar.solardash.model.DeviceType
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.emptyFlow
@@ -67,8 +69,10 @@ data class FoundDevice(
     /** While identifying: device descriptions (drivers, ModbusSpec files) tried so far, of [toTry]. */
     val tried: Int = 0,
     val toTry: Int = 0,
+    /** Reached through an energy manager on the same host:port (see [DeviceScanner.HUBS]), on its own unit id. */
+    val behindHub: Boolean = false,
 ) {
-    val key: String get() = "$host:$port"
+    val key: String get() = if (behindHub) "$host:$port/$unitId" else "$host:$port"
 }
 
 /** Ports first, then identifying what answered. */
@@ -107,14 +111,24 @@ class DeviceScanner(
      */
     private val rollCall: suspend (host: String, port: Int, units: List<Int>, onTry: () -> Unit) -> Map<Int, Set<Boolean>> =
         { _, _, _, _ -> emptyMap() },
+    /** The devices an energy manager ([HUBS], by its ModbusSpec file) reaches on other unit ids, without [skip]. */
+    private val behind: suspend (host: String, port: Int, hubSpecId: String, skip: Set<Int>) -> List<FoundDevice> =
+        { _, _, _, _ -> emptyList() },
 ) {
     /**
      * Two phases. First every address of [hosts] is tried on Modbus TCP port 502, then, with [extended], on the other
      * ports devices use (1502, 503, 6502, the gateways' 8899 and 4196, …): every open port is reported at once (identifying).
      * Then each one is identified: the named drivers for its port, then the ModbusSpec files that can recognise a
-     * device; what nothing recognises stays listed as an open port.
+     * device; what nothing recognises stays listed as an open port. An energy manager in [HUBS] also gets the devices
+     * behind it listed, each on its unit id; [hubs] are configured ones (host:port → their ModbusSpec file and the unit
+     * ids configured there), whose other units are asked too, with polling paused; the hub itself isn't probed.
      */
-    fun scan(hosts: List<String>, known: Map<String, String>, extended: Boolean = false): Flow<ScanEvent> = channelFlow {
+    fun scan(
+        hosts: List<String>,
+        known: Map<String, String>,
+        extended: Boolean = false,
+        hubs: Map<String, Pair<String, Set<Int>>> = emptyMap(),
+    ): Flow<ScanEvent> = channelFlow {
         val ports = if (extended) EXTENDED_PORTS else listOf(MODBUS_PORT)
         val targets = ports.flatMap { p -> hosts.map { h -> h to p } } // port by port: 502 everywhere first
         val done = AtomicInteger()
@@ -151,10 +165,23 @@ class DeviceScanner(
         }
         // Identify what answered (configured devices aren't asked: a second client could disturb their poll).
         val toProbe = open.filterKeys { it !in known }.values.sortedWith(compareBy({ it.second }, { it.first }))
+        val configuredHubs = hubs.filterKeys { open.containsKey(it) }
         val probes = Semaphore(PARALLEL_PROBES)
         val identified = AtomicInteger()
-        send(ScanEvent.Progress(0, toProbe.size, ScanPhase.IDENTIFY))
+        val total = toProbe.size + configuredHubs.size
+        send(ScanEvent.Progress(0, total, ScanPhase.IDENTIFY))
+        suspend fun listBehind(host: String, port: Int, hubSpecId: String, skip: Set<Int>) {
+            val devices = runCatching { behind(host, port, hubSpecId, skip) }.getOrElse { if (it is CancellationException) throw it; emptyList() }
+            for (d in devices) send(ScanEvent.Found(d.copy(behindHub = true, identifying = false)))
+        }
         coroutineScope {
+            for ((key, hub) in configuredHubs) launch {
+                val (host, port, _) = open.getValue(key)
+                // It's being polled, and an energy manager may take one client only: polling pauses (and closes its
+                // connections) meanwhile, as for a register sweep.
+                probes.withPermit { TrafficPause.during { listBehind(host, port, hub.first, hub.second) } }
+                send(ScanEvent.Progress(identified.incrementAndGet(), total, ScanPhase.IDENTIFY))
+            }
             for ((host, port, mdnsCandidates) in toProbe) launch {
                 val key = "$host:$port"
                 val device = probes.withPermit {
@@ -187,7 +214,8 @@ class DeviceScanner(
                     if (named.type != null && named.type != DeviceType.SUNSPEC) named else (runCatching { specIdentify(host, port, live, onTry) }.getOrNull() ?: named)
                 }
                 send(ScanEvent.Found(device.copy(viaMdns = key in viaMdns, identifying = false)))
-                send(ScanEvent.Progress(identified.incrementAndGet(), toProbe.size, ScanPhase.IDENTIFY))
+                if (device.specId in HUBS) listBehind(host, port, device.specId, setOf(device.unitId))
+                send(ScanEvent.Progress(identified.incrementAndGet(), total, ScanPhase.IDENTIFY))
             }
         }
     }.flowOn(Dispatchers.IO)
@@ -278,6 +306,19 @@ class DeviceScanner(
             else -> CANDIDATES.values.flatten()
         }
 
+        /**
+         * Energy managers that reach other devices on their own unit ids (ModbusSpec file → the unit ids to ask and
+         * a register those devices answer with their model name). Huawei EMMA: inverters, batteries and chargers are
+         * read through it; a unit id without a device gets exception 4 at once (seen on a real EMMA, 2026-11-02).
+         */
+        val HUBS: Map<String, Hub> = mapOf("huawei-emma" to Hub(1..247, 30000, 15, inputRegisters = false))
+
+        /**
+         * [inputRegisters] false: the hub never answers function 4 (the EMMA lets it time out), so files whose identify
+         * checks read input registers aren't tried behind it.
+         */
+        data class Hub(val units: IntRange, val probeRegister: Int, val probeCount: Int, val inputRegisters: Boolean = true)
+
         const val MDNS_WINDOW_MS = 8_000L
         const val MODBUS_PORT = 502
 
@@ -295,6 +336,9 @@ class DeviceScanner(
         private const val GATEWAY_TIMEOUT_MS = 1_000
         /** Behind a gateway at 9600 baud a one-register answer takes some 50 ms. */
         private const val ROLL_CALL_TIMEOUT_MS = 400
+        /** Behind a hub: give up after this many refused or unanswered requests (a hub that stopped answering). */
+        private const val HUB_MAX_FAILURES = 3
+        private const val HUB_RETRY_MS = 1_000L
 
         /** Text that reads like a model name, not register noise from a device of another make. */
         fun plausible(model: String): Boolean =
@@ -343,15 +387,21 @@ class DeviceScanner(
         }
 
         /** [range]: another network to search (see [parseRange]) instead of the tablet's own, e.g. a gateway's factory one. */
-        fun scanLocalNetwork(context: Context, known: Map<String, String>, extended: Boolean = false, range: String = ""): Flow<ScanEvent> {
+        fun scanLocalNetwork(
+            context: Context,
+            known: Map<String, String>,
+            extended: Boolean = false,
+            range: String = "",
+            hubs: Map<String, Pair<String, Set<Int>>> = emptyMap(),
+        ): Flow<ScanEvent> {
             if (range.isNotBlank()) {
                 val hosts = parseRange(range) ?: return channelFlow { send(ScanEvent.Failed("Can't read the network to search: $range")) }
-                return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs, specCount = ::specFilesToTry, specUnits = ::specUnitIds, rollCall = ::rollCall).scan(hosts, known, extended)
+                return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs, specCount = ::specFilesToTry, specUnits = ::specUnitIds, rollCall = ::rollCall, behind = ::devicesBehind).scan(hosts, known, extended, hubs)
             }
             val (own, prefix) = localNetwork(context) ?: return channelFlow {
                 send(ScanEvent.Failed("Not connected to a local network. Connect to the plant's Wi-Fi and try again."))
             }
-            return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs, specCount = ::specFilesToTry, specUnits = ::specUnitIds, rollCall = ::rollCall).scan(hosts(own, prefix), known, extended)
+            return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs, specCount = ::specFilesToTry, specUnits = ::specUnitIds, rollCall = ::rollCall, behind = ::devicesBehind).scan(hosts(own, prefix), known, extended, hubs)
         }
 
         private fun tcpOpen(host: String, port: Int): Boolean = try {
@@ -448,6 +498,61 @@ class DeviceScanner(
                     }
                 }
                 null
+            }
+        }
+
+        /**
+         * The devices behind the energy manager at [host]:[port] (its ModbusSpec file [hubSpecId], see [HUBS]): each unit
+         * id is asked once for the model register, and every unit that answers is identified with the identify checks of
+         * the files of the hub's make. Units in [skip] (the hub, configured devices) aren't asked.
+         */
+        suspend fun devicesBehind(host: String, port: Int, hubSpecId: String, skip: Set<Int>): List<FoundDevice> {
+            val hub = HUBS[hubSpecId] ?: return emptyList()
+            val library = SpecLibrary.current ?: return emptyList()
+            val maker = library.index.firstOrNull { it.id == hubSpecId }?.manufacturer ?: return emptyList()
+            val files = library.index.filter { it.identifies && it.manufacturer == maker && it.id != hubSpecId }
+                .filter { e -> hub.inputRegisters || library.spec(e.id).identify?.let { i -> ((i.checks + i.any).flatten() + i.serials.map { it.first }).all { it.table == "holding" } } == true }
+                .sortedByDescending { it.documented }
+            val named = SpecDevices.SPEC_IDS.entries.flatMap { (t, ids) -> ids.map { it to t } }.toMap()
+            return ModbusTcpClient(host, port, PROBE_TIMEOUT_MS, retry = false).use { client ->
+                val answering = mutableListOf<Int>()
+                var failures = 0
+                units@ for (unit in hub.units) {
+                    if (unit in skip) continue
+                    while (true) {
+                        try {
+                            client.readHoldingRegisters(unit, hub.probeRegister, hub.probeCount)
+                            answering += unit
+                        } catch (e: CancellationException) {
+                            throw e
+                        } catch (_: ModbusException) {
+                            // no device on this unit id
+                        } catch (_: java.io.IOException) {
+                            // Refused or no answer: a configured hub's polling connection may still be closing
+                            // (single client), so the same unit is asked again after a moment.
+                            if (++failures >= HUB_MAX_FAILURES) break@units
+                            delay(HUB_RETRY_MS)
+                            continue
+                        }
+                        break
+                    }
+                }
+                answering.mapNotNull { unit ->
+                    val holding = CachingReader { u, r, c -> client.readHoldingRegisters(u, r, c) }
+                    val input = CachingReader { u, r, c -> client.readInputRegisters(u, r, c) }
+                    files.firstNotNullOfOrNull { e ->
+                        val info = try {
+                            SpecDriver(library.spec(e.id), library.vocabulary, SpecTables(holding, input), unit, requestGapMs = 0).identify()
+                        } catch (e2: CancellationException) {
+                            throw e2
+                        } catch (_: Exception) {
+                            return@firstNotNullOfOrNull null
+                        }
+                        val type = named[e.id] ?: SpecDevices.genericType(e.kind)
+                        FoundDevice(host, port, type, unit, info.model.ifBlank { e.title }, info.serial,
+                            specId = if (type in SpecDevices.GENERIC) e.id else "", behindHub = true)
+                    }
+                }
             }
         }
 

@@ -8,11 +8,14 @@ import androidx.lifecycle.viewModelScope
 import ch.amslersolar.solardash.data.DeviceRegistry
 import ch.amslersolar.solardash.data.PlantRepository
 import ch.amslersolar.solardash.driver.DeviceDrivers
+import ch.amslersolar.solardash.driver.TrafficPause
 import ch.amslersolar.solardash.driver.modbus.ModbusConnections
 import ch.amslersolar.solardash.model.ChartChannel
 import ch.amslersolar.solardash.model.DeviceConfig
+import ch.amslersolar.solardash.model.DeviceInfo
 import ch.amslersolar.solardash.model.Plant
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -48,14 +51,37 @@ class PlantsViewModel(
 
     fun updateDevice(plantId: String, device: DeviceConfig) = viewModelScope.launch { registry.update(plantId, device) }
 
-    /** Connects once and identifies the device; the serial (when there is one) is kept with the device. */
+    /**
+     * Connects once and identifies the device; the serial (when there is one) is kept with the device. Modbus devices
+     * are tested with polling paused: one that takes a single client (Huawei EMMA, dongles) drops a second connection
+     * while it's polled, here or for another device behind it. Such a drop is tried again once polling has let go.
+     */
     suspend fun testConnection(device: DeviceConfig): ConnectionTest = try {
-        val info = ModbusConnections().use { DeviceDrivers.create(device, it).identify() }
+        val info = if (!device.type.modbus) identify(device) else TrafficPause.during { identifyRetrying(device) }
         ConnectionTest.Connected(info.model, info.serial)
     } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {
         ConnectionTest.Failed(e.message ?: e::class.simpleName.orEmpty())
+    }
+
+    private suspend fun identify(device: DeviceConfig) = ModbusConnections().use { DeviceDrivers.create(device, it).identify() }
+
+    private suspend fun identifyRetrying(device: DeviceConfig, attempt: Int = 1): DeviceInfo = try {
+        identify(device)
+    } catch (e: java.io.IOException) {
+        if (attempt >= TEST_ATTEMPTS || !droppedConnection(e)) throw e
+        delay(TEST_RETRY_MS)
+        identifyRetrying(device, attempt + 1)
+    }
+
+    /** Accepted and then dropped, as a single-client device does with a second connection. */
+    private fun droppedConnection(e: java.io.IOException) =
+        e is java.io.EOFException || e is java.net.SocketException && e.message.orEmpty().contains("reset", ignoreCase = true)
+
+    private companion object {
+        const val TEST_ATTEMPTS = 3
+        const val TEST_RETRY_MS = 1_000L
     }
 }
 
