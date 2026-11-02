@@ -20,7 +20,7 @@ android {
         applicationId = "ch.amslersolar.solardash"
         minSdk = 26
         targetSdk = 34
-        versionCode = 40
+        versionCode = 42
         versionName = "0.6.3"
         // Shown in the app's About dialog, so it's clear which build a tablet runs.
         val built = ZonedDateTime.now(ZoneId.of("Europe/Zurich"))
@@ -47,6 +47,14 @@ android {
     testOptions {
         // Robolectric: Android's SQLite and DataStore in plain JVM unit tests.
         unitTests.isIncludeAndroidResources = true
+    }
+    // APK named after the app, version and build (SolarDash-0.6.3-41.apk); debug builds say so in the name.
+    applicationVariants.all {
+        val variant = this
+        outputs.all {
+            (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
+                "SolarDash-${variant.versionName}-${variant.versionCode}" + (if (variant.buildType.isDebuggable) "-debug" else "") + ".apk"
+        }
     }
 }
 
