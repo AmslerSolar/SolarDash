@@ -13,7 +13,7 @@ plugins {
 }
 
 android {
-    namespace = "ch.amslersolar.dashboard"
+    namespace = "ch.amslersolar.solardash"
     compileSdk = 34
 
     defaultConfig {
