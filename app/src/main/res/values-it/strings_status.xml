@@ -36,7 +36,6 @@
     <string name="status_backup_mode_text">%1$s alimenta la casa dalla batteria, senza la rete.</string>
     <string name="status_off_grid_mode">Funzionamento a isola</string>
     <string name="status_off_grid_mode_text">%1$s funziona a isola, con la batteria e i pannelli solari.</string>
-    <string name="log_title">Registro guasti</string>
     <string name="log_empty">Ancora nessun problema registrato.</string>
     <string name="log_minutes">%1$d min</string>
     <string name="log_hours">%1$d h %2$d min</string>

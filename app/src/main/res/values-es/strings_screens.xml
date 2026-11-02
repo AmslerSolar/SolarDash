@@ -3,6 +3,7 @@
     <string name="screens_tab_dashboard">Panel</string>
     <string name="screens_tab_history">Historial</string>
     <string name="screens_tab_devices">Dispositivos</string>
+    <string name="screens_tab_log">Fallos</string>
     <string name="screens_back">Atrás</string>
     <string name="screens_kiosk_mode">Modo quiosco</string>
     <string name="screens_end_kiosk_mode">Salir del modo quiosco</string>

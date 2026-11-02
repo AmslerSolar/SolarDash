@@ -11,7 +11,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,7 +43,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -81,6 +79,7 @@ class FaultLogActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= 27) setShowWhenLocked(true)
         val plantId = intent.getStringExtra(EXTRA_PLANT) ?: return finish()
+        val eventId = intent.getLongExtra(EXTRA_EVENT, -1)
         val app = application as SolarApp
         setContent {
             SolarTheme {
@@ -88,25 +87,33 @@ class FaultLogActivity : ComponentActivity() {
                 var events by remember { mutableStateOf<List<LoggedEvent>?>(null) }
                 LaunchedEffect(version) { events = app.history.events(plantId) }
                 val plant by remember { app.repository.plant(plantId) }.collectAsStateWithLifecycle(initialValue = null)
-                var selectedId by rememberSaveable { mutableStateOf<Long?>(null) }
-                val selected = events?.find { it.id == selectedId }
-                if (selected != null) {
-                    BackHandler { selectedId = null }
-                    FaultDetailScreen(plant?.name.orEmpty(), selected, onBack = { selectedId = null })
-                } else {
-                    FaultLogScreen(plant?.name.orEmpty(), events, onOpen = { selectedId = it.id }, onBack = ::finish)
-                }
+                val selected = events?.find { it.id == eventId }
+                if (selected != null) FaultDetailScreen(plant?.name.orEmpty(), selected, onBack = ::finish)
+                else if (events != null) finish() // the entry is gone (plant removed)
             }
         }
     }
 
     companion object {
         private const val EXTRA_PLANT = "plant"
+        private const val EXTRA_EVENT = "event"
 
-        fun open(context: Context, plantId: String) {
-            context.startActivity(Intent(context, FaultLogActivity::class.java).putExtra(EXTRA_PLANT, plantId))
+        /** The details of one fault log entry, full screen (back and share). */
+        fun openEntry(context: Context, plantId: String, eventId: Long) {
+            context.startActivity(Intent(context, FaultLogActivity::class.java).putExtra(EXTRA_PLANT, plantId).putExtra(EXTRA_EVENT, eventId))
         }
     }
+}
+
+/** A plant's fault log as a tab of its screen: every problem, newest first; tapping one opens its details. */
+@Composable
+fun FaultLogTab(plantId: String, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val app = context.applicationContext as SolarApp
+    val version by app.history.version.collectAsStateWithLifecycle()
+    var events by remember(plantId) { mutableStateOf<List<LoggedEvent>?>(null) }
+    LaunchedEffect(plantId, version) { events = app.history.events(plantId) }
+    FaultLogList(events, onOpen = { FaultLogActivity.openEntry(context, plantId, it.id) }, modifier = modifier)
 }
 
 private val DATE_TIME = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
@@ -134,18 +141,16 @@ private fun LogScaffold(title: String, plantName: String, onBack: () -> Unit, ac
 }
 
 @Composable
-private fun FaultLogScreen(plantName: String, events: List<LoggedEvent>?, onOpen: (LoggedEvent) -> Unit, onBack: () -> Unit) {
-    LogScaffold(stringResource(R.string.log_title), plantName, onBack) { modifier ->
-        when {
-            events == null -> Box(modifier.fillMaxSize(), Alignment.Center) { CircularProgressIndicator() }
-            events.isEmpty() -> Box(modifier.fillMaxSize().padding(32.dp), Alignment.Center) { Text(stringResource(R.string.log_empty)) }
-            else -> {
-                val zone = ZoneId.systemDefault()
-                LazyColumn(modifier, contentPadding = PaddingValues(vertical = 8.dp)) {
-                    items(events, key = { it.id }) { e ->
-                        EventRow(e, zone, onClick = { onOpen(e) })
-                        HorizontalDivider()
-                    }
+private fun FaultLogList(events: List<LoggedEvent>?, onOpen: (LoggedEvent) -> Unit, modifier: Modifier) {
+    when {
+        events == null -> Box(modifier.fillMaxSize(), Alignment.Center) { CircularProgressIndicator() }
+        events.isEmpty() -> Box(modifier.fillMaxSize().padding(32.dp), Alignment.Center) { Text(stringResource(R.string.log_empty)) }
+        else -> {
+            val zone = ZoneId.systemDefault()
+            LazyColumn(modifier, contentPadding = PaddingValues(vertical = 8.dp)) {
+                items(events, key = { it.id }) { e ->
+                    EventRow(e, zone, onClick = { onOpen(e) })
+                    HorizontalDivider()
                 }
             }
         }

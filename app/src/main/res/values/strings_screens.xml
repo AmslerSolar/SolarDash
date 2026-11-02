@@ -3,6 +3,7 @@
     <string name="screens_tab_dashboard">Dashboard</string>
     <string name="screens_tab_history">History</string>
     <string name="screens_tab_devices">Devices</string>
+    <string name="screens_tab_log">Faults</string>
     <string name="screens_back">Back</string>
     <string name="screens_kiosk_mode">Kiosk mode</string>
     <string name="screens_end_kiosk_mode">End kiosk mode</string>

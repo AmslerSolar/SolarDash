@@ -3,6 +3,7 @@
     <string name="screens_tab_dashboard">Übersicht</string>
     <string name="screens_tab_history">Verlauf</string>
     <string name="screens_tab_devices">Geräte</string>
+    <string name="screens_tab_log">Störungen</string>
     <string name="screens_back">Zurück</string>
     <string name="screens_kiosk_mode">Kioskmodus</string>
     <string name="screens_end_kiosk_mode">Kioskmodus beenden</string>

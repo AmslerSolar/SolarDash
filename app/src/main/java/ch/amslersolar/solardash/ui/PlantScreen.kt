@@ -4,7 +4,6 @@
 package ch.amslersolar.solardash.ui
 
 import ch.amslersolar.solardash.driver.spec.SpecDevices
-import ch.amslersolar.solardash.ui.status.FaultLogActivity
 import ch.amslersolar.solardash.ui.status.rememberPlantStatus
 import ch.amslersolar.solardash.ui.status.StatusCard
 import ch.amslersolar.solardash.ui.status.GuideActivity
@@ -39,6 +38,7 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Fullscreen
 import androidx.compose.material.icons.outlined.DevicesOther
+import androidx.compose.material.icons.outlined.ReportProblem
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -83,9 +83,10 @@ enum class PlantTab(@StringRes val label: Int, val icon: ImageVector) {
     DASHBOARD(R.string.screens_tab_dashboard, Icons.Outlined.Dashboard),
     HISTORY(R.string.screens_tab_history, Icons.Outlined.History),
     DEVICES(R.string.screens_tab_devices, Icons.Outlined.DevicesOther),
+    LOG(R.string.screens_tab_log, Icons.Outlined.ReportProblem),
 }
 
-/** A plant's main screen: top bar with its name, bottom bar with the three tabs, and the tab's [content]. */
+/** A plant's main screen: top bar with its name, bottom bar with the four tabs, and the tab's [content]. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlantScreen(
@@ -121,10 +122,6 @@ fun PlantScreen(
                     Box {
                         IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, contentDescription = null) }
                         DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.log_title)) },
-                                onClick = { menu = false; FaultLogActivity.open(context, plant.id) },
-                            )
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.status_off_grid)) },
                                 leadingIcon = { Checkbox(checked = plant.offGrid, onCheckedChange = null) },

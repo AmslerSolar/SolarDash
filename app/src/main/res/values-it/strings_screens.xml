@@ -3,6 +3,7 @@
     <string name="screens_tab_dashboard">Panoramica</string>
     <string name="screens_tab_history">Storico</string>
     <string name="screens_tab_devices">Dispositivi</string>
+    <string name="screens_tab_log">Guasti</string>
     <string name="screens_back">Indietro</string>
     <string name="screens_kiosk_mode">Modalità kiosk</string>
     <string name="screens_end_kiosk_mode">Esci dalla modalità kiosk</string>

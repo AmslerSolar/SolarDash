@@ -3,6 +3,7 @@
 
 package ch.amslersolar.solardash
 
+import ch.amslersolar.solardash.ui.status.FaultLogTab
 import ch.amslersolar.solardash.work.RecordingService
 import ch.amslersolar.solardash.driver.TrafficPause
 import android.os.Bundle
@@ -50,6 +51,7 @@ private fun tabRoute(plantId: String, tab: PlantTab) = when (tab) {
     PlantTab.DASHBOARD -> "plant/$plantId"
     PlantTab.HISTORY -> "plant/$plantId/history"
     PlantTab.DEVICES -> "plant/$plantId/devices"
+    PlantTab.LOG -> "plant/$plantId/log"
 }
 
 class MainActivity : ComponentActivity() {
@@ -154,6 +156,7 @@ class MainActivity : ComponentActivity() {
                             val tab = when (section) {
                                 "history" -> PlantTab.HISTORY
                                 "devices" -> PlantTab.DEVICES
+                                "log" -> PlantTab.LOG
                                 else -> PlantTab.DASHBOARD
                             }
                             PlantScreen(
@@ -213,6 +216,7 @@ class MainActivity : ComponentActivity() {
                                         onEditDevice = { route = "plant/${plant.id}/edit/${it.id}" },
                                         modifier = modifier,
                                     )
+                                    PlantTab.LOG -> FaultLogTab(plant.id, modifier)
                                 }
                             }
                         }

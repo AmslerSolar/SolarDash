@@ -3,6 +3,7 @@
     <string name="screens_tab_dashboard">Tableau de bord</string>
     <string name="screens_tab_history">Historique</string>
     <string name="screens_tab_devices">Appareils</string>
+    <string name="screens_tab_log">Défauts</string>
     <string name="screens_back">Retour</string>
     <string name="screens_kiosk_mode">Mode kiosque</string>
     <string name="screens_end_kiosk_mode">Quitter le mode kiosque</string>
