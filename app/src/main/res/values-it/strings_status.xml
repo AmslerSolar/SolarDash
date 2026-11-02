@@ -36,6 +36,8 @@
     <string name="status_backup_mode_text">%1$s alimenta la casa dalla batteria, senza la rete.</string>
     <string name="status_off_grid_mode">Funzionamento a isola</string>
     <string name="status_off_grid_mode_text">%1$s funziona a isola, con la batteria e i pannelli solari.</string>
+    <string name="log_active">Attive</string>
+    <string name="log_past">Cronologia</string>
     <string name="log_empty">Ancora nessun problema registrato.</string>
     <string name="log_minutes">%1$d min</string>
     <string name="log_hours">%1$d h %2$d min</string>
@@ -73,6 +75,11 @@
     <string name="status_hide_confirm">Nascondi</string>
     <string name="status_hide_cancel">Annulla</string>
     <string name="status_hide_text">«%1$s» di %2$s non verrà più mostrato nella panoramica e nel kiosk e non farà più scattare allarmi. Resta registrato nel registro guasti. Per mostrarlo di nuovo: modifica il dispositivo.</string>
+    <plurals name="status_more_count">
+        <item quantity="one">%1$d altro messaggio</item>
+        <item quantity="other">%1$d altri messaggi</item>
+        <item quantity="many">%1$d altri messaggi</item>
+    </plurals>
     <plurals name="status_hidden_count">
         <item quantity="one">%d messaggio nascosto</item>
         <item quantity="many">%d messaggi nascosti</item>

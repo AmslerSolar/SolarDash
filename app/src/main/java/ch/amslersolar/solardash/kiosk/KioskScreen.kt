@@ -115,7 +115,7 @@ private fun Content(plantName: String, state: PlantState, status: PlantStatus?, 
             title = { Text(statusHeadline(status), style = MaterialTheme.typography.headlineSmall) },
             text = {
                 Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    IssueList(status.issues, onGuide = { GuideActivity.open(context, it) }, large = true)
+                    IssueList(status.issues.take(1), onGuide = { GuideActivity.open(context, it) }, large = true)
                 }
             },
             confirmButton = { TextButton(onClick = { showIssues = false }) { Text(stringResource(R.string.forms_about_close), style = MaterialTheme.typography.titleMedium) } },

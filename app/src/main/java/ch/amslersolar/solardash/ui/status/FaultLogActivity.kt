@@ -54,7 +54,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ch.amslersolar.solardash.R
 import ch.amslersolar.solardash.SolarApp
 import ch.amslersolar.solardash.i18n.DetailTexts
+import ch.amslersolar.solardash.model.Guide
 import ch.amslersolar.solardash.model.Issue
+import ch.amslersolar.solardash.model.Plant
+import ch.amslersolar.solardash.model.PlantSnapshot
+import ch.amslersolar.solardash.model.PlantStatus
 import ch.amslersolar.solardash.model.LoggedEvent
 import ch.amslersolar.solardash.model.Severity
 import ch.amslersolar.solardash.ui.theme.SolarTheme
@@ -105,15 +109,25 @@ class FaultLogActivity : ComponentActivity() {
     }
 }
 
-/** A plant's fault log as a tab of its screen: every problem, newest first; tapping one opens its details. */
+/**
+ * A plant's faults as a tab of its screen: the active problems (the live status, with guides), then the finished
+ * fault log entries, newest first; tapping one opens its details.
+ */
 @Composable
-fun FaultLogTab(plantId: String, modifier: Modifier = Modifier) {
+fun FaultLogTab(plant: Plant, snapshot: PlantSnapshot?, onHideProblem: (Issue) -> Unit, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val app = context.applicationContext as SolarApp
     val version by app.history.version.collectAsStateWithLifecycle()
-    var events by remember(plantId) { mutableStateOf<List<LoggedEvent>?>(null) }
-    LaunchedEffect(plantId, version) { events = app.history.events(plantId) }
-    FaultLogList(events, onOpen = { FaultLogActivity.openEntry(context, plantId, it.id) }, modifier = modifier)
+    var events by remember(plant.id) { mutableStateOf<List<LoggedEvent>?>(null) }
+    LaunchedEffect(plant.id, version) { events = app.history.events(plant.id) }
+    val status = snapshot?.let { rememberPlantStatus(plant, it) }
+    FaultLogList(
+        status, events?.filter { it.ended != null },
+        onGuide = { GuideActivity.open(context, it) },
+        onHide = onHideProblem,
+        onOpen = { FaultLogActivity.openEntry(context, plant.id, it.id) },
+        modifier = modifier,
+    )
 }
 
 private val DATE_TIME = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
@@ -141,20 +155,43 @@ private fun LogScaffold(title: String, plantName: String, onBack: () -> Unit, ac
 }
 
 @Composable
-private fun FaultLogList(events: List<LoggedEvent>?, onOpen: (LoggedEvent) -> Unit, modifier: Modifier) {
-    when {
-        events == null -> Box(modifier.fillMaxSize(), Alignment.Center) { CircularProgressIndicator() }
-        events.isEmpty() -> Box(modifier.fillMaxSize().padding(32.dp), Alignment.Center) { Text(stringResource(R.string.log_empty)) }
-        else -> {
-            val zone = ZoneId.systemDefault()
-            LazyColumn(modifier, contentPadding = PaddingValues(vertical = 8.dp)) {
-                items(events, key = { it.id }) { e ->
-                    EventRow(e, zone, onClick = { onOpen(e) })
-                    HorizontalDivider()
-                }
+private fun FaultLogList(
+    status: PlantStatus?,
+    past: List<LoggedEvent>?,
+    onGuide: (Guide) -> Unit,
+    onHide: (Issue) -> Unit,
+    onOpen: (LoggedEvent) -> Unit,
+    modifier: Modifier,
+) {
+    val zone = ZoneId.systemDefault()
+    LazyColumn(modifier.fillMaxSize(), contentPadding = PaddingValues(vertical = 8.dp)) {
+        item { SectionTitle(stringResource(R.string.log_active)) }
+        item {
+            Box(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
+                if (status == null) Text(stringResource(R.string.screens_waiting_for_data), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                else StatusCard(status, onGuide, onHide = onHide)
+            }
+        }
+        item { SectionTitle(stringResource(R.string.log_past)) }
+        when {
+            past == null -> item { Box(Modifier.fillMaxWidth().padding(32.dp), Alignment.Center) { CircularProgressIndicator() } }
+            past.isEmpty() -> item { Text(stringResource(R.string.log_empty), Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) }
+            else -> items(past, key = { it.id }) { e ->
+                EventRow(e, zone, onClick = { onOpen(e) })
+                HorizontalDivider()
             }
         }
     }
+}
+
+@Composable
+private fun SectionTitle(text: String) {
+    Text(
+        text,
+        style = MaterialTheme.typography.titleSmall,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
+    )
 }
 
 @Composable

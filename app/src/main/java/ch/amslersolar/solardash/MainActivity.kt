@@ -4,6 +4,7 @@
 package ch.amslersolar.solardash
 
 import ch.amslersolar.solardash.ui.status.FaultLogTab
+import ch.amslersolar.solardash.model.Issue
 import ch.amslersolar.solardash.work.RecordingService
 import ch.amslersolar.solardash.driver.TrafficPause
 import android.os.Bundle
@@ -166,6 +167,11 @@ class MainActivity : ComponentActivity() {
                                 "log" -> PlantTab.LOG
                                 else -> PlantTab.DASHBOARD
                             }
+                            val hideProblem: (Issue) -> Unit = { issue ->
+                                val device = issue.device
+                                val text = issue.detail
+                                if (device != null && text != null) plantsVm.hideProblem(plant.id, device.id, text)
+                            }
                             PlantScreen(
                                 plant = plant,
                                 tab = tab,
@@ -181,12 +187,9 @@ class MainActivity : ComponentActivity() {
                                         state = state,
                                         onAddDevice = addDevice,
                                         onShowDevices = { route = tabRoute(plant.id, PlantTab.DEVICES) },
+                                        onShowFaults = { route = tabRoute(plant.id, PlantTab.LOG) },
                                         modifier = modifier,
-                                        onHideProblem = { issue ->
-                                            val device = issue.device
-                                            val text = issue.detail
-                                            if (device != null && text != null) plantsVm.hideProblem(plant.id, device.id, text)
-                                        },
+                                        onHideProblem = hideProblem,
                                     )
                                     PlantTab.HISTORY -> {
                                         val vm: HistoryViewModel = viewModel(
@@ -222,7 +225,12 @@ class MainActivity : ComponentActivity() {
                                         onEditDevice = { route = "plant/${plant.id}/edit/${it.id}" },
                                         modifier = modifier,
                                     )
-                                    PlantTab.LOG -> FaultLogTab(plant.id, modifier)
+                                    PlantTab.LOG -> FaultLogTab(
+                                        plant = plant,
+                                        snapshot = (state as? PlantState.Live)?.snapshot,
+                                        onHideProblem = hideProblem,
+                                        modifier = modifier,
+                                    )
                                 }
                             }
                         }

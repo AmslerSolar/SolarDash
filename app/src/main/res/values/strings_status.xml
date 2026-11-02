@@ -36,6 +36,8 @@
     <string name="status_backup_mode_text">%1$s supplies the house from the battery, without the grid.</string>
     <string name="status_off_grid_mode">Off-grid mode</string>
     <string name="status_off_grid_mode_text">%1$s runs off-grid, from the battery and the solar panels.</string>
+    <string name="log_active">Active</string>
+    <string name="log_past">History</string>
     <string name="log_empty">No problems recorded yet.</string>
     <string name="log_minutes">%1$d min</string>
     <string name="log_hours">%1$d h %2$d min</string>
@@ -73,6 +75,10 @@
     <string name="status_hide_confirm">Hide</string>
     <string name="status_hide_cancel">Cancel</string>
     <string name="status_hide_text">“%1$s” from %2$s will no longer show on the dashboard and the kiosk, and won\'t raise an alarm. It is still recorded in the fault log. To show it again, edit the device.</string>
+    <plurals name="status_more_count">
+        <item quantity="one">%1$d more message</item>
+        <item quantity="other">%1$d more messages</item>
+    </plurals>
     <plurals name="status_hidden_count">
         <item quantity="one">%d hidden message</item>
         <item quantity="other">%d hidden messages</item>

@@ -36,6 +36,8 @@
     <string name="status_backup_mode_text">%1$s alimenta la casa desde la batería, sin la red.</string>
     <string name="status_off_grid_mode">Modo aislado</string>
     <string name="status_off_grid_mode_text">%1$s funciona aislado de la red, con la batería y los paneles solares.</string>
+    <string name="log_active">Activas</string>
+    <string name="log_past">Historial</string>
     <string name="log_empty">Todavía no se ha registrado ningún problema.</string>
     <string name="log_minutes">%1$d min</string>
     <string name="log_hours">%1$d h %2$d min</string>
@@ -73,6 +75,11 @@
     <string name="status_hide_confirm">Ocultar</string>
     <string name="status_hide_cancel">Cancelar</string>
     <string name="status_hide_text">«%1$s» de %2$s ya no se mostrará en el panel ni en el modo quiosco y no hará saltar ninguna alarma. Sigue registrándose en el registro de fallos. Para volver a mostrarlo: edita el dispositivo.</string>
+    <plurals name="status_more_count">
+        <item quantity="one">%1$d mensaje más</item>
+        <item quantity="other">%1$d mensajes más</item>
+        <item quantity="many">%1$d mensajes más</item>
+    </plurals>
     <plurals name="status_hidden_count">
         <item quantity="one">%d mensaje oculto</item>
         <item quantity="many">%d mensajes ocultos</item>

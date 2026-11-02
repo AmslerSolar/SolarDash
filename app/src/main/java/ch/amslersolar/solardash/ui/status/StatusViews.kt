@@ -90,11 +90,18 @@ fun statusHeadline(status: PlantStatus): String = stringResource(
 )
 
 /**
- * Status card on the plant's dashboard: headline, then every issue with a link to its guide, and how many of the
- * device problems present are hidden. [onHide]: hides a device's own problem (asked first).
+ * Status card: headline, then the issues with a link to their guides. With [onMore] (the dashboard) only the worst
+ * issue and a link to the others; without it every issue and how many of the device problems present are hidden.
+ * [onHide]: hides a device's own problem (asked first).
  */
 @Composable
-fun StatusCard(status: PlantStatus, onGuide: (Guide) -> Unit, modifier: Modifier = Modifier, onHide: ((Issue) -> Unit)? = null) {
+fun StatusCard(
+    status: PlantStatus,
+    onGuide: (Guide) -> Unit,
+    modifier: Modifier = Modifier,
+    onHide: ((Issue) -> Unit)? = null,
+    onMore: (() -> Unit)? = null,
+) {
     val color = severityColor(if (status.ok) null else status.severity)
     Card(
         modifier.fillMaxWidth(),
@@ -110,8 +117,12 @@ fun StatusCard(status: PlantStatus, onGuide: (Guide) -> Unit, modifier: Modifier
                     modifier = Modifier.padding(start = 12.dp),
                 )
             }
-            IssueList(status.issues, onGuide, onHide = onHide)
-            if (status.hidden.isNotEmpty()) {
+            val more = if (onMore != null) status.issues.size - 1 else 0
+            IssueList(if (onMore != null) status.issues.take(1) else status.issues, onGuide, onHide = onHide)
+            if (more > 0) {
+                TextButton(onClick = onMore!!) { Text(pluralStringResource(R.plurals.status_more_count, more, more)) }
+            }
+            if (onMore == null && status.hidden.isNotEmpty()) {
                 Text(
                     pluralStringResource(R.plurals.status_hidden_count, status.hidden.size, status.hidden.size),
                     style = MaterialTheme.typography.bodySmall,
@@ -172,7 +183,7 @@ private fun IssueRow(issue: Issue, onGuide: (Guide) -> Unit, large: Boolean, onH
     }
 }
 
-/** One line for the kiosk header, tappable to see the issues. */
+/** One line for the kiosk header: the worst issue only, tappable to see it with its guide. */
 @Composable
 fun KioskStatusLine(status: PlantStatus, onClick: () -> Unit, iconSize: Dp = 36.dp) {
     val severity = if (status.ok) null else status.severity
@@ -190,10 +201,6 @@ fun KioskStatusLine(status: PlantStatus, onClick: () -> Unit, iconSize: Dp = 36.
             color = color,
             modifier = Modifier.padding(start = 12.dp),
         )
-        val more = status.issues.count { it.severity != Severity.INFO } - 1
-        if (!status.ok && more > 0) {
-            Text(" +$more", style = MaterialTheme.typography.headlineSmall, color = color)
-        }
     }
 }
 

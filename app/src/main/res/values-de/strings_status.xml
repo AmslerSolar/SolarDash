@@ -36,6 +36,8 @@
     <string name="status_backup_mode_text">%1$s versorgt das Haus ohne Stromnetz aus der Batterie.</string>
     <string name="status_off_grid_mode">Inselbetrieb</string>
     <string name="status_off_grid_mode_text">%1$s läuft im Inselbetrieb, mit Batterie und Solarmodulen.</string>
+    <string name="log_active">Aktiv</string>
+    <string name="log_past">Verlauf</string>
     <string name="log_empty">Noch keine Probleme aufgezeichnet.</string>
     <string name="log_minutes">%1$d Min.</string>
     <string name="log_hours">%1$d Std. %2$d Min.</string>
@@ -73,6 +75,10 @@
     <string name="status_hide_confirm">Ausblenden</string>
     <string name="status_hide_cancel">Abbrechen</string>
     <string name="status_hide_text">«%1$s» von %2$s wird in der Übersicht und im Kiosk nicht mehr angezeigt und löst keinen Alarm mehr aus. Im Fehlerprotokoll wird sie weiter festgehalten. Wieder anzeigen: Gerät bearbeiten.</string>
+    <plurals name="status_more_count">
+        <item quantity="one">%1$d weitere Meldung</item>
+        <item quantity="other">%1$d weitere Meldungen</item>
+    </plurals>
     <plurals name="status_hidden_count">
         <item quantity="one">%d ausgeblendete Meldung</item>
         <item quantity="other">%d ausgeblendete Meldungen</item>
