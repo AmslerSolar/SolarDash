@@ -17,7 +17,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "ch.amslersolar.dashboard"
+        applicationId = "ch.amslersolar.solardash"
         minSdk = 26
         targetSdk = 34
         versionCode = 40

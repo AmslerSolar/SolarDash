@@ -18,7 +18,7 @@ import java.net.URI
  * `X-App-Version`. Nothing else is sent.
  *
  * So a server can tell these uploads from anything else at the same address, each one says what it is:
- * - `User-Agent: SolarDash/<version> (<build>; Android <release>)` (builds up to 40: `AmslerSolarDashboard/…`)
+ * - `User-Agent: SolarDash/<version> (<build>; Android <release>)`
  * - `X-Dashboard-Upload: register-sweep-log/1` (kind and format version of the body)
  *
  * The upload counts as done only when the receiver answers `stored <name>`: an ordinary page that answers 200 to
@@ -32,10 +32,7 @@ object LogUpload {
     private const val KEY_URL = "url"
 
     fun url(context: Context): String =
-        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(KEY_URL, null)
-            ?.takeIf { it != OLD_DEFAULT_URL } ?: DEFAULT_URL // the bare site (build 28–30) had no receiver
-
-    private const val OLD_DEFAULT_URL = "https://amsler-solar.ch/"
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(KEY_URL, null) ?: DEFAULT_URL
 
     fun setUrl(context: Context, url: String) =
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString(KEY_URL, url.trim()).apply()
