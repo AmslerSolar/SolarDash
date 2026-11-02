@@ -11577,3 +11577,25 @@ sampling wire fault	Störung Messleitung
 {x} (code 0x{x})	{x} (Code 0x{x})
 {x} charging controller(s) in status E or F	{x} Ladesteuerung(en) im Status E oder F
 Discharge second level over current protection	Schutz Entladeüberstrom Stufe 2
+Backup battery critical alarm (A029)	Pufferbatterie kritischer Alarm (A029)
+Backup battery not OK (A031)	Pufferbatterie nicht in Ordnung (A031)
+Backup battery preventive alarm (A030)	Pufferbatterie Voralarm (A030)
+Boiler error (see the main and sub error codes)	Kesselfehler (siehe Haupt- und Unterfehlercode)
+Bus device alarm	Alarm Busgerät
+Carlo Gavazzi Analink Alarm	Carlo Gavazzi Analink Alarm
+Cascade error code {x}	Kaskaden-Fehlercode {x}
+ChargingStation Alarm (No connection)	Alarm Ladestation (keine Verbindung)
+Clock error (RTC)	Uhrfehler (RTC)
+Data Transfer Alarm	Alarm Datenübertragung
+Device reports an error state (4)	Gerät meldet einen Fehlerzustand (4)
+E-Mail Transfer Alarm	Alarm E-Mail-Versand
+Emergency Off	Not-Aus
+FTP-Client-Alarm	FTP-Client-Alarm
+File-Error	Dateifehler
+KNX/EIB-Alarm	KNX/EIB-Alarm
+Main meter alarm	Alarm Hauptzähler
+Max. Value Exceeded	Maximalwert überschritten
+Substation alarm (no connection)	Alarm Unterstation (keine Verbindung)
+Synchron Alarm	Alarm Synchronisation
+TCP Module Alarm	Alarm TCP-Modul
+Watchdog	Watchdog

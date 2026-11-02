@@ -12261,3 +12261,25 @@ connector wire fault	Défaut de fil de connecteur
 sampling wire fault	Défaut de fil d'échantillonnage
 {x} (code 0x{x})	{x} (code 0x{x})
 {x} charging controller(s) in status E or F	{x} contrôleur(s) de charge à l'état E ou F
+Backup battery critical alarm (A029)	Batterie de secours : alarme critique (A029)
+Backup battery not OK (A031)	Batterie de secours défectueuse (A031)
+Backup battery preventive alarm (A030)	Batterie de secours : alarme préventive (A030)
+Boiler error (see the main and sub error codes)	Erreur chaudière (voir les codes d'erreur principal et secondaire)
+Bus device alarm	Alarme appareil du bus
+Carlo Gavazzi Analink Alarm	Alarme Carlo Gavazzi Analink
+Cascade error code {x}	Code d'erreur cascade {x}
+ChargingStation Alarm (No connection)	Alarme borne de recharge (pas de connexion)
+Clock error (RTC)	Erreur d'horloge (RTC)
+Data Transfer Alarm	Alarme transfert de données
+Device reports an error state (4)	L'appareil signale un état d'erreur (4)
+E-Mail Transfer Alarm	Alarme envoi d'e-mail
+Emergency Off	Arrêt d'urgence
+FTP-Client-Alarm	Alarme client FTP
+File-Error	Erreur de fichier
+KNX/EIB-Alarm	Alarme KNX/EIB
+Main meter alarm	Alarme compteur principal
+Max. Value Exceeded	Valeur maximale dépassée
+Substation alarm (no connection)	Alarme sous-station (pas de connexion)
+Synchron Alarm	Alarme de synchronisation
+TCP Module Alarm	Alarme module TCP
+Watchdog	Watchdog

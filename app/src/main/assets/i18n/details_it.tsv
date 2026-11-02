@@ -12228,3 +12228,25 @@ connector wire fault	Guasto filo connettore
 sampling wire fault	Guasto filo di campionamento
 {x} (code 0x{x})	{x} (codice 0x{x})
 {x} charging controller(s) in status E or F	{x} controller di ricarica in stato E o F
+Backup battery critical alarm (A029)	Batteria tampone: allarme critico (A029)
+Backup battery not OK (A031)	Batteria tampone non OK (A031)
+Backup battery preventive alarm (A030)	Batteria tampone: allarme preventivo (A030)
+Boiler error (see the main and sub error codes)	Errore caldaia (vedi codici di errore principale e secondario)
+Bus device alarm	Allarme dispositivo bus
+Carlo Gavazzi Analink Alarm	Allarme Carlo Gavazzi Analink
+Cascade error code {x}	Codice di errore cascata {x}
+ChargingStation Alarm (No connection)	Allarme stazione di ricarica (nessuna connessione)
+Clock error (RTC)	Errore orologio (RTC)
+Data Transfer Alarm	Allarme trasferimento dati
+Device reports an error state (4)	Il dispositivo segnala uno stato di errore (4)
+E-Mail Transfer Alarm	Allarme invio e-mail
+Emergency Off	Arresto di emergenza
+FTP-Client-Alarm	Allarme client FTP
+File-Error	Errore file
+KNX/EIB-Alarm	Allarme KNX/EIB
+Main meter alarm	Allarme contatore principale
+Max. Value Exceeded	Valore massimo superato
+Substation alarm (no connection)	Allarme sottostazione (nessuna connessione)
+Synchron Alarm	Allarme sincronizzazione
+TCP Module Alarm	Allarme modulo TCP
+Watchdog	Watchdog
