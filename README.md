@@ -1,4 +1,4 @@
-# Solar Dashboard (Android)
+# SolarDash (Android)
 
 > A Python / Qt desktop version with the same features lives in [`desktop/`](desktop/README.md).
 

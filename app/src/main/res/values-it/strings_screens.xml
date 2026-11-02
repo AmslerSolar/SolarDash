@@ -77,7 +77,7 @@
         <item quantity="other">%1$d dispositivi su %2$d non rispondono. I totali sono incompleti.</item>
     </plurals>
     <string name="screens_home_hint_title">Di nuovo attivo dopo un blackout</string>
-    <string name="screens_home_hint_text">Perché questa schermata torni da sola dopo un’interruzione di corrente o un riavvio, scegli Solar Dashboard come app della schermata Home. Android la aprirà a ogni avvio. Puoi cambiarlo in seguito nelle impostazioni, in App → App predefinite.</string>
+    <string name="screens_home_hint_text">Perché questa schermata torni da sola dopo un’interruzione di corrente o un riavvio, scegli SolarDash come app della schermata Home. Android la aprirà a ogni avvio. Puoi cambiarlo in seguito nelle impostazioni, in App → App predefinite.</string>
     <string name="screens_home_hint_choose">Scegli app Home</string>
     <string name="screens_home_hint_later">Non ora</string>
     <string name="screens_recording_channel">Registrazione</string>

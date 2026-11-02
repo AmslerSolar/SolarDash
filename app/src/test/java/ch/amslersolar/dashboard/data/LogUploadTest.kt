@@ -30,7 +30,7 @@ class LogUploadTest {
 
     @Test
     fun uploadsSayWhatTheyAre() {
-        assertTrue(LogUpload.userAgent().startsWith("AmslerSolarDashboard/"))
+        assertTrue(LogUpload.userAgent().startsWith("SolarDash/"))
         assertTrue(LogUpload.KIND.startsWith("register-sweep-log/"))
     }
 }

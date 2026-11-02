@@ -87,7 +87,7 @@ class KioskService : Service() {
     private fun acquireLocks() {
         if (wakeLock == null) {
             wakeLock = getSystemService(PowerManager::class.java)
-                .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "SolarDashboard:kiosk")
+                .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "SolarDash:kiosk")
                 .apply {
                     setReferenceCounted(false)
                     @Suppress("WakelockTimeout") // held for as long as kiosk mode is on, released in onDestroy
@@ -97,7 +97,7 @@ class KioskService : Service() {
         if (wifiLock == null) {
             @Suppress("DEPRECATION") // still the only mode that keeps Wi-Fi up with the screen off
             wifiLock = (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
-                .createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "SolarDashboard:kiosk")
+                .createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "SolarDash:kiosk")
                 .apply { setReferenceCounted(false); acquire() }
         }
     }

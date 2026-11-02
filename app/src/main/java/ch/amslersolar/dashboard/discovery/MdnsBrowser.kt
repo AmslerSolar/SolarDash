@@ -46,7 +46,7 @@ object MdnsBrowser {
     fun browse(context: Context, types: List<String> = SERVICE_TYPES): Flow<MdnsService> = callbackFlow {
         val nsd = context.getSystemService(NsdManager::class.java)
         val wifi = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        val lock = wifi.createMulticastLock("SolarDashboard:mdns").apply { setReferenceCounted(false); acquire() }
+        val lock = wifi.createMulticastLock("SolarDash:mdns").apply { setReferenceCounted(false); acquire() }
         // Older Android resolves one service at a time ("already active" otherwise).
         val resolving = Mutex()
         val listeners = types.map { type ->

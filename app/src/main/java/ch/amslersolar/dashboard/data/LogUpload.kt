@@ -18,7 +18,7 @@ import java.net.URI
  * `X-App-Version`. Nothing else is sent.
  *
  * So a server can tell these uploads from anything else at the same address, each one says what it is:
- * - `User-Agent: AmslerSolarDashboard/<version> (<build>; Android <release>)`
+ * - `User-Agent: SolarDash/<version> (<build>; Android <release>)` (builds up to 40: `AmslerSolarDashboard/…`)
  * - `X-Dashboard-Upload: register-sweep-log/1` (kind and format version of the body)
  *
  * The upload counts as done only when the receiver answers `stored <name>`: an ordinary page that answers 200 to
@@ -55,7 +55,7 @@ object LogUpload {
     private const val MAX_REPLY = 4096
 
     fun userAgent(): String =
-        "AmslerSolarDashboard/${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}; Android ${android.os.Build.VERSION.RELEASE})"
+        "SolarDash/${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}; Android ${android.os.Build.VERSION.RELEASE})"
 
     /**
      * The name the receiver stored the log under; throws when the server can't be reached, doesn't accept it

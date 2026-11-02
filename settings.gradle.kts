@@ -16,5 +16,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "SolarDashboard"
+rootProject.name = "SolarDash"
 include(":app")
