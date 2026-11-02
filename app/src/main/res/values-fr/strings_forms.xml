@@ -69,6 +69,7 @@
     <string name="forms_hint_kaco_nx3">SunSpec Modbus TCP, port 502, ID d\'unité 1 (activez Modbus/SunSpec dans l\'onduleur).</string>
     <string name="forms_hint_fimer">Via un logger VSN300 / VSN700 ou un onduleur SunSpec natif&#160;: port 502&#160;; ID d\'unité 247 pour le logger, sinon l\'adresse Aurora de l\'onduleur (souvent 2).</string>
     <string name="forms_hint_apsystems_ecu">Activez Modbus dans EMA Manager (firmware ECU-R 1.3.7 / 2.0.2, ECU-C C1.1.3 ou plus récent). Ajoutez un appareil par micro-onduleur&#160;: ID d\'unité = son adresse Modbus dans EMA Manager. Port 502.</string>
+    <string name="forms_hint_abb_cdd">Le CDD collecte par radio les données des micro-onduleurs ABB MICRO-0.3 et les affiche sur sa propre page web. Saisissez l\'adresse IP du CDD, port 80&#160;; aucun mot de passe n\'est nécessaire. L\'app affiche le total de l\'installation, chaque micro-onduleur et le journal d\'alarmes du CDD.</string>
     <string name="forms_hint_conext_cl">SunSpec Modbus TCP, port 502, ID d\'unité 10 (réglage d\'usine). Via SunSpec, la puissance varie par pas de 100 W.</string>
     <string name="forms_hint_conext_cl60">Modbus TCP port 502, ID d\'unité 1.</string>
     <string name="forms_hint_conext_gateway">Lit tout le système XW via la Conext Gateway / Insight Home&#160;: port 503, ID d\'unité 1.</string>

@@ -69,6 +69,7 @@
     <string name="forms_hint_kaco_nx3">SunSpec Modbus TCP, port 502, unit id 1 (enable Modbus/SunSpec in the inverter).</string>
     <string name="forms_hint_fimer">Through a VSN300 / VSN700 logger or a native SunSpec inverter: port 502; unit id 247 for the logger, else the inverter\'s Aurora address (often 2).</string>
     <string name="forms_hint_apsystems_ecu">Enable Modbus in EMA Manager (ECU-R firmware 1.3.7 / 2.0.2, ECU-C C1.1.3 or later). Add one device per microinverter: unit id = its Modbus address from EMA Manager. Port 502.</string>
+    <string name="forms_hint_abb_cdd">The CDD collects the data of the ABB MICRO-0.3 microinverters by radio and shows it on its own web page. Enter the CDD\'s IP address, port 80; no password is needed. The app shows the plant total and each microinverter, and the CDD\'s alarm log.</string>
     <string name="forms_hint_conext_cl">SunSpec Modbus TCP, port 502, unit id 10 (factory default). Power has 100 W steps over SunSpec.</string>
     <string name="forms_hint_conext_cl60">Modbus TCP port 502, unit id 1.</string>
     <string name="forms_hint_conext_gateway">Reads the whole XW system from the Conext Gateway / Insight Home: port 503, unit id 1.</string>

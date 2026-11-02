@@ -61,6 +61,7 @@ enum class DeviceType(
     KACO_NX3("KACO blueplanet 100/125 NX3", DeviceKind.INVERTER, supported = true),
     FIMER("FIMER / ABB via VSN300 / VSN700", DeviceKind.INVERTER, defaultUnitId = 247, supported = true),
     APSYSTEMS_ECU("APsystems microinverter via ECU-R / ECU-C (SunSpec; one device per microinverter)", DeviceKind.INVERTER, supported = true),
+    ABB_CDD("ABB CDD with MICRO-0.3 microinverters (local HTTP)", DeviceKind.INVERTER, defaultPort = 80, supported = true, modbus = false),
     CONEXT_CL("Schneider Conext CL 18/20/25", DeviceKind.INVERTER, defaultUnitId = 10, supported = true),
     CONEXT_CL60("Schneider Conext CL-60", DeviceKind.INVERTER, supported = true),
     CONEXT_GATEWAY("Schneider Conext XW system via Conext Gateway / Insight Home", DeviceKind.INVERTER, defaultPort = 503, supported = true),

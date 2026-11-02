@@ -18,6 +18,7 @@ shows plant totals plus per-device detail.
 | Power-One / ABB TRIO-5.8/8.5, -20.0/27.6, -50.0/60.0 | Inverter (PV only) | Modbus RTU via an RS485 ↔ Modbus TCP gateway, unit id = RS485 address | Implemented, **not yet tested on hardware** |
 | FENECON FEMS / OpenEMS | Whole system | Modbus TCP 502, unit id 1 (pre-installed read access) | Implemented, **not yet tested on hardware** |
 | Enphase IQ Gateway / Envoy (software 7+) | Microinverters + CTs (+ battery via live data) | Local HTTPS 443 with owner token | Implemented, **not yet tested on hardware** |
+| ABB CDD with ABB MICRO-0.3 microinverters | Microinverters (plant total + each unit, alarm log) | Local HTTP 80, no login (`/plant.xml`, `/alarm.xml`) | Implemented; checked on a real CDD with 16 microinverters |
 | KACO blueplanet 100/125 NX3 | Inverter | SunSpec Modbus TCP 502 | Implemented, **not yet tested on hardware** |
 | FIMER / ABB via VSN300 / VSN700 | Inverter | SunSpec Modbus TCP 502, unit id 247 or Aurora address | Implemented, **not yet tested on hardware** |
 | APsystems microinverters via ECU-R / ECU-C | Inverter (one device per microinverter) | SunSpec Modbus TCP 502 | Implemented, **not yet tested on hardware** |
@@ -167,7 +168,7 @@ unfinished work there is ignored, and runs ModbusSpec's validator; `LOCK.json` r
   hooks for what the format can't express. The golden tests (`test/…/driver/spec/*GoldenTest.kt`) check each
   spec driver against what the replaced hand-written driver read on the same register images, recorded before those
   drivers were removed (`test/resources/golden/`). Modbus devices that need logic (SunSpec chain,
-  Victron's unit ids) and non-Modbus devices (Voltronic, LG, Enphase) stay hand-written.
+  Victron's unit ids) and non-Modbus devices (Voltronic, LG, Enphase, ABB CDD) stay hand-written.
 - Switched (35 device types): Eastron SDM, KEBA P30, Carlo Gavazzi (EM24-E1, EM300, EM210, EM24-DIN), inepro
   PRO380, ABB B23/B24, Janitza UMG, Schneider iEM3000, Siemens PAC2200, KOSTAL KSEM, Shelly Pro 3EM, my-PV,
   Stiebel Eltron ISG, Alfen Eve, MENNEKES/Bender ECU, go-e, NIBE S series (model picked in the device form:
@@ -175,8 +176,8 @@ unfinished work there is ignored, and runs ModbusSpec's validator; `LOCK.json` r
   Sungrow (SHx, SG), KOSTAL Plenticore (word order from register 5), KOSTAL PIKO CI, Schneider Conext CL-60 and
   Gateway, CPS 403X, Power-One TRIO (asleep at night: `connection.sleeps`), Ingeteam INGECON SUN, Riello central.
 - Still hand-written: the SunSpec family (Fronius, SolarEdge, KACO, FIMER, APsystems, Conext CL, LG SunSpec; the
-  SunSpec chain is discovered at runtime), Victron (several unit ids), and the non-Modbus Voltronic, LG ESS and
-  Enphase.
+  SunSpec chain is discovered at runtime), Victron (several unit ids), and the non-Modbus Voltronic, LG ESS,
+  Enphase and ABB CDD.
 - Every other energy device in ModbusSpec (inverters, batteries, meters, wallboxes, heat pumps, heating rods,
   UPSs, boilers: `kinds:` in `app/modbusspec.txt`, 438 files) is available through four generic device types
   (`MODBUS_SPEC_INVERTER`, `…_BATTERY`, `…_METER`, `…_CONSUMER`, by the file's kind) with the file's id in

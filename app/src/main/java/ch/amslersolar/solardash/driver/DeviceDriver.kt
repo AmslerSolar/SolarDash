@@ -4,6 +4,7 @@
 package ch.amslersolar.solardash.driver
 
 import ch.amslersolar.solardash.driver.spec.SpecDevices
+import ch.amslersolar.solardash.driver.abb.AbbCddDriver
 import ch.amslersolar.solardash.driver.apsystems.ApsystemsEcuDriver
 import ch.amslersolar.solardash.driver.demo.DemoBattery
 import ch.amslersolar.solardash.driver.demo.DemoHeatPump
@@ -61,6 +62,7 @@ object DeviceDrivers {
         DeviceType.VICTRON -> VictronGxDriver(connections.get(config), config.unitId)
         DeviceType.VOLTRONIC -> VoltronicAxpertDriver(config.host, config.port)
         DeviceType.ENPHASE -> EnphaseGatewayDriver(config.host, config.port, config.password)
+        DeviceType.ABB_CDD -> AbbCddDriver(config.host, config.port)
         else -> error("${config.type} is read through ModbusSpec")
     }
 }

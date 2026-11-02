@@ -12283,3 +12283,43 @@ Substation alarm (no connection)	Alarme sous-station (pas de connexion)
 Synchron Alarm	Alarme de synchronisation
 TCP Module Alarm	Alarme module TCP
 Watchdog	Watchdog
+CDD	CDD
+Microinverter {x}	Micro-onduleur {x}
+Alarm log	Journal d'alarmes
+Lifetime energy	Énergie totale
+CO2 saved	CO2 économisé
+Microinverters	Micro-onduleurs
+Grid code	Code réseau
+Daylight	Lumière du jour
+Sunrise	Lever du soleil
+Sunset	Coucher du soleil
+Aurora Vision gateway	Passerelle Aurora Vision
+Aurora Vision data portal	Portail de données Aurora Vision
+Aurora Vision upgrade portal	Portail de mise à jour Aurora Vision
+Last boot	Dernier démarrage
+CDD time	Heure du CDD
+RF MAC address	Adresse MAC radio
+Booster state	État du booster
+AC voltage	Tension AC
+AC current	Courant AC
+Temperature (DSP)	Température (DSP)
+Temperature (MOSFET)	Température (MOSFET)
+RF signal (RSSI)	Signal radio (RSSI)
+Last report	Dernier rapport
+DSP alarms	Alarmes DSP
+MCU alarms	Alarmes MCU
+MCU warnings	Avertissements MCU
+Firmware (micro / DSP / RF)	Firmware (micro / DSP / radio)
+Night	Nuit
+never	jamais
+active	actif
+closed	terminé
+{x}, never reported	{x}, jamais signalé
+Comm Fault	Défaut de communication
+No communication	Pas de communication
+{x}: microinverter {x}	{x} : micro-onduleur {x}
+{x}: CDD	{x} : CDD
+RUN	En marche
+START-UP	Démarrage
+DAY	Jour
+ALARM	ALARME

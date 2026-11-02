@@ -55,4 +55,13 @@ class DetailTranslatorTest {
             assertEquals(entries["Battery voltage"], DetailTranslator(entries).translate("Battery voltage"))
         }
     }
+
+    @Test
+    fun abbCddTextsInGerman() {
+        val de = DetailTranslator(DetailTranslator.parse(File("src/main/assets/i18n/details_de.tsv").readText()))
+        assertEquals("Kommunikationsfehler (E501): Mikrowechselrichter 709997", de.translate("Comm Fault (E501): microinverter 709997"))
+        assertEquals("Keine Kommunikation: Mikrowechselrichter xxxxxx", de.translate("No communication: microinverter xxxxxx"))
+        assertEquals("Anlauf, nie gemeldet", de.translate("START-UP, never reported"))
+        assertEquals("Mikrowechselrichter 709994", de.translate("Microinverter 709994"))
+    }
 }

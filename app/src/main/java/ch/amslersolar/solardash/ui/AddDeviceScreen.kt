@@ -278,6 +278,7 @@ fun AddDeviceScreen(
                 DeviceType.KACO_NX3 -> Hint(stringResource(R.string.forms_hint_kaco_nx3))
                 DeviceType.FIMER -> Hint(stringResource(R.string.forms_hint_fimer))
                 DeviceType.APSYSTEMS_ECU -> Hint(stringResource(R.string.forms_hint_apsystems_ecu))
+                DeviceType.ABB_CDD -> Hint(stringResource(R.string.forms_hint_abb_cdd))
                 DeviceType.CONEXT_CL -> Hint(stringResource(R.string.forms_hint_conext_cl))
                 DeviceType.CONEXT_CL60 -> Hint(stringResource(R.string.forms_hint_conext_cl60))
                 DeviceType.CONEXT_GATEWAY -> Hint(stringResource(R.string.forms_hint_conext_gateway))

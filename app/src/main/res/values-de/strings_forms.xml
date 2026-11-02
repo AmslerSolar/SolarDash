@@ -69,6 +69,7 @@
     <string name="forms_hint_kaco_nx3">SunSpec Modbus TCP, Port 502, Unit-ID 1 (Modbus/SunSpec im Wechselrichter aktivieren).</string>
     <string name="forms_hint_fimer">Über einen VSN300- / VSN700-Logger oder einen Wechselrichter mit nativem SunSpec: Port 502; Unit-ID 247 für den Logger, sonst die Aurora-Adresse des Wechselrichters (oft 2).</string>
     <string name="forms_hint_apsystems_ecu">Aktiviere Modbus im EMA Manager (ECU-R Firmware 1.3.7 / 2.0.2, ECU-C C1.1.3 oder neuer). Füge pro Mikrowechselrichter ein Gerät hinzu: Unit-ID = seine Modbus-Adresse aus dem EMA Manager. Port 502.</string>
+    <string name="forms_hint_abb_cdd">Der CDD sammelt die Daten der ABB MICRO-0.3 Mikrowechselrichter per Funk und zeigt sie auf seiner eigenen Webseite. Gib die IP-Adresse des CDD ein, Port 80; ein Passwort braucht es nicht. Die App zeigt die Anlagensumme, jeden Mikrowechselrichter und das Alarmprotokoll des CDD.</string>
     <string name="forms_hint_conext_cl">SunSpec Modbus TCP, Port 502, Unit-ID 10 (Werkseinstellung). Über SunSpec kommt die Leistung in 100-W-Schritten.</string>
     <string name="forms_hint_conext_cl60">Modbus TCP Port 502, Unit-ID 1.</string>
     <string name="forms_hint_conext_gateway">Liest das ganze XW-System über das Conext Gateway / Insight Home: Port 503, Unit-ID 1.</string>
