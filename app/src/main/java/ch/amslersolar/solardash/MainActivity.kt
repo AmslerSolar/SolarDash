@@ -177,7 +177,6 @@ class MainActivity : ComponentActivity() {
                                 tab = tab,
                                 onTab = { route = tabRoute(plant.id, it) },
                                 onBack = back,
-                                onAddDevice = addDevice,
                                 onEdit = { route = "plant/${plant.id}/settings" },
                                 onKiosk = { Kiosk.start(this@MainActivity, plant.id) },
                             ) { modifier ->

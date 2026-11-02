@@ -28,7 +28,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Dashboard
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
@@ -90,7 +89,6 @@ fun PlantScreen(
     tab: PlantTab,
     onTab: (PlantTab) -> Unit,
     onBack: () -> Unit,
-    onAddDevice: () -> Unit,
     onEdit: () -> Unit,
     onKiosk: () -> Unit,
     content: @Composable (Modifier) -> Unit,
@@ -106,9 +104,6 @@ fun PlantScreen(
                     if (tab == PlantTab.DASHBOARD) {
                         IconButton(onClick = onKiosk) { Icon(Icons.Outlined.Fullscreen, contentDescription = stringResource(R.string.screens_kiosk_mode)) }
                         IconButton(onClick = onEdit) { Icon(Icons.Outlined.Edit, contentDescription = stringResource(R.string.screens_edit_plant)) }
-                    }
-                    if (tab == PlantTab.DEVICES) {
-                        IconButton(onClick = onAddDevice) { Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.screens_add_device)) }
                     }
                 },
             )
@@ -221,6 +216,7 @@ fun DevicesTab(
                     onEdit = { onEditDevice(device) }, onRemove = { pendingDelete = device },
                 )
             }
+            item(key = "add") { AddDeviceCard(onAddDevice) }
         }
     }
 

@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Battery5Bar
 import androidx.compose.material.icons.outlined.Bedtime
 import androidx.compose.material.icons.outlined.CheckCircle
@@ -38,6 +39,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -117,6 +119,25 @@ fun DeviceCard(device: DeviceConfig, status: DeviceStatus?, onOpen: () -> Unit, 
         DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
             DropdownMenuItem(text = { Text(stringResource(R.string.screens_edit_device, device.name)) }, onClick = { menu = false; onEdit() })
             DropdownMenuItem(text = { Text(stringResource(R.string.screens_remove_device, device.name)) }, onClick = { menu = false; onRemove() })
+        }
+    }
+}
+
+/** The last card of the Devices tab: a big plus that adds a device. */
+@Composable
+fun AddDeviceCard(onClick: () -> Unit) {
+    OutlinedCard(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth().heightIn(min = 196.dp),
+        shape = RoundedCornerShape(20.dp),
+    ) {
+        Column(
+            Modifier.fillMaxWidth().heightIn(min = 196.dp).padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier.size(80.dp), tint = MaterialTheme.colorScheme.primary)
+            Text(stringResource(R.string.screens_add_device), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
         }
     }
 }
