@@ -124,4 +124,13 @@ class FaultLogTest {
         assertEquals(1900L, store.rows[0].ended)
         assertNull(store.rows[1].ended)
     }
+
+    @Test
+    fun hiddenProblemsAreStillLogged() = runBlocking {
+        val store = MemoryStore()
+        val log = FaultLog(store)
+        val hiding = plant.copy(devices = listOf(hybrid.copy(hiddenProblems = listOf(overload.text))))
+        log.update(hiding, at(1000, overload), net, continuous = false)
+        assertEquals("Over load (a16)", store.rows.single().detail)
+    }
 }

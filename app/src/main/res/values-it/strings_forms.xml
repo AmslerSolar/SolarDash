@@ -137,4 +137,7 @@
     <string name="forms_upload_confirm">Carica</string>
     <string name="forms_upload_done">%1$s caricato su %2$s</string>
     <string name="forms_upload_failed">Caricamento non riuscito: %1$s</string>
+    <string name="forms_hidden_problems">Messaggi nascosti</string>
+    <string name="forms_hint_hidden_problems">Non mostrati nella panoramica né nel kiosk; restano registrati nel registro guasti.</string>
+    <string name="forms_show_again">Mostra di nuovo</string>
 </resources>

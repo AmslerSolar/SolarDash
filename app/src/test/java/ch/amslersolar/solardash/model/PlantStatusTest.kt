@@ -134,4 +134,32 @@ class PlantStatusTest {
         assertEquals(ConnectionError.CLOSED, classifyConnectionError(IOException("Gateway closed the connection")))
         assertEquals(ConnectionError.OTHER, classifyConnectionError(IOException("No Growatt DTC")))
     }
+
+    @Test
+    fun hiddenProblemsAreCountedNotShownAndOthersOfTheDeviceStay() {
+        val bogus = DeviceProblem(DeviceProblem.Kind.FAULT, "Comm Fault (E501): microinverter xxxxxx")
+        val real = DeviceProblem(DeviceProblem.Kind.FAULT, "Comm Fault (E501): microinverter 709997")
+        val reading = DeviceStatus(hybrid, DeviceReading(problems = listOf(bogus, real)), null)
+        // The plant's (newer) settings count, not the snapshot's copy of the device.
+        val configured = hybrid.copy(hiddenProblems = listOf(bogus.text))
+        val s = PlantStatusRules.evaluate(plant(configured), snapshot(reading), home)
+        assertEquals(listOf(real.text), s.issues.map { it.detail })
+        assertEquals(listOf(bogus.text), s.hidden.map { it.detail })
+        assertTrue(s.issues.single().hideable)
+
+        val allHidden = PlantStatusRules.evaluate(plant(configured.copy(hiddenProblems = listOf(bogus.text, real.text))), snapshot(reading), home)
+        assertTrue(allHidden.ok)
+        assertEquals(2, allHidden.hidden.size)
+
+        // The fault log asks without hiding: both are there.
+        val unfiltered = PlantStatusRules.evaluate(plant(configured), snapshot(reading), home, applyHidden = false)
+        assertEquals(2, unfiltered.issues.size)
+        assertTrue(unfiltered.hidden.isEmpty())
+    }
+
+    @Test
+    fun onlyTheDevicesOwnProblemsCanBeHidden() {
+        val s = PlantStatusRules.evaluate(plant(inverter), snapshot(failed(inverter, ConnectionError.TIMEOUT)), home)
+        assertFalse(s.issues.single().hideable) // "not answering" is the app's finding, not a device message
+    }
 }

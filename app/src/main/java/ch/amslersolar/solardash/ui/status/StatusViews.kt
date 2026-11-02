@@ -15,6 +15,7 @@ import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Error
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -24,12 +25,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -85,9 +89,12 @@ fun statusHeadline(status: PlantStatus): String = stringResource(
     },
 )
 
-/** Status card on the plant's dashboard: headline, then every issue with a link to its guide. */
+/**
+ * Status card on the plant's dashboard: headline, then every issue with a link to its guide, and how many of the
+ * device problems present are hidden. [onHide]: hides a device's own problem (asked first).
+ */
 @Composable
-fun StatusCard(status: PlantStatus, onGuide: (Guide) -> Unit, modifier: Modifier = Modifier) {
+fun StatusCard(status: PlantStatus, onGuide: (Guide) -> Unit, modifier: Modifier = Modifier, onHide: ((Issue) -> Unit)? = null) {
     val color = severityColor(if (status.ok) null else status.severity)
     Card(
         modifier.fillMaxWidth(),
@@ -103,24 +110,41 @@ fun StatusCard(status: PlantStatus, onGuide: (Guide) -> Unit, modifier: Modifier
                     modifier = Modifier.padding(start = 12.dp),
                 )
             }
-            IssueList(status.issues, onGuide)
+            IssueList(status.issues, onGuide, onHide = onHide)
+            if (status.hidden.isNotEmpty()) {
+                Text(
+                    pluralStringResource(R.plurals.status_hidden_count, status.hidden.size, status.hidden.size),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
     }
 }
 
 /** Every issue: title, explanation, the device's own text and "How to fix". */
 @Composable
-fun IssueList(issues: List<Issue>, onGuide: (Guide) -> Unit, large: Boolean = false) {
+fun IssueList(issues: List<Issue>, onGuide: (Guide) -> Unit, large: Boolean = false, onHide: ((Issue) -> Unit)? = null) {
     issues.forEachIndexed { i, issue ->
         if (i > 0) HorizontalDivider()
-        IssueRow(issue, onGuide, large)
+        IssueRow(issue, onGuide, large, onHide)
     }
 }
 
 @Composable
-private fun IssueRow(issue: Issue, onGuide: (Guide) -> Unit, large: Boolean) {
+private fun IssueRow(issue: Issue, onGuide: (Guide) -> Unit, large: Boolean, onHide: ((Issue) -> Unit)?) {
     val type = MaterialTheme.typography
     val info = issue.severity == Severity.INFO
+    var confirming by remember { mutableStateOf(false) }
+    if (confirming) {
+        AlertDialog(
+            onDismissRequest = { confirming = false },
+            title = { Text(stringResource(R.string.status_hide_title)) },
+            text = { Text(stringResource(R.string.status_hide_text, DetailTexts.tr(issue.detail.orEmpty()), issue.device?.name.orEmpty())) },
+            confirmButton = { TextButton(onClick = { confirming = false; onHide?.invoke(issue) }) { Text(stringResource(R.string.status_hide_confirm)) } },
+            dismissButton = { TextButton(onClick = { confirming = false }) { Text(stringResource(R.string.status_hide_cancel)) } },
+        )
+    }
     Row(verticalAlignment = Alignment.Top) {
         Icon(
             if (info) Icons.Outlined.Info else severityIcon(issue.severity),
@@ -134,8 +158,15 @@ private fun IssueRow(issue: Issue, onGuide: (Guide) -> Unit, large: Boolean) {
             issue.detail?.let {
                 Text(DetailTexts.tr(it), style = if (large) type.bodyLarge else type.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
-            TextButton(onClick = { onGuide(issue.kind.guide) }, modifier = Modifier.padding(start = 0.dp)) {
-                Text(stringResource(R.string.status_how_to_fix), style = if (large) type.titleMedium else type.labelLarge)
+            Row {
+                TextButton(onClick = { onGuide(issue.kind.guide) }, modifier = Modifier.padding(start = 0.dp)) {
+                    Text(stringResource(R.string.status_how_to_fix), style = if (large) type.titleMedium else type.labelLarge)
+                }
+                if (onHide != null && issue.hideable) {
+                    TextButton(onClick = { confirming = true }) {
+                        Text(stringResource(R.string.status_hide), style = if (large) type.titleMedium else type.labelLarge)
+                    }
+                }
             }
         }
     }

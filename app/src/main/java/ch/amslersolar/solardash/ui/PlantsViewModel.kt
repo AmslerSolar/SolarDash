@@ -51,6 +51,8 @@ class PlantsViewModel(
 
     fun updateDevice(plantId: String, device: DeviceConfig) = viewModelScope.launch { registry.update(plantId, device) }
 
+    fun hideProblem(plantId: String, deviceId: String, text: String) = viewModelScope.launch { repository.hideProblem(plantId, deviceId, text) }
+
     /**
      * Connects once and identifies the device; the serial (when there is one) is kept with the device. Modbus devices
      * are tested with polling paused: one that takes a single client (Huawei EMMA, dongles) drops a second connection

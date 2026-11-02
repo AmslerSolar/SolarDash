@@ -47,6 +47,11 @@ class PlantRepository(private val context: Context) {
         plant.copy(devices = plant.devices.map { if (it.id == device.id) device else it })
     }
 
+    /** Stops showing a problem [text] of a device in the plant status ([DeviceConfig.hiddenProblems]). */
+    suspend fun hideProblem(plantId: String, deviceId: String, text: String) = updatePlant(plantId) { plant ->
+        plant.copy(devices = plant.devices.map { if (it.id == deviceId && text !in it.hiddenProblems) it.copy(hiddenProblems = it.hiddenProblems + text) else it })
+    }
+
     /** Changes one device's address if it's still at [from] (it may have been edited meanwhile). */
     suspend fun moveDevice(plantId: String, deviceId: String, from: String, to: String) = updatePlant(plantId) { plant ->
         plant.copy(devices = plant.devices.map { if (it.id == deviceId && it.host == from) it.copy(host = to) else it })

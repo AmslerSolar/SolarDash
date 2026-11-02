@@ -137,4 +137,7 @@
     <string name="forms_upload_confirm">Envoyer</string>
     <string name="forms_upload_done">%1$s envoyé à %2$s</string>
     <string name="forms_upload_failed">Échec de l’envoi : %1$s</string>
+    <string name="forms_hidden_problems">Messages masqués</string>
+    <string name="forms_hint_hidden_problems">Non affichés sur le tableau de bord ni en mode kiosque&#160;; toujours enregistrés dans le journal des défauts.</string>
+    <string name="forms_show_again">Afficher à nouveau</string>
 </resources>

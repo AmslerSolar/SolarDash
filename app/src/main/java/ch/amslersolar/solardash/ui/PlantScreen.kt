@@ -9,6 +9,7 @@ import ch.amslersolar.solardash.ui.status.rememberPlantStatus
 import ch.amslersolar.solardash.ui.status.StatusCard
 import ch.amslersolar.solardash.ui.status.GuideActivity
 import ch.amslersolar.solardash.model.Guide
+import ch.amslersolar.solardash.model.Issue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.DropdownMenu
@@ -158,6 +159,8 @@ fun DashboardTab(
     onAddDevice: () -> Unit,
     onShowDevices: () -> Unit,
     modifier: Modifier = Modifier,
+    /** Hides a device's own problem from the status ([ch.amslersolar.solardash.model.DeviceConfig.hiddenProblems]). */
+    onHideProblem: (Issue) -> Unit = {},
 ) {
     when (state) {
         PlantState.Loading -> Box(modifier.fillMaxSize(), Alignment.Center) { CircularProgressIndicator() }
@@ -175,7 +178,7 @@ fun DashboardTab(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     StatusLine(state.snapshot, onShowDevices)
-                    StatusCard(status, onGuide)
+                    StatusCard(status, onGuide, onHide = onHideProblem)
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         PlantEnergyFlow(state.snapshot, flowHeight, Modifier.weight(3f))
                         Column(Modifier.weight(2f), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -190,7 +193,7 @@ fun DashboardTab(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     item { StatusLine(state.snapshot, onShowDevices) }
-                    item { StatusCard(status, onGuide) }
+                    item { StatusCard(status, onGuide, onHide = onHideProblem) }
                     item { PlantEnergyFlow(state.snapshot, flowHeight) }
                     item { TodayCard(state.snapshot) }
                     if (state.snapshot.consumers.isNotEmpty()) item { ConsumersCard(state.snapshot) }

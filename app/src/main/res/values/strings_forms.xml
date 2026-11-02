@@ -135,4 +135,7 @@
     <string name="forms_upload_confirm">Upload</string>
     <string name="forms_upload_done">%1$s uploaded to %2$s</string>
     <string name="forms_upload_failed">Upload failed: %1$s</string>
+    <string name="forms_hidden_problems">Hidden messages</string>
+    <string name="forms_hint_hidden_problems">Not shown on the dashboard or the kiosk; still recorded in the fault log.</string>
+    <string name="forms_show_again">Show again</string>
 </resources>

@@ -53,7 +53,7 @@ class FaultLog(private val store: EventStore, private val settleS: Long = 30, pr
     suspend fun update(plant: Plant, snapshot: PlantSnapshot, net: NetworkState, continuous: Boolean = true) {
         val mem = synchronized(memory) { memory.getOrPut(plant.id) { Memory() } }
         val now = snapshot.readAt.epochSecond
-        val status = PlantStatusRules.evaluate(plant, snapshot, net, mem.last)
+        val status = PlantStatusRules.evaluate(plant, snapshot, net, mem.last, applyHidden = false) // hidden ones are logged too
         mem.last.update(snapshot)
         val current = status.issues.filter { logged(it.kind) }.associateBy(::key)
         val open = store.openEvents(plant.id).associateBy { it.key }

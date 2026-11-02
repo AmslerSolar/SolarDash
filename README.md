@@ -214,6 +214,12 @@ a problem wakes the screen and keeps it on; a tap on the status line lists the d
 | Backup mode / Off-grid mode | The inverter runs in off-grid / backup / island / emergency-power mode (`DeviceProblem.Kind.BACKUP_MODE`): "Backup mode" on a grid-tied plant, "Off-grid mode" on an off-grid plant | warning / info |
 | No internet | Not needed; shown as information | info |
 
+**Hiding a message:** a fault or warning a device reports itself (not a connection problem) can be hidden with
+**Hide** in the status box, e.g. a known, accepted fault. It's then left out of the dashboard and kiosk status (no
+alarm, the screen isn't woken), and the box shows how many are hidden; the fault log still records it. Hidden
+messages are kept per device (`DeviceConfig.hiddenProblems`, the exact texts) and listed in the device's edit form,
+where **Show again** brings one back.
+
 **Fault log:** every problem is recorded with its start and end time (`events` table in history.db, version 4),
 from live polling and from the background recorder. A problem must last 30 s to be logged and be gone 30 s to be
 closed, so a single dropped poll doesn't fill the log; the background recorder (every 15 min) logs and closes at

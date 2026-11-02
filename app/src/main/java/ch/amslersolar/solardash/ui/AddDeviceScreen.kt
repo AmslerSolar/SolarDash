@@ -5,6 +5,7 @@ package ch.amslersolar.solardash.ui
 
 import ch.amslersolar.solardash.data.LogUpload
 import androidx.compose.material3.TextButton
+import ch.amslersolar.solardash.i18n.DetailTexts
 import ch.amslersolar.solardash.driver.spec.SpecIndexEntry
 import ch.amslersolar.solardash.driver.spec.SpecLibrary
 import ch.amslersolar.solardash.driver.spec.SpecDevices
@@ -108,6 +109,7 @@ fun AddDeviceScreen(
     var model by rememberSaveable { mutableStateOf(existing?.model.orEmpty()) }
     var specId by rememberSaveable { mutableStateOf(existing?.specId.orEmpty()) }
     var rtuOverTcp by rememberSaveable { mutableStateOf(existing?.rtuOverTcp ?: false) }
+    var hiddenProblems by rememberSaveable { mutableStateOf(ArrayList(existing?.hiddenProblems.orEmpty())) }
     var browsing by rememberSaveable { mutableStateOf<DeviceKind?>(null) }
     val models = remember(type, specId) { SpecDevices.userModels(type, specId) }
     val generic = type in SpecDevices.GENERIC
@@ -169,6 +171,7 @@ fun AddDeviceScreen(
         model = if (models.any { it.first == model }) model else "",
         specId = if (generic) specId else "",
         rtuOverTcp = type.modbus && rtuOverTcp,
+        hiddenProblems = hiddenProblems.toList(),
         // A changed type or unit id may be another device: drop a serial that came with the old settings.
         serial = if (existing != null && (type != existing.type || unitId != existing.unitId.toString()) && serial == existing.serial) "" else serial,
     )
@@ -433,6 +436,19 @@ fun AddDeviceScreen(
                                 stringResource(R.string.forms_hint_invert_grid)
                             },
                         )
+                    }
+                }
+            }
+
+            if (hiddenProblems.isNotEmpty()) {
+                Text(stringResource(R.string.forms_hidden_problems), style = MaterialTheme.typography.titleSmall)
+                Hint(stringResource(R.string.forms_hint_hidden_problems))
+                hiddenProblems.forEach { text ->
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(DetailTexts.tr(text), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+                        TextButton(onClick = { hiddenProblems = ArrayList(hiddenProblems - text) }) {
+                            Text(stringResource(R.string.forms_show_again))
+                        }
                     }
                 }
             }

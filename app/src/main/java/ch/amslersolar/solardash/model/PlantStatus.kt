@@ -65,9 +65,13 @@ enum class IssueKind(val severity: Severity, val guide: Guide) {
 /** One thing to show in the plant status. [detail] is the device's own text (English, translated for display). */
 data class Issue(val kind: IssueKind, val device: DeviceConfig? = null, val detail: String? = null, val percent: Int? = null) {
     val severity: Severity get() = kind.severity
+
+    /** A problem the device itself reported ([detail] is its text): it can be hidden ([DeviceConfig.hiddenProblems]). */
+    val hideable: Boolean get() = device != null && detail != null && kind in PlantStatusRules.DEVICE_PROBLEMS
 }
 
-data class PlantStatus(val issues: List<Issue>) {
+/** [hidden]: the device problems present now that the plant's settings hide (counted, not shown). */
+data class PlantStatus(val issues: List<Issue>, val hidden: List<Issue> = emptyList()) {
     /** Worst severity, or null when there's nothing at all to show. */
     val severity: Severity? get() = issues.maxOfOrNull { it.severity }
 
@@ -93,8 +97,26 @@ object PlantStatusRules {
     /** Below this a PV inverter's last power counts as "the sun was gone" when it stops answering. */
     private const val ASLEEP_BELOW_W = 50
 
-    fun evaluate(plant: Plant, snapshot: PlantSnapshot?, net: NetworkState, last: LastReadings = LastReadings()): PlantStatus {
+    /** Issues made from a device's own [DeviceProblem]s. */
+    val DEVICE_PROBLEMS = setOf(
+        IssueKind.DEVICE_FAULT, IssueKind.DEVICE_WARNING, IssueKind.MAINS_LOST, IssueKind.NO_AC_INPUT,
+        IssueKind.BACKUP_MODE, IssueKind.OFF_GRID_MODE,
+    )
+
+    /**
+     * [applyHidden]: leave out the problems a device's settings hide ([DeviceConfig.hiddenProblems], taken from [plant],
+     * which is newer than the snapshot's copy); the fault log passes false, it records them all.
+     */
+    fun evaluate(
+        plant: Plant,
+        snapshot: PlantSnapshot?,
+        net: NetworkState,
+        last: LastReadings = LastReadings(),
+        applyHidden: Boolean = true,
+    ): PlantStatus {
         val issues = mutableListOf<Issue>()
+        val hidden = mutableListOf<Issue>()
+        val hiddenTexts = plant.devices.associate { it.id to it.hiddenProblems.toSet() }
         val noNetwork = plant.devices.any { it.type.needsHost } && !net.localNetwork
         if (noNetwork) issues += Issue(IssueKind.NO_LOCAL_NETWORK)
 
@@ -105,12 +127,14 @@ object PlantStatusRules {
                 connectionIssue(device, s, net, last)?.let { issues += it }
             }
             for (p in s.reading?.problems.orEmpty()) {
-                issues += when (p.kind) {
+                val hide = applyHidden && p.text in hiddenTexts[device.id].orEmpty()
+                val issue = when (p.kind) {
                     DeviceProblem.Kind.FAULT -> Issue(IssueKind.DEVICE_FAULT, device, p.text)
                     DeviceProblem.Kind.WARNING -> Issue(IssueKind.DEVICE_WARNING, device, p.text)
                     DeviceProblem.Kind.MAINS_LOST -> Issue(if (plant.offGrid) IssueKind.NO_AC_INPUT else IssueKind.MAINS_LOST, device, p.text)
                     DeviceProblem.Kind.BACKUP_MODE -> Issue(if (plant.offGrid) IssueKind.OFF_GRID_MODE else IssueKind.BACKUP_MODE, device, p.text)
                 }
+                (if (hide) hidden else issues).add(issue)
             }
         }
         // A grid loss and the backup mode show once for the plant, not once per inverter that noticed them.
@@ -119,7 +143,7 @@ object PlantStatusRules {
         }
 
         if (!net.internet) issues += Issue(IssueKind.NO_INTERNET)
-        return PlantStatus(issues.distinct().sortedByDescending { it.severity })
+        return PlantStatus(issues.distinct().sortedByDescending { it.severity }, hidden.distinct())
     }
 
     private fun connectionIssue(device: DeviceConfig, s: DeviceStatus, net: NetworkState, last: LastReadings): Issue? {

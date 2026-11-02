@@ -173,6 +173,11 @@ class MainActivity : ComponentActivity() {
                                         onAddDevice = addDevice,
                                         onShowDevices = { route = tabRoute(plant.id, PlantTab.DEVICES) },
                                         modifier = modifier,
+                                        onHideProblem = { issue ->
+                                            val device = issue.device
+                                            val text = issue.detail
+                                            if (device != null && text != null) plantsVm.hideProblem(plant.id, device.id, text)
+                                        },
                                     )
                                     PlantTab.HISTORY -> {
                                         val vm: HistoryViewModel = viewModel(

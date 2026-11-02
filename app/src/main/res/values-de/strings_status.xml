@@ -69,4 +69,13 @@
     <string name="log_share">Teilen</string>
     <string name="log_answered">hat geantwortet</string>
     <string name="log_not_answered">keine Antwort</string>
+    <string name="status_hide">Ausblenden</string>
+    <string name="status_hide_title">Meldung ausblenden?</string>
+    <string name="status_hide_confirm">Ausblenden</string>
+    <string name="status_hide_cancel">Abbrechen</string>
+    <string name="status_hide_text">«%1$s» von %2$s wird in der Übersicht und im Kiosk nicht mehr angezeigt und löst keinen Alarm mehr aus. Im Fehlerprotokoll wird sie weiter festgehalten. Wieder anzeigen: Gerät bearbeiten.</string>
+    <plurals name="status_hidden_count">
+        <item quantity="one">%d ausgeblendete Meldung</item>
+        <item quantity="other">%d ausgeblendete Meldungen</item>
+    </plurals>
 </resources>

@@ -137,4 +137,7 @@
     <string name="forms_upload_confirm">Subir</string>
     <string name="forms_upload_done">%1$s subido a %2$s</string>
     <string name="forms_upload_failed">Error al subir: %1$s</string>
+    <string name="forms_hidden_problems">Mensajes ocultos</string>
+    <string name="forms_hint_hidden_problems">No se muestran en el panel ni en el modo quiosco; siguen registrándose en el registro de fallos.</string>
+    <string name="forms_show_again">Volver a mostrar</string>
 </resources>

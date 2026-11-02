@@ -69,4 +69,14 @@
     <string name="log_share">Partager</string>
     <string name="log_answered">a répondu</string>
     <string name="log_not_answered">pas de réponse</string>
+    <string name="status_hide">Masquer</string>
+    <string name="status_hide_title">Masquer ce message&#160;?</string>
+    <string name="status_hide_confirm">Masquer</string>
+    <string name="status_hide_cancel">Annuler</string>
+    <string name="status_hide_text">«&#160;%1$s&#160;» de %2$s ne s\'affichera plus sur le tableau de bord ni en mode kiosque et ne déclenchera plus d\'alarme. Il reste enregistré dans le journal des défauts. Pour l\'afficher à nouveau&#160;: modifiez l\'appareil.</string>
+    <plurals name="status_hidden_count">
+        <item quantity="one">%d message masqué</item>
+        <item quantity="many">%d messages masqués</item>
+        <item quantity="other">%d messages masqués</item>
+    </plurals>
 </resources>

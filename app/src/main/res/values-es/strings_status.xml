@@ -69,4 +69,14 @@
     <string name="log_share">Compartir</string>
     <string name="log_answered">respondió</string>
     <string name="log_not_answered">sin respuesta</string>
+    <string name="status_hide">Ocultar</string>
+    <string name="status_hide_title">¿Ocultar este mensaje?</string>
+    <string name="status_hide_confirm">Ocultar</string>
+    <string name="status_hide_cancel">Cancelar</string>
+    <string name="status_hide_text">«%1$s» de %2$s ya no se mostrará en el panel ni en el modo quiosco y no hará saltar ninguna alarma. Sigue registrándose en el registro de fallos. Para volver a mostrarlo: edita el dispositivo.</string>
+    <plurals name="status_hidden_count">
+        <item quantity="one">%d mensaje oculto</item>
+        <item quantity="many">%d mensajes ocultos</item>
+        <item quantity="other">%d mensajes ocultos</item>
+    </plurals>
 </resources>

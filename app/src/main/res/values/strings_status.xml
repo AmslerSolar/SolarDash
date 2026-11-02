@@ -69,4 +69,13 @@
     <string name="log_share">Share</string>
     <string name="log_answered">answered</string>
     <string name="log_not_answered">no answer</string>
+    <string name="status_hide">Hide</string>
+    <string name="status_hide_title">Hide this message?</string>
+    <string name="status_hide_confirm">Hide</string>
+    <string name="status_hide_cancel">Cancel</string>
+    <string name="status_hide_text">“%1$s” from %2$s will no longer show on the dashboard and the kiosk, and won\'t raise an alarm. It is still recorded in the fault log. To show it again, edit the device.</string>
+    <plurals name="status_hidden_count">
+        <item quantity="one">%d hidden message</item>
+        <item quantity="other">%d hidden messages</item>
+    </plurals>
 </resources>

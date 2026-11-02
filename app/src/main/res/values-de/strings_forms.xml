@@ -135,4 +135,7 @@
     <string name="forms_upload_confirm">Hochladen</string>
     <string name="forms_upload_done">%1$s an %2$s hochgeladen</string>
     <string name="forms_upload_failed">Hochladen fehlgeschlagen: %1$s</string>
+    <string name="forms_hidden_problems">Ausgeblendete Meldungen</string>
+    <string name="forms_hint_hidden_problems">Werden in der Übersicht und im Kiosk nicht angezeigt; im Fehlerprotokoll bleiben sie festgehalten.</string>
+    <string name="forms_show_again">Wieder anzeigen</string>
 </resources>

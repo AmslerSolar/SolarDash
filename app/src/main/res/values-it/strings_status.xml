@@ -69,4 +69,14 @@
     <string name="log_share">Condividi</string>
     <string name="log_answered">ha risposto</string>
     <string name="log_not_answered">nessuna risposta</string>
+    <string name="status_hide">Nascondi</string>
+    <string name="status_hide_title">Nascondere questo messaggio?</string>
+    <string name="status_hide_confirm">Nascondi</string>
+    <string name="status_hide_cancel">Annulla</string>
+    <string name="status_hide_text">«%1$s» di %2$s non verrà più mostrato nella panoramica e nel kiosk e non farà più scattare allarmi. Resta registrato nel registro guasti. Per mostrarlo di nuovo: modifica il dispositivo.</string>
+    <plurals name="status_hidden_count">
+        <item quantity="one">%d messaggio nascosto</item>
+        <item quantity="many">%d messaggi nascosti</item>
+        <item quantity="other">%d messaggi nascosti</item>
+    </plurals>
 </resources>
