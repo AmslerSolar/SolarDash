@@ -114,8 +114,8 @@ fun PlantScreen(
                 actions = {
                     if (tab == PlantTab.DASHBOARD) {
                         IconButton(onClick = onKiosk) { Icon(Icons.Outlined.Fullscreen, contentDescription = stringResource(R.string.screens_kiosk_mode)) }
+                        IconButton(onClick = { renaming = true }) { Icon(Icons.Outlined.Edit, contentDescription = stringResource(R.string.screens_rename_plant)) }
                     }
-                    IconButton(onClick = { renaming = true }) { Icon(Icons.Outlined.Edit, contentDescription = stringResource(R.string.screens_rename_plant)) }
                     if (tab == PlantTab.DEVICES) {
                         IconButton(onClick = onAddDevice) { Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.screens_add_device)) }
                     }
