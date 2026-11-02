@@ -71,16 +71,19 @@ class DetailTranslator(entries: Map<String, String>) {
             .mapNotNull { line -> line.split('\t').takeIf { it.size == 2 }?.let { it[0] to it[1].trim() } }
             .toMap()
 
+        /** Both braces escaped: Android's regex engine (ICU) rejects an unescaped `}`, the JVM's accepts it. */
+        private val PLACEHOLDER = Regex("""\{[xn]\}""")
+
         private fun templateRegex(en: String): Regex {
-            val parts = Regex("""\{x}|\{n}""").split(en).map(Regex::escape)
-            val holes = Regex("""\{x}|\{n}""").findAll(en).map { if (it.value == "{x}") "(.+?)" else "(\\d+)" }.toList()
+            val parts = PLACEHOLDER.split(en).map(Regex::escape)
+            val holes = PLACEHOLDER.findAll(en).map { if (it.value == "{x}") "(.+?)" else "(\\d+)" }.toList()
             return Regex(buildString { parts.forEachIndexed { i, p -> append(p); holes.getOrNull(i)?.let(::append) } })
         }
 
         /** Fills `{n}` and `{x}` in [template] in order; a translation with fewer placeholders drops the rest. */
         private fun fill(template: String, ns: List<String>, xs: List<String>): String {
             val n = ns.iterator(); val x = xs.iterator()
-            return Regex("""\{n}|\{x}""").replace(template) { m ->
+            return PLACEHOLDER.replace(template) { m ->
                 if (m.value == "{n}") (if (n.hasNext()) n.next() else "") else (if (x.hasNext()) x.next() else "")
             }
         }
