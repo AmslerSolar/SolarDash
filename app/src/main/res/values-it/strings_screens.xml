@@ -7,7 +7,8 @@
     <string name="screens_back">Indietro</string>
     <string name="screens_kiosk_mode">Modalità kiosk</string>
     <string name="screens_end_kiosk_mode">Esci dalla modalità kiosk</string>
-    <string name="screens_rename_plant">Rinomina impianto</string>
+    <string name="screens_edit_plant">Modifica impianto</string>
+    <string name="screens_off_grid_hint">Senza allacciamento alla rete, la mancanza di tensione di rete non viene segnalata come blackout e il funzionamento di emergenza è considerato normale.</string>
     <string name="screens_add_device">Aggiungi dispositivo</string>
     <string name="screens_edit_device">Modifica %1$s</string>
     <string name="screens_remove_device">Rimuovi %1$s</string>

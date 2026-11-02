@@ -7,7 +7,8 @@
     <string name="screens_back">Retour</string>
     <string name="screens_kiosk_mode">Mode kiosque</string>
     <string name="screens_end_kiosk_mode">Quitter le mode kiosque</string>
-    <string name="screens_rename_plant">Renommer l\'installation</string>
+    <string name="screens_edit_plant">Modifier l\'installation</string>
+    <string name="screens_off_grid_hint">Sans raccordement au réseau, l\'absence de tension réseau n\'est pas signalée comme une panne de courant et le mode secours compte comme fonctionnement normal.</string>
     <string name="screens_add_device">Ajouter un appareil</string>
     <string name="screens_edit_device">Modifier %1$s</string>
     <string name="screens_remove_device">Supprimer %1$s</string>

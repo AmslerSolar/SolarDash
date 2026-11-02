@@ -7,7 +7,8 @@
     <string name="screens_back">Back</string>
     <string name="screens_kiosk_mode">Kiosk mode</string>
     <string name="screens_end_kiosk_mode">End kiosk mode</string>
-    <string name="screens_rename_plant">Rename plant</string>
+    <string name="screens_edit_plant">Edit plant</string>
+    <string name="screens_off_grid_hint">Without a grid connection, missing grid voltage is not reported as a power cut, and back-up mode counts as normal operation.</string>
     <string name="screens_add_device">Add device</string>
     <string name="screens_edit_device">Edit %1$s</string>
     <string name="screens_remove_device">Remove %1$s</string>

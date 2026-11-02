@@ -7,7 +7,8 @@
     <string name="screens_back">Atrás</string>
     <string name="screens_kiosk_mode">Modo quiosco</string>
     <string name="screens_end_kiosk_mode">Salir del modo quiosco</string>
-    <string name="screens_rename_plant">Renombrar instalación</string>
+    <string name="screens_edit_plant">Editar instalación</string>
+    <string name="screens_off_grid_hint">Sin conexión a la red, la falta de tensión de red no se notifica como corte de corriente y el modo de respaldo se considera funcionamiento normal.</string>
     <string name="screens_add_device">Añadir dispositivo</string>
     <string name="screens_edit_device">Editar %1$s</string>
     <string name="screens_remove_device">Eliminar %1$s</string>

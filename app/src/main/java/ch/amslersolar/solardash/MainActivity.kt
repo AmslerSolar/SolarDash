@@ -28,6 +28,7 @@ import ch.amslersolar.solardash.data.PlantRepository
 import ch.amslersolar.solardash.data.RegisterSweeps
 import ch.amslersolar.solardash.ui.AddDeviceScreen
 import ch.amslersolar.solardash.ui.DeviceScreen
+import ch.amslersolar.solardash.ui.PlantSettingsScreen
 import ch.amslersolar.solardash.ui.DashboardTab
 import ch.amslersolar.solardash.ui.DevicesTab
 import ch.amslersolar.solardash.ui.LivePlants
@@ -43,7 +44,7 @@ import ch.amslersolar.solardash.ui.theme.SolarTheme
 
 /**
  * Routes: "plants"; a plant's tabs "plant/<id>" (dashboard), "plant/<id>/history", "plant/<id>/devices";
- * and below the devices tab "plant/<id>/add", "plant/<id>/device/<deviceId>".
+ * below the devices tab "plant/<id>/add", "plant/<id>/device/<deviceId>"; below the dashboard "plant/<id>/settings".
  */
 private const val ROUTE_PLANTS = "plants"
 
@@ -143,6 +144,12 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         }
+                        "settings" -> PlantSettingsScreen(
+                            plant = plant,
+                            onRename = { plantsVm.renamePlant(plant.id, it) },
+                            onOffGrid = { plantsVm.setOffGrid(plant.id, it) },
+                            onBack = back,
+                        )
                         "device" -> {
                             val device = plant.devices.find { it.id == parts.getOrNull(3) }
                             if (device == null) {
@@ -165,9 +172,8 @@ class MainActivity : ComponentActivity() {
                                 onTab = { route = tabRoute(plant.id, it) },
                                 onBack = back,
                                 onAddDevice = addDevice,
-                                onRename = { plantsVm.renamePlant(plant.id, it) },
+                                onEdit = { route = "plant/${plant.id}/settings" },
                                 onKiosk = { Kiosk.start(this@MainActivity, plant.id) },
-                                onOffGrid = { plantsVm.setOffGrid(plant.id, it) },
                             ) { modifier ->
                                 when (tab) {
                                     PlantTab.DASHBOARD -> DashboardTab(

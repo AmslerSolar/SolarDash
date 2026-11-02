@@ -10,10 +10,6 @@ import ch.amslersolar.solardash.ui.status.GuideActivity
 import ch.amslersolar.solardash.model.Guide
 import ch.amslersolar.solardash.model.Issue
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.Checkbox
-import androidx.compose.material.icons.filled.MoreVert
 import ch.amslersolar.solardash.i18n.DetailTexts
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
@@ -95,15 +91,10 @@ fun PlantScreen(
     onTab: (PlantTab) -> Unit,
     onBack: () -> Unit,
     onAddDevice: () -> Unit,
-    onRename: (String) -> Unit,
+    onEdit: () -> Unit,
     onKiosk: () -> Unit,
-    onOffGrid: (Boolean) -> Unit,
     content: @Composable (Modifier) -> Unit,
 ) {
-    var renaming by remember { mutableStateOf(false) }
-    var menu by remember { mutableStateOf(false) }
-    val context = LocalContext.current
-    if (renaming) RenameDialog(stringResource(R.string.screens_rename_plant), plant.name, onRename = { onRename(it); renaming = false }, onDismiss = { renaming = false })
     Scaffold(
         topBar = {
             TopAppBar(
@@ -114,20 +105,10 @@ fun PlantScreen(
                 actions = {
                     if (tab == PlantTab.DASHBOARD) {
                         IconButton(onClick = onKiosk) { Icon(Icons.Outlined.Fullscreen, contentDescription = stringResource(R.string.screens_kiosk_mode)) }
-                        IconButton(onClick = { renaming = true }) { Icon(Icons.Outlined.Edit, contentDescription = stringResource(R.string.screens_rename_plant)) }
+                        IconButton(onClick = onEdit) { Icon(Icons.Outlined.Edit, contentDescription = stringResource(R.string.screens_edit_plant)) }
                     }
                     if (tab == PlantTab.DEVICES) {
                         IconButton(onClick = onAddDevice) { Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.screens_add_device)) }
-                    }
-                    Box {
-                        IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, contentDescription = null) }
-                        DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.status_off_grid)) },
-                                leadingIcon = { Checkbox(checked = plant.offGrid, onCheckedChange = null) },
-                                onClick = { menu = false; onOffGrid(!plant.offGrid) },
-                            )
-                        }
                     }
                 },
             )

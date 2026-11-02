@@ -7,7 +7,8 @@
     <string name="screens_back">Zurück</string>
     <string name="screens_kiosk_mode">Kioskmodus</string>
     <string name="screens_end_kiosk_mode">Kioskmodus beenden</string>
-    <string name="screens_rename_plant">Anlage umbenennen</string>
+    <string name="screens_edit_plant">Anlage bearbeiten</string>
+    <string name="screens_off_grid_hint">Ohne Netzanschluss wird fehlende Netzspannung nicht als Stromausfall gemeldet, und der Notstrombetrieb gilt als normaler Betrieb.</string>
     <string name="screens_add_device">Gerät hinzufügen</string>
     <string name="screens_edit_device">%1$s bearbeiten</string>
     <string name="screens_remove_device">%1$s entfernen</string>
