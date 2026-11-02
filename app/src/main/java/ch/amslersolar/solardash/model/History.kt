@@ -150,3 +150,25 @@ data class HistoryRange(val period: HistoryPeriod, val anchor: LocalDate) {
         HistoryPeriod.LIFETIME -> "All time"
     }
 }
+
+/**
+ * What history accepts: no plant makes more than [MAX_POWER_W] or [MAX_DAY_KWH] a day, and a 32-bit register's
+ * "not available" pattern (all ones, or its signed extremes, at any decimal scale) is never a reading. Applied
+ * when recording, and once to what earlier versions stored (history database version 7).
+ */
+object Plausible {
+    const val MAX_POWER_W = 10_000_000
+    const val MAX_DAY_KWH = 1_000_000.0
+    private val PATTERNS = listOf(4294967295.0, 2147483647.0, -2147483648.0)
+
+    fun power(w: Int?): Int? = w?.takeIf { kotlin.math.abs(it) <= MAX_POWER_W }
+
+    fun dayEnergy(kwh: Double?): Double? = kwh?.takeIf { it.isFinite() && kotlin.math.abs(it) <= MAX_DAY_KWH }
+
+    fun day(e: EnergyTotals) = EnergyTotals(dayEnergy(e.pvKwh), dayEnergy(e.exportKwh), dayEnergy(e.importKwh), dayEnergy(e.loadKwh))
+
+    /** A register's "not available" pattern after scaling (4294967295, 429496729.5, 42949672.95 …). */
+    fun notAvailable(v: Double): Boolean = PATTERNS.any { p ->
+        (0..3).any { k -> kotlin.math.abs(v - p / Math.pow(10.0, k.toDouble())) < 1e-9 * kotlin.math.abs(p) / Math.pow(10.0, k.toDouble()) }
+    }
+}

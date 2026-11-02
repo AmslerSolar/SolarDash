@@ -16,6 +16,7 @@ import ch.amslersolar.solardash.model.HistoryMath
 import ch.amslersolar.solardash.model.EventStore
 import ch.amslersolar.solardash.model.LoggedEvent
 import ch.amslersolar.solardash.model.PlantSnapshot
+import ch.amslersolar.solardash.model.Plausible
 import ch.amslersolar.solardash.model.Sample
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +38,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
 
-private class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, "history.db", null, 6) {
+private class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, "history.db", null, 7) {
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
             """CREATE TABLE samples (
@@ -68,6 +69,41 @@ private class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, "his
             db.execSQL("ALTER TABLE events ADD COLUMN end_details TEXT")
         }
         if (oldVersion < 6) createDeviceDailyTable(db)
+        if (oldVersion < 7) removeImplausible(db)
+    }
+
+    /**
+     * Readings no plant produces, stored before recording checked them (see Plausible): a GoodWe ET's "not
+     * available" (all ones) read as 4294967295 W of solar and 429496729.5 kWh today. Plant samples and day totals
+     * lose such values; device channels lose the "not available" patterns and power channels above the limit.
+     */
+    private fun removeImplausible(db: SQLiteDatabase) {
+        for (c in listOf("pv", "load", "battery", "grid")) {
+            db.execSQL("UPDATE samples SET $c = NULL WHERE ABS($c) > ${Plausible.MAX_POWER_W}")
+        }
+        for (t in listOf("daily", "device_daily")) for (c in listOf("pv", "load", "export", "import")) {
+            db.execSQL("UPDATE $t SET $c = NULL WHERE ABS($c) > ${Plausible.MAX_DAY_KWH}")
+        }
+        val powerIds = db.rawQuery("SELECT id FROM channels WHERE key LIKE 'r:%power'", null).use { c ->
+            buildSet { while (c.moveToNext()) add(c.getLong(0).toString()) }
+        }
+        val fixed = mutableListOf<Triple<String, Long, ByteArray>>()
+        db.rawQuery("SELECT device_id, ts, data FROM device_samples", null).use { c ->
+            while (c.moveToNext()) {
+                val values = Json.parseToJsonElement(InflaterInputStream(c.getBlob(2).inputStream()).use { it.readBytes().decodeToString() }).jsonObject
+                val kept = values.filter { (id, v) ->
+                    val d = v.jsonPrimitive.doubleOrNull ?: return@filter true
+                    !Plausible.notAvailable(d) && !(id in powerIds && kotlin.math.abs(d) > Plausible.MAX_POWER_W)
+                }
+                if (kept.size == values.size) continue
+                val out = ByteArrayOutputStream()
+                DeflaterOutputStream(out).use { it.write(kotlinx.serialization.json.JsonObject(kept).toString().toByteArray()) }
+                fixed += Triple(c.getString(0), c.getLong(1), out.toByteArray())
+            }
+        }
+        for ((device, ts, data) in fixed) {
+            db.update("device_samples", ContentValues().apply { put("data", data) }, "device_id = ? AND ts = ?", arrayOf(device, ts.toString()))
+        }
     }
 
     /**
@@ -150,14 +186,14 @@ class HistoryRepository(context: Context) : EventStore {
         if (snapshot.devices.all { it.reading == null }) return
         val sample = Sample(
             epochSecond = snapshot.readAt.epochSecond,
-            pvW = snapshot.pvPowerW,
-            loadW = snapshot.loadPowerW,
-            batteryW = snapshot.battery?.powerW,
-            gridW = snapshot.gridPowerW,
+            pvW = Plausible.power(snapshot.pvPowerW),
+            loadW = Plausible.power(snapshot.loadPowerW),
+            batteryW = Plausible.power(snapshot.battery?.powerW),
+            gridW = Plausible.power(snapshot.gridPowerW),
             socPercent = snapshot.battery?.socPercent,
         )
         val time = snapshot.readAt.atZone(zone)
-        val counters = if (HistoryMath.countersUsable(time.toLocalTime())) snapshot.today else null
+        val counters = if (HistoryMath.countersUsable(time.toLocalTime())) Plausible.day(snapshot.today) else null
         write {
             val prev = lastSampleBefore(it, plantId, sample.epochSecond)
             val day = time.toLocalDate()
@@ -183,6 +219,7 @@ class HistoryRepository(context: Context) : EventStore {
             if (last != null && ts - last < DEVICE_SAMPLE_INTERVAL_S - 10) continue
             val values = buildJsonObject {
                 for (ch in Channels.extract(reading)) {
+                    if (Plausible.notAvailable(ch.value) || ch.key.startsWith("r:") && ch.key.endsWith("power") && kotlin.math.abs(ch.value) > Plausible.MAX_POWER_W) continue
                     val id = channelId(db, deviceId, ch)
                     put(id.toString(), Math.round(ch.value * 1e6) / 1e6)
                 }

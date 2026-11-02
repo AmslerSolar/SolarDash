@@ -216,6 +216,14 @@ class Inverters1GoldenTest {
         assertEquals(emptyList<ch.amslersolar.solardash.model.DeviceProblem>(), spec("goodwe-et", real, 247).read().problems)
     }
 
+    /** As a real ET answered at night: all ones for PV total power and today's yield ("not available"). */
+    @Test
+    fun goodWeEtNotAvailableIsNoValue() = runBlocking {
+        val r = spec("goodwe-et", goodWe().s32(35301, 0xFFFFFFFFL).s32(35193, 0xFFFFFFFFL), 247).read()
+        org.junit.Assert.assertTrue("PV power ${r.pvPowerW} W", (r.pvPowerW ?: 0) < 100_000)
+        org.junit.Assert.assertNull(r.today.pvKwh)
+    }
+
     @Test
     fun goodWeEtLowErrorBits() {
         goodWeSame("utility loss + error bit 2") { goodWe().u16(35190, 0x0204) }

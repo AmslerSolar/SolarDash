@@ -414,6 +414,9 @@ class SpecReader(
             }
             val v: Any = decode(w, p.type, p.wordOrder ?: order, p.byteOrder ?: byteOrder, p.chars) ?: continue
             if (v is Double && (v in p.invalid || !v.isFinite())) continue // NaN / ∞ floats: not available
+            // A whole 32-bit register at its extreme is "not available" (GoodWe, SunSpec …), also where the file lists
+            // no invalid values: 4294967295 W or 429496729.5 kWh is never a reading, and it would wreck the history.
+            if (v is Double && p.bits == null && v in (NOT_AVAILABLE_32[p.type] ?: emptySet())) continue
             if (v is String) {
                 out[p.key] = SpecValue(p, null, v)
                 continue
@@ -506,4 +509,10 @@ private val NOT_HERE = 1..3
 private val NO_ANSWER = 10..11
 
 /** Raised when the device answers but none of its registers fit its spec. */
+/** Raw values of a whole 32-bit register that mean "not available" whatever the file says (see [SpecReader.values]). */
+private val NOT_AVAILABLE_32: Map<String, Set<Double>> = mapOf(
+    "u32" to setOf(4294967295.0),
+    "s32" to setOf(2147483647.0, -2147483648.0),
+)
+
 class SpecMismatchException(message: String) : IOException(message)
