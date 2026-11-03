@@ -3,6 +3,7 @@
 
 package ch.amslersolar.solardash.discovery
 
+import ch.amslersolar.solardash.driver.abb.AbbCddFixtures
 import ch.amslersolar.solardash.driver.abb.AuroraProtocol
 import ch.amslersolar.solardash.driver.modbus.ModbusException
 import ch.amslersolar.solardash.model.DeviceInfo
@@ -92,7 +93,7 @@ class DeviceScannerTest {
         assertEquals("Home · LG", found.single { it.host == "192.168.0.33" }.alreadyIn)
         assertEquals(DeviceType.KOSTAL_PLENTICORE, found.single { it.host == "192.168.0.40" }.type)
         val last = events.filterIsInstance<ScanEvent.Progress>().filter { it.phase == ScanPhase.PORTS }.maxBy { it.done }
-        val ports = DeviceScanner.EXTENDED_PORTS.size
+        val ports = DeviceScanner.EXTENDED_PORTS.size + DeviceScanner.WEB_PORTS.size
         assertEquals(2 * ports, last.total)
         assertEquals(2 * ports, last.done)
     }
@@ -141,7 +142,7 @@ class DeviceScannerTest {
     }
 
     @Test
-    fun normalSearchTriesOnly502AndListsEveryOpenPort() = runBlocking {
+    fun normalSearchTries502AndTheWebPortAndListsEveryOpenModbusPort() = runBlocking {
         val tried = mutableListOf<Int>()
         val scanner = DeviceScanner(
             portOpen = { h, p -> synchronized(tried) { tried += p }; h != "192.168.0.9" },
@@ -149,7 +150,7 @@ class DeviceScannerTest {
             specIdentify = { h, p, _, _ -> if (h == "192.168.0.2") FoundDevice(h, p, DeviceType.MODBUS_SPEC_METER, 1, "Carlo Gavazzi EM24", specId = "carlo-gavazzi/em24") else null },
         )
         val events = scanner.scan(listOf("192.168.0.1", "192.168.0.2", "192.168.0.3", "192.168.0.9"), emptyMap()).toList()
-        assertEquals(setOf(502), tried.toSet())
+        assertEquals(setOf(502, 80), tried.toSet()) // 80: only listed when recognised, see below
         // Each open port is listed at once, then identified.
         val first = events.filterIsInstance<ScanEvent.Found>().take(3).map { it.device }
         assertTrue(first.all { it.identifying })
@@ -407,6 +408,69 @@ class DeviceScannerTest {
             assertTrue(DeviceScanner.auroraRollCall("127.0.0.1", it.localPort).isEmpty())
             assertEquals(DeviceScanner.AURORA_MAX_SILENT, asked.size)
             assertTrue(System.currentTimeMillis() - t0 < 5_000)
+        }
+    }
+
+    @Test
+    fun aCddOnTheWebPortIsListedAndOtherWebServersAreNot() = runBlocking {
+        val asked = mutableListOf<String>()
+        val scanner = DeviceScanner(
+            portOpen = { _, p -> p == 80 },
+            identify = { _, _, _, _ -> error("no Modbus port is open") },
+            web = { h, p -> synchronized(asked) { asked += h }; if (h == "192.168.178.8") FoundDevice(h, p, DeviceType.ABB_CDD, 1, "ABB CDD, 16 microinverters", "328100") else null },
+        )
+        val events = scanner.scan(listOf("192.168.178.1", "192.168.178.8", "192.168.178.36"), emptyMap()).toList()
+        assertEquals(setOf("192.168.178.1", "192.168.178.8", "192.168.178.36"), asked.toSet())
+        val found = latest(events).single() // the router and the other web page aren't listed
+        assertEquals(DeviceType.ABB_CDD, found.type)
+        assertEquals("192.168.178.8:80", found.key)
+        assertFalse(found.identifying)
+        val last = events.filterIsInstance<ScanEvent.Progress>().last()
+        assertEquals(ScanPhase.IDENTIFY, last.phase)
+        assertEquals(3, last.total)
+        assertEquals(last.total, last.done)
+    }
+
+    @Test
+    fun aConfiguredCddIsNotAskedAgain() = runBlocking {
+        val scanner = DeviceScanner(
+            portOpen = { _, p -> p == 80 },
+            web = { _, _ -> error("a configured device must not be asked") },
+        )
+        val events = scanner.scan(listOf("192.168.178.8"), mapOf("192.168.178.8:80" to "ud60 · CDD")).toList()
+        assertTrue(latest(events).isEmpty())
+    }
+
+    /** A minimal web server answering [paths] (path → body) and 404 for anything else, one request per connection. */
+    private fun webServer(paths: Map<String, String>): ServerSocket = ServerSocket(0).also { server ->
+        thread(isDaemon = true) {
+            while (!server.isClosed) {
+                val s = try { server.accept() } catch (_: IOException) { break }
+                s.use {
+                    val path = it.getInputStream().bufferedReader().readLine().orEmpty().split(' ').getOrElse(1) { "/" }
+                    val body = paths[path]
+                    val head = if (body != null) "HTTP/1.0 200 OK" else "HTTP/1.0 404 Not Found"
+                    val bytes = (body ?: "").toByteArray()
+                    it.getOutputStream().write("$head\r\nContent-Length: ${bytes.size}\r\nConnection: close\r\n\r\n".toByteArray() + bytes)
+                }
+            }
+        }
+    }
+
+    @Test
+    fun identifyWebRecognisesACddByItsSummary() = runBlocking {
+        val cdd = webServer(mapOf("/summary.xml" to AbbCddFixtures.SUMMARY))
+        val router = webServer(mapOf("/" to "<html>FRITZ!Box</html>"))
+        val other = webServer(mapOf("/summary.xml" to "<html><body>Summary</body></html>"))
+        try {
+            val found = DeviceScanner.identifyWeb("127.0.0.1", cdd.localPort)
+            assertEquals(DeviceType.ABB_CDD, found?.type)
+            assertEquals("300001", found?.serial)
+            assertEquals("ABB CDD, 5 microinverters", found?.model)
+            assertNull(DeviceScanner.identifyWeb("127.0.0.1", router.localPort))
+            assertNull(DeviceScanner.identifyWeb("127.0.0.1", other.localPort))
+        } finally {
+            listOf(cdd, router, other).forEach { it.close() }
         }
     }
 }

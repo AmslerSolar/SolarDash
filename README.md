@@ -19,7 +19,7 @@ shows plant totals plus per-device detail.
 | Power-One / ABB / FIMER TRIO, PVI, UNO (Aurora protocol) | Inverter (PV only) | ABB's Aurora protocol over RS485 via a transparent TCP gateway (port 8899), address = RS485 address | Implemented; checked on a TRIO-27.6-TL-OUTD-400 and a second three-phase Aurora inverter on one bus |
 | FENECON FEMS / OpenEMS | Whole system | Modbus TCP 502, unit id 1 (pre-installed read access) | Implemented, **not yet tested on hardware** |
 | Enphase IQ Gateway / Envoy (software 7+) | Microinverters + CTs (+ battery via live data) | Local HTTPS 443 with owner token | Implemented, **not yet tested on hardware** |
-| ABB CDD with ABB MICRO-0.3 microinverters | Microinverters (plant total + each unit, alarm log) | Local HTTP 80, no login (`/plant.xml`, `/alarm.xml`) | Implemented; checked on a real CDD with 16 microinverters |
+| ABB CDD with ABB MICRO-0.3 microinverters | Microinverters (plant total + each unit, alarm log) | Local HTTP 80, no login (`/plant.xml`, `/alarm.xml`); found by the network search (`/summary.xml` on port 80) | Implemented; checked on a real CDD with 16 microinverters |
 | KACO blueplanet 100/125 NX3 | Inverter | SunSpec Modbus TCP 502 | Implemented, **not yet tested on hardware** |
 | FIMER / ABB via VSN300 / VSN700 | Inverter | SunSpec Modbus TCP 502, unit id 247 or Aurora address | Implemented, **not yet tested on hardware** |
 | APsystems microinverters via ECU-R / ECU-C | Inverter (one device per microinverter) | SunSpec Modbus TCP 502 | Implemented, **not yet tested on hardware** |
@@ -298,7 +298,8 @@ driver/meter/     Energy meters (Gavazzi, Eastron, inepro, ABB, Janitza, Schneid
 driver/consumer/  Heat pumps, heating rods, wallboxes (read only)
 driver/fenecon/, driver/enphase/, driver/kaco/, driver/fimer/, driver/apsystems/, driver/schneider/,
 driver/ingeteam/, driver/cps/, driver/riello/   further inverters and systems
-discovery/        Network search for inverters: port scan and mDNS (add-device screen, moved devices)
+discovery/        Network search for inverters: port scan and mDNS (add-device screen, moved devices); port 80 is
+                  asked for an ABB CDD's /summary.xml and listed only when it is one
 driver/sunspec/   SunSpec model discovery
 driver/demo/      Simulated inverter, battery and meter
 data/             Saved plants (DataStore), history (SQLite)

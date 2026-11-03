@@ -14,6 +14,7 @@ import ch.amslersolar.solardash.driver.spec.SpecLibrary
 import ch.amslersolar.solardash.net.LocalNetworks
 import ch.amslersolar.solardash.driver.net.DeviceNetwork
 import android.content.Context
+import ch.amslersolar.solardash.driver.abb.AbbCddDriver
 import ch.amslersolar.solardash.driver.abb.AuroraDriver
 import ch.amslersolar.solardash.driver.abb.TcpAuroraTransport
 import ch.amslersolar.solardash.driver.apsystems.ApsystemsEcuDriver
@@ -118,6 +119,8 @@ class DeviceScanner(
         { _, _, _, _ -> emptyList() },
     /** On an RS485 gateway's port: the inverters answering ABB's Aurora protocol, by address (see [auroraRollCall]). */
     private val aurora: suspend (host: String, port: Int, onTry: () -> Unit) -> List<FoundDevice> = { _, _, _ -> emptyList() },
+    /** A device with a local web API on an open [WEB_PORTS] port (null: not one of ours; see [identifyWeb]). */
+    private val web: suspend (host: String, port: Int) -> FoundDevice? = { _, _ -> null },
 ) {
     /**
      * Two phases. First every address of [hosts] is tried on Modbus TCP port 502, then, with [extended], on the other
@@ -128,6 +131,8 @@ class DeviceScanner(
      * ids configured there), whose other units are asked too, with polling paused; the hub itself isn't probed.
      * On an RS485 gateway's port the Aurora addresses are asked first: when inverters answer there, the bus speaks
      * Aurora, they're listed (the first on the host:port, the others on their address) and Modbus isn't tried.
+     * The [WEB_PORTS] are tried on every address too (also in the normal search); an open one is listed only when
+     * [web] recognises the device, since most hosts have a web page.
      */
     fun scan(
         hosts: List<String>,
@@ -136,12 +141,13 @@ class DeviceScanner(
         hubs: Map<String, Pair<String, Set<Int>>> = emptyMap(),
     ): Flow<ScanEvent> = channelFlow {
         val ports = if (extended) EXTENDED_PORTS else listOf(MODBUS_PORT)
-        val targets = ports.flatMap { p -> hosts.map { h -> h to p } } // port by port: 502 everywhere first
+        val targets = (ports + WEB_PORTS).flatMap { p -> hosts.map { h -> h to p } } // port by port: 502 everywhere first
         val done = AtomicInteger()
         send(ScanEvent.Progress(0, targets.size))
         val connects = Semaphore(PARALLEL_CONNECTS)
         val open = ConcurrentHashMap<String, Triple<String, Int, List<Pair<DeviceType, Int>>?>>() // key → host, port, mDNS candidates
         val viaMdns = ConcurrentHashMap.newKeySet<String>()
+        val webOpen = ConcurrentHashMap.newKeySet<Pair<String, Int>>()
         suspend fun opened(host: String, port: Int, mdnsCandidates: List<Pair<DeviceType, Int>>?) {
             val key = "$host:$port"
             if (open.putIfAbsent(key, Triple(host, port, mdnsCandidates)) != null) return
@@ -168,13 +174,22 @@ class DeviceScanner(
                     }
                 }
             }
+            for (port in WEB_PORTS) {
+                coroutineScope {
+                    for (host in hosts) launch {
+                        val key = "$host:$port"
+                        if (!known.containsKey(key) && connects.withPermit { portOpen(host, port) }) webOpen += host to port
+                        send(ScanEvent.Progress(done.incrementAndGet(), targets.size))
+                    }
+                }
+            }
         }
         // Identify what answered (configured devices aren't asked: a second client could disturb their poll).
         val toProbe = open.filterKeys { it !in known }.values.sortedWith(compareBy({ it.second }, { it.first }))
         val configuredHubs = hubs.filterKeys { open.containsKey(it) }
         val probes = Semaphore(PARALLEL_PROBES)
         val identified = AtomicInteger()
-        val total = toProbe.size + configuredHubs.size
+        val total = toProbe.size + configuredHubs.size + webOpen.size
         send(ScanEvent.Progress(0, total, ScanPhase.IDENTIFY))
         suspend fun listBehind(host: String, port: Int, hubSpecId: String, skip: Set<Int>) {
             val devices = runCatching { behind(host, port, hubSpecId, skip) }.getOrElse { if (it is CancellationException) throw it; emptyList() }
@@ -186,6 +201,13 @@ class DeviceScanner(
                 // It's being polled, and an energy manager may take one client only: polling pauses (and closes its
                 // connections) meanwhile, as for a register sweep.
                 probes.withPermit { TrafficPause.during { listBehind(host, port, hub.first, hub.second) } }
+                send(ScanEvent.Progress(identified.incrementAndGet(), total, ScanPhase.IDENTIFY))
+            }
+            for ((host, port) in webOpen) launch {
+                val device = probes.withPermit {
+                    withTimeoutOrNull(WEB_TIMEOUT_MS) { runCatching { web(host, port) }.getOrElse { if (it is CancellationException) throw it; null } }
+                }
+                if (device != null) send(ScanEvent.Found(device.copy(identifying = false)))
                 send(ScanEvent.Progress(identified.incrementAndGet(), total, ScanPhase.IDENTIFY))
             }
             for ((host, port, mdnsCandidates) in toProbe) launch {
@@ -334,6 +356,10 @@ class DeviceScanner(
         data class Hub(val units: IntRange, val probeRegister: Int, val probeCount: Int, val inputRegisters: Boolean = true)
 
         const val MDNS_WINDOW_MS = 8_000L
+        /** Web ports asked in every search; only recognised devices are listed (see [identifyWeb]). */
+        val WEB_PORTS = listOf(80)
+        /** A web server that takes longer than this for one small file isn't one of ours. */
+        private const val WEB_TIMEOUT_MS = 4_000L
         const val MODBUS_PORT = 502
 
         /** The extended search: 502, the named drivers' ports, RS485 gateways (8899: Elfin / USR Wi-Fi, 4196: Waveshare Ethernet) and the ModbusSpec files' ports. */
@@ -416,12 +442,12 @@ class DeviceScanner(
         ): Flow<ScanEvent> {
             if (range.isNotBlank()) {
                 val hosts = parseRange(range) ?: return channelFlow { send(ScanEvent.Failed("Can't read the network to search: $range")) }
-                return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs, specCount = ::specFilesToTry, specUnits = ::specUnitIds, rollCall = ::rollCall, behind = ::devicesBehind, aurora = ::auroraRollCall).scan(hosts, known, extended, hubs)
+                return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs, specCount = ::specFilesToTry, specUnits = ::specUnitIds, rollCall = ::rollCall, behind = ::devicesBehind, aurora = ::auroraRollCall, web = ::identifyWeb).scan(hosts, known, extended, hubs)
             }
             val (own, prefix) = localNetwork(context) ?: return channelFlow {
                 send(ScanEvent.Failed("Not connected to a local network. Connect to the plant's Wi-Fi and try again."))
             }
-            return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs, specCount = ::specFilesToTry, specUnits = ::specUnitIds, rollCall = ::rollCall, behind = ::devicesBehind, aurora = ::auroraRollCall).scan(hosts(own, prefix), known, extended, hubs)
+            return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs, specCount = ::specFilesToTry, specUnits = ::specUnitIds, rollCall = ::rollCall, behind = ::devicesBehind, aurora = ::auroraRollCall, web = ::identifyWeb).scan(hosts(own, prefix), known, extended, hubs)
         }
 
         private fun tcpOpen(host: String, port: Int): Boolean = try {
@@ -605,8 +631,22 @@ class DeviceScanner(
                 found
             }
 
+        /**
+         * The devices with a local web API the search recognises: an ABB CDD answers `/summary.xml` with its `<cdd>`
+         * element (a read-only GET; any other web server answers 404 or a page without it).
+         */
+        suspend fun identifyWeb(host: String, port: Int): FoundDevice? = try {
+            val info = AbbCddDriver(host, port).identify()
+            FoundDevice(host, port, DeviceType.ABB_CDD, DeviceType.ABB_CDD.defaultUnitId, info.model, info.serial)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (_: Exception) {
+            null
+        }
+
         private suspend fun identifyWith(type: DeviceType, host: String, port: Int, unitId: Int): DeviceInfo =
             if (type == DeviceType.AURORA) TcpAuroraTransport(host, port).use { AuroraDriver(it, unitId).identify() }
+            else if (type == DeviceType.ABB_CDD) AbbCddDriver(host, port).identify()
             else ModbusTcpClient(host, port, PROBE_TIMEOUT_MS).use { client ->
                 when (type) {
                     DeviceType.FRONIUS -> FroniusGen24Driver(client, unitId).identify()
