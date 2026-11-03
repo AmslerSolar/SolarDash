@@ -142,7 +142,7 @@ class DeviceScannerTest {
     }
 
     @Test
-    fun normalSearchTries502AndTheWebPortAndListsEveryOpenModbusPort() = runBlocking {
+    fun normalSearchTries502AndTheWebPortsAndListsEveryOpenModbusPort() = runBlocking {
         val tried = mutableListOf<Int>()
         val scanner = DeviceScanner(
             portOpen = { h, p -> synchronized(tried) { tried += p }; h != "192.168.0.9" },
@@ -150,7 +150,7 @@ class DeviceScannerTest {
             specIdentify = { h, p, _, _ -> if (h == "192.168.0.2") FoundDevice(h, p, DeviceType.MODBUS_SPEC_METER, 1, "Carlo Gavazzi EM24", specId = "carlo-gavazzi/em24") else null },
         )
         val events = scanner.scan(listOf("192.168.0.1", "192.168.0.2", "192.168.0.3", "192.168.0.9"), emptyMap()).toList()
-        assertEquals(setOf(502, 80), tried.toSet()) // 80: only listed when recognised, see below
+        assertEquals(setOf(502, 80, 443), tried.toSet()) // 80, 443: only listed when recognised, see below
         // Each open port is listed at once, then identified.
         val first = events.filterIsInstance<ScanEvent.Found>().take(3).map { it.device }
         assertTrue(first.all { it.identifying })
@@ -472,5 +472,36 @@ class DeviceScannerTest {
         } finally {
             listOf(cdd, router, other).forEach { it.close() }
         }
+    }
+
+    @Test
+    fun lgEssIsRecognisedByItsSharedCertificate() {
+        // The subject of the certificate on a real Home 10 (192.168.0.33:443), as Java writes it.
+        val lg = "1.2.840.113549.1.9.1=#16126e657276752e657373406c67652e636f6d,CN=localhost,OU=ESS,O=LGE,L=Incheon,ST=Incheon,C=KR"
+        assertTrue(DeviceScanner.isLgEssSubject(lg))
+        assertFalse(DeviceScanner.isLgEssSubject("CN=fritz.box,O=AVM"))
+        assertFalse(DeviceScanner.isLgEssSubject("CN=localhost,O=LGE"))
+        assertFalse(DeviceScanner.isLgEssCertificate(null))
+    }
+
+    @Test
+    fun theMacIsReadFromAnEui64Address() {
+        // The IPv6 address a real LG ESS announces; its MAC (from the PC's ARP table) is d8:4f:b8:02:0d:6b.
+        val lg = java.net.InetAddress.getByName("fdaa:bbcc:ddee:0:da4f:b8ff:fe02:d6b").address
+        assertEquals("d8:4f:b8:02:0d:6b", MdnsBrowser.macFromEui64(lg))
+        assertNull(MdnsBrowser.macFromEui64(java.net.InetAddress.getByName("fdaa:bbcc:ddee:0:1c3a:9e21:5b7f:42d0").address))
+        assertNull(MdnsBrowser.macFromEui64(byteArrayOf(192.toByte(), 168.toByte(), 0, 33)))
+    }
+
+    @Test
+    fun anLgEssFoundOnItsWebPortGetsItsMacAsPassword() = runBlocking {
+        val scanner = DeviceScanner(
+            portOpen = { _, p -> p == 443 },
+            identify = { _, _, _, _ -> throw java.io.IOException("no") },
+            mdns = { flowOf(lgAnnouncement.copy(mac = "d8:4f:b8:02:0d:6b")) },
+            web = { h, p -> if (h == "192.168.0.33") FoundDevice(h, p, DeviceType.LG_ESS, 1, "LG ESS") else null },
+        )
+        val found = latest(scanner.scan(listOf("192.168.0.33", "192.168.0.40"), emptyMap()).toList()).single { it.type == DeviceType.LG_ESS }
+        assertEquals("d84fb8020d6b", found.password)
     }
 }

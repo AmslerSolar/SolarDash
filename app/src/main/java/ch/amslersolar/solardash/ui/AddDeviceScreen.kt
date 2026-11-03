@@ -154,6 +154,7 @@ fun AddDeviceScreen(
         serial = d.serial
         specId = d.specId
         rtuOverTcp = d.rtuOverTcp
+        if (d.password.isNotEmpty()) password = d.password
         if (name.isBlank()) name = d.model
         testResult = null
     }

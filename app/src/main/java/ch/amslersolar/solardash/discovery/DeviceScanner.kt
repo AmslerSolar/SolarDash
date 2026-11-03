@@ -22,6 +22,7 @@ import ch.amslersolar.solardash.driver.fimer.FimerSunSpecDriver
 import ch.amslersolar.solardash.driver.fronius.FroniusGen24Driver
 import ch.amslersolar.solardash.driver.kaco.KacoBlueplanetDriver
 import ch.amslersolar.solardash.driver.schneider.ConextClDriver
+import ch.amslersolar.solardash.driver.lg.LgEssDriver
 import ch.amslersolar.solardash.driver.lg.LgEssSunSpecDriver
 import ch.amslersolar.solardash.driver.modbus.ModbusTcpClient
 import ch.amslersolar.solardash.driver.spec.SpecDevices
@@ -37,6 +38,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.coroutines.withContext
 import java.util.concurrent.ConcurrentHashMap
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.async
@@ -47,6 +49,9 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import java.net.Inet4Address
 import java.net.InetSocketAddress
+import java.security.cert.X509Certificate
+import javax.net.ssl.SSLSocket
+import javax.security.auth.x500.X500Principal
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
@@ -69,6 +74,8 @@ data class FoundDevice(
     val identifying: Boolean = false,
     /** Recognised with Modbus RTU frames: an RS485 gateway in transparent mode. */
     val rtuOverTcp: Boolean = false,
+    /** The device password when the search could work it out (an LG ESS's is its MAC, see [MdnsService.mac]). */
+    val password: String = "",
     /** While identifying: device descriptions (drivers, ModbusSpec files) tried so far, of [toTry]. */
     val tried: Int = 0,
     val toTry: Int = 0,
@@ -148,6 +155,7 @@ class DeviceScanner(
         val open = ConcurrentHashMap<String, Triple<String, Int, List<Pair<DeviceType, Int>>?>>() // key → host, port, mDNS candidates
         val viaMdns = ConcurrentHashMap.newKeySet<String>()
         val webOpen = ConcurrentHashMap.newKeySet<Pair<String, Int>>()
+        val macs = ConcurrentHashMap<String, String>() // host → MAC from its mDNS announcement
         suspend fun opened(host: String, port: Int, mdnsCandidates: List<Pair<DeviceType, Int>>?) {
             val key = "$host:$port"
             if (open.putIfAbsent(key, Triple(host, port, mdnsCandidates)) != null) return
@@ -163,7 +171,7 @@ class DeviceScanner(
         coroutineScope {
             // mDNS and the port scan run side by side; whichever reaches a host:port first lists it.
             launch {
-                withTimeoutOrNull(MDNS_WINDOW_MS) { mdns().collect { s -> opened(s.host, s.port, candidatesFor(s)) } }
+                withTimeoutOrNull(MDNS_WINDOW_MS) { mdns().collect { s -> s.mac?.let { macs[s.host] = it }; opened(s.host, s.port, candidatesFor(s)) } }
             }
             for (port in ports) {
                 coroutineScope {
@@ -207,7 +215,9 @@ class DeviceScanner(
                 val device = probes.withPermit {
                     withTimeoutOrNull(WEB_TIMEOUT_MS) { runCatching { web(host, port) }.getOrElse { if (it is CancellationException) throw it; null } }
                 }
-                if (device != null) send(ScanEvent.Found(device.copy(identifying = false)))
+                // An LG ESS's password is its MAC, lowercase without colons.
+                val password = if (device?.type == DeviceType.LG_ESS) macs[host]?.replace(":", "").orEmpty() else ""
+                if (device != null) send(ScanEvent.Found(device.copy(identifying = false, password = password.ifEmpty { device.password })))
                 send(ScanEvent.Progress(identified.incrementAndGet(), total, ScanPhase.IDENTIFY))
             }
             for ((host, port, mdnsCandidates) in toProbe) launch {
@@ -357,7 +367,7 @@ class DeviceScanner(
 
         const val MDNS_WINDOW_MS = 8_000L
         /** Web ports asked in every search; only recognised devices are listed (see [identifyWeb]). */
-        val WEB_PORTS = listOf(80)
+        val WEB_PORTS = listOf(80, 443)
         /** A web server that takes longer than this for one small file isn't one of ours. */
         private const val WEB_TIMEOUT_MS = 4_000L
         const val MODBUS_PORT = 502
@@ -633,15 +643,42 @@ class DeviceScanner(
 
         /**
          * The devices with a local web API the search recognises: an ABB CDD answers `/summary.xml` with its `<cdd>`
-         * element (a read-only GET; any other web server answers 404 or a page without it).
+         * element (a read-only GET; any other web server answers 404 or a page without it). On 443 an LG ESS shows
+         * the certificate every unit shares ([isLgEssCertificate]); nothing is sent, so no password is needed, and
+         * the serial comes once the device is added with its password.
          */
         suspend fun identifyWeb(host: String, port: Int): FoundDevice? = try {
-            val info = AbbCddDriver(host, port).identify()
-            FoundDevice(host, port, DeviceType.ABB_CDD, DeviceType.ABB_CDD.defaultUnitId, info.model, info.serial)
+            if (port == 443) {
+                if (isLgEssCertificate(serverCertificate(host, port))) FoundDevice(host, port, DeviceType.LG_ESS, DeviceType.LG_ESS.defaultUnitId, "LG ESS")
+                else null
+            } else {
+                val info = AbbCddDriver(host, port).identify()
+                FoundDevice(host, port, DeviceType.ABB_CDD, DeviceType.ABB_CDD.defaultUnitId, info.model, info.serial)
+            }
         } catch (e: CancellationException) {
             throw e
         } catch (_: Exception) {
             null
+        }
+
+        /** The certificate a TLS server presents (handshake only, no request), or null when it has none. */
+        private suspend fun serverCertificate(host: String, port: Int): X509Certificate? = withContext(Dispatchers.IO) {
+            DeviceNetwork.current.socket(host).use { plain ->
+                plain.connect(InetSocketAddress(host, port), CONNECT_TIMEOUT_MS)
+                plain.soTimeout = PROBE_TIMEOUT_MS
+                (LgEssDriver.trustingContext.socketFactory.createSocket(plain, host, port, false) as SSLSocket).use { tls ->
+                    tls.startHandshake()
+                    tls.session.peerCertificates.firstOrNull() as? X509Certificate
+                }
+            }
+        }
+
+        /** The self-signed certificate every LG ESS presents: issued to LGE, unit ESS. */
+        fun isLgEssCertificate(cert: X509Certificate?): Boolean = cert != null && isLgEssSubject(cert.subjectX500Principal.getName(X500Principal.RFC2253))
+
+        internal fun isLgEssSubject(rfc2253: String): Boolean {
+            val parts = rfc2253.split(',').map { it.trim().uppercase() }.toSet()
+            return "O=LGE" in parts && "OU=ESS" in parts
         }
 
         private suspend fun identifyWith(type: DeviceType, host: String, port: Int, unitId: Int): DeviceInfo =

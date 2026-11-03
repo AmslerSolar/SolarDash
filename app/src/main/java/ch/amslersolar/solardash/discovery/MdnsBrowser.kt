@@ -17,6 +17,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeoutOrNull
 import java.net.Inet4Address
+import java.net.Inet6Address
 
 /** A device announcing itself over mDNS / DNS-SD. */
 data class MdnsService(
@@ -25,6 +26,8 @@ data class MdnsService(
     val host: String,
     val port: Int,
     val txt: Map<String, String> = emptyMap(),
+    /** The device's MAC, read from an announced IPv6 address made from it (EUI-64; Android 14 and newer only). */
+    val mac: String? = null,
 ) {
     /** Whether the announcement carries [serial] (in its name or a TXT value), e.g. LG's "LGE_ESS-<serial>". */
     fun mentions(serial: String): Boolean {
@@ -89,7 +92,19 @@ object MdnsBrowser {
         } else r.host
         val host = address?.hostAddress ?: return null
         val txt = r.attributes.mapValues { (_, v) -> v?.toString(Charsets.UTF_8).orEmpty() }
-        return MdnsService(r.serviceName, r.serviceType.trim('.'), host, r.port, txt)
+        val mac = if (Build.VERSION.SDK_INT >= 34) r.hostAddresses.filterIsInstance<Inet6Address>().firstNotNullOfOrNull { macFromEui64(it.address) } else null
+        return MdnsService(r.serviceName, r.serviceType.trim('.'), host, r.port, txt, mac)
+    }
+
+    /**
+     * The MAC inside an IPv6 address made from it (EUI-64): the last 8 bytes are the MAC with ff:fe in the middle
+     * and the universal/local bit flipped. Seen on an LG ESS: …:da4f:b8ff:fe02:d6b is d8:4f:b8:02:0d:6b.
+     * Null for addresses made otherwise (random or privacy addresses).
+     */
+    fun macFromEui64(address: ByteArray): String? {
+        if (address.size != 16 || address[11] != 0xff.toByte() || address[12] != 0xfe.toByte()) return null
+        val mac = byteArrayOf((address[8].toInt() xor 0x02).toByte(), address[9], address[10], address[13], address[14], address[15])
+        return mac.joinToString(":") { "%02x".format(it.toInt() and 0xff) }
     }
 
     private const val RESOLVE_TIMEOUT_MS = 3_000L
