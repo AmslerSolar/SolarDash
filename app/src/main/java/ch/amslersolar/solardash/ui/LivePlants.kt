@@ -119,7 +119,7 @@ class LivePlants(
     }
 
     /**
-     * A Modbus device that hasn't answered for [MOVED_AFTER_MS] is searched for by its serial number on its port, at
+     * A Modbus or Aurora device that hasn't answered for [MOVED_AFTER_MS] is searched for by its serial number on its port, at
      * most every [SEARCH_EVERY_MS]; when found at another address, its host is updated, which restarts polling.
      * Other configured devices are never contacted, so their single-client connections aren't disturbed.
      */
@@ -131,7 +131,7 @@ class LivePlants(
                 lastAnswer[d.id] = now
                 continue
             }
-            if (!d.type.modbus || !d.type.needsHost || d.serial.isBlank()) continue
+            if (!d.type.busAddress || !d.type.needsHost || d.serial.isBlank()) continue
             if (now - (lastAnswer[d.id] ?: started) < MOVED_AFTER_MS) continue
             if (now - (lastSearch[d.id] ?: 0L) < SEARCH_EVERY_MS) continue
             if (TrafficPause.isPaused) continue

@@ -387,6 +387,10 @@ To add a device type, add a `DeviceType` entry, implement `DeviceDriver` mapping
   model letter of command 58 is the map's model identifier (`Y` = 89 = TRIO-27.6-TL-OUTD-400). Requests are
   spaced 20 ms apart: back to back, about one in 200 got no reply. Reading the last-4-alarms list empties it on
   the inverter, so the driver keeps the alarms it has seen.
+- The extended network search asks Aurora addresses 2…63 on every RS485 gateway port (4196, 8899) for their serial
+  number, stopping 8 silent addresses past the last one that answered: each inverter is listed on its own address
+  (both TRIOs behind a Waveshare in about 5 s), and Modbus isn't tried on that bus. An Aurora inverter whose gateway
+  got a new IP from DHCP is found again by its serial number, like a Modbus device.
 
 ## Spec documents
 

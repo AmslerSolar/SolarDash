@@ -14,6 +14,8 @@ import ch.amslersolar.solardash.driver.spec.SpecLibrary
 import ch.amslersolar.solardash.net.LocalNetworks
 import ch.amslersolar.solardash.driver.net.DeviceNetwork
 import android.content.Context
+import ch.amslersolar.solardash.driver.abb.AuroraDriver
+import ch.amslersolar.solardash.driver.abb.TcpAuroraTransport
 import ch.amslersolar.solardash.driver.apsystems.ApsystemsEcuDriver
 import ch.amslersolar.solardash.driver.fimer.FimerSunSpecDriver
 import ch.amslersolar.solardash.driver.fronius.FroniusGen24Driver
@@ -114,6 +116,8 @@ class DeviceScanner(
     /** The devices an energy manager ([HUBS], by its ModbusSpec file) reaches on other unit ids, without [skip]. */
     private val behind: suspend (host: String, port: Int, hubSpecId: String, skip: Set<Int>) -> List<FoundDevice> =
         { _, _, _, _ -> emptyList() },
+    /** On an RS485 gateway's port: the inverters answering ABB's Aurora protocol, by address (see [auroraRollCall]). */
+    private val aurora: suspend (host: String, port: Int, onTry: () -> Unit) -> List<FoundDevice> = { _, _, _ -> emptyList() },
 ) {
     /**
      * Two phases. First every address of [hosts] is tried on Modbus TCP port 502, then, with [extended], on the other
@@ -122,6 +126,8 @@ class DeviceScanner(
      * device; what nothing recognises stays listed as an open port. An energy manager in [HUBS] also gets the devices
      * behind it listed, each on its unit id; [hubs] are configured ones (host:port → their ModbusSpec file and the unit
      * ids configured there), whose other units are asked too, with polling paused; the hub itself isn't probed.
+     * On an RS485 gateway's port the Aurora addresses are asked first: when inverters answer there, the bus speaks
+     * Aurora, they're listed (the first on the host:port, the others on their address) and Modbus isn't tried.
      */
     fun scan(
         hosts: List<String>,
@@ -198,6 +204,14 @@ class DeviceScanner(
                     // Behind a gateway an absent unit id stays silent, and every guess there costs a whole timeout:
                     // first ask each unit id once which ones answer, and in which framing; only those are identified.
                     // When none answers (a device ignoring register 0, say), everything is tried as before.
+                    if (port in GATEWAY_PORTS) {
+                        toTry.set(AURORA_ADDRESSES.count())
+                        val inverters = runCatching { aurora(host, port, onTry) }.getOrElse { if (it is CancellationException) throw it; emptyList() }
+                        if (inverters.isNotEmpty()) {
+                            inverters.drop(1).forEach { trySend(ScanEvent.Found(it.copy(behindHub = true, viaMdns = key in viaMdns))) }
+                            return@withPermit inverters.first()
+                        }
+                    }
                     var live: Map<Int, Set<Boolean>>? = null
                     if (port in GATEWAY_PORTS) {
                         val units = (candidates.map { it.second } + specUnits(port)).filter { it in 1..247 }.distinct()
@@ -336,6 +350,12 @@ class DeviceScanner(
         private const val GATEWAY_TIMEOUT_MS = 1_000
         /** Behind a gateway at 9600 baud a one-register answer takes some 50 ms. */
         private const val ROLL_CALL_TIMEOUT_MS = 400
+        /** The Aurora addresses asked on a gateway's port, in order (the inverters' range; 2 is their factory setting). */
+        val AURORA_ADDRESSES = 2..63
+        /** Aurora replies come within some 30 ms at 19200 baud. */
+        private const val AURORA_TIMEOUT_MS = 200
+        /** The Aurora roll call stops after this many silent addresses in a row past the last one that answered. */
+        const val AURORA_MAX_SILENT = 8
         /** Behind a hub: give up after this many refused or unanswered requests (a hub that stopped answering). */
         private const val HUB_MAX_FAILURES = 3
         private const val HUB_RETRY_MS = 1_000L
@@ -396,12 +416,12 @@ class DeviceScanner(
         ): Flow<ScanEvent> {
             if (range.isNotBlank()) {
                 val hosts = parseRange(range) ?: return channelFlow { send(ScanEvent.Failed("Can't read the network to search: $range")) }
-                return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs, specCount = ::specFilesToTry, specUnits = ::specUnitIds, rollCall = ::rollCall, behind = ::devicesBehind).scan(hosts, known, extended, hubs)
+                return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs, specCount = ::specFilesToTry, specUnits = ::specUnitIds, rollCall = ::rollCall, behind = ::devicesBehind, aurora = ::auroraRollCall).scan(hosts, known, extended, hubs)
             }
             val (own, prefix) = localNetwork(context) ?: return channelFlow {
                 send(ScanEvent.Failed("Not connected to a local network. Connect to the plant's Wi-Fi and try again."))
             }
-            return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs, specCount = ::specFilesToTry, specUnits = ::specUnitIds, rollCall = ::rollCall, behind = ::devicesBehind).scan(hosts(own, prefix), known, extended, hubs)
+            return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs, specCount = ::specFilesToTry, specUnits = ::specUnitIds, rollCall = ::rollCall, behind = ::devicesBehind, aurora = ::auroraRollCall).scan(hosts(own, prefix), known, extended, hubs)
         }
 
         private fun tcpOpen(host: String, port: Int): Boolean = try {
@@ -556,8 +576,38 @@ class DeviceScanner(
             }
         }
 
+        /**
+         * The inverters answering Aurora on the gateway at [host]:[port]: each address of [AURORA_ADDRESSES] is asked
+         * for its serial number (read-only, command 63) until [AURORA_MAX_SILENT] in a row stay silent; each one that
+         * answers is identified. Modbus devices on the bus ignore these frames or answer with an exception, which
+         * doesn't pass the Aurora CRC. Calls onTry per address (the rest at once when it stops early).
+         */
+        suspend fun auroraRollCall(host: String, port: Int, onTry: () -> Unit = {}): List<FoundDevice> =
+            TcpAuroraTransport(host, port, AURORA_TIMEOUT_MS).use { bus ->
+                val found = mutableListOf<FoundDevice>()
+                var silent = 0
+                for ((i, address) in AURORA_ADDRESSES.withIndex()) {
+                    onTry()
+                    val info = try {
+                        AuroraDriver(bus, address).identify()
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (_: java.io.IOException) {
+                        if (++silent >= AURORA_MAX_SILENT) {
+                            repeat(AURORA_ADDRESSES.count() - i - 1) { onTry() }
+                            break
+                        }
+                        continue
+                    }
+                    silent = 0
+                    found += FoundDevice(host, port, DeviceType.AURORA, address, info.model, info.serial)
+                }
+                found
+            }
+
         private suspend fun identifyWith(type: DeviceType, host: String, port: Int, unitId: Int): DeviceInfo =
-            ModbusTcpClient(host, port, PROBE_TIMEOUT_MS).use { client ->
+            if (type == DeviceType.AURORA) TcpAuroraTransport(host, port).use { AuroraDriver(it, unitId).identify() }
+            else ModbusTcpClient(host, port, PROBE_TIMEOUT_MS).use { client ->
                 when (type) {
                     DeviceType.FRONIUS -> FroniusGen24Driver(client, unitId).identify()
                     DeviceType.KACO_NX3 -> KacoBlueplanetDriver(client, unitId).identify()

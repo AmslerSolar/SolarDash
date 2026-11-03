@@ -3,6 +3,7 @@
 
 package ch.amslersolar.solardash.discovery
 
+import ch.amslersolar.solardash.driver.abb.AuroraProtocol
 import ch.amslersolar.solardash.driver.modbus.ModbusException
 import ch.amslersolar.solardash.model.DeviceInfo
 import ch.amslersolar.solardash.model.DeviceType
@@ -18,6 +19,8 @@ import org.junit.Test
 import java.io.IOException
 import java.net.Inet4Address
 import java.net.InetAddress
+import java.net.ServerSocket
+import kotlin.concurrent.thread
 
 class DeviceScannerTest {
     private fun ip(s: String) = InetAddress.getByName(s) as Inet4Address
@@ -310,5 +313,100 @@ class DeviceScannerTest {
         val last = events.filterIsInstance<ScanEvent.Progress>().last()
         assertEquals(ScanPhase.IDENTIFY, last.phase)
         assertEquals(last.total, last.done)
+    }
+
+    @Test
+    fun aGatewayWithAuroraInvertersListsEachAndSkipsModbus() = runBlocking {
+        val scanner = DeviceScanner(
+            portOpen = { _, p -> p == 4196 },
+            identify = { _, _, _, _ -> error("the bus speaks Aurora: Modbus drivers aren't asked") },
+            rollCall = { _, _, _, _ -> error("no Modbus roll call on an Aurora bus") },
+            aurora = { h, p, onTry ->
+                onTry()
+                listOf(
+                    FoundDevice(h, p, DeviceType.AURORA, 2, "ABB TRIO-27.6-TL-OUTD-400, firmware C.3.5.7", "301160"),
+                    FoundDevice(h, p, DeviceType.AURORA, 3, "ABB Aurora inverter (model code 'n'), firmware C.0.2.6", "721318"),
+                )
+            },
+        )
+        val found = latest(scanner.scan(listOf("192.168.178.66"), emptyMap(), extended = true).toList())
+        assertEquals(listOf(2, 3), found.map { it.unitId }.sorted())
+        assertTrue(found.all { it.type == DeviceType.AURORA && it.port == 4196 && !it.identifying })
+        assertFalse(found.single { it.unitId == 2 }.behindHub) // the first takes the gateway's host:port
+        assertTrue(found.single { it.unitId == 3 }.behindHub)
+    }
+
+    @Test
+    fun withoutAuroraAnswersTheGatewayIsAskedForModbus() = runBlocking {
+        var rollCalls = 0
+        val scanner = DeviceScanner(
+            portOpen = { _, p -> p == 4196 },
+            identify = { _, _, _, _ -> throw IOException("no") },
+            rollCall = { _, _, _, _ -> rollCalls++; emptyMap() },
+            aurora = { _, _, _ -> emptyList() },
+        )
+        scanner.scan(listOf("192.168.178.66"), emptyMap(), extended = true).toList()
+        assertEquals(1, rollCalls)
+    }
+
+    /**
+     * A transparent RS485 gateway with Aurora inverters at [addresses]: answers the commands identify() sends,
+     * stays silent for other addresses. Returns the port and the addresses asked, in order.
+     */
+    private fun fakeAuroraGateway(addresses: Set<Int>): Pair<ServerSocket, MutableList<Int>> {
+        val server = ServerSocket(0)
+        val asked = java.util.Collections.synchronizedList(mutableListOf<Int>())
+        thread(isDaemon = true) {
+            while (!server.isClosed) {
+                val s = try { server.accept() } catch (_: IOException) { break }
+                thread(isDaemon = true) {
+                    s.use {
+                        val input = it.getInputStream()
+                        val req = ByteArray(10)
+                        while (true) {
+                            var n = 0
+                            while (n < 10) { val r = input.read(req, n, 10 - n); if (r < 0) return@use; n += r }
+                            val address = req[0].toInt() and 0xFF
+                            val command = req[1].toInt() and 0xFF
+                            if (command == AuroraProtocol.SERIAL) asked += address
+                            if (address !in addresses) continue
+                            val data = when (command) {
+                                AuroraProtocol.SERIAL -> "70000$address".toByteArray()
+                                AuroraProtocol.VERSION -> byteArrayOf(0, 6, 'Y'.code.toByte(), 'E'.code.toByte(), 'N'.code.toByte(), 'N'.code.toByte())
+                                else -> byteArrayOf(51, 6, 0, 0, 0, 0) // not implemented
+                            }
+                            val crc = AuroraProtocol.crc(data)
+                            it.getOutputStream().write(data + byteArrayOf(crc.toByte(), (crc ushr 8).toByte()))
+                        }
+                    }
+                }
+            }
+        }
+        return server to asked
+    }
+
+    @Test
+    fun auroraRollCallFindsEachInverterAndStopsAfterSilentAddresses() = runBlocking {
+        val (server, asked) = fakeAuroraGateway(setOf(2, 3, 5))
+        server.use {
+            var tries = 0
+            val found = DeviceScanner.auroraRollCall("127.0.0.1", it.localPort) { tries++ }
+            assertEquals(listOf(2, 3, 5), found.map { d -> d.unitId })
+            assertEquals(listOf("700002", "700003", "700005"), found.map { d -> d.serial })
+            assertTrue(found.all { d -> d.type == DeviceType.AURORA && d.model == "ABB TRIO-27.6-TL-OUTD-400" })
+            assertEquals((2..5 + DeviceScanner.AURORA_MAX_SILENT).toList(), asked) // stops 8 past the last one
+            assertEquals(DeviceScanner.AURORA_ADDRESSES.count(), tries) // the counter still reaches its total
+        }
+    }
+
+    @Test
+    fun auroraRollCallOnASilentBusFindsNothingQuickly() = runBlocking {
+        val (server, asked) = fakeAuroraGateway(emptySet())
+        server.use {
+            val t0 = System.currentTimeMillis()
+            assertTrue(DeviceScanner.auroraRollCall("127.0.0.1", it.localPort).isEmpty())
+            assertEquals(DeviceScanner.AURORA_MAX_SILENT, asked.size)
+            assertTrue(System.currentTimeMillis() - t0 < 5_000)
+        }
     }
 }
