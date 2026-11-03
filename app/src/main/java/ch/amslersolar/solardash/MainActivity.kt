@@ -4,6 +4,7 @@
 package ch.amslersolar.solardash
 
 import ch.amslersolar.solardash.ui.status.FaultLogTab
+import ch.amslersolar.solardash.model.DeviceConfig
 import ch.amslersolar.solardash.model.Issue
 import ch.amslersolar.solardash.work.RecordingService
 import ch.amslersolar.solardash.driver.TrafficPause
@@ -30,6 +31,7 @@ import ch.amslersolar.solardash.data.RegisterSweeps
 import ch.amslersolar.solardash.ui.AddDeviceScreen
 import ch.amslersolar.solardash.ui.DeviceScreen
 import ch.amslersolar.solardash.ui.PlantSettingsScreen
+import ch.amslersolar.solardash.ui.DiscoverDevicesScreen
 import ch.amslersolar.solardash.ui.DashboardTab
 import ch.amslersolar.solardash.ui.DevicesTab
 import ch.amslersolar.solardash.ui.LivePlants
@@ -110,6 +112,20 @@ class MainActivity : ComponentActivity() {
                     val state by plantViewModel(plant.id, app.live).state.collectAsStateWithLifecycle()
                     val back = { route = parent ?: ROUTE_PLANTS }
                     val addDevice = { route = "plant/${plant.id}/add" }
+                    val discover = { route = "plant/${plant.id}/discover" }
+                    val scan = { editing: DeviceConfig?, extended: Boolean, range: String ->
+                        // Configured devices are listed, not probed: a second client could disturb their poll.
+                        val known = plants.orEmpty().flatMap { p ->
+                            p.devices.filter { it.type.needsHost && it.id != editing?.id }
+                                .map { "${it.host}:${it.port}" to "${p.name} · ${it.name}" }
+                        }.toMap()
+                        // Configured energy managers: the devices behind them are still listed (other unit ids).
+                        val configured = plants.orEmpty().flatMap { it.devices }.filter { it.type.needsHost && it.id != editing?.id }
+                        val hubs = configured.filter { it.specId in DeviceScanner.HUBS }.associate { hub ->
+                            "${hub.host}:${hub.port}" to (hub.specId to configured.filter { it.host == hub.host && it.port == hub.port }.map { it.unitId }.toSet())
+                        }
+                        DeviceScanner.scanLocalNetwork(applicationContext, known, extended, range, hubs)
+                    }
                     when (val section = parts.getOrNull(2)) {
                         "add", "edit" -> {
                             val editing = if (section == "edit") plant.devices.find { it.id == parts.getOrNull(3) } else null
@@ -119,19 +135,7 @@ class MainActivity : ComponentActivity() {
                                 AddDeviceScreen(
                                     plantName = plant.name,
                                     onTest = plantsVm::testConnection,
-                                    onScan = { extended, range ->
-                                        // Configured devices are listed, not probed: a second client could disturb their poll.
-                                        val known = plants.orEmpty().flatMap { p ->
-                                            p.devices.filter { it.type.needsHost && it.id != editing?.id }
-                                                .map { "${it.host}:${it.port}" to "${p.name} · ${it.name}" }
-                                        }.toMap()
-                                        // Configured energy managers: the devices behind them are still listed (other unit ids).
-                                        val configured = plants.orEmpty().flatMap { it.devices }.filter { it.type.needsHost && it.id != editing?.id }
-                                        val hubs = configured.filter { it.specId in DeviceScanner.HUBS }.associate { hub ->
-                                            "${hub.host}:${hub.port}" to (hub.specId to configured.filter { it.host == hub.host && it.port == hub.port }.map { it.unitId }.toSet())
-                                        }
-                                        DeviceScanner.scanLocalNetwork(applicationContext, known, extended, range, hubs)
-                                    },
+                                    onScan = { extended, range -> scan(editing, extended, range) },
                                     onSave = {
                                         if (editing != null) plantsVm.updateDevice(plant.id, it) else plantsVm.addDevice(plant.id, it)
                                         back()
@@ -145,6 +149,12 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         }
+                        "discover" -> DiscoverDevicesScreen(
+                            onScan = { scan(null, false, "") },
+                            onAdd = { plantsVm.addDevice(plant.id, it) },
+                            onAddByHand = { route = "plant/${plant.id}/add" },
+                            onBack = back,
+                        )
                         "settings" -> PlantSettingsScreen(
                             plant = plant,
                             onRename = { plantsVm.renamePlant(plant.id, it) },
@@ -184,7 +194,7 @@ class MainActivity : ComponentActivity() {
                                     PlantTab.DASHBOARD -> DashboardTab(
                                         plant = plant,
                                         state = state,
-                                        onAddDevice = addDevice,
+                                        onDiscover = discover,
                                         onShowDevices = { route = tabRoute(plant.id, PlantTab.DEVICES) },
                                         onShowFaults = { route = tabRoute(plant.id, PlantTab.LOG) },
                                         modifier = modifier,
@@ -219,6 +229,7 @@ class MainActivity : ComponentActivity() {
                                         plant = plant,
                                         state = state,
                                         onAddDevice = addDevice,
+                                        onDiscover = discover,
                                         onOpenDevice = { route = "plant/${plant.id}/device/${it.id}" },
                                         onRemoveDevice = { d, deleteData -> plantsVm.removeDevice(plant.id, d, deleteData) },
                                         onEditDevice = { route = "plant/${plant.id}/edit/${it.id}" },

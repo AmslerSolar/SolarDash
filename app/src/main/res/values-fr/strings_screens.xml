@@ -93,4 +93,15 @@
         <item quantity="many">%1$d appareils</item>
         <item quantity="other">%1$d appareils</item>
     </plurals>
+    <string name="screens_discover_title">Rechercher des appareils</string>
+    <string name="screens_discover_searching">Recherche sur le réseau…</string>
+    <string name="screens_discover_none">Aucun appareil trouvé. Vérifiez qu\'ils sont allumés et sur le même réseau que cet appareil, ou ajoutez-les à la main.</string>
+    <string name="screens_discover_needs_password">Mot de passe requis : à ajouter à la main</string>
+    <string name="screens_add_by_hand">Ajouter à la main</string>
+    <string name="screens_done">Terminé</string>
+    <plurals name="screens_discover_added">
+        <item quantity="one">%1$d appareil ajouté</item>
+        <item quantity="other">%1$d appareils ajoutés</item>
+        <item quantity="many">%1$d appareils ajoutés</item>
+    </plurals>
 </resources>

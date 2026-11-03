@@ -91,4 +91,14 @@
         <item quantity="one">%1$d Gerät</item>
         <item quantity="other">%1$d Geräte</item>
     </plurals>
+    <string name="screens_discover_title">Geräte suchen</string>
+    <string name="screens_discover_searching">Netzwerk wird durchsucht…</string>
+    <string name="screens_discover_none">Keine Geräte gefunden. Prüfe, ob sie eingeschaltet und im selben Netzwerk wie dieses Gerät sind, oder füge sie von Hand hinzu.</string>
+    <string name="screens_discover_needs_password">Braucht ein Passwort: von Hand hinzufügen</string>
+    <string name="screens_add_by_hand">Von Hand hinzufügen</string>
+    <string name="screens_done">Fertig</string>
+    <plurals name="screens_discover_added">
+        <item quantity="one">%1$d Gerät hinzugefügt</item>
+        <item quantity="other">%1$d Geräte hinzugefügt</item>
+    </plurals>
 </resources>

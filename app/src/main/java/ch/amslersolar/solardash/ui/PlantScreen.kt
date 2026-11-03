@@ -129,7 +129,8 @@ fun PlantScreen(
 fun DashboardTab(
     plant: Plant,
     state: PlantState,
-    onAddDevice: () -> Unit,
+    /** Searches the network and adds what it finds ([DiscoverDevicesScreen]). */
+    onDiscover: () -> Unit,
     onShowDevices: () -> Unit,
     /** Opens the Faults tab, where every active problem is listed. */
     onShowFaults: () -> Unit,
@@ -139,7 +140,7 @@ fun DashboardTab(
 ) {
     when (state) {
         PlantState.Loading -> Box(modifier.fillMaxSize(), Alignment.Center) { CircularProgressIndicator() }
-        PlantState.NoDevices -> NoDevices(onAddDevice, modifier)
+        PlantState.NoDevices -> NoDevices(onDiscover, null, modifier)
         is PlantState.Live -> BoxWithConstraints(modifier) {
             val status = rememberPlantStatus(plant, state.snapshot)
             val context = LocalContext.current
@@ -183,6 +184,7 @@ fun DevicesTab(
     plant: Plant,
     state: PlantState,
     onAddDevice: () -> Unit,
+    onDiscover: () -> Unit,
     onOpenDevice: (DeviceConfig) -> Unit,
     onRemoveDevice: (DeviceConfig, deleteData: Boolean) -> Unit,
     onEditDevice: (DeviceConfig) -> Unit,
@@ -191,7 +193,7 @@ fun DevicesTab(
     var pendingDelete by remember { mutableStateOf<DeviceConfig?>(null) }
 
     if (plant.devices.isEmpty()) {
-        NoDevices(onAddDevice, modifier)
+        NoDevices(onDiscover, onAddDevice, modifier)
     } else {
         val statusById = (state as? PlantState.Live)?.snapshot?.devices?.associateBy { it.device.id }.orEmpty()
         // Cards, two across on a phone, more on a tablet; inverters first, then batteries, meters, consumers.
@@ -236,14 +238,15 @@ fun DevicesTab(
 }
 
 @Composable
-private fun NoDevices(onAddDevice: () -> Unit, modifier: Modifier) {
+private fun NoDevices(onDiscover: () -> Unit, onAddDevice: (() -> Unit)?, modifier: Modifier) {
     Column(
         modifier.fillMaxSize().padding(32.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(stringResource(R.string.screens_no_devices))
-        Button(onClick = onAddDevice) { Text(stringResource(R.string.screens_add_device)) }
+        Button(onClick = onDiscover) { Text(stringResource(R.string.screens_discover_title)) }
+        if (onAddDevice != null) TextButton(onClick = onAddDevice) { Text(stringResource(R.string.screens_add_by_hand)) }
     }
 }
 

@@ -93,4 +93,15 @@
         <item quantity="many">%1$d dispositivi</item>
         <item quantity="other">%1$d dispositivi</item>
     </plurals>
+    <string name="screens_discover_title">Cerca dispositivi</string>
+    <string name="screens_discover_searching">Ricerca nella rete…</string>
+    <string name="screens_discover_none">Nessun dispositivo trovato. Verifica che siano accesi e nella stessa rete di questo dispositivo, oppure aggiungili a mano.</string>
+    <string name="screens_discover_needs_password">Serve una password: aggiungilo a mano</string>
+    <string name="screens_add_by_hand">Aggiungi a mano</string>
+    <string name="screens_done">Fatto</string>
+    <plurals name="screens_discover_added">
+        <item quantity="one">%1$d dispositivo aggiunto</item>
+        <item quantity="other">%1$d dispositivi aggiunti</item>
+        <item quantity="many">%1$d dispositivi aggiunti</item>
+    </plurals>
 </resources>

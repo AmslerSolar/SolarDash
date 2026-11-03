@@ -91,4 +91,14 @@
         <item quantity="one">%1$d device</item>
         <item quantity="other">%1$d devices</item>
     </plurals>
+    <string name="screens_discover_title">Discover devices</string>
+    <string name="screens_discover_searching">Searching the network…</string>
+    <string name="screens_discover_none">No devices found. Check that they are on and on the same network as this device, or add them by hand.</string>
+    <string name="screens_discover_needs_password">Needs a password: add it by hand</string>
+    <string name="screens_add_by_hand">Add by hand</string>
+    <string name="screens_done">Done</string>
+    <plurals name="screens_discover_added">
+        <item quantity="one">%1$d device added</item>
+        <item quantity="other">%1$d devices added</item>
+    </plurals>
 </resources>
