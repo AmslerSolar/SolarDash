@@ -8,7 +8,11 @@ import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.net.wifi.WifiManager
 import android.os.Build
+import androidx.annotation.RequiresApi
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -26,7 +30,7 @@ data class MdnsService(
     val host: String,
     val port: Int,
     val txt: Map<String, String> = emptyMap(),
-    /** The device's MAC, read from an announced IPv6 address made from it (EUI-64; Android 14 and newer only). */
+    /** The device's MAC, read from an announced IPv6 address made from it (EUI-64; Android 14 and newer only, see [MdnsBrowser.watch]). */
     val mac: String? = null,
 ) {
     /** Whether the announcement carries [serial] (in its name or a TXT value), e.g. LG's "LGE_ESS-<serial>". */
@@ -52,10 +56,12 @@ object MdnsBrowser {
         val lock = wifi.createMulticastLock("SolarDash:mdns").apply { setReferenceCounted(false); acquire() }
         // Older Android resolves one service at a time ("already active" otherwise).
         val resolving = Mutex()
+        val watching = java.util.concurrent.CopyOnWriteArrayList<Any>()
         val listeners = types.map { type ->
             object : NsdManager.DiscoveryListener {
                 override fun onServiceFound(info: NsdServiceInfo) {
-                    launch { resolving.withLock { resolve(nsd, info)?.let { trySend(it) } } }
+                    if (Build.VERSION.SDK_INT >= 34) watching += watch(nsd, info, this@callbackFlow) { trySend(it) }
+                    else launch { resolving.withLock { resolve(nsd, info)?.let { trySend(it) } } }
                 }
                 override fun onServiceLost(info: NsdServiceInfo) {}
                 override fun onDiscoveryStarted(serviceType: String) {}
@@ -66,6 +72,7 @@ object MdnsBrowser {
         }
         awaitClose {
             listeners.forEach { runCatching { nsd.stopServiceDiscovery(it) } }
+            if (Build.VERSION.SDK_INT >= 34) watching.forEach { runCatching { nsd.unregisterServiceInfoCallback(it as NsdManager.ServiceInfoCallback) } }
             lock.release()
         }
     }
@@ -77,7 +84,7 @@ object MdnsBrowser {
         return out
     }
 
-    @Suppress("DEPRECATION") // resolveService / host: the replacements need API 34, this app supports 26+
+    @Suppress("DEPRECATION") // resolveService / host: Android before 14, see [watch]
     private suspend fun resolve(nsd: NsdManager, info: NsdServiceInfo): MdnsService? {
         val result = CompletableDeferred<NsdServiceInfo?>()
         runCatching {
@@ -87,13 +94,57 @@ object MdnsBrowser {
             })
         }.onFailure { return null }
         val r = withTimeoutOrNull(RESOLVE_TIMEOUT_MS) { result.await() } ?: return null
-        val address = if (Build.VERSION.SDK_INT >= 34) {
-            r.hostAddresses.firstOrNull { it is Inet4Address } ?: r.hostAddresses.firstOrNull()
-        } else r.host
-        val host = address?.hostAddress ?: return null
+        val host = r.host?.hostAddress ?: return null
         val txt = r.attributes.mapValues { (_, v) -> v?.toString(Charsets.UTF_8).orEmpty() }
-        val mac = if (Build.VERSION.SDK_INT >= 34) r.hostAddresses.filterIsInstance<Inet6Address>().firstNotNullOfOrNull { macFromEui64(it.address) } else null
-        return MdnsService(r.serviceName, r.serviceType.trim('.'), host, r.port, txt, mac)
+        return MdnsService(r.serviceName, r.serviceType.trim('.'), host, r.port, txt)
+    }
+
+    /**
+     * Android 14 and newer: follows the service instead of resolving it once. A device answering on IPv4 and IPv6
+     * sends its IPv6 addresses separately (an LG ESS does), and a single resolve often returns only the IPv4 one, so
+     * the MAC would be missing. Sends the service when its address is known, and again when a MAC turns up.
+     *
+     * The device is listed by its IPv4 address, as the port scan finds it. A device announcing only IPv6 addresses
+     * is listed by one of those, once [IPV4_GRACE_MS] has passed without an IPv4 one (so a dual-stack device whose
+     * IPv6 answer came first isn't listed twice).
+     */
+    @RequiresApi(34)
+    private fun watch(nsd: NsdManager, info: NsdServiceInfo, scope: CoroutineScope, send: (MdnsService) -> Unit): NsdManager.ServiceInfoCallback {
+        val lock = Any()
+        var sent: MdnsService? = null
+        var mac: String? = null
+        var waiting: Job? = null
+        fun offer(s: MdnsService) = synchronized(lock) {
+            val last = sent
+            if (last == null || last.host != s.host || last.port != s.port || (last.mac == null && s.mac != null)) { sent = s; send(s) }
+        }
+        val callback = object : NsdManager.ServiceInfoCallback {
+            override fun onServiceUpdated(r: NsdServiceInfo) {
+                val v6 = r.hostAddresses.filterIsInstance<Inet6Address>()
+                val txt = r.attributes.mapValues { (_, v) -> v?.toString(Charsets.UTF_8).orEmpty() }
+                synchronized(lock) {
+                    mac = v6.firstNotNullOfOrNull { macFromEui64(it.address) } ?: mac
+                    val v4 = r.hostAddresses.firstOrNull { it is Inet4Address }?.hostAddress
+                    val host = v4 ?: sent?.host
+                    if (host != null) {
+                        waiting?.cancel()
+                        offer(MdnsService(r.serviceName, r.serviceType.trim('.'), host, r.port, txt, mac))
+                    } else if (v6.isNotEmpty() && waiting == null) {
+                        // Link-local addresses only as a last resort: they work on this network segment only.
+                        val ip = (v6.firstOrNull { !it.isLinkLocalAddress } ?: v6.first()).hostAddress ?: return
+                        waiting = scope.launch {
+                            delay(IPV4_GRACE_MS)
+                            synchronized(lock) { if (sent == null) offer(MdnsService(r.serviceName, r.serviceType.trim('.'), ip, r.port, txt, mac)) }
+                        }
+                    }
+                }
+            }
+            override fun onServiceInfoCallbackRegistrationFailed(errorCode: Int) {}
+            override fun onServiceLost() {}
+            override fun onServiceInfoCallbackUnregistered() {}
+        }
+        runCatching { nsd.registerServiceInfoCallback(info, { it.run() }, callback) }
+        return callback
     }
 
     /**
@@ -108,4 +159,5 @@ object MdnsBrowser {
     }
 
     private const val RESOLVE_TIMEOUT_MS = 3_000L
+    private const val IPV4_GRACE_MS = 2_000L
 }
