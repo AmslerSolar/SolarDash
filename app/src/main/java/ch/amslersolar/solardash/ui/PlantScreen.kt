@@ -140,7 +140,7 @@ fun DashboardTab(
 ) {
     when (state) {
         PlantState.Loading -> Box(modifier.fillMaxSize(), Alignment.Center) { CircularProgressIndicator() }
-        PlantState.NoDevices -> NoDevices(onDiscover, null, modifier)
+        PlantState.NoDevices -> NoDevices(onDiscover, modifier)
         is PlantState.Live -> BoxWithConstraints(modifier) {
             val status = rememberPlantStatus(plant, state.snapshot)
             val context = LocalContext.current
@@ -184,7 +184,6 @@ fun DevicesTab(
     plant: Plant,
     state: PlantState,
     onAddDevice: () -> Unit,
-    onDiscover: () -> Unit,
     onOpenDevice: (DeviceConfig) -> Unit,
     onRemoveDevice: (DeviceConfig, deleteData: Boolean) -> Unit,
     onEditDevice: (DeviceConfig) -> Unit,
@@ -192,34 +191,31 @@ fun DevicesTab(
 ) {
     var pendingDelete by remember { mutableStateOf<DeviceConfig?>(null) }
 
-    if (plant.devices.isEmpty()) {
-        NoDevices(onDiscover, onAddDevice, modifier)
-    } else {
-        val statusById = (state as? PlantState.Live)?.snapshot?.devices?.associateBy { it.device.id }.orEmpty()
-        // Cards, two across on a phone, more on a tablet; inverters first, then batteries, meters, consumers.
-        val devices = DeviceKind.entries.flatMap { kind -> plant.devices.filter { it.type.kind == kind } }
-        androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
-            columns = androidx.compose.foundation.lazy.grid.GridCells.Adaptive(minSize = 168.dp),
-            modifier = modifier,
-            contentPadding = PaddingValues(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            item(key = "count", span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {
-                Text(
-                    pluralStringResource(R.plurals.screens_device_count, devices.size, devices.size),
-                    style = MaterialTheme.typography.titleLarge,
-                )
-            }
-            items(devices.size, key = { devices[it].id }) { i ->
-                val device = devices[i]
-                DeviceCard(
-                    device, statusById[device.id], onOpen = { onOpenDevice(device) },
-                    onEdit = { onEditDevice(device) }, onRemove = { pendingDelete = device },
-                )
-            }
-            item(key = "add") { AddDeviceCard(onAddDevice) }
+    val statusById = (state as? PlantState.Live)?.snapshot?.devices?.associateBy { it.device.id }.orEmpty()
+    // Cards, two across on a phone, more on a tablet; inverters first, then batteries, meters, consumers.
+    val devices = DeviceKind.entries.flatMap { kind -> plant.devices.filter { it.type.kind == kind } }
+    androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
+        columns = androidx.compose.foundation.lazy.grid.GridCells.Adaptive(minSize = 168.dp),
+        modifier = modifier,
+        contentPadding = PaddingValues(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        // Without devices only the add card shows.
+        if (devices.isNotEmpty()) item(key = "count", span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {
+            Text(
+                pluralStringResource(R.plurals.screens_device_count, devices.size, devices.size),
+                style = MaterialTheme.typography.titleLarge,
+            )
         }
+        items(devices.size, key = { devices[it].id }) { i ->
+            val device = devices[i]
+            DeviceCard(
+                device, statusById[device.id], onOpen = { onOpenDevice(device) },
+                onEdit = { onEditDevice(device) }, onRemove = { pendingDelete = device },
+            )
+        }
+        item(key = "add") { AddDeviceCard(onAddDevice) }
     }
 
     pendingDelete?.let { device ->
@@ -238,7 +234,7 @@ fun DevicesTab(
 }
 
 @Composable
-private fun NoDevices(onDiscover: () -> Unit, onAddDevice: (() -> Unit)?, modifier: Modifier) {
+private fun NoDevices(onDiscover: () -> Unit, modifier: Modifier) {
     Column(
         modifier.fillMaxSize().padding(32.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
@@ -246,7 +242,6 @@ private fun NoDevices(onDiscover: () -> Unit, onAddDevice: (() -> Unit)?, modifi
     ) {
         Text(stringResource(R.string.screens_no_devices))
         Button(onClick = onDiscover) { Text(stringResource(R.string.screens_discover_title)) }
-        if (onAddDevice != null) TextButton(onClick = onAddDevice) { Text(stringResource(R.string.screens_add_by_hand)) }
     }
 }
 

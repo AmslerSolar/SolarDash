@@ -229,7 +229,6 @@ class MainActivity : ComponentActivity() {
                                         plant = plant,
                                         state = state,
                                         onAddDevice = addDevice,
-                                        onDiscover = discover,
                                         onOpenDevice = { route = "plant/${plant.id}/device/${it.id}" },
                                         onRemoveDevice = { d, deleteData -> plantsVm.removeDevice(plant.id, d, deleteData) },
                                         onEditDevice = { route = "plant/${plant.id}/edit/${it.id}" },
