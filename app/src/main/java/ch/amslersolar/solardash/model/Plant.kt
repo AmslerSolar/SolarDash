@@ -34,6 +34,8 @@ enum class DeviceType(
     val needsPassword: Boolean = false,
     /** SunSpec meters: the grid sign isn't standardised, so the device form offers to invert it. */
     val gridSignOption: Boolean = false,
+    /** The device has an address on a bus ([DeviceConfig.unitId]): every Modbus type, and serial protocols like Aurora. */
+    val busAddress: Boolean = modbus,
 ) {
     GOODWE_ET("GoodWe ET hybrid", DeviceKind.INVERTER, defaultUnitId = 0xF7, supported = true),
     LG_ESS_SUNSPEC("LG ESS Home 8/10 (SunSpec)", DeviceKind.INVERTER, defaultPort = 6502, supported = true),
@@ -43,6 +45,10 @@ enum class DeviceType(
     HUAWEI("Huawei SUN2000", DeviceKind.INVERTER, supported = true),
     KOSTAL_PLENTICORE("Kostal Plenticore", DeviceKind.INVERTER, defaultPort = 1502, defaultUnitId = 71, supported = true),
     POWER_ONE("Power-One / ABB TRIO (via RS485 Modbus TCP gateway)", DeviceKind.INVERTER, defaultUnitId = 2, supported = true),
+    AURORA(
+        "ABB / Power-One / FIMER TRIO, PVI, UNO (Aurora protocol, RS485 via TCP gateway)",
+        DeviceKind.INVERTER, defaultPort = 8899, defaultUnitId = 2, supported = true, modbus = false, busAddress = true,
+    ),
     GROWATT("Growatt SPH/SPA/MIN/MOD (VPP protocol, via RS485 Modbus TCP gateway)", DeviceKind.INVERTER, supported = true),
     VICTRON("Victron Energy GX (Cerbo GX, Venus OS)", DeviceKind.INVERTER, defaultUnitId = 100, supported = true),
     VOLTRONIC(

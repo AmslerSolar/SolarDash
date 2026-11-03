@@ -25,6 +25,7 @@
     <string name="forms_ip_address">Dirección IP</string>
     <string name="forms_port">Puerto</string>
     <string name="forms_unit_id">ID de unidad Modbus</string>
+    <string name="forms_bus_address">Dirección en el bus</string>
     <string name="forms_access_token">Token de acceso</string>
     <string name="forms_device_password">Contraseña del dispositivo</string>
     <string name="forms_meter_measures">¿Qué mide este contador?</string>
@@ -70,6 +71,7 @@
     <string name="forms_hint_fimer">A través de un logger VSN300 / VSN700 o un inversor SunSpec nativo: puerto 502; ID de unidad 247 para el logger; si no, la dirección Aurora del inversor (a menudo 2).</string>
     <string name="forms_hint_apsystems_ecu">Activa Modbus en EMA Manager (firmware ECU-R 1.3.7 / 2.0.2, ECU-C C1.1.3 o posterior). Añade un dispositivo por microinversor: ID de unidad = su dirección Modbus en EMA Manager. Puerto 502.</string>
     <string name="forms_hint_abb_cdd">El CDD recoge por radio los datos de los microinversores ABB MICRO-0.3 y los muestra en su propia página web. Introduce la dirección IP del CDD, puerto 80; no se necesita contraseña. La app muestra el total de la instalación, cada microinversor y el registro de alarmas del CDD.</string>
+    <string name="forms_hint_aurora">Los inversores TRIO, PVI y UNO usan en RS485 el protocolo Aurora propio de ABB (salvo que Modbus RTU esté activado en su menú: entonces elige el tipo Power-One / ABB TRIO). Conecta la línea RS485 PC (+T/R, −T/R, RTN) a una pasarela RS485-TCP (p. ej. Elfin EW11, Waveshare) configurada a 19200 baudios, 8N1, servidor TCP, modo transparente (no Modbus); introduce la IP y el puerto de la pasarela, y la dirección RS485 del inversor (2 por defecto). Varios inversores en un mismo bus comparten la pasarela. La app solo envía comandos de lectura. Por la noche el inversor se apaga y aparece en reposo.</string>
     <string name="forms_hint_conext_cl">SunSpec Modbus TCP, puerto 502, ID de unidad 10 (valor de fábrica). Por SunSpec la potencia va en pasos de 100 W.</string>
     <string name="forms_hint_conext_cl60">Modbus TCP puerto 502, ID de unidad 1.</string>
     <string name="forms_hint_conext_gateway">Lee todo el sistema XW desde el Conext Gateway / Insight Home: puerto 503, ID de unidad 1.</string>

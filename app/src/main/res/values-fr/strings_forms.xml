@@ -25,6 +25,7 @@
     <string name="forms_ip_address">Adresse IP</string>
     <string name="forms_port">Port</string>
     <string name="forms_unit_id">ID d\'unité Modbus</string>
+    <string name="forms_bus_address">Adresse sur le bus</string>
     <string name="forms_access_token">Jeton d\'accès</string>
     <string name="forms_device_password">Mot de passe de l\'appareil</string>
     <string name="forms_meter_measures">Que mesure ce compteur&#160;?</string>
@@ -70,6 +71,7 @@
     <string name="forms_hint_fimer">Via un logger VSN300 / VSN700 ou un onduleur SunSpec natif&#160;: port 502&#160;; ID d\'unité 247 pour le logger, sinon l\'adresse Aurora de l\'onduleur (souvent 2).</string>
     <string name="forms_hint_apsystems_ecu">Activez Modbus dans EMA Manager (firmware ECU-R 1.3.7 / 2.0.2, ECU-C C1.1.3 ou plus récent). Ajoutez un appareil par micro-onduleur&#160;: ID d\'unité = son adresse Modbus dans EMA Manager. Port 502.</string>
     <string name="forms_hint_abb_cdd">Le CDD collecte par radio les données des micro-onduleurs ABB MICRO-0.3 et les affiche sur sa propre page web. Saisissez l\'adresse IP du CDD, port 80&#160;; aucun mot de passe n\'est nécessaire. L\'app affiche le total de l\'installation, chaque micro-onduleur et le journal d\'alarmes du CDD.</string>
+    <string name="forms_hint_aurora">Les onduleurs TRIO, PVI et UNO parlent le protocole Aurora propre à ABB sur RS485 (sauf si Modbus RTU est activé dans leur menu&#160;: choisissez alors le type Power-One / ABB TRIO). Raccordez la ligne RS485 PC (+T/R, −T/R, RTN) à une passerelle RS485-TCP (p.&#160;ex. Elfin EW11, Waveshare) réglée sur 19200 bauds, 8N1, serveur TCP, mode transparent (pas Modbus)&#160;; saisissez l\'IP et le port de la passerelle, et l\'adresse RS485 de l\'onduleur (2 par défaut). Plusieurs onduleurs sur un même bus partagent la passerelle. L\'app n\'envoie que des commandes de lecture. La nuit, l\'onduleur s\'éteint et apparaît en veille.</string>
     <string name="forms_hint_conext_cl">SunSpec Modbus TCP, port 502, ID d\'unité 10 (réglage d\'usine). Via SunSpec, la puissance varie par pas de 100 W.</string>
     <string name="forms_hint_conext_cl60">Modbus TCP port 502, ID d\'unité 1.</string>
     <string name="forms_hint_conext_gateway">Lit tout le système XW via la Conext Gateway / Insight Home&#160;: port 503, ID d\'unité 1.</string>

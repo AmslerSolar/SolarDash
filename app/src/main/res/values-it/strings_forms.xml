@@ -25,6 +25,7 @@
     <string name="forms_ip_address">Indirizzo IP</string>
     <string name="forms_port">Porta</string>
     <string name="forms_unit_id">ID unità Modbus</string>
+    <string name="forms_bus_address">Indirizzo sul bus</string>
     <string name="forms_access_token">Token di accesso</string>
     <string name="forms_device_password">Password del dispositivo</string>
     <string name="forms_meter_measures">Cosa misura questo contatore?</string>
@@ -70,6 +71,7 @@
     <string name="forms_hint_fimer">Tramite un logger VSN300 / VSN700 o un inverter SunSpec nativo: porta 502; ID unità 247 per il logger, altrimenti l\'indirizzo Aurora dell\'inverter (spesso 2).</string>
     <string name="forms_hint_apsystems_ecu">Attiva Modbus in EMA Manager (firmware ECU-R 1.3.7 / 2.0.2, ECU-C C1.1.3 o successivo). Aggiungi un dispositivo per ogni microinverter: ID unità = il suo indirizzo Modbus in EMA Manager. Porta 502.</string>
     <string name="forms_hint_abb_cdd">Il CDD raccoglie via radio i dati dei microinverter ABB MICRO-0.3 e li mostra sulla propria pagina web. Inserisci l\'indirizzo IP del CDD, porta 80; non serve una password. L\'app mostra il totale dell\'impianto, ogni microinverter e il registro allarmi del CDD.</string>
+    <string name="forms_hint_aurora">Gli inverter TRIO, PVI e UNO usano su RS485 il protocollo Aurora di ABB (a meno che Modbus RTU sia attivato nel loro menu: allora scegli il tipo Power-One / ABB TRIO). Collega la linea RS485 PC (+T/R, −T/R, RTN) a un gateway RS485-TCP (ad es. Elfin EW11, Waveshare) impostato su 19200 baud, 8N1, server TCP, modalità trasparente (non Modbus); inserisci IP e porta del gateway e l\'indirizzo RS485 dell\'inverter (2 di default). Più inverter sullo stesso bus condividono il gateway. L\'app invia solo comandi di lettura. Di notte l\'inverter si spegne e risulta in standby.</string>
     <string name="forms_hint_conext_cl">SunSpec Modbus TCP, porta 502, ID unità 10 (impostazione di fabbrica). Via SunSpec la potenza varia a passi di 100 W.</string>
     <string name="forms_hint_conext_cl60">Modbus TCP porta 502, ID unità 1.</string>
     <string name="forms_hint_conext_gateway">Legge l\'intero sistema XW dal Conext Gateway / Insight Home: porta 503, ID unità 1.</string>

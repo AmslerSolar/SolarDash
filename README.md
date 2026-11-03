@@ -16,6 +16,7 @@ shows plant totals plus per-device detail.
 | Huawei SUN2000 (SUN2000MA, incl. LUNA2000 battery and power meter) | Inverter | Modbus TCP 502, unit id 1 (SDongle) or 0 (direct) | Implemented, **not yet tested on hardware**. Notes: see [desktop/README.md](desktop/README.md#huawei-sun2000) |
 | KOSTAL PLENTICORE (plus G2, G3), also master/slave with battery | Inverter + battery | Modbus TCP 1502, unit id 71 | Implemented, **not yet tested on hardware** |
 | Power-One / ABB TRIO-5.8/8.5, -20.0/27.6, -50.0/60.0 | Inverter (PV only) | Modbus RTU via an RS485 ↔ Modbus TCP gateway, unit id = RS485 address | Implemented, **not yet tested on hardware** |
+| Power-One / ABB / FIMER TRIO, PVI, UNO (Aurora protocol) | Inverter (PV only) | ABB's Aurora protocol over RS485 via a transparent TCP gateway (port 8899), address = RS485 address | Implemented; checked on a TRIO-27.6-TL-OUTD-400 and a second three-phase Aurora inverter on one bus |
 | FENECON FEMS / OpenEMS | Whole system | Modbus TCP 502, unit id 1 (pre-installed read access) | Implemented, **not yet tested on hardware** |
 | Enphase IQ Gateway / Envoy (software 7+) | Microinverters + CTs (+ battery via live data) | Local HTTPS 443 with owner token | Implemented, **not yet tested on hardware** |
 | ABB CDD with ABB MICRO-0.3 microinverters | Microinverters (plant total + each unit, alarm log) | Local HTTP 80, no login (`/plant.xml`, `/alarm.xml`) | Implemented; checked on a real CDD with 16 microinverters |
@@ -171,7 +172,7 @@ unfinished work there is ignored, and runs ModbusSpec's validator; `LOCK.json` r
   hooks for what the format can't express. The golden tests (`test/…/driver/spec/*GoldenTest.kt`) check each
   spec driver against what the replaced hand-written driver read on the same register images, recorded before those
   drivers were removed (`test/resources/golden/`). Modbus devices that need logic (SunSpec chain,
-  Victron's unit ids) and non-Modbus devices (Voltronic, LG, Enphase, ABB CDD) stay hand-written.
+  Victron's unit ids) and non-Modbus devices (Voltronic, LG, Enphase, ABB CDD, Aurora) stay hand-written.
 - Switched (35 device types): Eastron SDM, KEBA P30, Carlo Gavazzi (EM24-E1, EM300, EM210, EM24-DIN), inepro
   PRO380, ABB B23/B24, Janitza UMG, Schneider iEM3000, Siemens PAC2200, KOSTAL KSEM, Shelly Pro 3EM, my-PV,
   Stiebel Eltron ISG, Alfen Eve, MENNEKES/Bender ECU, go-e, NIBE S series (model picked in the device form:
@@ -180,7 +181,7 @@ unfinished work there is ignored, and runs ModbusSpec's validator; `LOCK.json` r
   Gateway, CPS 403X, Power-One TRIO (asleep at night: `connection.sleeps`), Ingeteam INGECON SUN, Riello central.
 - Still hand-written: the SunSpec family (Fronius, SolarEdge, KACO, FIMER, APsystems, Conext CL, LG SunSpec; the
   SunSpec chain is discovered at runtime), Victron (several unit ids), and the non-Modbus Voltronic, LG ESS,
-  Enphase and ABB CDD.
+  Enphase, ABB CDD and Aurora.
 - Every other energy device in ModbusSpec (inverters, batteries, meters, wallboxes, heat pumps, heating rods,
   UPSs, boilers: `kinds:` in `app/modbusspec.txt`, 438 files) is available through four generic device types
   (`MODBUS_SPEC_INVERTER`, `…_BATTERY`, `…_METER`, `…_CONSUMER`, by the file's kind) with the file's id in
@@ -376,6 +377,16 @@ To add a device type, add a `DeviceType` entry, implement `DeviceDriver` mapping
   grid, so a plant needs a meter (or another inverter that has one) for grid and home figures.
 - The inverter is powered by its panels and stops answering at night. After a reading of 500 W or less, no answer
   is shown as "Sleeping (no sun)" with 0 W and retried once a minute; with no earlier reading it's an error.
+- Out of the box TRIO, PVI and UNO inverters speak ABB's own **Aurora** protocol on RS485 (factory setting:
+  address 2, 19200 baud, 8N1), not Modbus; the menu can switch some to Modbus RTU. For Aurora use the device type
+  "ABB / Power-One / FIMER … (Aurora protocol)" (`driver/abb/AuroraDriver.kt`) with an RS485 ↔ TCP gateway in
+  transparent mode (TCP server, no Modbus conversion); the Aurora address goes in the device's address field. Wire
+  the inverter's RS485 **PC** line (+T/R, −T/R and RTN), not the PMU line; on its RJ45 that's pins 3, 5 and 7.
+- Aurora frames: 10-byte request (address, command, 6 argument bytes, CRC-16/X-25 low byte first), 8-byte reply.
+  The state and alarm codes are those of the Modbus register map, so the texts and translations are shared; the
+  model letter of command 58 is the map's model identifier (`Y` = 89 = TRIO-27.6-TL-OUTD-400). Requests are
+  spaced 20 ms apart: back to back, about one in 200 got no reply. Reading the last-4-alarms list empties it on
+  the inverter, so the driver keeps the alarms it has seen.
 
 ## Spec documents
 

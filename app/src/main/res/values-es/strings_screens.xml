@@ -21,6 +21,7 @@
     <string name="screens_show">Mostrar</string>
     <string name="screens_waiting_for_data">Esperando datos…</string>
     <string name="screens_unit_id">ID de unidad %1$d</string>
+    <string name="screens_bus_address">dirección %1$d</string>
     <string name="screens_in_the_home">En casa</string>
     <string name="screens_rest_of_home">Resto de la casa</string>
     <string name="screens_today">Hoy</string>

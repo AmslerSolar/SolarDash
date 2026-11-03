@@ -5,6 +5,8 @@ package ch.amslersolar.solardash.driver
 
 import ch.amslersolar.solardash.driver.spec.SpecDevices
 import ch.amslersolar.solardash.driver.abb.AbbCddDriver
+import ch.amslersolar.solardash.driver.abb.AuroraDriver
+import ch.amslersolar.solardash.driver.abb.TcpAuroraTransport
 import ch.amslersolar.solardash.driver.apsystems.ApsystemsEcuDriver
 import ch.amslersolar.solardash.driver.demo.DemoBattery
 import ch.amslersolar.solardash.driver.demo.DemoHeatPump
@@ -63,6 +65,8 @@ object DeviceDrivers {
         DeviceType.VOLTRONIC -> VoltronicAxpertDriver(config.host, config.port)
         DeviceType.ENPHASE -> EnphaseGatewayDriver(config.host, config.port, config.password)
         DeviceType.ABB_CDD -> AbbCddDriver(config.host, config.port)
+        DeviceType.AURORA ->
+            AuroraDriver(connections.shared("aurora:${config.host}:${config.port}") { TcpAuroraTransport(config.host, config.port) }, config.unitId)
         else -> error("${config.type} is read through ModbusSpec")
     }
 }

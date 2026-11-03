@@ -176,7 +176,7 @@ fun AddDeviceScreen(
         serial = if (existing != null && (type != existing.type || unitId != existing.unitId.toString()) && serial == existing.serial) "" else serial,
     )
     val valid = !type.needsHost ||
-        (host.isNotBlank() && port.toIntOrNull() in 1..65535 && (!type.modbus || unitId.toIntOrNull() in 0..255) &&
+        (host.isNotBlank() && port.toIntOrNull() in 1..65535 && (!type.busAddress || unitId.toIntOrNull() in 0..255) &&
             (!type.needsPassword || password.isNotEmpty()))
 
     Scaffold(
@@ -282,6 +282,7 @@ fun AddDeviceScreen(
                 DeviceType.FIMER -> Hint(stringResource(R.string.forms_hint_fimer))
                 DeviceType.APSYSTEMS_ECU -> Hint(stringResource(R.string.forms_hint_apsystems_ecu))
                 DeviceType.ABB_CDD -> Hint(stringResource(R.string.forms_hint_abb_cdd))
+                DeviceType.AURORA -> Hint(stringResource(R.string.forms_hint_aurora))
                 DeviceType.CONEXT_CL -> Hint(stringResource(R.string.forms_hint_conext_cl))
                 DeviceType.CONEXT_CL60 -> Hint(stringResource(R.string.forms_hint_conext_cl60))
                 DeviceType.CONEXT_GATEWAY -> Hint(stringResource(R.string.forms_hint_conext_gateway))
@@ -345,10 +346,10 @@ fun AddDeviceScreen(
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.weight(1f),
                     )
-                    if (type.modbus) {
+                    if (type.busAddress) {
                         OutlinedTextField(
                             unitId, { unitId = it.filter(Char::isDigit); testResult = null },
-                            label = { Text(stringResource(R.string.forms_unit_id)) }, singleLine = true,
+                            label = { Text(stringResource(if (type.modbus) R.string.forms_unit_id else R.string.forms_bus_address)) }, singleLine = true,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier.weight(1f),
                         )

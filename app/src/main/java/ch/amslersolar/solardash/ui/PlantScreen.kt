@@ -314,6 +314,8 @@ fun deviceAddress(device: DeviceConfig): String = when {
     !device.type.needsHost -> SpecDevices.typeName(device.type, device.specId)
     device.type.modbus ->
         "${SpecDevices.typeName(device.type, device.specId)} · ${device.host}:${device.port} · ${stringResource(R.string.screens_unit_id, device.unitId)}"
+    device.type.busAddress ->
+        "${SpecDevices.typeName(device.type, device.specId)} · ${device.host}:${device.port} · ${stringResource(R.string.screens_bus_address, device.unitId)}"
     else -> "${SpecDevices.typeName(device.type, device.specId)} · ${device.host}:${device.port}"
 }
 
