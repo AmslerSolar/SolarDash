@@ -187,16 +187,81 @@ class AuroraDriverTest {
 
     @Test
     fun aLostStateReplyIsAskedAgain() = runBlocking {
-        var lost = 1
+        var lost = 0
+        var stateCalls = 0
         val bus = object : AuroraTransport {
             val inner = FakeBus(2, trio)
             override suspend fun exchange(address: Int, command: Int, vararg args: Int): ByteArray {
-                if (command == AuroraProtocol.STATE && lost-- > 0) throw SocketTimeoutException("lost")
+                if (command == AuroraProtocol.STATE) {
+                    stateCalls++
+                    if (lost-- > 0) throw SocketTimeoutException("lost")
+                }
                 return inner.exchange(address, command, *args)
             }
             override fun close() {}
         }
-        assertEquals("Run", AuroraDriver(bus, 2).read().status)
+        val driver = AuroraDriver(bus, 2)
+        driver.read()
+        lost = 1
+        stateCalls = 0
+        assertEquals("Run", driver.read().status)
+        assertEquals(2, stateCalls)
+    }
+
+    @Test
+    fun aSilentInverterIsAskedForItsStateOnce() = runBlocking {
+        var stateCalls = 0
+        val bus = object : AuroraTransport {
+            override suspend fun exchange(address: Int, command: Int, vararg args: Int): ByteArray {
+                if (command == AuroraProtocol.STATE) stateCalls++
+                throw SocketTimeoutException("asleep")
+            }
+            override fun close() {}
+        }
+        val driver = AuroraDriver(bus, 2)
+        repeat(3) { try { driver.read(); fail("expected IOException") } catch (_: IOException) {} }
+        assertEquals(3, stateCalls) // at night: one timeout per poll, not two
+    }
+
+    /** [trio], with the measurements in [lost] getting no reply while it's true. */
+    private class LossyBus(private val lost: Set<String>, replies: Map<String, String>) : AuroraTransport {
+        var losing = false
+        val inner = FakeBus(2, replies)
+        val asked = mutableListOf<String>()
+        override suspend fun exchange(address: Int, command: Int, vararg args: Int): ByteArray {
+            if (command == AuroraProtocol.MEASURE) asked += "59/${args[0]}"
+            if (losing && command == AuroraProtocol.MEASURE && "59/${args[0]}" in lost) throw SocketTimeoutException("lost")
+            return inner.exchange(address, command, *args)
+        }
+        override fun close() {}
+    }
+
+    @Test
+    fun aLostMeasurementKeepsItsLastValueForAMinute() = runBlocking {
+        var now = 0L
+        val bus = LossyBus(setOf("59/3", "59/61"), trio)
+        val driver = AuroraDriver(bus, 2) { now }
+        driver.read()
+        bus.losing = true
+        now = 30_000
+        val r = driver.read()
+        assertEquals(612, r.pvPowerW)
+        assertEquals(3, r.phases.size)
+        now = 61_000
+        val later = driver.read()
+        assertNull(later.pvPowerW)
+        assertEquals(1, later.phases.size) // without L1's voltage: the single grid voltage
+    }
+
+    @Test
+    fun timeoutsDontStopAMeasurementBeingAsked() = runBlocking {
+        val bus = LossyBus(setOf("59/3"), trio)
+        val driver = AuroraDriver(bus, 2)
+        bus.losing = true
+        repeat(5) { driver.read() }
+        bus.losing = false
+        assertEquals(612, driver.read().pvPowerW)
+        assertEquals(6, bus.asked.count { it == "59/3" })
     }
 
     @Test
@@ -212,5 +277,158 @@ class AuroraDriverTest {
             listOf(DeviceProblem(FAULT, "Ground fault (E018)"), DeviceProblem(FAULT, "Ground fault (state 9)")),
             problemsFor("00 09 00 00 00 17"),
         )
+    }
+
+    @Test
+    fun aLateReplyIsNotTakenForTheNextRequest() = runBlocking {
+        // A gateway that sends the first reply 400 ms late, the others at once; each reply tells which request it answers.
+        val server = java.net.ServerSocket(0)
+        kotlin.concurrent.thread(isDaemon = true) {
+            server.accept().use { s ->
+                val input = s.getInputStream()
+                val req = ByteArray(10)
+                var n = 0
+                while (true) {
+                    var got = 0
+                    while (got < 10) { val r = input.read(req, got, 10 - got); if (r < 0) return@use; got += r }
+                    n++
+                    val data = byteArrayOf(0, 6, 0, 0, 0, n.toByte())
+                    val crc = AuroraProtocol.crc(data)
+                    val reply = data + byteArrayOf(crc.toByte(), (crc ushr 8).toByte())
+                    if (n == 1) kotlin.concurrent.thread { Thread.sleep(400); s.getOutputStream().write(reply) }
+                    else s.getOutputStream().write(reply)
+                }
+            }
+        }
+        server.use {
+            TcpAuroraTransport("127.0.0.1", it.localPort, timeoutMs = 200).use { bus ->
+                try {
+                    bus.exchange(2, AuroraProtocol.STATE)
+                    fail("expected a timeout")
+                } catch (_: SocketTimeoutException) {
+                }
+                assertEquals(2, bus.exchange(2, AuroraProtocol.STATE)[5].toInt()) // not request 1's late reply
+            }
+        }
+    }
+
+    /** Answers from [sequence] per key while it has entries left, then from [replies]. */
+    private class ScriptedBus(replies: Map<String, String>, private val sequence: Map<String, MutableList<String>>) : AuroraTransport {
+        val inner = FakeBus(2, replies)
+        override suspend fun exchange(address: Int, command: Int, vararg args: Int): ByteArray {
+            val key = if (command == AuroraProtocol.ENERGY || command == AuroraProtocol.MEASURE) "$command/${args[0]}" else "$command"
+            val next = sequence[key]?.removeFirstOrNull() ?: return inner.exchange(address, command, *args)
+            return next.split(' ').map { it.toInt(16).toByte() }.toByteArray()
+        }
+        override fun close() {}
+    }
+
+    @Test
+    fun aStateReplyMeantForAnotherRequestIsAskedAgain() = runBlocking {
+        // Seen 2026-11-04: a grid voltage reply (236.3 V) in place of the state.
+        val bus = ScriptedBus(trio, mapOf("50" to mutableListOf("00 06 43 6c 4b ab")))
+        val r = AuroraDriver(bus, 2).read()
+        assertEquals("Run", r.status)
+        assertTrue(r.problems.isEmpty())
+    }
+
+    @Test
+    fun aMeasurementOutOfRangeIsDropped() = runBlocking {
+        // 2.1e9 W: a counter's bytes read as a float
+        val r = AuroraDriver(ScriptedBus(trio, mapOf("59/3" to mutableListOf("00 06 4f 00 00 00"))), 2).read()
+        assertNull(r.pvPowerW)
+    }
+
+    @Test
+    fun anEnergyCounterAboveTheTotalIsDropped() = runBlocking {
+        // Seen 2026-11-04: "today" 1'150'144.7 kWh, a float reply (0x448b…) read as a counter.
+        val bus = ScriptedBus(trio, mapOf("78/0" to mutableListOf("00 06 00 00 23 37", "00 06 44 8b 00 00")))
+        val driver = AuroraDriver(bus, 2)
+        driver.read()
+        repeat(AuroraDriver.SLOW_REFRESH_POLLS) { driver.read() }
+        val r = driver.read()
+        assertEquals(9.015, r.today.pvKwh!!, 1e-9) // the earlier value stays
+        assertEquals(553_710.195, r.lifetimePvKwh!!, 1e-6)
+    }
+
+    @Test
+    fun aDroppingTotalIsTakenOnlyWhenReadTwice() = runBlocking {
+        val lower = "00 06 00 00 30 39" // 12345 Wh
+        val bus = ScriptedBus(trio, mapOf("78/5" to mutableListOf("00 06 21 00 f2 73", lower, lower)))
+        val driver = AuroraDriver(bus, 2)
+        driver.read()
+        repeat(AuroraDriver.SLOW_REFRESH_POLLS) { driver.read() }
+        assertEquals(553_710.195, driver.read().lifetimePvKwh!!, 1e-6) // once: kept
+        repeat(AuroraDriver.SLOW_REFRESH_POLLS - 1) { driver.read() }
+        assertEquals(12.345, driver.read().lifetimePvKwh!!, 1e-9) // twice: taken
+    }
+
+    @Test
+    fun alarmCodesThatDontExistAreIgnored() = runBlocking {
+        val bus = ScriptedBus(trio, mapOf("86" to mutableListOf("00 06 43 6c 4b ab")))
+        val r = AuroraDriver(bus, 2).read()
+        val state = r.details.first { it.title == "State" }.rows.toMap()
+        assertNull(state["Recent alarms"])
+    }
+
+    @Test
+    fun aReplyStillUnderWayDoesntShiftTheLaterOnes() = runBlocking {
+        // A gateway that answers request 1 twice, the second copy 30 ms later (like a reply delayed past the one
+        // taken for it): the later requests must still get their own replies.
+        val server = java.net.ServerSocket(0)
+        kotlin.concurrent.thread(isDaemon = true) {
+            server.accept().use { s ->
+                val input = s.getInputStream()
+                val req = ByteArray(10)
+                var n = 0
+                fun reply(k: Int): ByteArray {
+                    val data = byteArrayOf(0, 6, 0, 0, 0, k.toByte())
+                    val crc = AuroraProtocol.crc(data)
+                    return data + byteArrayOf(crc.toByte(), (crc ushr 8).toByte())
+                }
+                while (true) {
+                    var got = 0
+                    while (got < 10) { val r = input.read(req, got, 10 - got); if (r < 0) return@use; got += r }
+                    n++
+                    s.getOutputStream().write(reply(n))
+                    if (n == 1) { Thread.sleep(30); s.getOutputStream().write(reply(1)) }
+                }
+            }
+        }
+        server.use {
+            TcpAuroraTransport("127.0.0.1", it.localPort).use { bus ->
+                assertEquals(listOf(1, 2, 3, 4), (1..4).map { bus.exchange(2, AuroraProtocol.STATE)[5].toInt() })
+            }
+        }
+    }
+
+    @Test
+    fun anEarlierReplyArrivingFirstIsReplacedByTheOwnOne() = runBlocking {
+        // Request 2 gets request 1's reply again first (delayed), its own reply 30 ms later.
+        val server = java.net.ServerSocket(0)
+        kotlin.concurrent.thread(isDaemon = true) {
+            server.accept().use { s ->
+                val input = s.getInputStream()
+                val req = ByteArray(10)
+                var n = 0
+                fun reply(k: Int): ByteArray {
+                    val data = byteArrayOf(0, 6, 0, 0, 0, k.toByte())
+                    val crc = AuroraProtocol.crc(data)
+                    return data + byteArrayOf(crc.toByte(), (crc ushr 8).toByte())
+                }
+                while (true) {
+                    var got = 0
+                    while (got < 10) { val r = input.read(req, got, 10 - got); if (r < 0) return@use; got += r }
+                    n++
+                    if (n == 2) { s.getOutputStream().write(reply(1)); Thread.sleep(30) }
+                    s.getOutputStream().write(reply(n))
+                }
+            }
+        }
+        server.use {
+            TcpAuroraTransport("127.0.0.1", it.localPort).use { bus ->
+                assertEquals(listOf(1, 2, 3), (1..3).map { bus.exchange(2, AuroraProtocol.STATE)[5].toInt() })
+            }
+        }
     }
 }

@@ -396,10 +396,15 @@ class DeviceScanner(
         private const val ROLL_CALL_TIMEOUT_MS = 400
         /** The Aurora addresses asked on a gateway's port, in order (the inverters' range; 2 is their factory setting). */
         val AURORA_ADDRESSES = 2..63
-        /** Aurora replies come within some 30 ms at 19200 baud. */
-        private const val AURORA_TIMEOUT_MS = 200
+        /**
+         * Aurora replies come within some 30 ms at 19200 baud, but a gateway may delay one by 1.1 s (a re-sent TCP
+         * segment, see TcpAuroraTransport).
+         */
+        private const val AURORA_TIMEOUT_MS = 1_500
+        /** Quiet time after a silent address: short, since most addresses are silent (the timeout covers late replies). */
+        private const val AURORA_SETTLE_MS = 200L
         /** The Aurora roll call stops after this many silent addresses in a row past the last one that answered. */
-        const val AURORA_MAX_SILENT = 8
+        const val AURORA_MAX_SILENT = 6
         /** Behind a hub: give up after this many refused or unanswered requests (a hub that stopped answering). */
         private const val HUB_MAX_FAILURES = 3
         private const val HUB_RETRY_MS = 1_000L
@@ -626,7 +631,7 @@ class DeviceScanner(
          * doesn't pass the Aurora CRC. Calls onTry per address (the rest at once when it stops early).
          */
         suspend fun auroraRollCall(host: String, port: Int, onTry: () -> Unit = {}): List<FoundDevice> =
-            TcpAuroraTransport(host, port, AURORA_TIMEOUT_MS).use { bus ->
+            TcpAuroraTransport(host, port, AURORA_TIMEOUT_MS, settleMs = AURORA_SETTLE_MS).use { bus ->
                 val found = mutableListOf<FoundDevice>()
                 var silent = 0
                 for ((i, address) in AURORA_ADDRESSES.withIndex()) {

@@ -421,13 +421,13 @@ class DeviceScannerTest {
     }
 
     @Test
-    fun auroraRollCallOnASilentBusFindsNothingQuickly() = runBlocking {
+    fun auroraRollCallOnASilentBusGivesUpAfterTheSilentAddresses() = runBlocking {
         val (server, asked) = fakeAuroraGateway(emptySet())
         server.use {
             val t0 = System.currentTimeMillis()
             assertTrue(DeviceScanner.auroraRollCall("127.0.0.1", it.localPort).isEmpty())
             assertEquals(DeviceScanner.AURORA_MAX_SILENT, asked.size)
-            assertTrue(System.currentTimeMillis() - t0 < 5_000)
+            assertTrue(System.currentTimeMillis() - t0 < (DeviceScanner.AURORA_MAX_SILENT + 2) * 1_500L)
         }
     }
 
