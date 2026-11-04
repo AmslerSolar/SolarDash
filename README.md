@@ -283,6 +283,24 @@ The full-screen button on a plant's Dashboard tab shows the energy flow full scr
   from leaving the app, use Android's *App pinning* (Settings → Security). The backlight at its minimum is
   still faintly visible on LCD tablets in a dark room.
 
+## Watching a plant from elsewhere (observers)
+
+A plant's tablet can share it with relatives: Edit plant → **Share with observers**. The tablet then sends its
+history (every minute, plant and device channels), day totals, fault log and description to one or more stores,
+end-to-end encrypted (AES-256-GCM) and signed (ECDSA P-256, key in the Android keystore), and live values every
+3 s while someone watches. The QR code shown there opens the web view in a phone's browser, which offers
+"Open in SolarDash"; in the app, **+ → Watch a plant from elsewhere…** takes the link or code. An observed plant has
+the same screens, from its own copy of the data (works offline with what it has seen); its devices can't be
+changed. **New code** cuts off everyone with the old one. Stores can't read anything and can be replaced: the
+tablet keeps everything it sent and sends it again to a new store.
+
+- Design: `docs/design/remote-viewing.md`; wire format: `docs/design/observer-protocol.md`.
+- App: `remote/` (Wire.kt: envelopes and crypto; Block.kt: hour blocks; Contents.kt: JSON contents;
+  Collector.kt: the sharing tablet; Observer.kt: the watching side; StoreClient.kt).
+- Store (PHP 7.4+, openssl): `store/store.php`, upload notes in `store/README.md`, conformance tests
+  `python3 store/tests/conformance.py`. The app's `RemoteViewingTest` runs against it with `STORE_URL` set.
+- Web view: `store/web/o/` (served at `https://amsler-solar.ch/solardash/o/`).
+
 ## Structure
 
 ```
@@ -300,6 +318,7 @@ driver/sma/       SMA native Modbus (unit 3)
 driver/sungrow/   Sungrow SH / SG
 driver/growatt/   Growatt VPP protocol
 driver/voltronic/ Voltronic Axpert ASCII protocol over a transparent TCP gateway
+remote/           Sharing plants with observers: wire format, collector, observer, store client
 driver/meter/     Energy meters (Gavazzi, Eastron, inepro, ABB, Janitza, Schneider, Siemens, KSEM, Shelly)
 driver/consumer/  Heat pumps, heating rods, wallboxes (read only)
 driver/fenecon/, driver/enphase/, driver/fimer/,

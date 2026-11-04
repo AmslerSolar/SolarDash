@@ -106,4 +106,16 @@
     </plurals>
     <string name="screens_more_options">Más opciones</string>
     <string name="screens_delete">Eliminar</string>
+    <string name="screens_share">Compartir con observadores</string>
+    <string name="screens_share_hint">Los familiares pueden seguir esta instalación en un teléfono, una tableta o un navegador con el código de abajo. Los datos pasan cifrados por un almacén en Internet, que no puede leerlos. Aun así, la curva de energía muestra cuándo hay alguien en casa.</string>
+    <string name="screens_share_scan">Escanear con la cámara de un teléfono:</string>
+    <string name="screens_share_qr">Código QR para seguir esta instalación</string>
+    <string name="screens_share_link">Enviar enlace</string>
+    <string name="screens_new_code">Código nuevo</string>
+    <string name="screens_new_code_hint">Quien tenga el código actual deja de ver la instalación y necesita el nuevo.</string>
+    <string name="screens_stores">Almacenes (una dirección por línea)</string>
+    <string name="screens_stop_sharing_title">¿Dejar de compartir?</string>
+    <string name="screens_stop_sharing_text">Los almacenes borran los datos de esta instalación, y quien la sigue deja de verla.</string>
+    <string name="screens_stop_sharing">Dejar de compartir</string>
+    <string name="screens_observed_hint">Seguida a distancia: los datos vienen de la tableta de la instalación. Los dispositivos y ajustes se cambian allí. Almacenes:</string>
 </resources>

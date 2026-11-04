@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import ch.amslersolar.solardash.BuildConfig
 import ch.amslersolar.solardash.R
 import ch.amslersolar.solardash.model.Plant
+import ch.amslersolar.solardash.remote.ObserverCode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,6 +54,8 @@ fun PlantsScreen(
     plants: List<Plant>?,
     onOpen: (Plant) -> Unit,
     onAdd: (name: String) -> Unit,
+    /** Adds a plant watched from elsewhere, from its observer code. */
+    onObserve: (ObserverCode) -> Unit,
     onDelete: (Plant, deleteDeviceData: Boolean) -> Unit,
     onRename: (Plant, String) -> Unit,
 ) {
@@ -106,7 +109,7 @@ fun PlantsScreen(
         }
     }
 
-    if (adding) AddPlantDialog(onAdd = { onAdd(it); adding = false }, onDismiss = { adding = false })
+    if (adding) AddPlantDialog(onAdd = { onAdd(it); adding = false }, onObserve = { onObserve(it); adding = false }, onDismiss = { adding = false })
 
     renaming?.let { plant ->
         RenameDialog(stringResource(R.string.forms_rename_plant), plant.name, onRename = { onRename(plant, it); renaming = null }, onDismiss = { renaming = null })
@@ -124,16 +127,51 @@ fun PlantsScreen(
     }
 }
 
+/** A new plant of one's own (its name), or one watched from elsewhere (its observer code or link, pasted or scanned). */
 @Composable
-private fun AddPlantDialog(onAdd: (String) -> Unit, onDismiss: () -> Unit) {
+private fun AddPlantDialog(onAdd: (String) -> Unit, onObserve: (ObserverCode) -> Unit, onDismiss: () -> Unit) {
     var name by rememberSaveable { mutableStateOf("") }
+    var observing by rememberSaveable { mutableStateOf(false) }
+    var code by rememberSaveable { mutableStateOf("") }
+    var scanning by rememberSaveable { mutableStateOf(false) }
+    val parsed = remember(code) { ObserverCode.parse(code) }
+    if (scanning) QrScannerDialog(onResult = { code = it; scanning = false }, onDismiss = { scanning = false })
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.forms_new_plant)) },
+        title = { Text(stringResource(if (observing) R.string.forms_observe_plant else R.string.forms_new_plant)) },
         text = {
-            OutlinedTextField(name, { name = it }, label = { Text(stringResource(R.string.forms_name)) }, placeholder = { Text(stringResource(R.string.forms_plant_name_placeholder)) }, singleLine = true)
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (observing) {
+                    Text(stringResource(R.string.forms_observe_hint), style = MaterialTheme.typography.bodyMedium)
+                    OutlinedTextField(
+                        code, { code = it }, label = { Text(stringResource(R.string.forms_observer_code)) },
+                        isError = code.isNotBlank() && parsed == null,
+                        supportingText = { if (code.isNotBlank() && parsed == null) Text(stringResource(R.string.forms_observer_code_invalid)) },
+                        maxLines = 4,
+                    )
+                    TextButton(onClick = { scanning = true }) { Text(stringResource(R.string.forms_scan_qr)) }
+                } else {
+                    OutlinedTextField(name, { name = it }, label = { Text(stringResource(R.string.forms_name)) }, placeholder = { Text(stringResource(R.string.forms_plant_name_placeholder)) }, singleLine = true)
+                    TextButton(onClick = { observing = true }) { Text(stringResource(R.string.forms_observe_plant_open)) }
+                }
+            }
         },
-        confirmButton = { TextButton(enabled = name.isNotBlank(), onClick = { onAdd(name.trim()) }) { Text(stringResource(R.string.forms_add)) } },
+        confirmButton = {
+            if (observing) TextButton(enabled = parsed != null, onClick = { parsed?.let(onObserve) }) { Text(stringResource(R.string.forms_observe)) }
+            else TextButton(enabled = name.isNotBlank(), onClick = { onAdd(name.trim()) }) { Text(stringResource(R.string.forms_add)) }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.forms_cancel)) } },
+    )
+}
+
+/** Asked when the app is opened with an observer code (the web view's "Open in SolarDash"). */
+@Composable
+fun ObserveDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.forms_observe_title)) },
+        text = { Text(stringResource(R.string.forms_observe_hint)) },
+        confirmButton = { TextButton(onClick = onConfirm) { Text(stringResource(R.string.forms_observe)) } },
         dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.forms_cancel)) } },
     )
 }

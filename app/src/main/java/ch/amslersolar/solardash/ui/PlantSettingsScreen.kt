@@ -38,12 +38,23 @@ import ch.amslersolar.solardash.R
 import ch.amslersolar.solardash.model.Plant
 
 /**
- * Editing a plant: its name (saved with the button; blank or unchanged names can't be saved) and whether it is an
- * off-grid plant (saved at once).
+ * Editing a plant: its name (saved with the button; blank or unchanged names can't be saved), whether it is an
+ * off-grid plant (saved at once) and sharing it with observers. An observed plant is changed on its own tablet:
+ * here it only says so.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlantSettingsScreen(plant: Plant, onRename: (String) -> Unit, onOffGrid: (Boolean) -> Unit, onBack: () -> Unit) {
+fun PlantSettingsScreen(
+    plant: Plant,
+    onRename: (String) -> Unit,
+    onOffGrid: (Boolean) -> Unit,
+    onBack: () -> Unit,
+    sharingLink: String? = null,
+    onShare: () -> Unit = {},
+    onStopSharing: () -> Unit = {},
+    onNewCode: () -> Unit = {},
+    onStores: (List<String>) -> Unit = {},
+) {
     var name by rememberSaveable(plant.id) { mutableStateOf(plant.name) }
     val trimmed = name.trim()
     Scaffold(
@@ -60,6 +71,15 @@ fun PlantSettingsScreen(plant: Plant, onRename: (String) -> Unit, onOffGrid: (Bo
             Modifier.padding(padding).verticalScroll(rememberScrollState()).padding(16.dp).widthIn(max = 600.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            if (plant.observed != null) {
+                Text(stringResource(R.string.screens_observed_hint), style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    plant.observed.stores.joinToString("\n"),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                return@Column
+            }
             OutlinedTextField(
                 name, { name = it },
                 label = { Text(stringResource(R.string.forms_name)) },
@@ -84,6 +104,8 @@ fun PlantSettingsScreen(plant: Plant, onRename: (String) -> Unit, onOffGrid: (Bo
                 }
                 Switch(checked = plant.offGrid, onCheckedChange = onOffGrid)
             }
+            HorizontalDivider()
+            SharingSection(plant, sharingLink, onShare, onStopSharing, onNewCode, onStores)
         }
     }
 }

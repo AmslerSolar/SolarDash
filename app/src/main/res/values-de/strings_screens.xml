@@ -103,4 +103,16 @@
     </plurals>
     <string name="screens_more_options">Weitere Optionen</string>
     <string name="screens_delete">Löschen</string>
+    <string name="screens_share">Mit Beobachtern teilen</string>
+    <string name="screens_share_hint">Angehörige können diese Anlage mit dem Code unten auf einem Telefon, Tablet oder im Browser beobachten. Die Daten gehen verschlüsselt über einen Speicher im Internet, der sie nicht lesen kann. Trotzdem zeigt der Energieverlauf, wann jemand zu Hause ist.</string>
+    <string name="screens_share_scan">Mit der Kamera eines Telefons scannen:</string>
+    <string name="screens_share_qr">QR-Code zum Beobachten dieser Anlage</string>
+    <string name="screens_share_link">Link senden</string>
+    <string name="screens_new_code">Neuer Code</string>
+    <string name="screens_new_code_hint">Wer den bisherigen Code hat, sieht die Anlage nicht mehr und braucht den neuen.</string>
+    <string name="screens_stores">Speicher (eine Adresse pro Zeile)</string>
+    <string name="screens_stop_sharing_title">Teilen beenden?</string>
+    <string name="screens_stop_sharing_text">Die Speicher löschen die Daten dieser Anlage, und wer sie beobachtet, sieht sie nicht mehr.</string>
+    <string name="screens_stop_sharing">Teilen beenden</string>
+    <string name="screens_observed_hint">Von anderswo beobachtet: Die Daten kommen vom eigenen Tablet der Anlage. Geräte und Einstellungen werden dort geändert. Speicher:</string>
 </resources>

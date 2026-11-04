@@ -50,6 +50,8 @@ fun DeviceScreen(
     onRemove: (deleteData: Boolean) -> Unit,
     /** Opens the register sweep; offered for Modbus devices on the network only. */
     onSweep: () -> Unit,
+    /** False for an observed plant's device: it's changed on the plant's own tablet. */
+    editable: Boolean = true,
 ) {
     var menu by remember { mutableStateOf(false) }
     var renaming by rememberSaveable { mutableStateOf(false) }
@@ -62,7 +64,7 @@ fun DeviceScreen(
                     IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.screens_back)) }
                 },
                 actions = {
-                    Box {
+                    if (editable) Box {
                         IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.screens_more_options)) }
                         DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                             DropdownMenuItem(text = { Text(stringResource(R.string.forms_rename)) }, onClick = { menu = false; renaming = true })

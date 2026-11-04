@@ -141,4 +141,14 @@
     <string name="forms_hidden_problems">Ausgeblendete Meldungen</string>
     <string name="forms_hint_hidden_problems">Werden in der Übersicht und im Kiosk nicht angezeigt; im Fehlerprotokoll bleiben sie festgehalten.</string>
     <string name="forms_show_again">Wieder anzeigen</string>
+    <string name="forms_observe_plant">Anlage beobachten</string>
+    <string name="forms_observe_plant_open">Anlage von anderswo beobachten…</string>
+    <string name="forms_observe_title">Diese Anlage beobachten?</string>
+    <string name="forms_observe_hint">SolarDash zeigt die Anlage mit den Daten, die ihr eigenes Tablet teilt. Von hier lässt sich weder die Anlage noch ein Gerät verändern. Füge den erhaltenen Link oder Code ein oder scanne den QR-Code auf dem Tablet der Anlage.</string>
+    <string name="forms_observer_code">Link oder Code</string>
+    <string name="forms_observer_code_invalid">Das ist kein Link oder Code einer Anlage.</string>
+    <string name="forms_scan_qr">QR-Code scannen</string>
+    <string name="forms_scan_hint">Richte die Kamera auf den QR-Code in den Einstellungen der Anlage auf ihrem Tablet.</string>
+    <string name="forms_camera_denied">SolarDash darf die Kamera nicht verwenden. Erlaube es in den Systemeinstellungen oder füge den Link ein.</string>
+    <string name="forms_observe">Beobachten</string>
 </resources>

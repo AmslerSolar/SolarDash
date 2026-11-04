@@ -1,0 +1,43 @@
+{
+    "note": "Made by WireTest with -Dvectors.write=true; a software key, never a real plant's.",
+    "plantId": "v34VL5f0NvR5_92EKnVX4w",
+    "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAExixU87QCUfhnPVJQE1sRDcSGwzNl4-OpmYE9bRBgVzIXIkT4M0mapbr49pe5_utXZIlVIC-117ClZnh1Hhqeww",
+    "privateKeyPkcs8": "MEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCB1HvnJTufKrO2Tla-OP_ectYrvJrbtgkVsZYLU_mzl_g",
+    "dataKey": "QY716WD7Y5ELj3geOGcJ-2Cy83Tespwzihr-m6tOdWE",
+    "readToken": "C12M3kLK1Evxeg2ONUlMfg",
+    "envelopes": [
+        {
+            "kind": 0,
+            "name": "register",
+            "seq": 1,
+            "envelope": "U0RPMQAAAAAAAAAAAQAAAZpOSQaACHJlZ2lzdGVyAAAAezBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABMYsVPO0AlH4Zz1SUBNbEQ3EhsMzZePjqZmBPW0QYFcyFyJE-DNJmqW6-PaXuf7rV2SJVSAvtdewpWZ4dR4ansNxwNSOGEQMClJOrK5RUFf5Yj7tqphtpQjYJfMpB0UiTQBGMEQCICPt4YVPmjaqjf5KV3Umz1jT6be9zaalXbIAmJt5ejOtAiAp76sw8GfRZWQ6mAgxpsjFG1gllonG2wDo5t2hRBvvsg"
+        },
+        {
+            "kind": 5,
+            "name": "plant",
+            "seq": 2,
+            "envelope": "U0RPMQUAAAAAAAAAAgAAAZpOSQaABXBsYW50AAAAPo3lv1hcozWXEu59jlcdjEELpPh9spYnfrjytJ_r_r4PUNTpUudjcwPap4Rr8FANHXF6Agyo5k0zhYKbBzadAEcwRQIhAL1ZddtDCwqmpClP-jFQv6OWGumEdnFkknWMhN9SGHmZAiARV1DdBEBzwDdua9wJ-92ZOCWlpPfJHvOEV0QubJxjDA",
+            "content": "{\"name\":\"Home\",\"devices\":[]}"
+        },
+        {
+            "kind": 1,
+            "name": "b1762250400",
+            "seq": 3,
+            "envelope": "U0RPMQEAAAAAAAAAAwAAAZpOSQaAC2IxNzYyMjUwNDAwAAAASV1Eo9H3SWPQgoN6m-U8u8pMOfCHfGhZHxtilOheXOhRpx_r3cVd5J9Yk0LgKd9CJxxo9TXW8i0mflI2wCFGUv6VK7mqG09xZEkARzBFAiEAjhfERQv4YJ2VD9fUSqwCt_3NQObt4BITNkgTqZGq9aYCIFRond2Gu0LP06ojFR3r6AcfXF_h_BjXhIYBJrTgfRW0",
+            "block": "AWkJzqAAPAA8AAICcHYAA3NvYwD_________D____z8AAAAA0A8CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        },
+        {
+            "kind": 4,
+            "name": "live",
+            "seq": 4,
+            "envelope": "U0RPMQQAAAAAAAAABAAAAZpOSQaABGxpdmUAAAA8w4WtwBeqO7Uu65Vh6A1ENRBZ98bVSFRaicMrbKFZ8yL6lw-tz9EtiqT2fRhg8L6aFBiXR02MhXc2wVkSAEcwRQIgXoLTYHJaS7axwR4CprL2z33C5U-T1soYz60DTXLS3rwCIQDefjY1MQ7zuYkTz826SxlcOEHzFo6QW5WFQ8J2wVCOlg",
+            "content": "{\"t\":1762250000000,\"pv\":3200}"
+        },
+        {
+            "kind": 7,
+            "name": "delete",
+            "seq": 5,
+            "envelope": "U0RPMQcAAAAAAAAABQAAAZpOSQaABmRlbGV0ZQAAAAAARzBFAiB-w18jNLPHZSCizTI-f9FJLo_Pr-oUcBjbq1A_I1IpUwIhAOCVXaHY4fH2_HAcioDZc9bh0IfqqXkX3RCrS2pjKHfW"
+        }
+    ]
+}

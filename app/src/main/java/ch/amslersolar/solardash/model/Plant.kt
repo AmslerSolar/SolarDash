@@ -148,9 +148,38 @@ data class Plant(
     val chartChannels: List<ChartChannel> = emptyList(),
     /** No grid connection: a missing AC input means the generator is off, not a power cut. */
     val offGrid: Boolean = false,
+    /** Watched from elsewhere: the data comes from the plant's stores, not from devices (see [Observed]). */
+    val observed: Observed? = null,
+    /** This tablet shares the plant with observers (see [Sharing]); null: not shared. */
+    val sharing: Sharing? = null,
     /**
      * Saved devices this version can't read (e.g. a device type from a newer version), kept as they were and
      * written back unchanged by [ch.amslersolar.solardash.data.PlantStore], so going back to an older APK loses nothing.
      */
     @Transient val unreadableDevices: List<JsonObject> = emptyList(),
-)
+) {
+    /**
+     * An observed plant (docs/design/observer-protocol.md): its id on the stores ([remoteId]), the read token and
+     * data key (base64url) from its observer code, and its stores. [publicKey] (base64url SPKI) is learned from the
+     * first store that answers and must hash to [remoteId].
+     */
+    @Serializable
+    data class Observed(
+        val remoteId: String,
+        val token: String,
+        val dataKey: String,
+        val stores: List<String>,
+        val publicKey: String? = null,
+    )
+
+    /**
+     * Shared with observers: the read token and data key (base64url) in its observer code, and the stores it sends
+     * to. The signing key is in the Android keystore (see ch.amslersolar.solardash.remote.Collector).
+     */
+    @Serializable
+    data class Sharing(
+        val token: String,
+        val dataKey: String,
+        val stores: List<String>,
+    )
+}

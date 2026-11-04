@@ -143,4 +143,14 @@
     <string name="forms_hidden_problems">Messages masqués</string>
     <string name="forms_hint_hidden_problems">Non affichés sur le tableau de bord ni en mode kiosque&#160;; toujours enregistrés dans le journal des défauts.</string>
     <string name="forms_show_again">Afficher à nouveau</string>
+    <string name="forms_observe_plant">Suivre une installation</string>
+    <string name="forms_observe_plant_open">Suivre une installation à distance…</string>
+    <string name="forms_observe_title">Suivre cette installation ?</string>
+    <string name="forms_observe_hint">SolarDash affiche l\'installation avec les données que sa propre tablette partage. Rien ici ne peut modifier l\'installation ni ses appareils. Collez le lien ou le code reçu, ou scannez le code QR affiché sur la tablette de l\'installation.</string>
+    <string name="forms_observer_code">Lien ou code</string>
+    <string name="forms_observer_code_invalid">Ce n\'est pas le lien ou le code d\'une installation.</string>
+    <string name="forms_scan_qr">Scanner le code QR</string>
+    <string name="forms_scan_hint">Pointez l\'appareil photo vers le code QR dans les réglages de l\'installation sur sa tablette.</string>
+    <string name="forms_camera_denied">SolarDash n\'a pas le droit d\'utiliser l\'appareil photo. Autorisez-le dans les réglages du système, ou collez le lien.</string>
+    <string name="forms_observe">Suivre</string>
 </resources>

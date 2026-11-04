@@ -143,4 +143,14 @@
     <string name="forms_hidden_problems">Mensajes ocultos</string>
     <string name="forms_hint_hidden_problems">No se muestran en el panel ni en el modo quiosco; siguen registrándose en el registro de fallos.</string>
     <string name="forms_show_again">Volver a mostrar</string>
+    <string name="forms_observe_plant">Seguir una instalación</string>
+    <string name="forms_observe_plant_open">Seguir una instalación a distancia…</string>
+    <string name="forms_observe_title">¿Seguir esta instalación?</string>
+    <string name="forms_observe_hint">SolarDash muestra la instalación con los datos que comparte su propia tableta. Desde aquí no se puede cambiar la instalación ni sus dispositivos. Pega el enlace o el código que recibiste, o escanea el código QR que muestra la tableta de la instalación.</string>
+    <string name="forms_observer_code">Enlace o código</string>
+    <string name="forms_observer_code_invalid">No es el enlace ni el código de una instalación.</string>
+    <string name="forms_scan_qr">Escanear código QR</string>
+    <string name="forms_scan_hint">Apunta la cámara al código QR en los ajustes de la instalación en su tableta.</string>
+    <string name="forms_camera_denied">SolarDash no puede usar la cámara. Permítelo en los ajustes del sistema o pega el enlace.</string>
+    <string name="forms_observe">Seguir</string>
 </resources>

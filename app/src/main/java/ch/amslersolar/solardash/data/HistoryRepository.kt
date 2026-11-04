@@ -363,6 +363,47 @@ class HistoryRepository(context: Context) : EventStore {
         days.forEach { upsertDaily(w, plantId, it.day, it.energy) }
     }
 
+    /**
+     * An observed plant's device channels (see ch.amslersolar.solardash.remote.Observer): [channels] as (key, label,
+     * unit), [rows] as (epoch second, values by key). A label that is just the key (catalogue not known yet) doesn't
+     * replace a better one.
+     */
+    suspend fun insertDeviceSamples(deviceId: String, channels: List<Triple<String, String, String>>, rows: List<Pair<Long, Map<String, Double>>>) = write { w ->
+        val ids = channels.associate { (key, label, unit) ->
+            val existing = w.rawQuery("SELECT id, label, unit FROM channels WHERE device_id = ? AND key = ?", arrayOf(deviceId, key)).use { c ->
+                if (c.moveToFirst()) Triple(c.getLong(0), c.getString(1), c.getString(2)) else null
+            }
+            key to when {
+                existing == null -> w.insert("channels", null, ContentValues().apply {
+                    put("device_id", deviceId); put("key", key); put("label", label); put("unit", unit)
+                })
+                label != key && (existing.second != label || existing.third != unit) -> existing.first.also { id ->
+                    w.update("channels", ContentValues().apply { put("label", label); put("unit", unit) }, "id = ?", arrayOf(id.toString()))
+                }
+                else -> existing.first
+            }
+        }
+        for ((ts, values) in rows) {
+            val data = buildJsonObject { for ((key, v) in values) ids[key]?.let { put(it.toString(), v) } }
+            w.insertWithOnConflict("device_samples", null, ContentValues().apply {
+                put("device_id", deviceId); put("ts", ts); put("data", compress(data.toString()))
+            }, SQLiteDatabase.CONFLICT_REPLACE)
+        }
+    }
+
+    /** An observed plant's fault log entry: the one with the same key and start is updated, else it's added. */
+    suspend fun upsertObservedEvent(e: LoggedEvent) = write { w ->
+        val id = w.rawQuery("SELECT id FROM events WHERE plant_id = ? AND key = ? AND started = ?", arrayOf(e.plantId, e.key, e.started.toString())).use { c ->
+            if (c.moveToFirst()) c.getLong(0) else null
+        }
+        val cv = ContentValues().apply {
+            put("plant_id", e.plantId); put("key", e.key); put("kind", e.kind); put("severity", e.severity)
+            put("device_id", e.deviceId); put("device_name", e.deviceName); put("detail", e.detail); putInt("percent", e.percent)
+            put("started", e.started); if (e.ended == null) putNull("ended") else put("ended", e.ended); put("details", e.details); put("end_details", e.endDetails)
+        }
+        if (id == null) w.insert("events", null, cv) else w.update("events", cv, "id = ?", arrayOf(id.toString()))
+    }
+
     suspend fun deletePlant(plantId: String) = write {
         it.delete("samples", "plant_id = ?", arrayOf(plantId))
         it.delete("daily", "plant_id = ?", arrayOf(plantId))

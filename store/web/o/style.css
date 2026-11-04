@@ -1,0 +1,189 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later
+   SolarDash observer web view. Colours of the series are the app's (ui/theme/Theme.kt). */
+
+:root {
+    --bg: #ffffff;
+    --fg: #111111;
+    --muted: #3d3d3d;
+    --surface: #f2f2f2;
+    --line: #8a8a8a;
+    --gridline: #d4d4d4;
+    --solar: #d99500;
+    --home: #ab2b2b;
+    --battery: #17a195;
+    --grid: #2f7fd1;
+    --import: #dc188b;
+    --ok: #1d6b2a;
+    --warn: #8a5a00;
+    --bad: #b00020;
+    --button: #8a5a00;
+    --button-fg: #ffffff;
+    color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #121212;
+        --fg: #f4f4f4;
+        --muted: #c8c8c8;
+        --surface: #1f1f1f;
+        --line: #8f8f8f;
+        --gridline: #3a3a3a;
+        --solar: #f2a900;
+        --home: #ef5350;
+        --battery: #18aa99;
+        --grid: #3e8be0;
+        --import: #e05aa0;
+        --ok: #7bd389;
+        --warn: #f2c14e;
+        --bad: #ff6b6b;
+        --button: #f2a900;
+        --button-fg: #111111;
+    }
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 1.25rem;
+    line-height: 1.4;
+}
+
+main {
+    max-width: 60rem;
+    margin: 0 auto;
+    padding: 1rem 1rem 2rem;
+}
+
+[hidden], .hidden { display: none !important; }
+
+h1 { font-size: 2.2rem; margin: 0.2rem 0 0.4rem; overflow-wrap: anywhere; }
+h2 { font-size: 1.5rem; margin: 0 0 0.6rem; }
+
+section { margin: 1.2rem 0; }
+
+.status { font-size: 1.35rem; font-weight: 600; margin: 0; }
+.status.ok { color: var(--ok); }
+.status.stale { color: var(--warn); }
+.status-note { margin: 0.3rem 0 0; color: var(--muted); }
+.loading { font-size: 1.5rem; }
+
+.error {
+    border: 3px solid var(--bad);
+    border-radius: 0.8rem;
+    padding: 1rem;
+}
+.error h2 { color: var(--bad); }
+
+button, .button {
+    display: inline-block;
+    font: inherit;
+    font-weight: 700;
+    min-height: 3rem;
+    padding: 0.7rem 1.4rem;
+    border-radius: 0.6rem;
+    border: none;
+    background: var(--button);
+    color: var(--button-fg);
+    text-decoration: none;
+    cursor: pointer;
+}
+button:focus-visible, .button:focus-visible { outline: 3px solid var(--fg); outline-offset: 3px; }
+
+/* Messages */
+.problems ul { list-style: none; margin: 0; padding: 0; }
+.problem {
+    padding: 0.7rem 0.9rem;
+    margin: 0 0 0.5rem;
+    border-radius: 0.6rem;
+    border-left: 0.5rem solid var(--warn);
+    background: var(--surface);
+    overflow-wrap: anywhere;
+}
+.problem.bad { border-left-color: var(--bad); }
+.problem.bad strong { color: var(--bad); }
+.problem.warn strong { color: var(--warn); }
+.problem.info { border-left-color: var(--grid); }
+
+/* Energy flow */
+.flow-box { display: flex; justify-content: center; }
+.flow-svg { width: 100%; max-width: 30rem; height: auto; display: block; }
+.flow-svg .node circle { fill: var(--surface); stroke-width: 5; }
+.flow-svg .node.solar circle { stroke: var(--solar); }
+.flow-svg .node.grid circle { stroke: var(--grid); }
+.flow-svg .node.grid.importing circle { stroke: var(--import); }
+.flow-svg .node.battery circle { stroke: var(--battery); }
+.flow-svg .node.home circle { stroke: var(--home); }
+.flow-svg text { fill: var(--fg); }
+.flow-svg .label { font-size: 17px; fill: var(--muted); }
+.flow-svg .value { font-size: 24px; font-weight: 700; }
+.flow-svg .sub { font-size: 18px; font-weight: 600; fill: var(--muted); }
+.flow-svg .soc { font-size: 22px; font-weight: 700; }
+.flow-svg .soc-bg { fill: var(--gridline); }
+.flow-svg .soc-fill { fill: var(--battery); }
+.flow-svg .hub { fill: var(--line); }
+
+.flow { fill: none; stroke: var(--gridline); stroke-width: 6; stroke-linecap: round; }
+.flow.fwd, .flow.rev { stroke: var(--line); stroke-dasharray: 8 10; animation: flow 1.2s linear infinite; }
+.flow.rev { animation-direction: reverse; }
+#f-pv.fwd, #f-pv.rev { stroke: var(--solar); }
+#f-grid.fwd, #f-grid.rev { stroke: var(--grid); }
+#f-grid.fwd { stroke: var(--import); }
+#f-bat.fwd, #f-bat.rev { stroke: var(--battery); }
+#f-home.fwd, #f-home.rev { stroke: var(--home); }
+@keyframes flow { from { stroke-dashoffset: 18; } to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) {
+    .flow.fwd, .flow.rev { animation: none; stroke-dasharray: none; }
+}
+
+/* Totals */
+.totals dl {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+    gap: 0.7rem;
+    margin: 0;
+}
+.total {
+    background: var(--surface);
+    border-radius: 0.8rem;
+    padding: 0.7rem 0.9rem;
+    border-top: 0.4rem solid var(--line);
+}
+.total.solar { border-top-color: var(--solar); }
+.total.home { border-top-color: var(--home); }
+.total.grid { border-top-color: var(--grid); }
+.total.import { border-top-color: var(--import); }
+.total dt { color: var(--muted); font-size: 1.1rem; }
+.total dd { margin: 0.2rem 0 0; font-size: 1.9rem; font-weight: 700; white-space: nowrap; }
+
+/* Day chart */
+.chart { width: 100%; height: auto; display: block; }
+.chart text { fill: var(--muted); }
+.chart .gridline { stroke: var(--gridline); stroke-width: 1; }
+.chart .zero { stroke: var(--line); stroke-width: 1.5; }
+.chart .now { stroke: var(--line); stroke-width: 1; stroke-dasharray: 4 4; }
+.chart .line { fill: none; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.s-pv { stroke: var(--solar); background: var(--solar); }
+.s-load { stroke: var(--home); background: var(--home); }
+.s-grid { stroke: var(--grid); background: var(--grid); }
+.s-battery { stroke: var(--battery); background: var(--battery); }
+.chart .line.s-pv, .chart .line.s-load, .chart .line.s-grid, .chart .line.s-battery { background: none; }
+.chart-empty { color: var(--muted); }
+.legend { list-style: none; padding: 0; margin: 0.6rem 0 0; display: flex; flex-wrap: wrap; gap: 0.4rem 1.4rem; }
+.legend li { display: flex; align-items: center; gap: 0.5rem; }
+.swatch { display: inline-block; width: 1.6rem; height: 0.4rem; border-radius: 0.2rem; }
+.note { color: var(--muted); font-size: 1rem; }
+
+footer { margin-top: 2rem; }
+
+@media (min-width: 48rem) {
+    body { font-size: 1.35rem; }
+    h1 { font-size: 2.6rem; }
+    .totals dl { grid-template-columns: repeat(4, 1fr); }
+}

@@ -7,6 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.amslersolar.solardash.data.DeviceRegistry
 import ch.amslersolar.solardash.data.PlantRepository
+import ch.amslersolar.solardash.remote.Collector
+import ch.amslersolar.solardash.remote.Observer
+import ch.amslersolar.solardash.remote.ObserverCode
 import ch.amslersolar.solardash.driver.DeviceDrivers
 import ch.amslersolar.solardash.driver.TrafficPause
 import ch.amslersolar.solardash.driver.modbus.ModbusConnections
@@ -26,6 +29,8 @@ import java.util.UUID
 class PlantsViewModel(
     private val repository: PlantRepository,
     private val registry: DeviceRegistry,
+    private val collector: Collector? = null,
+    private val observer: Observer? = null,
 ) : ViewModel() {
     /** Null until the first load from disk, so the UI can tell "loading" from "empty". */
     val plants: StateFlow<List<Plant>?> =
@@ -35,7 +40,32 @@ class PlantsViewModel(
         repository.addPlant(Plant(id = UUID.randomUUID().toString(), name = name))
     }
 
-    fun removePlant(id: String, deleteDeviceData: Boolean) = viewModelScope.launch { registry.removePlant(id, deleteDeviceData) }
+    fun removePlant(id: String, deleteDeviceData: Boolean) = viewModelScope.launch {
+        // A shared plant asks its stores to delete it; an observed one forgets where it was read up to.
+        val plant = plants.value?.find { it.id == id }
+        if (plant?.sharing != null) runCatching { collector?.stop(id) }
+        if (plant?.observed != null) observer?.forget(id)
+        registry.removePlant(id, deleteDeviceData || plant?.observed != null)
+    }
+
+    /** Starts sharing the plant with observers. */
+    fun share(id: String) = viewModelScope.launch { runCatching { collector?.share(id) } }
+
+    /** Stops sharing: the stores delete the plant, every observer stops seeing it. */
+    fun stopSharing(id: String) = viewModelScope.launch { runCatching { collector?.stop(id) } }
+
+    /** A new observer code: every observer has to scan it again. */
+    fun newObserverCode(id: String) = viewModelScope.launch { runCatching { collector?.newCode(id) } }
+
+    fun setStores(id: String, stores: List<String>) = viewModelScope.launch { runCatching { collector?.setStores(id, stores) } }
+
+    fun observerLink(plant: Plant): String? = collector?.observerLink(plant)
+
+    /** Adds the plant an observer code names; [onAdded] gets its id here. */
+    fun observe(code: ObserverCode, onAdded: (String) -> Unit) = viewModelScope.launch {
+        val id = observer?.add(code) ?: return@launch
+        onAdded(id)
+    }
 
     fun addDevice(plantId: String, device: DeviceConfig) = viewModelScope.launch { registry.add(plantId, device) }
 

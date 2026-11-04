@@ -1,6 +1,7 @@
 # Remote viewing: collectors, stores and observers
 
-Status: design, not implemented. 2026-11-02.
+Status: implemented 2026-11-04 (wire format: [observer-protocol.md](observer-protocol.md); store: `store/`; web view:
+`store/web/`). Designed 2026-11-02.
 
 SolarDash reads a plant's devices on the local network and shows them on a tablet at the plant. This design lets the
 same plant be watched from elsewhere — a relative's tablet, a phone, a browser — without accounts, without the plant
@@ -40,9 +41,9 @@ All keys are made on the collector when the owner switches on "Share with observ
 
 | Key | Where it lives | Used for |
 |---|---|---|
-| Signing key pair (Ed25519) | Private key in the collector's Android keystore | Signing every block, live snapshot and store list |
+| Signing key pair (ECDSA P-256) | Private key in the collector's Android keystore | Signing every block, live snapshot and store list |
 | Plant id | Everywhere; = hash of the public signing key | Naming the plant on stores; can't be claimed by anyone else |
-| Data key (256 bit) | Collector and observers only (in the QR code) | Encrypting blocks and snapshots (XChaCha20-Poly1305) |
+| Data key (256 bit) | Collector and observers only (in the QR code) | Encrypting blocks and snapshots (AES-256-GCM) |
 | Read token (128 bit, random) | Collector and observers; stores keep only its hash | Asking a store for a plant's data |
 
 Stores hold no secrets: they learn the plant's public key from its first upload (trust on first use, safe because the id
@@ -222,13 +223,16 @@ What remains by design: whoever holds a valid code can watch until it is renewed
 - Stores keep IP addresses only briefly for rate limits, and have a retention period for blocks.
 - Deleting a plant on the collector asks its stores to delete everything; a store's own retention removes the rest.
 
-## Open decisions
+## Decisions (2026-11-04)
 
-- Hosting of the first store: PHP on amsler-solar.ch, or a container on the Docker server.
-- What is sent: plant values, history and faults only, or chosen device channels too.
-- Sample interval and live interval (proposed 15 s and 2–5 s) and retention (proposed 2 years).
-- Several observer codes per plant, each revocable on its own.
-- Whether the amsler-solar.ch store accepts any plant or only installer-signed ones.
+- Crypto built into Android and browsers, no library: ECDSA P-256 and AES-256-GCM instead of Ed25519 and
+  XChaCha20-Poly1305.
+- The first store is PHP on amsler-solar.ch (files on disk; collectors ask "is someone watching?" every 15 s instead
+  of holding a connection). It accepts any plant, with quotas.
+- Everything the app records is sent: plant values, every device channel, day totals, the fault log. Samples every
+  minute (the app's own rate), live values every 3 s while watched, retention 2 years.
+- Joining: the phone's camera reads the QR code and opens the web view, which offers "Open in SolarDash"
+  (`solardash://observe#…`); in the app the link or code can be pasted. No camera scanner in the app.
 
 ## Effort (rough)
 

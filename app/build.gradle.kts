@@ -20,7 +20,7 @@ android {
         applicationId = "ch.amslersolar.solardash"
         minSdk = 26
         targetSdk = 34
-        versionCode = 79
+        versionCode = 83
         versionName = "0.6.3"
         // Shown in the app's About dialog, so it's clear which build a tablet runs.
         val built = ZonedDateTime.now(ZoneId.of("Europe/Zurich"))
@@ -78,6 +78,11 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.9.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
+    // QR codes for observers: drawn for the tablet, read from the camera (Apache-2.0)
+    implementation("com.google.zxing:core:3.5.3")
+    implementation("androidx.camera:camera-camera2:1.3.4")
+    implementation("androidx.camera:camera-lifecycle:1.3.4")
+    implementation("androidx.camera:camera-view:1.3.4")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.robolectric:robolectric:4.17")

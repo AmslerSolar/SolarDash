@@ -141,4 +141,14 @@
     <string name="forms_hidden_problems">Hidden messages</string>
     <string name="forms_hint_hidden_problems">Not shown on the dashboard or the kiosk; still recorded in the fault log.</string>
     <string name="forms_show_again">Show again</string>
+    <string name="forms_observe_plant">Watch a plant</string>
+    <string name="forms_observe_plant_open">Watch a plant from elsewhere…</string>
+    <string name="forms_observe_title">Watch this plant?</string>
+    <string name="forms_observe_hint">SolarDash shows the plant with the data its own tablet shares. Nothing here can change the plant or its devices. Paste the link or code you were sent, or scan the QR code shown on the plant\'s tablet.</string>
+    <string name="forms_observer_code">Link or code</string>
+    <string name="forms_observer_code_invalid">That isn\'t a plant\'s link or code.</string>
+    <string name="forms_scan_qr">Scan QR code</string>
+    <string name="forms_scan_hint">Point the camera at the QR code in the plant\'s settings on its tablet.</string>
+    <string name="forms_camera_denied">SolarDash may not use the camera. Allow it in the system settings, or paste the link.</string>
+    <string name="forms_observe">Watch</string>
 </resources>

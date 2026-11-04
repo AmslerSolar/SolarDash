@@ -103,4 +103,16 @@
     </plurals>
     <string name="screens_more_options">More options</string>
     <string name="screens_delete">Delete</string>
+    <string name="screens_share">Share with observers</string>
+    <string name="screens_share_hint">Relatives can watch this plant on a phone, tablet or in a browser with the code below. The data goes encrypted through a store on the internet, which can\'t read it. Even so, the energy pattern shows when people are at home.</string>
+    <string name="screens_share_scan">Scan with a phone\'s camera:</string>
+    <string name="screens_share_qr">QR code to watch this plant</string>
+    <string name="screens_share_link">Send link</string>
+    <string name="screens_new_code">New code</string>
+    <string name="screens_new_code_hint">Everyone with the current code stops seeing the plant and needs the new one.</string>
+    <string name="screens_stores">Stores (one address per line)</string>
+    <string name="screens_stop_sharing_title">Stop sharing?</string>
+    <string name="screens_stop_sharing_text">The stores delete this plant\'s data, and everyone watching stops seeing it.</string>
+    <string name="screens_stop_sharing">Stop sharing</string>
+    <string name="screens_observed_hint">Watched from elsewhere: the data comes from the plant\'s own tablet. Devices and settings are changed there. Stores:</string>
 </resources>

@@ -72,6 +72,20 @@ class PlantRepository(private val context: Context) {
     suspend fun setChartChannels(plantId: String, channels: List<ChartChannel>) =
         updatePlant(plantId) { it.copy(chartChannels = channels) }
 
+    /** Shares the plant with observers, or stops it (null). */
+    suspend fun setSharing(plantId: String, sharing: Plant.Sharing?) = updatePlant(plantId) { it.copy(sharing = sharing) }
+
+    /**
+     * An observed plant as its plant item describes it now: name, devices, chart channels; the observer's own
+     * settings ([Plant.observed]) and id stay.
+     */
+    suspend fun updateObserved(plantId: String, from: Plant) = updatePlant(plantId) { plant ->
+        if (plant.observed == null) plant
+        else plant.copy(name = from.name, offGrid = from.offGrid, devices = from.devices, chartChannels = from.chartChannels)
+    }
+
+    suspend fun setObserved(plantId: String, observed: Plant.Observed) = updatePlant(plantId) { it.copy(observed = observed) }
+
     private suspend fun updatePlant(id: String, transform: (Plant) -> Plant) =
         update { list -> list.map { if (it.id == id) transform(it) else it } }
 

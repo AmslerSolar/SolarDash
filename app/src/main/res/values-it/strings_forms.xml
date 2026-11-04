@@ -143,4 +143,14 @@
     <string name="forms_hidden_problems">Messaggi nascosti</string>
     <string name="forms_hint_hidden_problems">Non mostrati nella panoramica né nel kiosk; restano registrati nel registro guasti.</string>
     <string name="forms_show_again">Mostra di nuovo</string>
+    <string name="forms_observe_plant">Seguire un impianto</string>
+    <string name="forms_observe_plant_open">Seguire un impianto a distanza…</string>
+    <string name="forms_observe_title">Seguire questo impianto?</string>
+    <string name="forms_observe_hint">SolarDash mostra l\'impianto con i dati che il suo tablet condivide. Da qui non si può modificare né l\'impianto né i suoi dispositivi. Incolla il link o il codice ricevuto, oppure scansiona il codice QR mostrato sul tablet dell\'impianto.</string>
+    <string name="forms_observer_code">Link o codice</string>
+    <string name="forms_observer_code_invalid">Non è il link o il codice di un impianto.</string>
+    <string name="forms_scan_qr">Scansiona il codice QR</string>
+    <string name="forms_scan_hint">Inquadra il codice QR nelle impostazioni dell\'impianto sul suo tablet.</string>
+    <string name="forms_camera_denied">SolarDash non può usare la fotocamera. Consentilo nelle impostazioni di sistema, oppure incolla il link.</string>
+    <string name="forms_observe">Segui</string>
 </resources>

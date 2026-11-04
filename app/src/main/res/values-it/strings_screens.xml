@@ -106,4 +106,16 @@
     </plurals>
     <string name="screens_more_options">Altre opzioni</string>
     <string name="screens_delete">Elimina</string>
+    <string name="screens_share">Condividi con osservatori</string>
+    <string name="screens_share_hint">I familiari possono seguire questo impianto su un telefono, un tablet o nel browser con il codice qui sotto. I dati passano cifrati da un archivio su Internet, che non può leggerli. L\'andamento dell\'energia mostra comunque quando qualcuno è in casa.</string>
+    <string name="screens_share_scan">Da inquadrare con la fotocamera di un telefono:</string>
+    <string name="screens_share_qr">Codice QR per seguire questo impianto</string>
+    <string name="screens_share_link">Invia link</string>
+    <string name="screens_new_code">Nuovo codice</string>
+    <string name="screens_new_code_hint">Chi ha il codice attuale non vede più l\'impianto e ha bisogno di quello nuovo.</string>
+    <string name="screens_stores">Archivi (un indirizzo per riga)</string>
+    <string name="screens_stop_sharing_title">Smettere di condividere?</string>
+    <string name="screens_stop_sharing_text">Gli archivi cancellano i dati di questo impianto, e chi lo segue non lo vede più.</string>
+    <string name="screens_stop_sharing">Smetti di condividere</string>
+    <string name="screens_observed_hint">Seguito a distanza: i dati arrivano dal tablet dell\'impianto. Dispositivi e impostazioni si cambiano lì. Archivi:</string>
 </resources>

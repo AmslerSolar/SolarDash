@@ -213,9 +213,11 @@ fun DevicesTab(
             DeviceCard(
                 device, statusById[device.id], onOpen = { onOpenDevice(device) },
                 onEdit = { onEditDevice(device) }, onRemove = { pendingDelete = device },
+                // An observed plant's devices are set up on its own tablet.
+                editable = plant.observed == null,
             )
         }
-        item(key = "add") { AddDeviceCard(onAddDevice) }
+        if (plant.observed == null) item(key = "add") { AddDeviceCard(onAddDevice) }
     }
 
     pendingDelete?.let { device ->

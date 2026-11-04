@@ -64,8 +64,8 @@ class RecordingService : Service() {
         acquireLocks()
         val app = application as SolarApp
         scope.launch {
-            // The plants with devices; a plant added or removed restarts the set.
-            app.repository.plants.map { list -> list.filter { it.devices.isNotEmpty() }.map { it.id } }
+            // The plants with devices (not observed ones: they come from their stores); a plant added or removed restarts the set.
+            app.repository.plants.map { list -> list.filter { it.devices.isNotEmpty() && it.observed == null }.map { it.id } }
                 .distinctUntilChanged()
                 .collectLatest { ids ->
                     coroutineScope {

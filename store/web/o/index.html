@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en" data-page="observer">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self' https:; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>SolarDash</title>
+<link rel="stylesheet" href="style.css" integrity="sha384-DQQN9EdBEaBpTQ3VFZYWytEGc5HTyk8kkcITIWo60uDMzgOLev3P1T4udEqXVRj1">
+<script src="app.js" defer integrity="sha384-GZc+gIM+THWWG4YXCbXmvIedQIPQ6eD1jqImbesO5kaW8Bfluyxvzk6WnZXWfxbd"></script>
+</head>
+<body>
+<main>
+  <header>
+    <h1 id="plant-name">SolarDash</h1>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+    <p id="status-note" class="status-note" hidden></p>
+  </header>
+
+  <p id="loading" class="loading" data-t="loading">Loading…</p>
+
+  <section id="error" class="error" role="alert" hidden>
+    <h2 data-t="errorTitle">Cannot show the plant</h2>
+    <p id="error-text"></p>
+    <button id="retry" type="button" data-t="retry">Try again</button>
+  </section>
+
+  <div id="content" hidden>
+    <section id="problems-box" class="problems" hidden>
+      <h2 data-t="problemsTitle">Messages</h2>
+      <ul id="problems"></ul>
+    </section>
+
+    <section class="flow-box">
+      <svg id="flow" class="flow-svg" viewBox="0 0 420 420" role="img" aria-labelledby="flow-title">
+        <title id="flow-title" data-t="flowTitle">Energy flow now</title>
+        <g><path id="f-pv" class="flow" d="M210 135 L210 215"/></g>
+        <g><path id="f-grid" class="flow" d="M132 215 L210 215"/></g>
+        <g><path id="f-bat" class="flow" d="M288 215 L210 215"/></g>
+        <g><path id="f-home" class="flow" d="M210 215 L210 290"/></g>
+        <circle class="hub" cx="210" cy="215" r="6"/>
+
+        <g id="n-pv" class="node solar" role="img">
+          <circle cx="210" cy="75" r="63"/>
+          <text class="label" x="210" y="57" text-anchor="middle" data-t="solar">Solar</text>
+          <text id="v-pv" class="value" x="210" y="91" text-anchor="middle">–</text>
+        </g>
+        <g id="n-grid" class="node grid" role="img">
+          <circle cx="72" cy="215" r="63"/>
+          <text class="label" x="72" y="197" text-anchor="middle" data-t="grid">Grid</text>
+          <text id="v-grid" class="value" x="72" y="231" text-anchor="middle">–</text>
+          <text id="s-grid" class="sub" x="72" y="302" text-anchor="middle"></text>
+        </g>
+        <g id="n-bat" class="node battery" role="img">
+          <circle cx="348" cy="215" r="63"/>
+          <text class="label" x="348" y="197" text-anchor="middle" data-t="battery">Battery</text>
+          <text id="v-bat" class="value" x="348" y="231" text-anchor="middle">–</text>
+          <rect class="soc-bg" x="318" y="245" width="60" height="9" rx="3"/>
+          <rect id="soc-fill" class="soc-fill" x="318" y="245" width="0" height="9" rx="3"/>
+          <text id="soc" class="soc" x="348" y="306" text-anchor="middle"></text>
+          <text id="s-bat" class="sub" x="348" y="330" text-anchor="middle"></text>
+        </g>
+        <g id="n-home" class="node home" role="img">
+          <circle cx="210" cy="350" r="63"/>
+          <text class="label" x="210" y="332" text-anchor="middle" data-t="home">Home</text>
+          <text id="v-home" class="value" x="210" y="366" text-anchor="middle">–</text>
+        </g>
+      </svg>
+    </section>
+
+    <section class="totals">
+      <h2 id="totals-title" data-t="todayTitle">Today</h2>
+      <dl>
+        <div class="total solar"><dt data-t="solar">Solar</dt><dd id="t-pv">–</dd></div>
+        <div class="total home"><dt data-t="consumption">Consumption</dt><dd id="t-load">–</dd></div>
+        <div class="total grid" id="t-export-row"><dt data-t="export">Export</dt><dd id="t-export">–</dd></div>
+        <div class="total import" id="t-import-row"><dt data-t="import">Import</dt><dd id="t-import">–</dd></div>
+      </dl>
+    </section>
+
+    <section class="chart-box">
+      <h2 data-t="chartTitle">Over the day</h2>
+      <svg id="chart" class="chart" role="img" aria-labelledby="chart-title"><title id="chart-title" data-t="chartA11y">Day chart</title></svg>
+      <p id="chart-empty" class="chart-empty" data-t="chartEmpty" hidden>No history for this day yet.</p>
+      <ul class="legend">
+        <li><span class="swatch s-pv"></span><span data-t="solar">Solar</span></li>
+        <li><span class="swatch s-load"></span><span data-t="home">Home</span></li>
+        <li><span class="swatch s-grid"></span><span data-t="grid">Grid</span></li>
+        <li><span class="swatch s-battery"></span><span data-t="battery">Battery</span></li>
+      </ul>
+      <p class="note" data-t="chartNote"></p>
+    </section>
+  </div>
+
+  <footer>
+    <a id="open-app" class="button" href="solardash://observe" data-t="openApp">Open in SolarDash</a>
+    <p class="note" data-t="privacy"></p>
+  </footer>
+</main>
+</body>
+</html>

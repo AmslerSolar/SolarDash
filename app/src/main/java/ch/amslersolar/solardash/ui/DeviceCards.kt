@@ -91,13 +91,13 @@ fun cardState(device: DeviceConfig, status: DeviceStatus?): CardState {
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun DeviceCard(device: DeviceConfig, status: DeviceStatus?, onOpen: () -> Unit, onEdit: () -> Unit, onRemove: () -> Unit) {
+fun DeviceCard(device: DeviceConfig, status: DeviceStatus?, onOpen: () -> Unit, onEdit: () -> Unit, onRemove: () -> Unit, editable: Boolean = true) {
     var menu by remember { mutableStateOf(false) }
     val state = cardState(device, status)
     val r = status?.reading
     Box {
         Card(
-            Modifier.fillMaxWidth().heightIn(min = 196.dp).combinedClickable(onClick = onOpen, onLongClick = { menu = true }),
+            Modifier.fillMaxWidth().heightIn(min = 196.dp).combinedClickable(onClick = onOpen, onLongClick = { if (editable) menu = true }),
             shape = RoundedCornerShape(20.dp),
         ) {
             Column(Modifier.padding(16.dp)) {

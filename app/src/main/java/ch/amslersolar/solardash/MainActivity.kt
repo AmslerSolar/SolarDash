@@ -8,6 +8,7 @@ import ch.amslersolar.solardash.model.DeviceConfig
 import ch.amslersolar.solardash.model.Issue
 import ch.amslersolar.solardash.work.RecordingService
 import ch.amslersolar.solardash.driver.TrafficPause
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -16,6 +17,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -33,6 +35,8 @@ import ch.amslersolar.solardash.ui.DeviceScreen
 import ch.amslersolar.solardash.ui.PlantSettingsScreen
 import ch.amslersolar.solardash.ui.DiscoverDevicesScreen
 import ch.amslersolar.solardash.ui.SweepScreen
+import ch.amslersolar.solardash.ui.ObserveDialog
+import ch.amslersolar.solardash.remote.ObserverCode
 import ch.amslersolar.solardash.driver.modbus.RegisterSweep
 import ch.amslersolar.solardash.ui.DashboardTab
 import ch.amslersolar.solardash.ui.DevicesTab
@@ -61,8 +65,20 @@ private fun tabRoute(plantId: String, tab: PlantTab) = when (tab) {
 }
 
 class MainActivity : ComponentActivity() {
+    /** An observer code the app was opened with (solardash://observe#…), until it's added or declined. */
+    private var incoming by mutableStateOf<ObserverCode?>(null)
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        observerCode(intent)?.let { incoming = it }
+    }
+
+    private fun observerCode(intent: Intent?): ObserverCode? =
+        intent?.takeIf { it.action == Intent.ACTION_VIEW }?.dataString?.let(ObserverCode::parse)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (savedInstanceState == null) incoming = observerCode(intent)
         enableEdgeToEdge()
         val app = application as SolarApp
         val repository = app.repository
@@ -74,7 +90,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             SolarTheme {
-                val plantsVm: PlantsViewModel = viewModel(factory = viewModelFactory { initializer { PlantsViewModel(repository, app.registry) } })
+                val plantsVm: PlantsViewModel = viewModel(factory = viewModelFactory { initializer { PlantsViewModel(repository, app.registry, app.collector, app.observer) } })
                 val plants by plantsVm.plants.collectAsStateWithLifecycle()
                 var route by rememberSaveable { mutableStateOf(ROUTE_PLANTS) }
 
@@ -98,12 +114,20 @@ class MainActivity : ComponentActivity() {
                 }
                 BackHandler(enabled = parent != null) { route = parent ?: ROUTE_PLANTS }
 
+                incoming?.let { code ->
+                    ObserveDialog(
+                        onConfirm = { incoming = null; plantsVm.observe(code) { id -> route = tabRoute(id, PlantTab.DASHBOARD) } },
+                        onDismiss = { incoming = null },
+                    )
+                }
+
                 val plant = plants?.find { it.id == plantId }
                 if (plantId == null) {
                     PlantsScreen(
                         plants = plants,
                         onOpen = { route = tabRoute(it.id, PlantTab.DASHBOARD) },
                         onAdd = plantsVm::addPlant,
+                        onObserve = { code -> plantsVm.observe(code) { id -> route = tabRoute(id, PlantTab.DASHBOARD) } },
                         onDelete = { p, deleteData -> plantsVm.removePlant(p.id, deleteData) },
                         onRename = { p, name -> plantsVm.renamePlant(p.id, name) },
                     )
@@ -163,6 +187,11 @@ class MainActivity : ComponentActivity() {
                             onRename = { plantsVm.renamePlant(plant.id, it) },
                             onOffGrid = { plantsVm.setOffGrid(plant.id, it) },
                             onBack = back,
+                            sharingLink = remember(plant.sharing) { plantsVm.observerLink(plant) },
+                            onShare = { plantsVm.share(plant.id) },
+                            onStopSharing = { plantsVm.stopSharing(plant.id) },
+                            onNewCode = { plantsVm.newObserverCode(plant.id) },
+                            onStores = { plantsVm.setStores(plant.id, it) },
                         )
                         "sweep" -> {
                             val device = plant.devices.find { it.id == parts.getOrNull(3) }
@@ -179,6 +208,7 @@ class MainActivity : ComponentActivity() {
                                     onRename = { plantsVm.updateDevice(plant.id, device.copy(name = it)) },
                                     onRemove = { deleteData -> plantsVm.removeDevice(plant.id, device, deleteData); back() },
                                     onSweep = { route = "plant/${plant.id}/sweep/${device.id}" },
+                                    editable = plant.observed == null,
                                 )
                             }
                         }

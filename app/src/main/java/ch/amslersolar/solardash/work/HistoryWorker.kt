@@ -27,6 +27,14 @@ class HistoryWorker(context: Context, params: WorkerParameters) : CoroutineWorke
         val app = applicationContext as SolarApp
         if (TrafficPause.isPaused) return Result.success() // a register sweep is running: the next run records
         for (plant in app.repository.plants.first()) {
+            // Observed plants: what's new on their stores; shared ones: what the stores don't have yet.
+            if (plant.observed != null) {
+                try { app.observer.sync(plant.id) } catch (e: CancellationException) { throw e } catch (_: Exception) {}
+                continue
+            }
+            if (plant.sharing != null) {
+                try { app.collector.sync(plant.id) } catch (e: CancellationException) { throw e } catch (_: Exception) {}
+            }
             if (plant.devices.isEmpty() || ActivePolling.isActive(plant.id)) continue
             try {
                 PlantReader(plant.devices).use {

@@ -28,8 +28,11 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import ch.amslersolar.solardash.discovery.DeviceScanner
+import ch.amslersolar.solardash.remote.Collector
+import ch.amslersolar.solardash.remote.Observer
 import ch.amslersolar.solardash.discovery.MdnsService
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.concurrent.ConcurrentHashMap
@@ -61,6 +64,10 @@ class LivePlants(
     private val faultLog: FaultLog? = null,
     /** The tablet's network, for the fault log's "no Wi-Fi" / "wrong Wi-Fi". */
     private val network: () -> NetworkState = { NetworkState.UNKNOWN },
+    /** Sends shared plants to their stores (null in tests). */
+    private val collector: Collector? = null,
+    /** Reads observed plants from their stores (null in tests). */
+    private val observer: Observer? = null,
 ) {
     private val plants = ConcurrentHashMap<String, StateFlow<PlantState>>()
     /** When each device last answered, and when it was last searched for; by device id. */
@@ -69,17 +76,44 @@ class LivePlants(
 
     fun state(plantId: String): StateFlow<PlantState> = plants.computeIfAbsent(plantId) { id ->
         repository.plant(id)
-            .map { it?.devices }
+            .map { p -> p?.let { (it.observed != null) to it.devices } }
             // Restart polling when a device is added or removed or its connection changes; a rename keeps it running.
-            .distinctUntilChanged { a, b -> a?.map(::connection) == b?.map(::connection) }
-            .flatMapLatest { devices ->
+            // An observed plant's devices come from its stores: they don't restart anything.
+            .distinctUntilChanged { a, b -> a?.first == b?.first && (a?.first == true || a?.second?.map(::connection) == b?.second?.map(::connection)) }
+            .flatMapLatest { plant ->
                 when {
-                    devices == null -> flowOf(PlantState.Loading)
-                    devices.isEmpty() -> flowOf(PlantState.NoDevices)
-                    else -> poll(id, devices)
+                    plant == null -> flowOf(PlantState.Loading)
+                    plant.first && observer != null -> observe(id, observer)
+                    plant.second.isEmpty() -> flowOf(PlantState.NoDevices)
+                    plant.first -> flowOf(PlantState.Loading)
+                    else -> poll(id, plant.second)
                 }
             }
             .stateIn(scope, SharingStarted.WhileSubscribed(5_000), PlantState.Loading)
+    }
+
+    /**
+     * An observed plant while someone looks at it: "I'm watching" every [WATCH_EVERY_MS] (so the plant sends live
+     * values), its live snapshot every [Collector.LIVE_INTERVAL_MS], its history and fault log every [SYNC_EVERY_MS].
+     */
+    private fun observe(plantId: String, observer: Observer): Flow<PlantState> = flow {
+        var lastWatch = 0L
+        var lastSync = 0L
+        while (true) {
+            val plant = repository.plant(plantId).first() ?: return@flow
+            val now = System.currentTimeMillis()
+            if (now - lastWatch >= WATCH_EVERY_MS) {
+                lastWatch = now
+                runCatching { observer.watch(plant) }
+            }
+            if (now - lastSync >= SYNC_EVERY_MS) {
+                lastSync = now
+                scope.launch { runCatching { observer.sync(plantId) } }
+            }
+            val snapshot = try { observer.live(plant) } catch (e: CancellationException) { throw e } catch (_: Exception) { null }
+            if (snapshot != null) emit(PlantState.Live(snapshot.copy(today = withRecorded(snapshot.today, recordedToday(plantId)))))
+            delay(Collector.LIVE_INTERVAL_MS)
+        }
     }
 
     private fun poll(plantId: String, devices: List<DeviceConfig>): Flow<PlantState> = flow {
@@ -107,10 +141,15 @@ class LivePlants(
                             lastRecorded = snapshot.readAt.epochSecond
                             record(plantId, snapshot)
                             recordedToday = recordedToday(plantId)
+                            collector?.recorded(plantId)
                         }
                         logFaults(plantId, snapshot)
-                        emit(PlantState.Live(snapshot.copy(today = withRecorded(snapshot.today, recordedToday))))
-                        TrafficPause.pauseWithin(POLL_INTERVAL_MS) // a pause ends the wait, and the connections
+                        val shown = snapshot.copy(today = withRecorded(snapshot.today, recordedToday))
+                        emit(PlantState.Live(shown))
+                        collector?.live(plantId, shown)
+                        // Someone watches from elsewhere: faster, so the live view keeps up.
+                        val interval = if (collector?.watched?.value?.contains(plantId) == true) Collector.LIVE_INTERVAL_MS else POLL_INTERVAL_MS
+                        TrafficPause.pauseWithin(interval) // a pause ends the wait, and the connections
                     }
                 }
             }
@@ -195,6 +234,8 @@ class LivePlants(
         const val RECORD_INTERVAL_S = 60L
         const val MOVED_AFTER_MS = 2 * 60_000L
         const val SEARCH_EVERY_MS = 15 * 60_000L
+        const val WATCH_EVERY_MS = 45_000L
+        const val SYNC_EVERY_MS = 60_000L
     }
 }
 

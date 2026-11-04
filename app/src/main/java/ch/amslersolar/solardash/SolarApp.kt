@@ -16,6 +16,8 @@ import ch.amslersolar.solardash.data.DeviceRegistry
 import ch.amslersolar.solardash.data.HistoryRepository
 import ch.amslersolar.solardash.data.PlantRepository
 import ch.amslersolar.solardash.discovery.DeviceScanner
+import ch.amslersolar.solardash.remote.Collector
+import ch.amslersolar.solardash.remote.Observer
 import ch.amslersolar.solardash.discovery.MdnsBrowser
 import ch.amslersolar.solardash.ui.LivePlants
 import ch.amslersolar.solardash.work.HistoryWorker
@@ -31,8 +33,14 @@ class SolarApp : Application() {
     val live by lazy {
         LivePlants(repository, history, CoroutineScope(SupervisorJob() + Dispatchers.Default), registry, localHosts = { DeviceScanner.localHosts(this) },
             announced = { MdnsBrowser.collect(this, 5_000) },
-            faultLog = faultLog, network = { LocalNetworks.get(this).state.value })
+            faultLog = faultLog, network = { LocalNetworks.get(this).state.value }, collector = collector, observer = observer)
     }
+    /** Sends shared plants to their stores. */
+    val collector by lazy {
+        Collector(repository, history, CoroutineScope(SupervisorJob() + Dispatchers.IO), java.io.File(filesDir, "observer/collector.json"))
+    }
+    /** Reads observed plants from their stores. */
+    val observer by lazy { Observer(repository, history, java.io.File(filesDir, "observer/observer.json")) }
 
     override fun onCreate() {
         super.onCreate()
@@ -40,5 +48,6 @@ class SolarApp : Application() {
         DeviceNetwork.current = LocalNetworks.get(this) // devices on Wi-Fi without internet, too
         SpecLibrary.current = SpecLibrary { name -> assets.open("modbusspec/$name").bufferedReader().use { it.readText() } }
         HistoryWorker.schedule(this)
+        collector.start()
     }
 }

@@ -106,4 +106,16 @@
     </plurals>
     <string name="screens_more_options">Plus d\'options</string>
     <string name="screens_delete">Supprimer</string>
+    <string name="screens_share">Partager avec des observateurs</string>
+    <string name="screens_share_hint">Des proches peuvent suivre cette installation sur un téléphone, une tablette ou un navigateur avec le code ci-dessous. Les données passent chiffrées par un dépôt sur Internet, qui ne peut pas les lire. La courbe d\'énergie montre tout de même quand quelqu\'un est à la maison.</string>
+    <string name="screens_share_scan">À scanner avec l\'appareil photo d\'un téléphone :</string>
+    <string name="screens_share_qr">Code QR pour suivre cette installation</string>
+    <string name="screens_share_link">Envoyer le lien</string>
+    <string name="screens_new_code">Nouveau code</string>
+    <string name="screens_new_code_hint">Quiconque a le code actuel ne voit plus l\'installation et a besoin du nouveau.</string>
+    <string name="screens_stores">Dépôts (une adresse par ligne)</string>
+    <string name="screens_stop_sharing_title">Arrêter le partage ?</string>
+    <string name="screens_stop_sharing_text">Les dépôts suppriment les données de cette installation, et ceux qui la suivent ne la voient plus.</string>
+    <string name="screens_stop_sharing">Arrêter le partage</string>
+    <string name="screens_observed_hint">Suivie à distance : les données viennent de la tablette de l\'installation. Les appareils et les réglages se modifient là-bas. Dépôts :</string>
 </resources>
