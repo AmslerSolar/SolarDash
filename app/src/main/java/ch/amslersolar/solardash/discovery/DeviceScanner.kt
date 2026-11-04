@@ -17,13 +17,8 @@ import android.content.Context
 import ch.amslersolar.solardash.driver.abb.AbbCddDriver
 import ch.amslersolar.solardash.driver.abb.AuroraDriver
 import ch.amslersolar.solardash.driver.abb.TcpAuroraTransport
-import ch.amslersolar.solardash.driver.apsystems.ApsystemsEcuDriver
 import ch.amslersolar.solardash.driver.fimer.FimerSunSpecDriver
-import ch.amslersolar.solardash.driver.fronius.FroniusGen24Driver
-import ch.amslersolar.solardash.driver.kaco.KacoBlueplanetDriver
-import ch.amslersolar.solardash.driver.schneider.ConextClDriver
 import ch.amslersolar.solardash.driver.lg.LgEssDriver
-import ch.amslersolar.solardash.driver.lg.LgEssSunSpecDriver
 import ch.amslersolar.solardash.driver.modbus.ModbusTcpClient
 import ch.amslersolar.solardash.driver.spec.SpecDevices
 import ch.amslersolar.solardash.driver.sunspec.SunSpecInverterDriver
@@ -698,16 +693,11 @@ class DeviceScanner(
             else if (type == DeviceType.ABB_CDD) AbbCddDriver(host, port).identify()
             else ModbusTcpClient(host, port, PROBE_TIMEOUT_MS).use { client ->
                 when (type) {
-                    DeviceType.FRONIUS -> FroniusGen24Driver(client, unitId).identify()
-                    DeviceType.KACO_NX3 -> KacoBlueplanetDriver(client, unitId).identify()
                     DeviceType.FIMER -> FimerSunSpecDriver(client, unitId).identify()
-                    DeviceType.APSYSTEMS_ECU -> ApsystemsEcuDriver(client, unitId).identify()
-                    DeviceType.CONEXT_CL -> ConextClDriver(client, unitId).identify()
-                    DeviceType.SOLAREDGE -> SunSpecInverterDriver(client, unitId, SunSpecProfiles.SOLAREDGE).identify()
                     DeviceType.SUNSPEC -> SunSpecInverterDriver(client, unitId, SunSpecProfiles.GENERIC).identify()
-                    DeviceType.LG_ESS_SUNSPEC -> LgEssSunSpecDriver(client, unitId).identify()
                     DeviceType.GOODWE_ET, DeviceType.CONEXT_CL60, DeviceType.CONEXT_GATEWAY, DeviceType.KOSTAL_PIKO_CI, DeviceType.POWER_ONE, DeviceType.GROWATT, DeviceType.SMA, DeviceType.SUNGROW, DeviceType.FENECON, DeviceType.HUAWEI,
-                    DeviceType.KOSTAL_PLENTICORE, DeviceType.VICTRON ->
+                    DeviceType.KOSTAL_PLENTICORE, DeviceType.VICTRON,
+                    DeviceType.FRONIUS, DeviceType.SOLAREDGE, DeviceType.KACO_NX3, DeviceType.APSYSTEMS_ECU, DeviceType.CONEXT_CL, DeviceType.LG_ESS_SUNSPEC ->
                         SpecDevices.create(type, client, unitId)!!.identify()
                     else -> throw UnsupportedOperationException()
                 }

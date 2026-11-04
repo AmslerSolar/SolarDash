@@ -19,6 +19,18 @@ import java.io.IOException
  */
 object MoreSunSpecProfiles {
     /**
+     * Fronius GEN24 / GEN24 Plus (incl. BYD or Fronius Reserva battery and Fronius Smart Meter) over SunSpec Modbus
+     * TCP. Spec: "Fronius GEN24 Modbus TCP & RTU" 42,0410,2649 (docs/specs/fronius/). Port 502, inverter unit id 1;
+     * the Smart Meter answers through the inverter under unit id 200 (Fronius default, settable 1–247).
+     * - "SunSpec Model Type" setting: "float" or "int + SF"; both are read, scale factors with every poll (the spec
+     *   says they change with firmware and at runtime).
+     * - Battery: the "StCha" / "StDisCha" modules of model 160 (MPPT 3 / 4) and model 124; see [SunSpecInverterDriver].
+     * - Grid: at meter location 0 (grid), + = consuming from the grid, − = feeding in (spec, meter table); other
+     *   locations (load, generator, sub-load) aren't supported.
+     */
+    val FRONIUS = SunSpecInverterDriver.Profile(maker = "Fronius", meterUnitId = 200, meterImportPositive = true, meterTitle = "Smart Meter (grid)")
+
+    /**
      * KACO blueplanet 100 / 125 NX3 ("Modbus Protocol blueplanet 100-125 NX3", KACO application note 3016547-03,
      * firmware V5.0.2.4 – V5.1.9.0; docs/specs/kaco/). Modbus TCP (and UDP).
      * - Models: 1, 103 and 113 (both, the driver prefers the float 113), 120–136, 145, 160 (MPPT strings), 7xx
@@ -49,8 +61,8 @@ object MoreSunSpecProfiles {
 
     /**
      * APsystems ECU-R (2160…, firmware 1.3.7+; 2162…, 2.0.2+) and ECU-C (215…, C1.1.3+), not ECU-B ("SunSpec
-     * Modbus Rev 3.3", docs/specs/apsystems/). Read with the APsystems driver (driver/apsystems), which adds the
-     * vendor DC model 114 for the PV inputs.
+     * Modbus Rev 3.3", docs/specs/apsystems/). Read through ModbusSpec (apsystems-ecu), whose points of the vendor DC
+     * model 114 give the PV inputs (see SpecDevices).
      * - Port 502 ("fixed value"); one unit id per microinverter: the "inverter's modbus address" set for each one
      *   in the EMA Manager app (ECU APP → Workspace → Modbus Configuration). Add one device per microinverter.
      * - The spec's addresses are on-the-wire: the example reads the manufacturer at 0x9C44 = 40004, so "SunS" is
@@ -63,8 +75,8 @@ object MoreSunSpecProfiles {
      * Schneider Electric Conext CL 18/20/25 (NA and E; "Modbus Registers Map – Conext CL", 503-0243-01-01 rev 1.5,
      * docs/specs/schneider/). Port 502, unit ("slave") address 10 by default; addresses are 0-based ("on the
      * wire"), "SunS" at 0x9C40. Manufacturer "SCHNEIDER" in the spec (CL-60: "Schneider Electric"), matched on
-     * "Schneider". Read with the Conext CL driver (driver/schneider), which fixes the Common length (documented as
-     * 65 though a pad register follows, 66 registers in all) and adds the vendor energy counters.
+     * "Schneider". Read through ModbusSpec (schneider-conext-cl), whose vendor registers give
+     * the energy counters and the alarm code; the chain walk takes the Common model as 66 registers (a pad follows).
      */
     val CONEXT_CL = SunSpecInverterDriver.Profile(maker = "Schneider", meterUnitId = null, meterImportPositive = true)
 }

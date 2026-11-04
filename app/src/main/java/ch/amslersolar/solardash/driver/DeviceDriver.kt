@@ -7,19 +7,14 @@ import ch.amslersolar.solardash.driver.spec.SpecDevices
 import ch.amslersolar.solardash.driver.abb.AbbCddDriver
 import ch.amslersolar.solardash.driver.abb.AuroraDriver
 import ch.amslersolar.solardash.driver.abb.TcpAuroraTransport
-import ch.amslersolar.solardash.driver.apsystems.ApsystemsEcuDriver
 import ch.amslersolar.solardash.driver.demo.DemoBattery
 import ch.amslersolar.solardash.driver.demo.DemoHeatPump
 import ch.amslersolar.solardash.driver.demo.DemoInverter
 import ch.amslersolar.solardash.driver.demo.DemoMeter
 import ch.amslersolar.solardash.driver.enphase.EnphaseGatewayDriver
 import ch.amslersolar.solardash.driver.fimer.FimerSunSpecDriver
-import ch.amslersolar.solardash.driver.fronius.FroniusGen24Driver
-import ch.amslersolar.solardash.driver.kaco.KacoBlueplanetDriver
 import ch.amslersolar.solardash.driver.lg.LgEssDriver
-import ch.amslersolar.solardash.driver.lg.LgEssSunSpecDriver
 import ch.amslersolar.solardash.driver.modbus.ModbusConnections
-import ch.amslersolar.solardash.driver.schneider.ConextClDriver
 import ch.amslersolar.solardash.driver.sunspec.SunSpecInverterDriver
 import ch.amslersolar.solardash.driver.sunspec.SunSpecProfiles
 import ch.amslersolar.solardash.driver.voltronic.VoltronicAxpertDriver
@@ -40,24 +35,17 @@ interface DeviceDriver {
 object DeviceDrivers {
     /** Connections come from [connections], so devices behind the same gateway share one TCP connection. */
     fun create(config: DeviceConfig, connections: ModbusConnections): DeviceDriver =
-        (if (SpecDevices.handles(config.type)) SpecDevices.create(config.type, connections.get(config), config.unitId, config.model, config.specId) else null)
+        (if (SpecDevices.handles(config.type)) SpecDevices.create(config.type, connections.get(config), config.unitId, config.model, config.specId, config.invertGrid) else null)
             ?: handWritten(config, connections)
 
     /** The hand-written drivers: everything not (yet) read through ModbusSpec. */
     private fun handWritten(config: DeviceConfig, connections: ModbusConnections): DeviceDriver = when (config.type) {
-        DeviceType.LG_ESS_SUNSPEC -> LgEssSunSpecDriver(connections.get(config), config.unitId)
         DeviceType.LG_ESS -> LgEssDriver(config.host, config.port, config.password)
-        DeviceType.KACO_NX3 -> KacoBlueplanetDriver(connections.get(config), config.unitId)
         DeviceType.FIMER -> FimerSunSpecDriver(connections.get(config), config.unitId)
-        DeviceType.APSYSTEMS_ECU -> ApsystemsEcuDriver(connections.get(config), config.unitId)
-        DeviceType.CONEXT_CL -> ConextClDriver(connections.get(config), config.unitId)
         DeviceType.DEMO_INVERTER -> DemoInverter()
         DeviceType.DEMO_BATTERY -> DemoBattery()
         DeviceType.DEMO_METER -> DemoMeter()
         DeviceType.DEMO_HEAT_PUMP -> DemoHeatPump()
-        DeviceType.FRONIUS -> FroniusGen24Driver(connections.get(config), config.unitId, config.invertGrid)
-        DeviceType.SOLAREDGE ->
-            SunSpecInverterDriver(connections.get(config), config.unitId, SunSpecProfiles.SOLAREDGE.invertedGrid(config.invertGrid))
         DeviceType.SUNSPEC ->
             SunSpecInverterDriver(connections.get(config), config.unitId, SunSpecProfiles.GENERIC.invertedGrid(config.invertGrid))
         DeviceType.VOLTRONIC -> VoltronicAxpertDriver(config.host, config.port)

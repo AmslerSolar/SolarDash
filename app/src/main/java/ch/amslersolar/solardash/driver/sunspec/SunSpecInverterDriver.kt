@@ -274,7 +274,8 @@ open class SunSpecInverterDriver(reader: RegisterReader, unitId: Int, private va
 
             return DeviceReading(
                 pvPowerW = pv?.roundToInt(),
-                pvStrings = pvModules.mapNotNull { m -> m.v?.let { PvString(m.index, it, m.a ?: 0.0, m.w?.roundToInt()) } },
+                // Numbered 1, 2 … in order: some makes give the inputs other ids (Conext CL: 161, 162).
+                pvStrings = pvModules.mapNotNull { m -> m.v?.let { PvString(m.index, it, m.a ?: 0.0, m.w?.roundToInt()) } }.mapIndexed { i, s -> s.copy(index = i + 1) },
                 battery = battery,
                 gridPowerW = grid,
                 phases = phases,

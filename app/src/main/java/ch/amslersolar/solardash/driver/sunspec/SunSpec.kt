@@ -16,6 +16,8 @@ fun interface RegisterReader {
 /** Walks the SunSpec model chain (ID, length, ID, length, …) once and reads whole model blocks on demand. */
 class SunSpecDevice(private val reader: RegisterReader, private val unitId: Int) {
     private var models: Map<Int, Pair<Int, Int>>? = null // model id → (address of its ID register, length)
+    /** The Common model says 65 but is read as 66 (see [padded]). */
+    private var paddedCommon = false
 
     suspend fun discover(): Map<Int, Pair<Int, Int>> {
         models?.let { return it }
@@ -31,8 +33,9 @@ class SunSpecDevice(private val reader: RegisterReader, private val unitId: Int)
             repeat(MAX_MODELS) {
                 val hdr = reader.read(unitId, addr, 2)
                 val id = hdr.u16(addr)
-                val length = hdr.u16(addr + 1)
+                var length = hdr.u16(addr + 1)
                 if (id == END || length == 0) return checked(found)
+                if (id == COMMON && length == 65 && padded(addr)) { length = 66; paddedCommon = true }
                 found.putIfAbsent(id, addr to length)
                 addr += 2 + length
             }
@@ -53,6 +56,17 @@ class SunSpecDevice(private val reader: RegisterReader, private val unitId: Int)
         return found
     }
 
+    /**
+     * A Common model that says 65 registers but lays out 66: a pad register (0) follows, then the next model's id
+     * (seen on the Conext CL, whose map documents 65 and a pad at the 66th). A walk with 65 would land on the pad.
+     */
+    private suspend fun padded(addr: Int): Boolean = try {
+        val next = reader.read(unitId, addr + 2 + 65, 2)
+        next.u16(addr + 2 + 65) == 0 && next.u16(addr + 2 + 66) != 0
+    } catch (_: ModbusException) {
+        false
+    }
+
     /** Forgets the model map, e.g. after the device rebooted or updated its firmware. */
     fun forget() {
         models = null
@@ -62,7 +76,8 @@ class SunSpecDevice(private val reader: RegisterReader, private val unitId: Int)
         val (addr, length) = discover()[id] ?: return null
         val block = readLong(addr, length + 2)
         // The header must still say what the map said; otherwise the device changed its map (reboot, update).
-        if (block.u16(addr) != id || block.u16(addr + 1) != length) {
+        val declared = if (id == COMMON && paddedCommon) 65 else length
+        if (block.u16(addr) != id || block.u16(addr + 1) != declared) {
             forget()
             throw IOException("SunSpec map changed (model $id); it's discovered again with the next poll")
         }

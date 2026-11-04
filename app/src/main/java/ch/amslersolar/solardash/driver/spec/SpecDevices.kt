@@ -5,12 +5,17 @@ package ch.amslersolar.solardash.driver.spec
 
 import ch.amslersolar.solardash.driver.DeviceDriver
 import ch.amslersolar.solardash.driver.modbus.ModbusTcpClient
+import ch.amslersolar.solardash.driver.sunspec.MoreSunSpecProfiles
 import ch.amslersolar.solardash.driver.sunspec.RegisterReader
+import ch.amslersolar.solardash.driver.sunspec.SunSpecInverterDriver
+import ch.amslersolar.solardash.driver.sunspec.SunSpecProfiles
 import ch.amslersolar.solardash.model.BatteryState
 import ch.amslersolar.solardash.model.DeviceProblem
 import ch.amslersolar.solardash.model.PhaseReading
+import ch.amslersolar.solardash.model.PvString
 import ch.amslersolar.solardash.model.DeviceReading
 import ch.amslersolar.solardash.model.DeviceType
+import kotlin.math.abs
 import kotlin.math.roundToLong
 import kotlin.math.roundToInt
 
@@ -53,6 +58,37 @@ object SpecDevices {
         DeviceType.NIBE_S to listOf("nibe-s-series"),
         DeviceType.HOVAL_TOPTRONIC to listOf("hoval-toptronic-e"),
         DeviceType.VICTRON to listOf("victron-gx-system"),
+        DeviceType.FRONIUS to listOf("fronius-gen24"),
+        DeviceType.SOLAREDGE to listOf("solaredge-inverter"),
+        DeviceType.KACO_NX3 to listOf("kaco-inverter"),
+        DeviceType.APSYSTEMS_ECU to listOf("apsystems-ecu"),
+        DeviceType.CONEXT_CL to listOf("schneider-conext-cl"),
+        DeviceType.LG_ESS_SUNSPEC to listOf("lg-ess"),
+    )
+
+    /**
+     * SunSpec files read at their fixed addresses, without walking the chain: LG's map is fixed (documented), and its
+     * scale factors divide instead of multiply (`negate: true`), which a SunSpec reader would get wrong.
+     */
+    private val FIXED_SUNSPEC = setOf("lg-ess")
+
+    /** SunSpec device types: the make's settings for the chain's models (see [SunSpecSpecDriver]). */
+    val SUNSPEC_PROFILES: Map<DeviceType, SunSpecInverterDriver.Profile> = mapOf(
+        DeviceType.FRONIUS to MoreSunSpecProfiles.FRONIUS,
+        DeviceType.SOLAREDGE to SunSpecProfiles.SOLAREDGE,
+        DeviceType.KACO_NX3 to MoreSunSpecProfiles.KACO,
+        DeviceType.APSYSTEMS_ECU to MoreSunSpecProfiles.APSYSTEMS,
+        DeviceType.CONEXT_CL to MoreSunSpecProfiles.CONEXT_CL,
+    )
+
+    /**
+     * SunSpec files' points read at their fixed addresses although they're in the chain's range: APsystems' DC model
+     * 114 follows the chain's end marker (40210) at 40212, so a walk doesn't reach it (also on a real ECU-R dump).
+     */
+    fun sunSpecFixed(id: String): (Spec.Point) -> Boolean = SUNSPEC_FIXED[id] ?: { false }
+
+    private val SUNSPEC_FIXED: Map<String, (Spec.Point) -> Boolean> = mapOf(
+        "apsystems-ecu" to { p -> Regex("x\\.dc[1-8]_(voltage|current|power)").matches(p.key) },
     )
 
     /**
@@ -87,6 +123,8 @@ object SpecDevices {
         "growatt-tl-x" to SpecHooks { v, r -> growatt(v, r) },
         "growatt-wit" to SpecHooks { v, r -> growatt(v, r) },
         "victron-gx-system" to VictronGx,
+        "apsystems-ecu" to SpecHooks { v, r -> apsystems(v, r) },
+        "lg-ess" to SpecHooks { v, r -> lgEss(v, r) },
         "kostal-plenticore" to Inverters1Hooks.KOSTAL_PLENTICORE,
         "sma-inverter" to Inverters1Hooks.SMA,
         "sungrow-shx" to Inverters1Hooks.SUNGROW_SHX,
@@ -199,7 +237,8 @@ object SpecDevices {
     /** Whether [type] reads through ModbusSpec. */
     fun handles(type: DeviceType) = type in SPEC_IDS || type in GENERIC
 
-    fun create(type: DeviceType, client: ModbusTcpClient, unitId: Int, model: String? = null, specId: String = ""): DeviceDriver? {
+    /** [invertGrid]: the device form's "invert grid sign", for SunSpec meters whose sign isn't the make's usual one. */
+    fun create(type: DeviceType, client: ModbusTcpClient, unitId: Int, model: String? = null, specId: String = "", invertGrid: Boolean = false): DeviceDriver? {
         val ids = (if (type in GENERIC) listOf(specId).filter { it.isNotBlank() } else SPEC_IDS[type]) ?: return null
         if (ids.isEmpty()) return null
         val library = SpecLibrary.current ?: return null
@@ -214,7 +253,11 @@ object SpecDevices {
                 val spec = library.spec(id)
                 val tables = SpecTables(holding = holding, input = input, addressOffset = offset)
                 // SunSpec devices: the chain is walked where the device has it; the file adds the rest.
-                if (spec.sunspec && type in GENERIC) SunSpecSpecDriver(spec, library.vocabulary, tables, unitId, model?.takeIf { it.isNotBlank() })
+                if (spec.sunspec && id !in FIXED_SUNSPEC && type in GENERIC) SunSpecSpecDriver(spec, library.vocabulary, tables, unitId, model?.takeIf { it.isNotBlank() })
+                else if (spec.sunspec && id !in FIXED_SUNSPEC) SunSpecSpecDriver(
+                    spec, library.vocabulary, tables, unitId, model?.takeIf { it.isNotBlank() },
+                    profile = SUNSPEC_PROFILES[type]?.invertedGrid(invertGrid), hooks = hooks(id), fixed = sunSpecFixed(id),
+                )
                 else SpecDriver(
                     spec, library.vocabulary, tables, unitId, hooks(id),
                     requestGapMs = if (pollGap != null) 0 else null, model = model?.takeIf { it.isNotBlank() },
@@ -353,6 +396,53 @@ object SpecDevices {
         copy(battery = (battery ?: BatteryState(0, null, null, "Idle")).copy(powerW = p, mode = batteryMode(p)))
 
     fun hooks(id: String): SpecHooks = HOOK_FACTORIES[id]?.invoke() ?: HOOKS[id] ?: SpecHooks.NONE
+
+    /**
+     * APsystems DC model 114: inputs 1–8 (voltage, current, power; 3–8 depend on the microinverter). Solar is the
+     * sum of the inputs' power; an input is shown when it has voltage or power.
+     */
+    private fun apsystems(v: Map<String, SpecValue>, r: DeviceReading): DeviceReading {
+        val inputs = (1..8).mapNotNull { k ->
+            val volts = v.n("x.dc${k}_voltage"); val amps = v.n("x.dc${k}_current"); val watts = v.n("x.dc${k}_power")
+            if (volts == null && amps == null && watts == null) null else Triple(k, Pair(volts, amps), watts)
+        }
+        if (inputs.isEmpty()) return r
+        return r.copy(
+            pvPowerW = inputs.sumOf { it.third ?: 0.0 }.roundToInt(),
+            pvStrings = inputs.filter { (it.second.first ?: 0.0) > 0 || (it.third ?: 0.0) > 0 }
+                .map { (k, va, w) -> PvString(k, va.first ?: 0.0, va.second ?: 0.0, w?.roundToInt()) },
+        )
+    }
+
+    /**
+     * LG ESS Home 8 / 10 (SunSpec map): the inverter's float model 113 where the unit serves it, else 103. The
+     * battery's W (802) has no sign: its direction comes from ChaSt (3 discharging, 4 charging, else idle). Solar
+     * has no register: AC output − battery (+ = discharging), a few percent low (conversion losses); home = AC output
+     * + purchase. The meter has voltages per phase but only a total power: phases carry voltage and frequency only
+     * (the file's per-phase currents are the inverter's).
+     */
+    private fun lgEss(v: Map<String, SpecValue>, r: DeviceReading): DeviceReading {
+        val ac = v.n("x.ac_power") ?: v.n("x.ac_power_103")
+        val chargeState = v.n("x.charge_state")?.toInt()
+        val battery = if (chargeState != null || v.n("x.battery_power") != null) {
+            val magnitude = v.n("x.battery_power")?.let { abs(it).roundToInt() } ?: 0
+            val power = when (chargeState) { 3 -> magnitude; 4 -> -magnitude; else -> 0 }
+            BatteryState(
+                power, v.n("battery_soc")?.roundToInt()?.takeIf { it in 0..100 }, null,
+                v["x.charge_state"]?.enumText?.takeIf { it != "Unknown" } ?: "Standby",
+            )
+        } else null
+        val grid = r.gridPowerW
+        val state = v["state"] ?: v["x.state_103"]
+        return r.copy(
+            pvPowerW = ac?.let { maxOf(0, (it - (battery?.powerW ?: 0)).roundToInt()) },
+            battery = battery,
+            loadPowerW = if (ac != null && grid != null) maxOf(0, (ac - grid).roundToInt()) else null,
+            phases = r.phases.filter { it.voltageV > 0 }.map { it.copy(currentA = null, powerW = null) },
+            temperatureC = r.temperatureC ?: v.n("x.cabinet_temperature_103"),
+            status = state?.enumText ?: r.status,
+        )
+    }
 
     /**
      * Victron GX system service. A value the installation lacks (a third phase, registers older firmware doesn't have)

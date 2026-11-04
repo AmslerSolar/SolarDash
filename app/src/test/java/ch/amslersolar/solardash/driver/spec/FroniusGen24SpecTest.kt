@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 Amsler Solar GmbH
 
-package ch.amslersolar.solardash.driver.fronius
+package ch.amslersolar.solardash.driver.spec
 
 import ch.amslersolar.solardash.driver.modbus.ModbusException
 import ch.amslersolar.solardash.driver.modbus.RegisterBlock
@@ -13,7 +13,19 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class FroniusGen24DriverTest {
+/**
+ * Fronius GEN24 through its ModbusSpec file (fronius-gen24) with the Fronius SunSpec profile: the hand-written
+ * FroniusGen24Driver's tests, unchanged, on the driver that replaced it.
+ */
+class FroniusGen24SpecTest {
+    private val library = SpecLibrary { java.io.File("src/main/assets/modbusspec/$it").readText() }
+
+    @Suppress("TestFunctionName")
+    private fun FroniusGen24Driver(reader: RegisterReader, unit: Int, invertGrid: Boolean = false) = SunSpecSpecDriver(
+        library.spec("fronius-gen24"), library.vocabulary, SpecTables(holding = reader, input = reader), unit,
+        profile = SpecDevices.SUNSPEC_PROFILES.getValue(ch.amslersolar.solardash.model.DeviceType.FRONIUS).invertedGrid(invertGrid),
+    )
+
     /** SunSpec register images per unit id, built model by model from 40000 like a GEN24. */
     private class FakeGen24 : RegisterReader {
         val units = HashMap<Int, HashMap<Int, Int>>()

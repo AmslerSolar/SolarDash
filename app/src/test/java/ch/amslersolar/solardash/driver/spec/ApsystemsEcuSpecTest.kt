@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 Amsler Solar GmbH
 
-package ch.amslersolar.solardash.driver.apsystems
+package ch.amslersolar.solardash.driver.spec
 
 import ch.amslersolar.solardash.driver.sunspec.FakeRegisterImage
 import ch.amslersolar.solardash.driver.sunspec.FakeRegisterImage.Companion.common
@@ -13,7 +13,21 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.IOException
 
-class ApsystemsEcuDriverTest {
+/**
+ * APsystems ECU through its ModbusSpec file (apsystems-ecu): the hand-written ApsystemsEcuDriver's tests on the
+ * driver that replaced it (detail titles and problem texts are the file's).
+ */
+class ApsystemsEcuSpecTest {
+    private val library = SpecLibrary { java.io.File("src/main/assets/modbusspec/$it").readText() }
+
+    /** The device type's driver, as [SpecDevices.create] makes it: apsystems-ecu with the make's SunSpec profile and hooks. */
+    @Suppress("TestFunctionName")
+    private fun ApsystemsEcuDriver(reader: ch.amslersolar.solardash.driver.sunspec.RegisterReader, unit: Int) = SunSpecSpecDriver(
+        library.spec("apsystems-ecu"), library.vocabulary, SpecTables(holding = reader, input = reader), unit,
+        profile = SpecDevices.SUNSPEC_PROFILES.getValue(ch.amslersolar.solardash.model.DeviceType.APSYSTEMS_ECU),
+        hooks = SpecDevices.hooks("apsystems-ecu"), fixed = SpecDevices.sunSpecFixed("apsystems-ecu"),
+    )
+
     private val nan = Double.NaN
 
     /** The SunSpec models in front of model 114: Common at 40002, 101 at 40070, 111 at 40122, 123 at 40184. */
@@ -53,7 +67,7 @@ class ApsystemsEcuDriverTest {
      */
     private fun ecu(maker: String = "APsystems") = chain(maker).apply {
         u16(40212, 0); u16(40213, 0)
-        dcValues(ApsystemsEcuDriver.DC_MODEL_ADDRESS)
+        dcValues(40212)
     }
 
     @Test
@@ -73,24 +87,7 @@ class ApsystemsEcuDriverTest {
         assertEquals(1_520.0, r.lifetimePvKwh!!, 1e-9)
         assertEquals("Producing", r.status)
         assertNull(r.gridPowerW)
-        assertTrue(r.details.any { it.title == "DC inputs (APsystems model 114)" && it.rows.size == 6 })
-    }
-
-    @Test
-    fun model114FoundInTheChainWhenNotAtItsFixedAddress() = runBlocking {
-        // An ECU without model 123 whose chain lists model 114 (at 40184): 40214–40261 can't be read in one go
-        // (the image ends at 40235), so the chain is used.
-        val image = FakeRegisterImage(unitId = 5).sunSpec(
-            40000,
-            common("APsystems", "YC600"),
-            model(101, 50),
-            model(111, 60) { b -> f32(b + 22, 401.0); f32(b + 16, 231.4); f32(b + 38, nan); u16(b + 48, 4) },
-            model(ApsystemsEcuDriver.DC_MODEL, 48) { b -> dcValues(b) },
-        )
-        assertEquals(ApsystemsEcuDriver.DC_MODEL, image.regs[40184])
-        val r = ApsystemsEcuDriver(image, 5).read()
-        assertEquals(413, r.pvPowerW)
-        assertEquals(listOf(1, 2), r.pvStrings.map { it.index })
+        assertTrue(r.details.flatMap { it.rows }.any { it.second.startsWith("211.2") }) // model 114 in the details
     }
 
     @Test

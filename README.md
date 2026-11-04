@@ -171,18 +171,24 @@ unfinished work there is ignored, and runs ModbusSpec's validator; `LOCK.json` r
 - `driver/spec/SpecDevices.kt` says which device type reads through which file(s) and holds small per-device
   hooks for what the format can't express. The golden tests (`test/…/driver/spec/*GoldenTest.kt`) check each
   spec driver against what the replaced hand-written driver read on the same register images, recorded before those
-  drivers were removed (`test/resources/golden/`). Modbus devices that need logic (the SunSpec chain)
-  and non-Modbus devices (Voltronic, LG, Enphase, ABB CDD, Aurora) stay hand-written.
-- Switched (36 device types): Eastron SDM, KEBA P30, Carlo Gavazzi (EM24-E1, EM300, EM210, EM24-DIN), inepro
+  drivers were removed (`test/resources/golden/`); for the SunSpec family the old drivers' own tests run on the
+  spec drivers (`*SpecTest.kt`). Non-Modbus devices (Voltronic, LG's HTTPS API, Enphase, ABB CDD, Aurora) stay
+  hand-written.
+- SunSpec files (`sunspec: true`) are read by `SunSpecSpecDriver`: the chain is walked on the device with the shared
+  SunSpec engine (`driver/sunspec/`), the make's settings come from `SpecDevices.SUNSPEC_PROFILES` (manufacturer,
+  a meter under its own unit id, the meter's sign), and the file's registers beside the chain fill in what SunSpec
+  doesn't say (vendor energy counters, alarm codes, APsystems' DC model 114 after the end marker). LG's map is fixed
+  and its scale factors divide: `lg-ess` is read at its fixed addresses instead.
+- Switched (42 device types): Eastron SDM, KEBA P30, Carlo Gavazzi (EM24-E1, EM300, EM210, EM24-DIN), inepro
   PRO380, ABB B23/B24, Janitza UMG, Schneider iEM3000, Siemens PAC2200, KOSTAL KSEM, Shelly Pro 3EM, my-PV,
   Stiebel Eltron ISG, Alfen Eve, MENNEKES/Bender ECU, go-e, NIBE S series (model picked in the device form:
   `model_choice: user`), Hoval TopTronic E, FENECON, Huawei SUN2000, Growatt (SPH, TL-X, WIT), GoodWe ET, SMA,
   Sungrow (SHx, SG), KOSTAL Plenticore (word order from register 5), KOSTAL PIKO CI, Schneider Conext CL-60 and
   Gateway, CPS 403X, Power-One TRIO (asleep at night: `connection.sleeps`), Ingeteam INGECON SUN, Riello central,
-  Victron GX (system service, unit id 100; the GX refuses missing values with gateway exceptions 10/11).
-- Still hand-written: the SunSpec family (Fronius, SolarEdge, KACO, FIMER, APsystems, Conext CL, LG SunSpec; the
-  SunSpec chain is discovered at runtime), and the non-Modbus Voltronic, LG ESS,
-  Enphase, ABB CDD and Aurora.
+  Victron GX (system service, unit id 100; the GX refuses missing values with gateway exceptions 10/11), and the
+  SunSpec family: Fronius GEN24, SolarEdge, KACO NX3, APsystems ECU, Schneider Conext CL, LG ESS (SunSpec).
+- Still hand-written: FIMER (no ModbusSpec file yet), the generic SunSpec type (any SunSpec device, no file), and
+  the non-Modbus Voltronic, LG ESS (HTTPS), Enphase, ABB CDD and Aurora.
 - Every other energy device in ModbusSpec (inverters, batteries, meters, wallboxes, heat pumps, heating rods,
   UPSs, boilers: `kinds:` in `app/modbusspec.txt`, 438 files) is available through four generic device types
   (`MODBUS_SPEC_INVERTER`, `…_BATTERY`, `…_METER`, `…_CONSUMER`, by the file's kind) with the file's id in
@@ -284,19 +290,19 @@ model/            Plant and device config, DeviceReading, plant totals, history 
 driver/           DeviceDriver interface and factory
 driver/modbus/    Modbus TCP framing and client; one connection per host:port, shared across unit ids
 driver/goodwe/    GoodWe ET register map and detail view
-driver/lg/        LG ESS: SunSpec (port 6502) and local HTTPS API
+driver/lg/        LG ESS local HTTPS API
 driver/huawei/    Huawei SUN2000 register map
 driver/kostal/    KOSTAL PLENTICORE register map
-driver/fronius/   Fronius GEN24 (SunSpec models 1xx, 120, 124, 160, 2xx)
 driver/powerone/  Power-One / ABB TRIO (input registers, maps GT and Gt03)
-driver/sunspec/   SunSpec discovery and the shared SunSpec inverter driver (Fronius, SolarEdge, generic)
+driver/sunspec/   SunSpec chain walk and models (1xx, 120, 124, 160, 2xx, 802), per-make profiles; the engine of
+                  the SunSpec ModbusSpec driver and the generic SunSpec type
 driver/sma/       SMA native Modbus (unit 3)
 driver/sungrow/   Sungrow SH / SG
 driver/growatt/   Growatt VPP protocol
 driver/voltronic/ Voltronic Axpert ASCII protocol over a transparent TCP gateway
 driver/meter/     Energy meters (Gavazzi, Eastron, inepro, ABB, Janitza, Schneider, Siemens, KSEM, Shelly)
 driver/consumer/  Heat pumps, heating rods, wallboxes (read only)
-driver/fenecon/, driver/enphase/, driver/kaco/, driver/fimer/, driver/apsystems/, driver/schneider/,
+driver/fenecon/, driver/enphase/, driver/fimer/,
 driver/ingeteam/, driver/cps/, driver/riello/   further inverters and systems
 discovery/        Network search for inverters: port scan and mDNS (add-device screen, moved devices); port 80 is
                   asked for an ABB CDD's /summary.xml and listed only when it is one

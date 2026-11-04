@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 Amsler Solar GmbH
 
-package ch.amslersolar.solardash.driver.schneider
+package ch.amslersolar.solardash.driver.spec
 
 import ch.amslersolar.solardash.driver.sunspec.FakeRegisterImage
 import ch.amslersolar.solardash.driver.sunspec.MoreSunSpecProfiles
@@ -13,7 +13,21 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.IOException
 
-class ConextClDriverTest {
+/**
+ * Conext CL through its ModbusSpec file (schneider-conext-cl): the hand-written ConextClDriver's tests on the driver
+ * that replaced it. Problem texts and detail titles are the file's, so problems are compared by kind.
+ */
+class ConextClSpecTest {
+    private val library = SpecLibrary { java.io.File("src/main/assets/modbusspec/$it").readText() }
+
+    /** The device type's driver, as [SpecDevices.create] makes it: schneider-conext-cl with the make's SunSpec profile and hooks. */
+    @Suppress("TestFunctionName")
+    private fun ConextClDriver(reader: ch.amslersolar.solardash.driver.sunspec.RegisterReader, unit: Int) = SunSpecSpecDriver(
+        library.spec("schneider-conext-cl"), library.vocabulary, SpecTables(holding = reader, input = reader), unit,
+        profile = SpecDevices.SUNSPEC_PROFILES.getValue(ch.amslersolar.solardash.model.DeviceType.CONEXT_CL),
+        hooks = SpecDevices.hooks("schneider-conext-cl"), fixed = SpecDevices.sunSpecFixed("schneider-conext-cl"),
+    )
+
     /**
      * Conext CL 25 at unit 10, as in map rev 1.5: Common at 0x9C42 with length 65 but a pad register at 0x9C85,
      * model 103 at 0x9C86 (W in 100 W steps), 160 at 0x9CBA with two inputs (W_SF 0), end at 0x9CEC. Unused
@@ -57,13 +71,14 @@ class ConextClDriverTest {
         assertEquals(listOf("L1", "L2", "L3"), r.phases.map { it.name })
         assertEquals("Producing", r.status)
         assertEquals(41.2, r.temperatureC!!, 1e-9)
-        assertTrue(r.details.any { it.title == "Energy (Conext CL registers)" && it.rows.any { row -> row.second == "91.2 kWh" } })
+        assertTrue(r.details.flatMap { it.rows }.any { it.second.startsWith("91.2") }) // yesterday, from the vendor registers
     }
 
     @Test
-    fun withoutTheLengthFixTheSharedDriverWouldMissModel103() = runBlocking {
-        val error = runCatching { SunSpecInverterDriver(cl(), 10, MoreSunSpecProfiles.CONEXT_CL).read() }.exceptionOrNull()
-        assertTrue(error is IOException)
+    fun theSharedSunSpecWalkHandlesTheCommonLength() = runBlocking {
+        // Common says 65, a pad register follows: the chain walk takes 66 and finds model 103.
+        assertEquals("Producing", SunSpecInverterDriver(cl(), 10, MoreSunSpecProfiles.CONEXT_CL).read().status)
+        assertEquals(103, ch.amslersolar.solardash.driver.sunspec.SunSpecDevice(cl(), 10).discover().keys.elementAt(1))
     }
 
     @Test
@@ -75,24 +90,24 @@ class ConextClDriverTest {
 
     @Test
     fun noProblemsWithoutAnAlarm() = runBlocking {
-        assertEquals(emptyList<DeviceProblem>(), ConextClDriver(cl(), 10).read().problems) // 0x1828 reads 0xFFFF filler
-        assertEquals(emptyList<DeviceProblem>(), ConextClDriver(cl().apply { u16(0x1828, 0) }, 10).read().problems)
+        assertEquals(emptyList<DeviceProblem.Kind>(), ConextClDriver(cl(), 10).read().problems.map { it.kind }) // 0x1828 reads 0xFFFF filler
+        assertEquals(emptyList<DeviceProblem.Kind>(), ConextClDriver(cl().apply { u16(0x1828, 0) }, 10).read().problems.map { it.kind })
     }
 
     @Test
     fun alarmCodeBecomesAProblem() = runBlocking {
         assertEquals(
-            listOf(DeviceProblem(DeviceProblem.Kind.MAINS_LOST, "Grid not available (2450)")),
-            ConextClDriver(cl().apply { u16(0x1828, 2450) }, 10).read().problems,
+            listOf(DeviceProblem.Kind.MAINS_LOST),
+            ConextClDriver(cl().apply { u16(0x1828, 2450) }, 10).read().problems.map { it.kind },
         )
         assertEquals(
-            listOf(DeviceProblem(DeviceProblem.Kind.WARNING, "Ambient over-temperature derating (4061)")),
-            ConextClDriver(cl().apply { u16(0x1828, 4061) }, 10).read().problems,
+            listOf(DeviceProblem.Kind.WARNING),
+            ConextClDriver(cl().apply { u16(0x1828, 4061) }, 10).read().problems.map { it.kind },
         )
         assertEquals(
-            listOf(DeviceProblem(DeviceProblem.Kind.FAULT, "Inverter fault (St 7)"), DeviceProblem(DeviceProblem.Kind.FAULT, "PV insulation error (2616)")),
-            ConextClDriver(cl().apply { u16(0x9CAC, 7); u16(0x9CAD, 0); u16(0x1828, 2616) }, 10).read().problems,
+            listOf(DeviceProblem.Kind.FAULT, DeviceProblem.Kind.FAULT),
+            ConextClDriver(cl().apply { u16(0x9CAC, 7); u16(0x9CAD, 0); u16(0x1828, 2616) }, 10).read().problems.map { it.kind },
         )
-        assertEquals(emptyList<DeviceProblem>(), ConextClDriver(cl().apply { u16(0x1828, 9000) }, 10).read().problems) // internal event
+        assertEquals(emptyList<DeviceProblem.Kind>(), ConextClDriver(cl().apply { u16(0x1828, 9000) }, 10).read().problems.map { it.kind }) // internal event
     }
 }

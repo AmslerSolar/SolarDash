@@ -32,16 +32,30 @@ class SunSpecSpecDriver(
     private val tables: SpecTables,
     private val unitId: Int,
     private val model: String? = null,
+    /**
+     * A make's SunSpec settings (see [SpecDevices.SUNSPEC_PROFILES]): the manufacturer identify() requires, a meter
+     * under its own unit id, the meter's sign. Null: any make, meters in the chain, the sign from the file.
+     */
+    private val profile: SunSpecInverterDriver.Profile? = null,
+    /** The file's hooks, applied to its registers beside the chain (see [SpecDevices.hooks]). */
+    private val hooks: SpecHooks = SpecHooks.NONE,
+    /**
+     * File points read at their fixed addresses although they lie in the chain's address range: a vendor model the
+     * device puts after the chain's end marker, where a walk doesn't reach it (APsystems model 114).
+     */
+    private val fixed: (Spec.Point) -> Boolean = { false },
 ) : DeviceDriver {
     private val chain = SunSpecDevice(tables.holding, unitId)
-    private val importPositive = spec.points.firstOrNull { it.key == "grid_power" }?.positive != "export"
+    private val importPositive = profile?.meterImportPositive ?: (spec.points.firstOrNull { it.key == "grid_power" }?.positive != "export")
     private val inverter by lazy {
-        SunSpecInverterDriver(tables.holding, unitId, SunSpecProfiles.GENERIC.copy(meterImportPositive = importPositive))
+        SunSpecInverterDriver(tables.holding, unitId, profile ?: SunSpecProfiles.GENERIC.copy(meterImportPositive = importPositive))
     }
     private var vendor: SpecDriver? = null
     private var vendorChecked = false
 
     override suspend fun identify(): DeviceInfo {
+        // A make's profile: its Common model must name the make (the inverter model and firmware as model text).
+        if (profile != null) return inverter.identify()
         if (spec.identify != null && (spec.identify.checks.isNotEmpty() || spec.identify.any.isNotEmpty())) {
             return SpecDriver(spec, vocabulary, tables, unitId, model = model).identify()
         }
@@ -74,17 +88,20 @@ class SunSpecSpecDriver(
             else -> inverter.read()
         }
         val extra = vendorReading() ?: return sunspec
+        // PV inputs from the maker's registers are more specific than the inverter model's DC power; the maker's
+        // energy counters win over the SunSpec ones (whose scale is often ambiguous, e.g. Conext CL's WH_SF).
+        val vendorInputs = extra.pvStrings.isNotEmpty()
         return DeviceReading(
-            pvPowerW = sunspec.pvPowerW ?: extra.pvPowerW,
-            pvStrings = sunspec.pvStrings.ifEmpty { extra.pvStrings },
+            pvPowerW = if (vendorInputs) extra.pvPowerW ?: sunspec.pvPowerW else sunspec.pvPowerW ?: extra.pvPowerW,
+            pvStrings = if (vendorInputs) extra.pvStrings else sunspec.pvStrings,
             battery = sunspec.battery ?: extra.battery,
             gridPowerW = sunspec.gridPowerW ?: extra.gridPowerW,
             phases = sunspec.phases.ifEmpty { extra.phases },
             loadPowerW = sunspec.loadPowerW ?: extra.loadPowerW,
             temperatureC = sunspec.temperatureC ?: extra.temperatureC,
             status = sunspec.status ?: extra.status,
-            today = sunspec.today.takeIf { it.pvKwh != null } ?: extra.today,
-            lifetimePvKwh = sunspec.lifetimePvKwh ?: extra.lifetimePvKwh,
+            today = extra.today.takeIf { it.pvKwh != null } ?: sunspec.today,
+            lifetimePvKwh = extra.lifetimePvKwh ?: sunspec.lifetimePvKwh,
             details = sunspec.details + extra.details,
             problems = (sunspec.problems + extra.problems).distinct(),
         )
@@ -95,8 +112,8 @@ class SunSpecSpecDriver(
         if (!vendorChecked) {
             // The file gives the chain at its usual base (where its Common model sits); its chain points lie above it.
             val base = SunSpecDevice.BASES.firstOrNull { b -> spec.points.any { it.address in b until b + COMMON_LENGTH } } ?: 40000
-            val outside = spec.points.filter { it.address !in base until base + CHAIN_WINDOW }
-            vendor = outside.takeIf { it.isNotEmpty() }?.let { SpecDriver(spec.withPoints(it), vocabulary, tables, unitId, model = model) }
+            val outside = spec.points.filter { it.address !in base until base + CHAIN_WINDOW || fixed(it) }
+            vendor = outside.takeIf { it.isNotEmpty() }?.let { SpecDriver(spec.withPoints(it), vocabulary, tables, unitId, hooks, model = model) }
             vendorChecked = true
         }
         val v = vendor ?: return null

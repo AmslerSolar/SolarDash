@@ -4,7 +4,6 @@
 package ch.amslersolar.solardash.driver.sunspec
 
 import ch.amslersolar.solardash.driver.fimer.FimerSunSpecDriver
-import ch.amslersolar.solardash.driver.kaco.KacoBlueplanetDriver
 import ch.amslersolar.solardash.driver.sunspec.FakeRegisterImage.Companion.common
 import ch.amslersolar.solardash.driver.sunspec.FakeRegisterImage.Companion.model
 import kotlinx.coroutines.runBlocking
@@ -19,6 +18,14 @@ class MoreSunSpecProfilesTest {
      * KACO blueplanet 125 NX3: the application note numbers from 40001, so "SunS" is at 40000 on the wire; nothing
      * answers at 0. Models 1, 103 (int + SF, 100 W steps), 113 (float) and 160 with two MPPT inputs.
      */
+    private val library = ch.amslersolar.solardash.driver.spec.SpecLibrary { java.io.File("src/main/assets/modbusspec/$it").readText() }
+
+    /** KACO through its ModbusSpec file (kaco-inverter), as the device type reads it since the KACO driver was removed. */
+    private fun kacoDriver(reader: RegisterReader, unit: Int) = ch.amslersolar.solardash.driver.spec.SunSpecSpecDriver(
+        library.spec("kaco-inverter"), library.vocabulary, ch.amslersolar.solardash.driver.spec.SpecTables(holding = reader, input = reader), unit,
+        profile = MoreSunSpecProfiles.KACO,
+    )
+
     private fun kaco(maker: String = "KACO new energy") = FakeRegisterImage(unitId = 1).sunSpec(
         40000,
         common(maker, "blueplanet 125 NX3", "V5.1.9.0", "125NX3012345"),
@@ -45,7 +52,7 @@ class MoreSunSpecProfilesTest {
     @Test
     fun kacoReadsTheFloatModelAndTheMpptInputsFromTheChainAt40000() = runBlocking {
         val image = kaco()
-        val driver = KacoBlueplanetDriver(image, 1)
+        val driver = kacoDriver(image, 1)
         val info = driver.identify()
         assertEquals("blueplanet 125 NX3 (firmware V5.1.9.0)", info.model)
         assertEquals("125NX3012345", info.serial)
@@ -66,7 +73,7 @@ class MoreSunSpecProfilesTest {
 
     @Test
     fun kacoRejectsOtherMakes() = runBlocking {
-        val error = runCatching { KacoBlueplanetDriver(kaco(maker = "SMA"), 1).identify() }.exceptionOrNull()
+        val error = runCatching { kacoDriver(kaco(maker = "SMA"), 1).identify() }.exceptionOrNull()
         assertTrue(error is IOException)
         assertTrue(error!!.message.orEmpty().contains("Not a KACO"))
     }

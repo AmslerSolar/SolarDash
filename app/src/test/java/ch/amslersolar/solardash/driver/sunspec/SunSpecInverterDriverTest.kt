@@ -82,6 +82,32 @@ class SunSpecInverterDriverTest {
     }
 
     @Test
+    fun solarEdgeReadsTheSameThroughItsModbusSpecFile() = runBlocking {
+        // The SolarEdge device type reads through solaredge-inverter with the SolarEdge profile.
+        val library = ch.amslersolar.solardash.driver.spec.SpecLibrary { java.io.File("src/main/assets/modbusspec/$it").readText() }
+        for (invert in listOf(false, true)) {
+            val image = solarEdge()
+            val spec = ch.amslersolar.solardash.driver.spec.SunSpecSpecDriver(
+                library.spec("solaredge-inverter"), library.vocabulary, ch.amslersolar.solardash.driver.spec.SpecTables(holding = image, input = image), 1,
+                profile = SunSpecProfiles.SOLAREDGE.invertedGrid(invert),
+            )
+            val old = SunSpecInverterDriver(solarEdge(), 1, SunSpecProfiles.SOLAREDGE.invertedGrid(invert))
+            assertEquals(old.identify(), spec.identify())
+            val a = old.read()
+            val b = spec.read()
+            assertEquals(listOf(a.pvPowerW, a.gridPowerW, a.loadPowerW, a.battery, a.phases, a.status, a.problems), listOf(b.pvPowerW, b.gridPowerW, b.loadPowerW, b.battery, b.phases, b.status, b.problems))
+        }
+        val error = runCatching {
+            val other = solarEdge(maker = "SMA")
+            ch.amslersolar.solardash.driver.spec.SunSpecSpecDriver(
+                library.spec("solaredge-inverter"), library.vocabulary, ch.amslersolar.solardash.driver.spec.SpecTables(holding = other, input = other), 1,
+                profile = SunSpecProfiles.SOLAREDGE,
+            ).identify()
+        }.exceptionOrNull()
+        assertTrue(error?.message.orEmpty().contains("Not a SolarEdge"))
+    }
+
+    @Test
     fun makeSpecificProfileRejectsOtherMakesGenericAcceptsThem() = runBlocking {
         val other = solarEdge(maker = "SMA")
         val error = runCatching { SunSpecInverterDriver(other, 1, SunSpecProfiles.SOLAREDGE).identify() }.exceptionOrNull()
