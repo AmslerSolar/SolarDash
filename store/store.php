@@ -287,7 +287,8 @@ function signature_ok(array $e, string $spki): bool
 //                    watch     its time is the last observer watch
 //                    items/<kind>_<name>  the stored envelopes
 // <data>/locks/<id>            per-plant lock files
-// <data>/rate/                 rate counters, named by keyed hashes (no addresses on disk)
+// <data>/rate/                 rate counters, one per limit and plant or address, named by keyed hashes
+//                              (no addresses on disk); each holds "<window> <count>"
 // <data>/secret                key for those hashes
 
 function data_dir(): string
@@ -493,19 +494,21 @@ function rate_limit(string $scope, string $key, int $limit, int $window): void
     }
     $now = time();
     $slot = intdiv($now, $window);
-    $file = sub_dir('rate') . '/' . hash_hmac('sha256', $scope . '|' . $key . '|' . $slot, secret());
+    $file = sub_dir('rate') . '/' . hash_hmac('sha256', $scope . '|' . $key, secret());
     $h = @fopen($file, 'c+');
     if ($h === false || !flock($h, LOCK_EX)) {
         fail(500, 'could not count');
     }
-    $count = (int) stream_get_contents($h);
+    // "<window> <count>"; a counter from an earlier window starts again at 0
+    $parts = explode(' ', trim((string) stream_get_contents($h)));
+    $count = count($parts) === 2 && (int) $parts[0] === $slot ? (int) $parts[1] : 0;
     if ($count >= $limit) {
         unlock($h);
         fail(429, 'too many requests', ['Retry-After' => (string) max(1, ($slot + 1) * $window - $now)]);
     }
     ftruncate($h, 0);
     rewind($h);
-    fwrite($h, (string) ($count + 1));
+    fwrite($h, $slot . ' ' . ($count + 1));
     fflush($h);
     unlock($h);
 }
