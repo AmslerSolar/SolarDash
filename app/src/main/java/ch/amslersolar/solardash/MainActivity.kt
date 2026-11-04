@@ -32,6 +32,8 @@ import ch.amslersolar.solardash.ui.AddDeviceScreen
 import ch.amslersolar.solardash.ui.DeviceScreen
 import ch.amslersolar.solardash.ui.PlantSettingsScreen
 import ch.amslersolar.solardash.ui.DiscoverDevicesScreen
+import ch.amslersolar.solardash.ui.SweepScreen
+import ch.amslersolar.solardash.driver.modbus.RegisterSweep
 import ch.amslersolar.solardash.ui.DashboardTab
 import ch.amslersolar.solardash.ui.DevicesTab
 import ch.amslersolar.solardash.ui.LivePlants
@@ -113,6 +115,10 @@ class MainActivity : ComponentActivity() {
                     val back = { route = parent ?: ROUTE_PLANTS }
                     val addDevice = { route = "plant/${plant.id}/add" }
                     val discover = { route = "plant/${plant.id}/discover" }
+                    val sweep: suspend (DeviceConfig, Map<Int, RegisterSweep>, () -> Unit, (String) -> Unit) -> Unit = { device, sweeps, progress, onSaved ->
+                        // All other device traffic waits meanwhile: the sweep goes faster, single-client gateways are free.
+                        TrafficPause.during { RegisterSweeps.run(applicationContext, device, sweeps, progress) { onSaved(it.path) } }
+                    }
                     val scan = { editing: DeviceConfig?, range: String ->
                         // Configured devices are listed, not probed: a second client could disturb their poll.
                         val known = plants.orEmpty().flatMap { p ->
@@ -140,10 +146,7 @@ class MainActivity : ComponentActivity() {
                                         if (editing != null) plantsVm.updateDevice(plant.id, it) else plantsVm.addDevice(plant.id, it)
                                         back()
                                     },
-                                    onSweep = { device, sweeps, progress, onSaved ->
-                                        // All other device traffic waits meanwhile: the sweep goes faster, single-client gateways are free.
-                                        TrafficPause.during { RegisterSweeps.run(applicationContext, device, sweeps, progress) { onSaved(it.path) } }
-                                    },
+                                    onSweep = sweep,
                                     onBack = back,
                                     existing = editing,
                                 )
@@ -161,13 +164,22 @@ class MainActivity : ComponentActivity() {
                             onOffGrid = { plantsVm.setOffGrid(plant.id, it) },
                             onBack = back,
                         )
+                        "sweep" -> {
+                            val device = plant.devices.find { it.id == parts.getOrNull(3) }
+                            if (device == null) LaunchedEffect(Unit) { back() } else SweepScreen(device, onSweep = sweep, onBack = back)
+                        }
                         "device" -> {
                             val device = plant.devices.find { it.id == parts.getOrNull(3) }
                             if (device == null) {
                                 LaunchedEffect(Unit) { back() }
                             } else {
                                 val status = (state as? PlantState.Live)?.snapshot?.devices?.find { it.device.id == device.id }
-                                DeviceScreen(device, status, onBack = back)
+                                DeviceScreen(
+                                    device, status, onBack = back,
+                                    onRename = { plantsVm.updateDevice(plant.id, device.copy(name = it)) },
+                                    onRemove = { deleteData -> plantsVm.removeDevice(plant.id, device, deleteData); back() },
+                                    onSweep = { route = "plant/${plant.id}/sweep/${device.id}" },
+                                )
                             }
                         }
                         else -> {

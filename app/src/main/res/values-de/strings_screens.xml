@@ -101,4 +101,6 @@
         <item quantity="one">%1$d Gerät hinzugefügt</item>
         <item quantity="other">%1$d Geräte hinzugefügt</item>
     </plurals>
+    <string name="screens_more_options">Weitere Optionen</string>
+    <string name="screens_delete">Löschen</string>
 </resources>

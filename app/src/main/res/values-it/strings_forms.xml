@@ -124,6 +124,7 @@
     </plurals>
     <string name="forms_sweep_open">Scansione registri…</string>
     <string name="forms_sweep_title">Scansione registri</string>
+    <string name="forms_sweep_title_device">Scansione registri: %1$s</string>
     <string name="forms_hint_sweep">Legge tutti i registri con la funzione 03, poi 04, senza scrivere nulla, e salva il traffico in un file nella cartella dell\'app.</string>
     <string name="forms_sweep_start">Avvia scansione</string>
     <string name="forms_sweep_stop">Ferma scansione</string>

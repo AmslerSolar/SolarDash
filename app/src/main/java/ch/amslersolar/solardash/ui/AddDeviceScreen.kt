@@ -481,7 +481,7 @@ fun AddDeviceScreen(
             }
 
             if (type.modbus && type.needsHost) {
-                SweepSection(enabled = valid) { sweeps, progress, onSaved -> onSweep(build(), sweeps, progress, onSaved) }
+                SweepSection(enabled = valid, onSweep = { sweeps, progress, onSaved -> onSweep(build(), sweeps, progress, onSaved) })
             }
         }
     }
@@ -493,11 +493,13 @@ fun AddDeviceScreen(
  * adding a device.
  */
 @Composable
-private fun SweepSection(
+fun SweepSection(
     enabled: Boolean,
     onSweep: suspend (sweeps: Map<Int, RegisterSweep>, progress: () -> Unit, onSaved: (String) -> Unit) -> Unit,
+    /** Shown open, without the button unfolding it (on its own screen). */
+    folded: Boolean = true,
 ) {
-    var open by rememberSaveable { mutableStateOf(false) }
+    var open by rememberSaveable { mutableStateOf(!folded) }
     val scope = rememberCoroutineScope()
     var job by remember { mutableStateOf<Job?>(null) }
     var sweeps by remember { mutableStateOf<Map<Int, RegisterSweep>?>(null) }
@@ -519,7 +521,7 @@ private fun SweepSection(
         return
     }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(stringResource(R.string.forms_sweep_title), style = MaterialTheme.typography.titleSmall)
+        if (folded) Text(stringResource(R.string.forms_sweep_title), style = MaterialTheme.typography.titleSmall)
         Hint(stringResource(R.string.forms_hint_sweep))
         if (running) {
             OutlinedButton(onClick = { job?.cancel() }) { Text(stringResource(R.string.forms_sweep_stop)) }

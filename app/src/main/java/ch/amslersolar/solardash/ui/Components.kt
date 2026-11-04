@@ -79,6 +79,22 @@ fun ConfirmRemoveDialog(
     )
 }
 
+/** Removing a device: its recorded data is kept when its serial is known (it comes back when added again). */
+@Composable
+fun ConfirmRemoveDeviceDialog(device: ch.amslersolar.solardash.model.DeviceConfig, onConfirm: (deleteData: Boolean) -> Unit, onDismiss: () -> Unit) {
+    ConfirmRemoveDialog(
+        name = device.name,
+        detail = if (device.serial.isNotBlank()) {
+            stringResource(R.string.screens_remove_keeps_data, device.serial)
+        } else {
+            stringResource(R.string.screens_remove_deletes_data)
+        },
+        deleteDataOption = if (device.serial.isNotBlank()) stringResource(R.string.screens_remove_delete_data) else null,
+        onConfirm = onConfirm,
+        onDismiss = onDismiss,
+    )
+}
+
 /** Asks for a new name, prefilled with the current one. Blank or unchanged names can't be saved; spaces are trimmed. */
 @Composable
 fun RenameDialog(title: String, current: String, onRename: (String) -> Unit, onDismiss: () -> Unit) {

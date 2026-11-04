@@ -124,6 +124,7 @@
     </plurals>
     <string name="forms_sweep_open">Barrido de registros…</string>
     <string name="forms_sweep_title">Barrido de registros</string>
+    <string name="forms_sweep_title_device">Barrido de registros: %1$s</string>
     <string name="forms_hint_sweep">Lee todos los registros con la función 03 y luego 04, sin escribir nada, y guarda el tráfico en un archivo en la carpeta de la app.</string>
     <string name="forms_sweep_start">Iniciar barrido</string>
     <string name="forms_sweep_stop">Detener barrido</string>

@@ -219,14 +219,8 @@ fun DevicesTab(
     }
 
     pendingDelete?.let { device ->
-        ConfirmRemoveDialog(
-            name = device.name,
-            detail = if (device.serial.isNotBlank()) {
-                stringResource(R.string.screens_remove_keeps_data, device.serial)
-            } else {
-                stringResource(R.string.screens_remove_deletes_data)
-            },
-            deleteDataOption = if (device.serial.isNotBlank()) stringResource(R.string.screens_remove_delete_data) else null,
+        ConfirmRemoveDeviceDialog(
+            device,
             onConfirm = { deleteData -> onRemoveDevice(device, deleteData); pendingDelete = null },
             onDismiss = { pendingDelete = null },
         )

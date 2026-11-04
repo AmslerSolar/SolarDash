@@ -122,6 +122,7 @@
     </plurals>
     <string name="forms_sweep_open">Register sweep…</string>
     <string name="forms_sweep_title">Register sweep</string>
+    <string name="forms_sweep_title_device">Register sweep: %1$s</string>
     <string name="forms_hint_sweep">Reads every register with function 03, then 04, without writing anything, and saves the traffic to a file in the app\'s folder.</string>
     <string name="forms_sweep_start">Start sweep</string>
     <string name="forms_sweep_stop">Stop sweep</string>

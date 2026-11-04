@@ -122,6 +122,7 @@
     </plurals>
     <string name="forms_sweep_open">Register auslesen …</string>
     <string name="forms_sweep_title">Register auslesen</string>
+    <string name="forms_sweep_title_device">Register auslesen: %1$s</string>
     <string name="forms_hint_sweep">Liest alle Register mit Funktion 03, danach 04, ohne etwas zu schreiben, und speichert den Verkehr in einer Datei im Ordner der App.</string>
     <string name="forms_sweep_start">Auslesen starten</string>
     <string name="forms_sweep_stop">Auslesen stoppen</string>

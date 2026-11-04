@@ -104,4 +104,6 @@
         <item quantity="other">%1$d dispositivos añadidos</item>
         <item quantity="many">%1$d dispositivos añadidos</item>
     </plurals>
+    <string name="screens_more_options">Más opciones</string>
+    <string name="screens_delete">Eliminar</string>
 </resources>

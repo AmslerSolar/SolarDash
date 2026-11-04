@@ -21,6 +21,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -34,7 +42,18 @@ import java.util.Locale
 /** Everything one device reports, from the plant's live polling. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DeviceScreen(device: DeviceConfig, status: DeviceStatus?, onBack: () -> Unit) {
+fun DeviceScreen(
+    device: DeviceConfig,
+    status: DeviceStatus?,
+    onBack: () -> Unit,
+    onRename: (String) -> Unit,
+    onRemove: (deleteData: Boolean) -> Unit,
+    /** Opens the register sweep; offered for Modbus devices on the network only. */
+    onSweep: () -> Unit,
+) {
+    var menu by remember { mutableStateOf(false) }
+    var renaming by rememberSaveable { mutableStateOf(false) }
+    var removing by rememberSaveable { mutableStateOf(false) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -42,9 +61,27 @@ fun DeviceScreen(device: DeviceConfig, status: DeviceStatus?, onBack: () -> Unit
                 navigationIcon = {
                     IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.screens_back)) }
                 },
+                actions = {
+                    Box {
+                        IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.screens_more_options)) }
+                        DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
+                            DropdownMenuItem(text = { Text(stringResource(R.string.forms_rename)) }, onClick = { menu = false; renaming = true })
+                            DropdownMenuItem(text = { Text(stringResource(R.string.screens_delete)) }, onClick = { menu = false; removing = true })
+                            if (device.type.modbus && device.type.needsHost) {
+                                DropdownMenuItem(text = { Text(stringResource(R.string.forms_sweep_open)) }, onClick = { menu = false; onSweep() })
+                            }
+                        }
+                    }
+                },
             )
         },
     ) { padding ->
+        if (renaming) {
+            RenameDialog(stringResource(R.string.forms_rename_item, device.name), device.name, onRename = { onRename(it); renaming = false }, onDismiss = { renaming = false })
+        }
+        if (removing) {
+            ConfirmRemoveDeviceDialog(device, onConfirm = { removing = false; onRemove(it) }, onDismiss = { removing = false })
+        }
         val reading = status?.reading
         if (reading == null) {
             Box(Modifier.fillMaxSize().padding(padding).padding(32.dp), Alignment.Center) {
