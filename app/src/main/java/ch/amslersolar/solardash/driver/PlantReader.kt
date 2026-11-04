@@ -19,8 +19,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withTimeoutOrNull
 import java.io.Closeable
 
-/** Reads all devices of a plant in parallel. Holds their connections open until [close]. */
-class PlantReader(devices: List<DeviceConfig>) : Closeable {
+/**
+ * Reads all devices of a plant in parallel. Holds their connections open until [close]. A single failed read of a
+ * device shows its last reading; see [ReadSmoothing].
+ */
+class PlantReader(devices: List<DeviceConfig>, private val smoothing: ReadSmoothing = ReadSmoothing()) : Closeable {
     private val connections = ModbusConnections()
     private val drivers = devices.map { device -> device to runCatching { DeviceDrivers.create(device, connections) } }
     private val serialAsked = mutableSetOf<String>()
@@ -48,7 +51,7 @@ class PlantReader(devices: List<DeviceConfig>) : Closeable {
 
     suspend fun read(): PlantSnapshot {
         val statuses = coroutineScope {
-            drivers.map { (device, driver) -> async { readDevice(device, driver) } }.awaitAll()
+            drivers.map { (device, driver) -> async { smoothing.apply(readDevice(device, driver)) } }.awaitAll()
         }
         return PlantAggregator.aggregate(statuses)
     }

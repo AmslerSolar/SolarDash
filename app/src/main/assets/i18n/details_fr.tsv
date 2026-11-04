@@ -2454,6 +2454,7 @@ Transient grid voltage low	Tension réseau transitoire basse
 Unbalanced grid voltage	Tension réseau déséquilibrée
 Under-temperature	Sous-température
 Under-temperature (E{n})	Sous-température (E{n})
+Unstable connection: some reads fail	Connexion instable : certaines lectures échouent
 Unstable grid frequency	Fréquence réseau instable
 Unsupported device	Appareil non pris en charge
 Update incomplete (W{n})	Mise à jour incomplète (W{n})

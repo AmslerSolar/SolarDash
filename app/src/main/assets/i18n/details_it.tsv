@@ -2467,6 +2467,7 @@ Transient grid voltage low	Tensione di rete transitoria bassa
 Unbalanced grid voltage	Tensione di rete squilibrata
 Under-temperature	Sottotemperatura
 Under-temperature (E{n})	Sottotemperatura (E{n})
+Unstable connection: some reads fail	Connessione instabile: alcune letture non riescono
 Unstable grid frequency	Frequenza di rete instabile
 Unsupported device	Dispositivo non supportato
 Update incomplete (W{n})	Aggiornamento incompleto (W{n})

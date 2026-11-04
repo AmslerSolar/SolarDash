@@ -2462,6 +2462,7 @@ Transient grid voltage low	Transiente Netzspannung tief
 Unbalanced grid voltage	Unsymmetrische Netzspannung
 Under-temperature	Untertemperatur
 Under-temperature (E{n})	Untertemperatur (E{n})
+Unstable connection: some reads fail	Instabile Verbindung: einzelne Abfragen schlagen fehl
 Unstable grid frequency	Instabile Netzfrequenz
 Unsupported device	Gerät nicht unterstützt
 Update incomplete (W{n})	Update unvollständig (W{n})

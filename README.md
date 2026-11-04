@@ -228,6 +228,11 @@ alarm, the screen isn't woken), and the box shows how many are hidden; the fault
 messages are kept per device (`DeviceConfig.hiddenProblems`, the exact texts) and listed in the device's edit form,
 where **Show again** brings one back.
 
+**Lost reads:** while a plant is polled, a device whose read fails keeps showing its last reading (up to 3 minutes
+old) until 3 reads in a row have failed; only then is it reported as not answering. A device that keeps answering
+but lost 3 or more reads within 10 minutes gets the warning "Unstable connection: some reads fail" (shown, logged
+and hideable like its own warnings). Logic: `driver/ReadSmoothing.kt`.
+
 **Fault log:** every problem is recorded with its start and end time (`events` table in history.db, version 4),
 from live polling and from the background recorder. A problem must last 30 s to be logged and be gone 30 s to be
 closed, so a single dropped poll doesn't fill the log; the background recorder (every 15 min) logs and closes at
