@@ -20,7 +20,7 @@ android {
         applicationId = "ch.amslersolar.solardash"
         minSdk = 26
         targetSdk = 34
-        versionCode = 83
+        versionCode = 84
         versionName = "0.6.3"
         // Shown in the app's About dialog, so it's clear which build a tablet runs.
         val built = ZonedDateTime.now(ZoneId.of("Europe/Zurich"))

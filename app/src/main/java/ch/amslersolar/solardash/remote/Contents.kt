@@ -25,6 +25,13 @@ import ch.amslersolar.solardash.model.PlantSnapshot
 import ch.amslersolar.solardash.model.PvString
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import java.time.Instant
 import java.time.LocalDate
 
@@ -89,14 +96,14 @@ object Contents {
         strings = r.pvStrings.map { Str(it.index, it.voltageV, it.currentA, it.powerW) },
         today = energy(r.today).takeIf { it != Energy() },
         problems = r.problems.map { Problem(it.kind.name, it.text) },
-        details = r.details.map { s -> Section(s.title, s.rows.map { listOf(it.first, it.second) }) },
+        details = r.details.map { s -> Section(s.title, s.rows.filterNot { identifies(it.first) }.map { listOf(it.first, it.second) }) },
     )
 
     fun live(s: PlantSnapshot) = Live(
         t = s.readAt.toEpochMilli(), pv = s.pvPowerW, load = s.loadPowerW, grid = s.gridPowerW, gridSource = s.gridSource?.name,
         battery = s.battery?.let { Battery(it.powerW, it.socPercent) },
         today = energy(s.today),
-        devices = s.devices.map { DeviceLive(it.device.id, it.error, it.errorKind?.name, it.reading?.let(::reading)) },
+        devices = s.devices.map { DeviceLive(it.device.id, it.error?.let { e -> hide(e, it.device.host) }, it.errorKind?.name, it.reading?.let(::reading)) },
         consumers = s.consumers.map { ConsumerLive(it.device.id, it.powerW, it.status) },
     )
 
@@ -110,9 +117,42 @@ object Contents {
     fun day(d: DailyEnergy, devices: Map<String, EnergyTotals> = emptyMap()) =
         Day(d.day.toString(), energy(d.energy), devices.mapValues { energy(it.value) })
 
-    fun event(e: LoggedEvent) = Event(
-        e.id, e.key, e.kind, e.severity, e.deviceId, e.deviceName, e.detail, e.percent, e.started, e.ended, e.details, e.endDetails,
+    /** [hosts]: the plant's device addresses, cut out of the texts as well. */
+    fun event(e: LoggedEvent, hosts: Collection<String> = emptyList()) = Event(
+        e.id, e.key, e.kind, e.severity, e.deviceId, e.deviceName, e.detail?.let { hide(it, hosts) }, e.percent, e.started, e.ended,
+        e.details?.let { details(it, hosts) }, e.endDetails?.let { details(it, hosts) },
     )
+
+    /** Detail rows that name one piece of hardware: serial numbers and MAC addresses stay on the plant. */
+    private val IDENTIFYING = Regex("""(?i)serial|seriennummer|\bs/?n\b|\bmac\b""")
+
+    fun identifies(label: String) = IDENTIFYING.containsMatchIn(label)
+
+    private fun hide(text: String, host: String) = hide(text, listOf(host))
+
+    private fun hide(text: String, hosts: Collection<String>) =
+        hosts.filter { it.isNotBlank() }.sortedByDescending { it.length }.fold(text) { t, h -> t.replace(h, "…") }
+
+    /**
+     * The fault log's situation (model/FaultDetails) without what stays on the plant: the device's address, port,
+     * unit id and serial number, identifying detail rows, the tablet's subnets, and addresses in error messages.
+     */
+    fun details(text: String, hosts: Collection<String> = emptyList()): String? {
+        val o = runCatching { json.parseToJsonElement(text).jsonObject }.getOrNull() ?: return null
+        val all = hosts + listOfNotNull((o["device"] as? JsonObject)?.get("host")?.jsonPrimitive?.contentOrNull)
+        fun clean(e: JsonElement): JsonElement = when (e) {
+            is JsonObject -> JsonObject(e.mapValues { (_, v) -> clean(v) })
+            is JsonArray -> JsonArray(
+                e.filterNot { r -> r is JsonArray && r.size == 2 && (r[0] as? JsonPrimitive)?.isString == true && identifies(r[0].jsonPrimitive.content) }
+                    .map(::clean),
+            )
+            is JsonPrimitive -> if (e.isString) JsonPrimitive(hide(e.content, all)) else e
+        }
+        val out = o.toMutableMap()
+        (o["device"] as? JsonObject)?.let { d -> out["device"] = JsonObject(d - setOf("host", "port", "unit_id", "rtu_over_tcp", "serial")) }
+        (o["network"] as? JsonObject)?.let { n -> out["network"] = JsonObject(n - "subnets") }
+        return clean(JsonObject(out)).toString()
+    }
 
     // ---------------------------------------------------------------- into the app (observer)
 

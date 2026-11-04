@@ -269,7 +269,8 @@ class Collector(
         // The fault log: new entries and those that ended since.
         val events = history.events(plant.id, limit = EVENTS)
         val changed = events.filter { e -> progress.events[e.id] != (e.ended ?: 0L) }
-        send(changed.map { e -> Kind.EVENT to ("e${e.id}" to Contents.json.encodeToString(Contents.Event.serializer(), Contents.event(e)).toByteArray()) })
+        val hosts = plant.devices.map { it.host }
+        send(changed.map { e -> Kind.EVENT to ("e${e.id}" to Contents.json.encodeToString(Contents.Event.serializer(), Contents.event(e, hosts)).toByteArray()) })
         if (changed.isNotEmpty()) {
             progress = progress.copy(events = events.associate { it.id to (it.ended ?: 0L) })
             save(plant.id, url, progress)

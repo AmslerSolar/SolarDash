@@ -183,6 +183,9 @@ A fault log entry, as the app keeps it:
  "detail": "…", "percent": null, "started": 1762250000, "ended": null, "details": "…", "endDetails": null}
 ```
 Times in epoch seconds; `ended` stays `null` while the problem lasts (the event is sent again when it ends).
+`details` and `endDetails` are the situation at the start and end (the app's fault-log JSON) without the
+device's `host`, `port`, `unit_id`, `rtu_over_tcp` and `serial`, the tablet's `subnets`, and detail rows naming a
+serial number or MAC address; device addresses are replaced by `…` in every text. Live readings drop those rows too.
 
 ### Live
 
