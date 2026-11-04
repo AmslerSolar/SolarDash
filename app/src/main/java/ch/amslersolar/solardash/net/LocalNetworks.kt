@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.net.Inet4Address
 import java.net.InetAddress
 import java.net.Socket
+import java.io.FileDescriptor
 import java.net.URL
 import java.net.URLConnection
 import java.util.concurrent.ConcurrentHashMap
@@ -106,6 +107,8 @@ class LocalNetworks(context: Context) : DeviceNetwork {
     override fun socket(host: String): Socket = Socket().also { s -> networkFor(host)?.bindSocket(s) }
 
     override fun openConnection(url: URL): URLConnection = networkFor(url.host)?.openConnection(url) ?: url.openConnection()
+
+    override fun bind(fd: FileDescriptor, host: String) { networkFor(host)?.bindSocket(fd) }
 
     /** This phone's IPv4 address and prefix on its local network, for the device search (not the mobile network). */
     fun ownIpv4(): Pair<Inet4Address, Int>? {

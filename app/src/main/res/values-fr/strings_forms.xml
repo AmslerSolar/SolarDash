@@ -41,7 +41,7 @@
     <string name="forms_search_range">Réseau à rechercher</string>
     <string name="forms_search_range_hint">Vide : le réseau de cette tablette. P. ex. 192.168.1 (toutes ses adresses), 192.168.1.0/24 ou une adresse comme 192.168.1.200.</string>
     <string name="forms_search_range_invalid">Pas un réseau : p. ex. 192.168.1, 192.168.1.0/24 ou 192.168.1.200 (254 adresses au plus)</string>
-    <string name="forms_search_extended">Recherche étendue</string>
+    <string name="forms_scan_progress_ping">Ping du réseau…</string>
     <string name="forms_scan_progress_ports">Ports : %1$d sur %2$d</string>
     <string name="forms_scan_progress_identify">Identification : %1$d sur %2$d</string>
     <string name="forms_found_identifying">Identification…</string>
@@ -51,7 +51,7 @@
     <string name="forms_found_unit">ID d\'unité %1$d</string>
     <string name="forms_found_serial">N° de série %1$s</string>
     <string name="forms_found_via_mdns">trouvé via mDNS</string>
-    <string name="forms_hint_scan">« Rechercher sur le réseau » essaie le port Modbus TCP 502 à chaque adresse de ce réseau Wi-Fi, puis identifie ce qui a répondu (les onduleurs connus et les appareils ModbusSpec qui savent s\'identifier). Chaque port ouvert est listé, même non reconnu. La recherche étendue essaie aussi les autres ports utilisés par les appareils (503, 1502, 6502, 8899, 4196 …) et dure plus longtemps. Les appareils non reconnaissables s\'ajoutent à la main.</string>
+    <string name="forms_hint_scan">Rechercher sur le réseau envoie un ping à chaque adresse de ce Wi-Fi, essaie tous les ports utilisés par les appareils (502, 503, 1502, 6502, 8899, 4196 …, et les ports web 80 et 443) sur celles qui répondent, puis 502, 80 et 443 sur les autres, puis les ports restants. Les appareils sont identifiés dès que leur port répond (les onduleurs nommés et les appareils ModbusSpec capables de dire ce qu\'ils sont) ; chaque port ouvert est listé, même non reconnu. Arrêtez la recherche dès que les appareils attendus sont là. Les appareils non reconnus s\'ajoutent à la main.</string>
     <string name="forms_hint_kind_battery">N\'ajoutez ici que des batteries autonomes. Une batterie raccordée à un onduleur hybride est déjà lue via l\'onduleur&#160;: l\'ajouter une seconde fois la compterait deux fois.</string>
     <string name="forms_hint_kind_meter">Un compteur au raccordement réseau remplace les valeurs réseau des onduleurs. Un compteur PV ajoute de la production (p. ex. un onduleur sans communication)&#160;; un sous-compteur de consommateur affiche une seule charge.</string>
     <string name="forms_hint_kind_consumer">Les consommateurs apparaissent comme une partie de la consommation de la maison. Ils ne modifient pas les totaux de l\'installation&#160;: le compteur réseau ou le bilan les inclut déjà.</string>

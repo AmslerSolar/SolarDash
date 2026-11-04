@@ -87,8 +87,8 @@ import java.util.UUID
 fun AddDeviceScreen(
     plantName: String,
     onTest: suspend (DeviceConfig) -> ConnectionTest,
-    /** The network search; extended: all ports devices use, not only 502; range: another network (blank: the own). */
-    onScan: (extended: Boolean, range: String) -> Flow<ScanEvent>,
+    /** The network search; range: another network (blank: the own). */
+    onScan: (range: String) -> Flow<ScanEvent>,
     onSave: (DeviceConfig) -> Unit,
     /** Reads all registers with function 03, then 04 ([sweeps]) and saves them; [onSaved] gets the file, also when stopped. */
     onSweep: suspend (device: DeviceConfig, sweeps: Map<Int, RegisterSweep>, progress: () -> Unit, onSaved: (String) -> Unit) -> Unit,
@@ -124,13 +124,13 @@ fun AddDeviceScreen(
     val found = remember { mutableStateListOf<FoundDevice>() }
     var range by rememberSaveable { mutableStateOf("") }
 
-    fun startScan(extended: Boolean) {
+    fun startScan() {
         scan?.cancel()
         found.clear()
         scanError = null
         progress = null
         scan = scope.launch {
-            onScan(extended, range).collect { e ->
+            onScan(range).collect { e ->
                 when (e) {
                     is ScanEvent.Progress -> progress = e
                     is ScanEvent.Found -> {
@@ -643,6 +643,14 @@ private fun UploadLog(file: java.io.File) {
     )
 }
 
+/** What the search is doing, for its progress line. */
+@Composable
+fun scanProgressText(p: ScanEvent.Progress): String = when (p.phase) {
+    ScanPhase.PING -> stringResource(R.string.forms_scan_progress_ping)
+    ScanPhase.PORTS -> stringResource(R.string.forms_scan_progress_ports, p.done, p.total)
+    ScanPhase.IDENTIFY -> stringResource(R.string.forms_scan_progress_identify, p.done, p.total)
+}
+
 /** "Search network" and its results; tapping a recognised device fills in the form below. */
 @Composable
 private fun ScanSection(
@@ -650,7 +658,7 @@ private fun ScanSection(
     progress: ScanEvent.Progress?,
     error: String?,
     found: List<FoundDevice>,
-    onScan: (extended: Boolean) -> Unit,
+    onScan: () -> Unit,
     onStop: () -> Unit,
     onPick: (FoundDevice) -> Unit,
     range: String,
@@ -662,18 +670,14 @@ private fun ScanSection(
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             if (scanning) OutlinedButton(onClick = onStop) { Text(stringResource(R.string.forms_stop_search)) }
             else {
-                OutlinedButton(onClick = { onScan(false) }, enabled = rangeValid) {
+                OutlinedButton(onClick = onScan, enabled = rangeValid) {
                     Icon(Icons.Outlined.Search, contentDescription = null)
                     Text(stringResource(R.string.forms_search_network), modifier = Modifier.padding(start = 8.dp))
                 }
-                TextButton(onClick = { onScan(true) }, enabled = rangeValid) { Text(stringResource(R.string.forms_search_extended)) }
                 if (!otherNetwork) TextButton(onClick = { otherNetwork = true }) { Text(stringResource(R.string.forms_search_other_network)) }
             }
             if (scanning && progress != null) Text(
-                stringResource(
-                    if (progress.phase == ScanPhase.PORTS) R.string.forms_scan_progress_ports else R.string.forms_scan_progress_identify,
-                    progress.done, progress.total,
-                ),
+                scanProgressText(progress),
                 style = MaterialTheme.typography.bodySmall,
             )
             else if (!scanning && progress != null) Text(found.count { it.type != null }.let { pluralStringResource(R.plurals.forms_scan_found, it, it) }, style = MaterialTheme.typography.bodySmall)

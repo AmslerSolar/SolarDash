@@ -3,6 +3,7 @@
 
 package ch.amslersolar.solardash.driver.net
 
+import java.io.FileDescriptor
 import java.net.InetAddress
 import java.net.Socket
 import java.net.URL
@@ -18,6 +19,9 @@ interface DeviceNetwork {
     fun socket(host: String): Socket = Socket()
 
     fun openConnection(url: URL): URLConnection = url.openConnection()
+
+    /** Puts a raw socket (e.g. the device search's ping socket) on the network [host] is on. */
+    fun bind(fd: FileDescriptor, host: String) {}
 
     companion object {
         @Volatile var current: DeviceNetwork = object : DeviceNetwork {}

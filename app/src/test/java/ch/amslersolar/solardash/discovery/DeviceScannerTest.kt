@@ -87,7 +87,7 @@ class DeviceScannerTest {
                 DeviceInfo("PLENTICORE plus 10", "1")
             },
         )
-        val events = scanner.scan(listOf("192.168.0.33", "192.168.0.40"), mapOf("192.168.0.33:6502" to "Home · LG"), extended = true).toList()
+        val events = scanner.scan(listOf("192.168.0.33", "192.168.0.40"), mapOf("192.168.0.33:6502" to "Home · LG")).toList()
         val found = latest(events)
         assertEquals(setOf("192.168.0.40"), probed.toSet())
         assertEquals("Home · LG", found.single { it.host == "192.168.0.33" }.alreadyIn)
@@ -105,7 +105,7 @@ class DeviceScannerTest {
     @Test
     fun identifyingCountsTheDescriptionsTried() = runBlocking {
         val scanner = DeviceScanner(
-            portOpen = { _, _ -> true },
+            portOpen = { _, p -> p == 502 },
             identify = { _, _, _, _ -> throw java.io.IOException("no") },
             specIdentify = { h, p, _, onTry -> repeat(5) { onTry() }; FoundDevice(h, p, DeviceType.MODBUS_SPEC_METER, 11, "Huawei DTSU666-H") },
             specCount = { _, _ -> 5 },
@@ -131,7 +131,7 @@ class DeviceScannerTest {
             // only unit 11 answers, and only to RTU frames (a gateway in transparent mode)
             rollCall = { _, _, units, onTry -> units.forEach { _ -> onTry(); onTry() }; mapOf(11 to setOf(true)) },
         )
-        val events = scanner.scan(listOf("192.168.0.200"), emptyMap(), extended = true).toList()
+        val events = scanner.scan(listOf("192.168.0.200"), emptyMap()).toList()
         val result = latest(events).single()
         assertEquals("Huawei DTSU666-H", result.model)
         assertTrue(result.rtuOverTcp)
@@ -142,15 +142,13 @@ class DeviceScannerTest {
     }
 
     @Test
-    fun normalSearchTries502AndTheWebPortsAndListsEveryOpenModbusPort() = runBlocking {
-        val tried = mutableListOf<Int>()
+    fun theSearchListsEveryOpenModbusPortAndIdentifiesIt() = runBlocking {
         val scanner = DeviceScanner(
-            portOpen = { h, p -> synchronized(tried) { tried += p }; h != "192.168.0.9" },
+            portOpen = { h, p -> p == 502 && h != "192.168.0.9" },
             identify = { _, h, _, _ -> if (h == "192.168.0.1") DeviceInfo("GoodWe GW10K-ET", "9010KETU000W0000") else throw java.io.IOException("no") },
             specIdentify = { h, p, _, _ -> if (h == "192.168.0.2") FoundDevice(h, p, DeviceType.MODBUS_SPEC_METER, 1, "Carlo Gavazzi EM24", specId = "carlo-gavazzi/em24") else null },
         )
         val events = scanner.scan(listOf("192.168.0.1", "192.168.0.2", "192.168.0.3", "192.168.0.9"), emptyMap()).toList()
-        assertEquals(setOf(502, 80, 443), tried.toSet()) // 80, 443: only listed when recognised, see below
         // Each open port is listed at once, then identified.
         val first = events.filterIsInstance<ScanEvent.Found>().take(3).map { it.device }
         assertTrue(first.all { it.identifying })
@@ -160,6 +158,28 @@ class DeviceScannerTest {
         assertEquals("carlo-gavazzi/em24", found.getValue("192.168.0.2").specId)
         assertNull(found.getValue("192.168.0.3").type) // open, not recognised, still listed
         assertFalse(found.values.any { it.identifying })
+    }
+
+    @Test
+    fun hostsAnsweringAPingGetEveryPortFirstThenTheOthersTheMainPortsThenTheRest() = runBlocking {
+        val tried = mutableListOf<Pair<String, Int>>()
+        val scanner = DeviceScanner(
+            portOpen = { h, p -> synchronized(tried) { tried += h to p }; false },
+            ping = { setOf("192.168.0.7") },
+        )
+        val hosts = listOf("192.168.0.1", "192.168.0.7", "192.168.0.9")
+        val events = scanner.scan(hosts, emptyMap()).toList()
+        val everyPort = (DeviceScanner.EXTENDED_PORTS + DeviceScanner.WEB_PORTS).toSet()
+        val main = setOf(502, 80, 443)
+        val up = tried.indexOfLast { it.first == "192.168.0.7" }
+        assertEquals(everyPort, tried.filter { it.first == "192.168.0.7" }.map { it.second }.toSet())
+        assertTrue(tried.take(up + 1).all { it.first == "192.168.0.7" }) // the answering host first
+        val silent = tried.drop(up + 1)
+        val lastMain = silent.indexOfLast { it.second in main }
+        assertTrue(silent.take(lastMain + 1).all { it.second in main }) // then 502, 80, 443 on the others
+        assertTrue(silent.drop(lastMain + 1).none { it.second in main })
+        for (h in listOf("192.168.0.1", "192.168.0.9")) assertEquals(everyPort, silent.filter { it.first == h }.map { it.second }.toSet())
+        assertEquals(ScanPhase.PING, events.filterIsInstance<ScanEvent.Progress>().first().phase)
     }
 
     @Test
@@ -300,7 +320,7 @@ class DeviceScannerTest {
     fun aConfiguredEnergyManagerIsNotProbedButItsOtherUnitsAreListed() = runBlocking {
         val probed = mutableListOf<String>()
         val scanner = DeviceScanner(
-            portOpen = { _, _ -> true },
+            portOpen = { _, p -> p == 502 },
             identify = { _, h, _, _ -> probed += h; throw java.io.IOException("no") },
             specIdentify = { _, _, _, _ -> error("a configured device must not be identified") },
             behind = behindEmma,
@@ -330,7 +350,7 @@ class DeviceScannerTest {
                 )
             },
         )
-        val found = latest(scanner.scan(listOf("192.168.178.66"), emptyMap(), extended = true).toList())
+        val found = latest(scanner.scan(listOf("192.168.178.66"), emptyMap()).toList())
         assertEquals(listOf(2, 3), found.map { it.unitId }.sorted())
         assertTrue(found.all { it.type == DeviceType.AURORA && it.port == 4196 && !it.identifying })
         assertFalse(found.single { it.unitId == 2 }.behindHub) // the first takes the gateway's host:port
@@ -346,7 +366,7 @@ class DeviceScannerTest {
             rollCall = { _, _, _, _ -> rollCalls++; emptyMap() },
             aurora = { _, _, _ -> emptyList() },
         )
-        scanner.scan(listOf("192.168.178.66"), emptyMap(), extended = true).toList()
+        scanner.scan(listOf("192.168.178.66"), emptyMap()).toList()
         assertEquals(1, rollCalls)
     }
 

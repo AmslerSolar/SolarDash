@@ -43,7 +43,6 @@ import androidx.compose.ui.unit.dp
 import ch.amslersolar.solardash.R
 import ch.amslersolar.solardash.discovery.FoundDevice
 import ch.amslersolar.solardash.discovery.ScanEvent
-import ch.amslersolar.solardash.discovery.ScanPhase
 import ch.amslersolar.solardash.driver.spec.SpecDevices
 import ch.amslersolar.solardash.model.DeviceConfig
 import kotlinx.coroutines.flow.Flow
@@ -110,10 +109,7 @@ fun DiscoverDevicesScreen(
                 val p = progress
                 Text(
                     if (p == null) stringResource(R.string.screens_discover_searching)
-                    else stringResource(
-                        if (p.phase == ScanPhase.PORTS) R.string.forms_scan_progress_ports else R.string.forms_scan_progress_identify,
-                        p.done, p.total,
-                    ),
+                    else scanProgressText(p),
                     style = MaterialTheme.typography.bodyMedium,
                 )
                 LinearProgressIndicator(

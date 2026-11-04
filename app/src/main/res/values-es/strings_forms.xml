@@ -41,7 +41,7 @@
     <string name="forms_search_range">Red a buscar</string>
     <string name="forms_search_range_hint">Vacío: la red de esta tableta. P. ej. 192.168.1 (todas sus direcciones), 192.168.1.0/24 o una dirección como 192.168.1.200.</string>
     <string name="forms_search_range_invalid">No es una red: p. ej. 192.168.1, 192.168.1.0/24 o 192.168.1.200 (como máximo 254 direcciones)</string>
-    <string name="forms_search_extended">Búsqueda ampliada</string>
+    <string name="forms_scan_progress_ping">Haciendo ping a la red…</string>
     <string name="forms_scan_progress_ports">Puertos: %1$d de %2$d</string>
     <string name="forms_scan_progress_identify">Identificando: %1$d de %2$d</string>
     <string name="forms_found_identifying">Identificando…</string>
@@ -51,7 +51,7 @@
     <string name="forms_found_unit">ID de unidad %1$d</string>
     <string name="forms_found_serial">N/S %1$s</string>
     <string name="forms_found_via_mdns">encontrado vía mDNS</string>
-    <string name="forms_hint_scan">«Buscar en la red» prueba el puerto Modbus TCP 502 en cada dirección de esta red Wi-Fi y luego identifica lo que respondió (los inversores conocidos y los equipos ModbusSpec que saben identificarse). Se lista cada puerto abierto, también los no reconocidos. La búsqueda ampliada prueba además los otros puertos que usan los equipos (503, 1502, 6502, 8899, 4196 …) y tarda más. Los equipos no reconocibles se añaden a mano.</string>
+    <string name="forms_hint_scan">Buscar en la red hace ping a cada dirección de esta Wi-Fi, prueba todos los puertos que usan los dispositivos (502, 503, 1502, 6502, 8899, 4196 …, y los puertos web 80 y 443) en las que responden, luego 502, 80 y 443 en las demás y después los puertos restantes. Los dispositivos se identifican en cuanto su puerto responde (los inversores con nombre y los dispositivos ModbusSpec que saben decir qué son); se lista cada puerto abierto, también los no reconocidos. Detén la búsqueda cuando estén los dispositivos que esperas. Los dispositivos no reconocidos se añaden a mano.</string>
     <string name="forms_hint_kind_battery">Añade aquí solo baterías independientes. Una batería en un inversor híbrido ya se lee a través del inversor; si la añades de nuevo, se contaría dos veces.</string>
     <string name="forms_hint_kind_meter">Un contador en la conexión a red sustituye los valores de red de los inversores. Un contador FV añade producción (p. ej., un inversor sin comunicación); un subcontador de consumidor muestra una sola carga.</string>
     <string name="forms_hint_kind_consumer">Los consumidores se muestran como parte del consumo de la casa. No cambian los totales de la instalación: el contador de red o el balance ya los incluye.</string>

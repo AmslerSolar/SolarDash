@@ -113,7 +113,7 @@ class MainActivity : ComponentActivity() {
                     val back = { route = parent ?: ROUTE_PLANTS }
                     val addDevice = { route = "plant/${plant.id}/add" }
                     val discover = { route = "plant/${plant.id}/discover" }
-                    val scan = { editing: DeviceConfig?, extended: Boolean, range: String ->
+                    val scan = { editing: DeviceConfig?, range: String ->
                         // Configured devices are listed, not probed: a second client could disturb their poll.
                         val known = plants.orEmpty().flatMap { p ->
                             p.devices.filter { it.type.needsHost && it.id != editing?.id }
@@ -124,7 +124,7 @@ class MainActivity : ComponentActivity() {
                         val hubs = configured.filter { it.specId in DeviceScanner.HUBS }.associate { hub ->
                             "${hub.host}:${hub.port}" to (hub.specId to configured.filter { it.host == hub.host && it.port == hub.port }.map { it.unitId }.toSet())
                         }
-                        DeviceScanner.scanLocalNetwork(applicationContext, known, extended, range, hubs)
+                        DeviceScanner.scanLocalNetwork(applicationContext, known, range, hubs)
                     }
                     when (val section = parts.getOrNull(2)) {
                         "add", "edit" -> {
@@ -135,7 +135,7 @@ class MainActivity : ComponentActivity() {
                                 AddDeviceScreen(
                                     plantName = plant.name,
                                     onTest = plantsVm::testConnection,
-                                    onScan = { extended, range -> scan(editing, extended, range) },
+                                    onScan = { range -> scan(editing, range) },
                                     onSave = {
                                         if (editing != null) plantsVm.updateDevice(plant.id, it) else plantsVm.addDevice(plant.id, it)
                                         back()
@@ -150,7 +150,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                         "discover" -> DiscoverDevicesScreen(
-                            onScan = { scan(null, false, "") },
+                            onScan = { scan(null, "") },
                             onAdd = { plantsVm.addDevice(plant.id, it) },
                             onAddByHand = { route = "plant/${plant.id}/add" },
                             onBack = back,

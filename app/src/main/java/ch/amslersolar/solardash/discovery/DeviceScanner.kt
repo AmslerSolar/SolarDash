@@ -32,6 +32,8 @@ import ch.amslersolar.solardash.driver.victron.VictronGxDriver
 import ch.amslersolar.solardash.model.DeviceInfo
 import ch.amslersolar.solardash.model.DeviceType
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -52,6 +54,7 @@ import java.net.InetSocketAddress
 import java.security.cert.X509Certificate
 import javax.net.ssl.SSLSocket
 import javax.security.auth.x500.X500Principal
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
@@ -85,8 +88,8 @@ data class FoundDevice(
     val key: String get() = if (behindHub) "$host:$port/$unitId" else "$host:$port"
 }
 
-/** Ports first, then identifying what answered. */
-enum class ScanPhase { PORTS, IDENTIFY }
+/** Pinging, then trying ports (devices are identified meanwhile), then the identifications still running. */
+enum class ScanPhase { PING, PORTS, IDENTIFY }
 
 sealed interface ScanEvent {
     data class Progress(val done: Int, val total: Int, val phase: ScanPhase = ScanPhase.PORTS) : ScanEvent
@@ -128,99 +131,48 @@ class DeviceScanner(
     private val aurora: suspend (host: String, port: Int, onTry: () -> Unit) -> List<FoundDevice> = { _, _, _ -> emptyList() },
     /** A device with a local web API on an open [WEB_PORTS] port (null: not one of ours; see [identifyWeb]). */
     private val web: suspend (host: String, port: Int) -> FoundDevice? = { _, _ -> null },
+    /** The hosts answering a ping, asked first (see [Ping]); none by default, so every host gets every port. */
+    private val ping: suspend (hosts: List<String>) -> Set<String> = { emptySet() },
 ) {
     /**
-     * Two phases. First every address of [hosts] is tried on Modbus TCP port 502, then, with [extended], on the other
-     * ports devices use (1502, 503, 6502, the gateways' 8899 and 4196, …): every open port is reported at once (identifying).
-     * Then each one is identified: the named drivers for its port, then the ModbusSpec files that can recognise a
-     * device; what nothing recognises stays listed as an open port. An energy manager in [HUBS] also gets the devices
-     * behind it listed, each on its unit id; [hubs] are configured ones (host:port → their ModbusSpec file and the unit
-     * ids configured there), whose other units are asked too, with polling paused; the hub itself isn't probed.
-     * On an RS485 gateway's port the Aurora addresses are asked first: when inverters answer there, the bus speaks
-     * Aurora, they're listed (the first on the host:port, the others on their address) and Modbus isn't tried.
-     * The [WEB_PORTS] are tried on every address too (also in the normal search); an open one is listed only when
-     * [web] recognises the device, since most hosts have a web page.
+     * Pings [hosts] first, then tries ports in this order: every port devices use ([EXTENDED_PORTS] and the
+     * [WEB_PORTS]) on the hosts that answered, then Modbus TCP 502 and the web ports on the silent ones (devices that
+     * ignore pings), then the remaining ports there. The search can be stopped whenever the expected devices are in.
+     *
+     * Every open port is reported at once (identifying) and identified meanwhile: the named drivers for its port,
+     * then the ModbusSpec files that can recognise a device; what nothing recognises stays listed as an open port.
+     * An energy manager in [HUBS] also gets the devices behind it listed, each on its unit id; [hubs] are configured
+     * ones (host:port → their ModbusSpec file and the unit ids configured there), whose other units are asked too,
+     * with polling paused; the hub itself isn't probed. On an RS485 gateway's port the Aurora addresses are asked
+     * first: when inverters answer there, the bus speaks Aurora, they're listed (the first on the host:port, the
+     * others on their address) and Modbus isn't tried. An open web port is listed only when [web] recognises the
+     * device, since most hosts have a web page.
      */
     fun scan(
         hosts: List<String>,
         known: Map<String, String>,
-        extended: Boolean = false,
         hubs: Map<String, Pair<String, Set<Int>>> = emptyMap(),
     ): Flow<ScanEvent> = channelFlow {
-        val ports = if (extended) EXTENDED_PORTS else listOf(MODBUS_PORT)
-        val targets = (ports + WEB_PORTS).flatMap { p -> hosts.map { h -> h to p } } // port by port: 502 everywhere first
-        val done = AtomicInteger()
-        send(ScanEvent.Progress(0, targets.size))
         val connects = Semaphore(PARALLEL_CONNECTS)
-        val open = ConcurrentHashMap<String, Triple<String, Int, List<Pair<DeviceType, Int>>?>>() // key → host, port, mDNS candidates
-        val viaMdns = ConcurrentHashMap.newKeySet<String>()
-        val webOpen = ConcurrentHashMap.newKeySet<Pair<String, Int>>()
-        val macs = ConcurrentHashMap<String, String>() // host → MAC from its mDNS announcement
-        suspend fun opened(host: String, port: Int, mdnsCandidates: List<Pair<DeviceType, Int>>?) {
-            val key = "$host:$port"
-            if (open.putIfAbsent(key, Triple(host, port, mdnsCandidates)) != null) return
-            if (mdnsCandidates != null) viaMdns += key
-            val configured = known[key]
-            send(
-                ScanEvent.Found(
-                    if (configured != null) FoundDevice(host, port, null, 0, "Already added", alreadyIn = configured, viaMdns = key in viaMdns)
-                    else FoundDevice(host, port, null, 0, "Port open", viaMdns = key in viaMdns, identifying = true),
-                ),
-            )
-        }
-        coroutineScope {
-            // mDNS and the port scan run side by side; whichever reaches a host:port first lists it.
-            launch {
-                withTimeoutOrNull(MDNS_WINDOW_MS) { mdns().collect { s -> s.mac?.let { macs[s.host] = it }; opened(s.host, s.port, candidatesFor(s)) } }
-            }
-            for (port in ports) {
-                coroutineScope {
-                    for (host in hosts) launch {
-                        val key = "$host:$port"
-                        if (!open.containsKey(key) && (known.containsKey(key) || connects.withPermit { portOpen(host, port) })) opened(host, port, null)
-                        send(ScanEvent.Progress(done.incrementAndGet(), targets.size))
-                    }
-                }
-            }
-            for (port in WEB_PORTS) {
-                coroutineScope {
-                    for (host in hosts) launch {
-                        val key = "$host:$port"
-                        if (!known.containsKey(key) && connects.withPermit { portOpen(host, port) }) webOpen += host to port
-                        send(ScanEvent.Progress(done.incrementAndGet(), targets.size))
-                    }
-                }
-            }
-        }
-        // Identify what answered (configured devices aren't asked: a second client could disturb their poll).
-        val toProbe = open.filterKeys { it !in known }.values.sortedWith(compareBy({ it.second }, { it.first }))
-        val configuredHubs = hubs.filterKeys { open.containsKey(it) }
         val probes = Semaphore(PARALLEL_PROBES)
+        val open = ConcurrentHashMap.newKeySet<String>()
+        val viaMdns = ConcurrentHashMap.newKeySet<String>()
+        val macs = ConcurrentHashMap<String, String>() // host → MAC from its mDNS announcement
+        val mdnsDone = CompletableDeferred<Unit>()
+        val toIdentify = AtomicInteger()
         val identified = AtomicInteger()
-        val total = toProbe.size + configuredHubs.size + webOpen.size
-        send(ScanEvent.Progress(0, total, ScanPhase.IDENTIFY))
+        val portsDone = AtomicBoolean(false)
+        suspend fun identifiedOne() {
+            val n = identified.incrementAndGet()
+            if (portsDone.get()) send(ScanEvent.Progress(n, toIdentify.get(), ScanPhase.IDENTIFY))
+        }
         suspend fun listBehind(host: String, port: Int, hubSpecId: String, skip: Set<Int>) {
             val devices = runCatching { behind(host, port, hubSpecId, skip) }.getOrElse { if (it is CancellationException) throw it; emptyList() }
             for (d in devices) send(ScanEvent.Found(d.copy(behindHub = true, identifying = false)))
         }
         coroutineScope {
-            for ((key, hub) in configuredHubs) launch {
-                val (host, port, _) = open.getValue(key)
-                // It's being polled, and an energy manager may take one client only: polling pauses (and closes its
-                // connections) meanwhile, as for a register sweep.
-                probes.withPermit { TrafficPause.during { listBehind(host, port, hub.first, hub.second) } }
-                send(ScanEvent.Progress(identified.incrementAndGet(), total, ScanPhase.IDENTIFY))
-            }
-            for ((host, port) in webOpen) launch {
-                val device = probes.withPermit {
-                    withTimeoutOrNull(WEB_TIMEOUT_MS) { runCatching { web(host, port) }.getOrElse { if (it is CancellationException) throw it; null } }
-                }
-                // An LG ESS's password is its MAC, lowercase without colons.
-                val password = if (device?.type == DeviceType.LG_ESS) macs[host]?.replace(":", "").orEmpty() else ""
-                if (device != null) send(ScanEvent.Found(device.copy(identifying = false, password = password.ifEmpty { device.password })))
-                send(ScanEvent.Progress(identified.incrementAndGet(), total, ScanPhase.IDENTIFY))
-            }
-            for ((host, port, mdnsCandidates) in toProbe) launch {
+            val all = this
+            fun identifyModbus(host: String, port: Int, mdnsCandidates: List<Pair<DeviceType, Int>>?) = all.launch {
                 val key = "$host:$port"
                 val device = probes.withPermit {
                     var candidates = mdnsCandidates ?: CANDIDATES[port] ?: CANDIDATES.values.flatten().distinct()
@@ -261,8 +213,70 @@ class DeviceScanner(
                 }
                 send(ScanEvent.Found(device.copy(viaMdns = key in viaMdns, identifying = false)))
                 if (device.specId in HUBS) listBehind(host, port, device.specId, setOf(device.unitId))
-                send(ScanEvent.Progress(identified.incrementAndGet(), total, ScanPhase.IDENTIFY))
+                identifiedOne()
             }
+            fun identifyWeb(host: String, port: Int) = all.launch {
+                val device = probes.withPermit {
+                    withTimeoutOrNull(WEB_TIMEOUT_MS) { runCatching { web(host, port) }.getOrElse { if (it is CancellationException) throw it; null } }
+                }
+                // An LG ESS's password is its MAC, lowercase without colons; the announcement carrying it may still come.
+                if (device?.type == DeviceType.LG_ESS && !macs.containsKey(host)) withTimeoutOrNull(MDNS_WINDOW_MS) { mdnsDone.await() }
+                val password = if (device?.type == DeviceType.LG_ESS) macs[host]?.replace(":", "").orEmpty() else ""
+                if (device != null) send(ScanEvent.Found(device.copy(identifying = false, password = password.ifEmpty { device.password })))
+                identifiedOne()
+            }
+            suspend fun opened(host: String, port: Int, mdnsCandidates: List<Pair<DeviceType, Int>>?) {
+                val key = "$host:$port"
+                if (!open.add(key)) return
+                if (mdnsCandidates != null) viaMdns += key
+                val configured = known[key]
+                send(
+                    ScanEvent.Found(
+                        if (configured != null) FoundDevice(host, port, null, 0, "Already added", alreadyIn = configured, viaMdns = key in viaMdns)
+                        else FoundDevice(host, port, null, 0, "Port open", viaMdns = key in viaMdns, identifying = true),
+                    ),
+                )
+                // Configured devices aren't asked (a second client could disturb their poll), except a configured hub
+                // for the devices behind it: polling pauses (and closes its connections) meanwhile, as for a register sweep.
+                val hub = hubs[key]
+                if (configured == null) {
+                    toIdentify.incrementAndGet()
+                    identifyModbus(host, port, mdnsCandidates)
+                } else if (hub != null) {
+                    toIdentify.incrementAndGet()
+                    all.launch { probes.withPermit { TrafficPause.during { listBehind(host, port, hub.first, hub.second) } }; identifiedOne() }
+                }
+            }
+            // mDNS and the port scan run side by side; whichever reaches a host:port first lists it.
+            launch {
+                withTimeoutOrNull(MDNS_WINDOW_MS) { mdns().collect { s -> s.mac?.let { macs[s.host] = it }; opened(s.host, s.port, candidatesFor(s)) } }
+                mdnsDone.complete(Unit)
+            }
+            send(ScanEvent.Progress(0, hosts.size, ScanPhase.PING))
+            val answering = runCatching { ping(hosts) }.getOrElse { if (it is CancellationException) throw it; emptySet() }
+            val (up, silent) = hosts.partition { it in answering }
+            val everyPort = (EXTENDED_PORTS + WEB_PORTS).distinct()
+            val mainPorts = listOf(MODBUS_PORT) + WEB_PORTS
+            val steps = listOf(up to everyPort, silent to mainPorts, silent to everyPort - mainPorts.toSet())
+            val total = steps.sumOf { (h, p) -> h.size * p.size }
+            val done = AtomicInteger()
+            send(ScanEvent.Progress(0, total))
+            for ((stepHosts, ports) in steps) for (port in ports) coroutineScope { // port by port: 502 everywhere first
+                for (host in stepHosts) launch {
+                    val key = "$host:$port"
+                    if (port in WEB_PORTS) {
+                        if (!known.containsKey(key) && connects.withPermit { portOpen(host, port) } && open.add(key)) {
+                            toIdentify.incrementAndGet()
+                            identifyWeb(host, port)
+                        }
+                    } else if (!open.contains(key) && (known.containsKey(key) || connects.withPermit { portOpen(host, port) })) {
+                        opened(host, port, null)
+                    }
+                    send(ScanEvent.Progress(done.incrementAndGet(), total))
+                }
+            }
+            portsDone.set(true)
+            send(ScanEvent.Progress(identified.get(), toIdentify.get(), ScanPhase.IDENTIFY))
         }
     }.flowOn(Dispatchers.IO)
 
@@ -372,7 +386,7 @@ class DeviceScanner(
         private const val WEB_TIMEOUT_MS = 4_000L
         const val MODBUS_PORT = 502
 
-        /** The extended search: 502, the named drivers' ports, RS485 gateways (8899: Elfin / USR Wi-Fi, 4196: Waveshare Ethernet) and the ModbusSpec files' ports. */
+        /** Every Modbus port searched: 502, the named drivers' ports, RS485 gateways (8899: Elfin / USR Wi-Fi, 4196: Waveshare Ethernet) and the ModbusSpec files' ports. */
         val EXTENDED_PORTS: List<Int> by lazy {
             (listOf(MODBUS_PORT) + CANDIDATES.keys + GATEWAY_PORTS +
                 (SpecLibrary.current?.index?.map { it.port }.orEmpty())).distinct()
@@ -446,18 +460,17 @@ class DeviceScanner(
         fun scanLocalNetwork(
             context: Context,
             known: Map<String, String>,
-            extended: Boolean = false,
             range: String = "",
             hubs: Map<String, Pair<String, Set<Int>>> = emptyMap(),
         ): Flow<ScanEvent> {
             if (range.isNotBlank()) {
                 val hosts = parseRange(range) ?: return channelFlow { send(ScanEvent.Failed("Can't read the network to search: $range")) }
-                return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs, specCount = ::specFilesToTry, specUnits = ::specUnitIds, rollCall = ::rollCall, behind = ::devicesBehind, aurora = ::auroraRollCall, web = ::identifyWeb).scan(hosts, known, extended, hubs)
+                return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs, specCount = ::specFilesToTry, specUnits = ::specUnitIds, rollCall = ::rollCall, behind = ::devicesBehind, aurora = ::auroraRollCall, web = ::identifyWeb, ping = { runInterruptible { Ping.sweep(it) } }).scan(hosts, known, hubs)
             }
             val (own, prefix) = localNetwork(context) ?: return channelFlow {
                 send(ScanEvent.Failed("Not connected to a local network. Connect to the plant's Wi-Fi and try again."))
             }
-            return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs, specCount = ::specFilesToTry, specUnits = ::specUnitIds, rollCall = ::rollCall, behind = ::devicesBehind, aurora = ::auroraRollCall, web = ::identifyWeb).scan(hosts(own, prefix), known, extended, hubs)
+            return DeviceScanner(mdns = { MdnsBrowser.browse(context) }, specIdentify = ::identifyFromSpecs, specCount = ::specFilesToTry, specUnits = ::specUnitIds, rollCall = ::rollCall, behind = ::devicesBehind, aurora = ::auroraRollCall, web = ::identifyWeb, ping = { runInterruptible { Ping.sweep(it) } }).scan(hosts(own, prefix), known, hubs)
         }
 
         private fun tcpOpen(host: String, port: Int): Boolean = try {
