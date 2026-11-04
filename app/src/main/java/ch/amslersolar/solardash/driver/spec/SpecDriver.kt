@@ -50,7 +50,7 @@ class SpecDriver(
         unitId, hooks, model = model,
     )
 
-    private val reader = SpecReader(spec, vocabulary, tables, unitId, minIntervalMs = requestGapMs ?: spec.connection.minIntervalMs, chosenModel = model)
+    private val reader = SpecReader(spec, vocabulary, tables, unitId, minIntervalMs = requestGapMs ?: spec.connection.minIntervalMs, chosenModel = model, notHere = hooks.notHere)
     private val spec get() = reader.spec
     private var lastPvW: Int? = null
     private var sleeping = false
@@ -168,6 +168,9 @@ class SpecDriver(
 /** Per-device code for what a ModbusSpec file can't express (computed values, plausibility rules …). */
 fun interface SpecHooks {
     fun adjust(values: Map<String, SpecValue>, reading: DeviceReading): DeviceReading
+
+    /** Modbus exception codes the device answers for a register it doesn't have, besides 1–3 (see [SpecReader]). */
+    val notHere: Set<Int> get() = emptySet()
 
     companion object {
         val NONE = SpecHooks { _, r -> r }

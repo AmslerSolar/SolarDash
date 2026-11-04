@@ -171,16 +171,17 @@ unfinished work there is ignored, and runs ModbusSpec's validator; `LOCK.json` r
 - `driver/spec/SpecDevices.kt` says which device type reads through which file(s) and holds small per-device
   hooks for what the format can't express. The golden tests (`test/…/driver/spec/*GoldenTest.kt`) check each
   spec driver against what the replaced hand-written driver read on the same register images, recorded before those
-  drivers were removed (`test/resources/golden/`). Modbus devices that need logic (SunSpec chain,
-  Victron's unit ids) and non-Modbus devices (Voltronic, LG, Enphase, ABB CDD, Aurora) stay hand-written.
-- Switched (35 device types): Eastron SDM, KEBA P30, Carlo Gavazzi (EM24-E1, EM300, EM210, EM24-DIN), inepro
+  drivers were removed (`test/resources/golden/`). Modbus devices that need logic (the SunSpec chain)
+  and non-Modbus devices (Voltronic, LG, Enphase, ABB CDD, Aurora) stay hand-written.
+- Switched (36 device types): Eastron SDM, KEBA P30, Carlo Gavazzi (EM24-E1, EM300, EM210, EM24-DIN), inepro
   PRO380, ABB B23/B24, Janitza UMG, Schneider iEM3000, Siemens PAC2200, KOSTAL KSEM, Shelly Pro 3EM, my-PV,
   Stiebel Eltron ISG, Alfen Eve, MENNEKES/Bender ECU, go-e, NIBE S series (model picked in the device form:
   `model_choice: user`), Hoval TopTronic E, FENECON, Huawei SUN2000, Growatt (SPH, TL-X, WIT), GoodWe ET, SMA,
   Sungrow (SHx, SG), KOSTAL Plenticore (word order from register 5), KOSTAL PIKO CI, Schneider Conext CL-60 and
-  Gateway, CPS 403X, Power-One TRIO (asleep at night: `connection.sleeps`), Ingeteam INGECON SUN, Riello central.
+  Gateway, CPS 403X, Power-One TRIO (asleep at night: `connection.sleeps`), Ingeteam INGECON SUN, Riello central,
+  Victron GX (system service, unit id 100; the GX refuses missing values with gateway exceptions 10/11).
 - Still hand-written: the SunSpec family (Fronius, SolarEdge, KACO, FIMER, APsystems, Conext CL, LG SunSpec; the
-  SunSpec chain is discovered at runtime), Victron (several unit ids), and the non-Modbus Voltronic, LG ESS,
+  SunSpec chain is discovered at runtime), and the non-Modbus Voltronic, LG ESS,
   Enphase, ABB CDD and Aurora.
 - Every other energy device in ModbusSpec (inverters, batteries, meters, wallboxes, heat pumps, heating rods,
   UPSs, boilers: `kinds:` in `app/modbusspec.txt`, 438 files) is available through four generic device types
@@ -291,7 +292,6 @@ driver/powerone/  Power-One / ABB TRIO (input registers, maps GT and Gt03)
 driver/sunspec/   SunSpec discovery and the shared SunSpec inverter driver (Fronius, SolarEdge, generic)
 driver/sma/       SMA native Modbus (unit 3)
 driver/sungrow/   Sungrow SH / SG
-driver/victron/   Victron GX system service
 driver/growatt/   Growatt VPP protocol
 driver/voltronic/ Voltronic Axpert ASCII protocol over a transparent TCP gateway
 driver/meter/     Energy meters (Gavazzi, Eastron, inepro, ABB, Janitza, Schneider, Siemens, KSEM, Shelly)
@@ -438,6 +438,8 @@ SolaX, FoxESS, Sofar and the classic Growatt protocol (only unofficial copies ex
 - The GX's system service (unit id 100) gives the whole installation: AC-coupled and DC PV, consumption, grid per
   phase, battery. Signs are taken from the register list text (grid "supplied by grid to system", battery
   "positive: being charged"). Daily yield exists only per solar charger, so the history integrates.
+- Read through ModbusSpec (`victron-gx-system`): PV, grid and load from the 32-bit registers, else the 16-bit ones
+  of older firmware. A hook adds the Dynamic ESS warning (only while Dynamic ESS is active).
 
 ## Growatt notes
 

@@ -22,7 +22,6 @@ import ch.amslersolar.solardash.driver.modbus.ModbusConnections
 import ch.amslersolar.solardash.driver.schneider.ConextClDriver
 import ch.amslersolar.solardash.driver.sunspec.SunSpecInverterDriver
 import ch.amslersolar.solardash.driver.sunspec.SunSpecProfiles
-import ch.amslersolar.solardash.driver.victron.VictronGxDriver
 import ch.amslersolar.solardash.driver.voltronic.VoltronicAxpertDriver
 import ch.amslersolar.solardash.model.DeviceConfig
 import ch.amslersolar.solardash.model.DeviceInfo
@@ -61,7 +60,6 @@ object DeviceDrivers {
             SunSpecInverterDriver(connections.get(config), config.unitId, SunSpecProfiles.SOLAREDGE.invertedGrid(config.invertGrid))
         DeviceType.SUNSPEC ->
             SunSpecInverterDriver(connections.get(config), config.unitId, SunSpecProfiles.GENERIC.invertedGrid(config.invertGrid))
-        DeviceType.VICTRON -> VictronGxDriver(connections.get(config), config.unitId)
         DeviceType.VOLTRONIC -> VoltronicAxpertDriver(config.host, config.port)
         DeviceType.ENPHASE -> EnphaseGatewayDriver(config.host, config.port, config.password)
         DeviceType.ABB_CDD -> AbbCddDriver(config.host, config.port)

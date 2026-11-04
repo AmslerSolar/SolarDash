@@ -28,7 +28,6 @@ import ch.amslersolar.solardash.driver.modbus.ModbusTcpClient
 import ch.amslersolar.solardash.driver.spec.SpecDevices
 import ch.amslersolar.solardash.driver.sunspec.SunSpecInverterDriver
 import ch.amslersolar.solardash.driver.sunspec.SunSpecProfiles
-import ch.amslersolar.solardash.driver.victron.VictronGxDriver
 import ch.amslersolar.solardash.model.DeviceInfo
 import ch.amslersolar.solardash.model.DeviceType
 import kotlinx.coroutines.CancellationException
@@ -706,10 +705,9 @@ class DeviceScanner(
                     DeviceType.CONEXT_CL -> ConextClDriver(client, unitId).identify()
                     DeviceType.SOLAREDGE -> SunSpecInverterDriver(client, unitId, SunSpecProfiles.SOLAREDGE).identify()
                     DeviceType.SUNSPEC -> SunSpecInverterDriver(client, unitId, SunSpecProfiles.GENERIC).identify()
-                    DeviceType.VICTRON -> VictronGxDriver(client, unitId).identify()
                     DeviceType.LG_ESS_SUNSPEC -> LgEssSunSpecDriver(client, unitId).identify()
                     DeviceType.GOODWE_ET, DeviceType.CONEXT_CL60, DeviceType.CONEXT_GATEWAY, DeviceType.KOSTAL_PIKO_CI, DeviceType.POWER_ONE, DeviceType.GROWATT, DeviceType.SMA, DeviceType.SUNGROW, DeviceType.FENECON, DeviceType.HUAWEI,
-                    DeviceType.KOSTAL_PLENTICORE ->
+                    DeviceType.KOSTAL_PLENTICORE, DeviceType.VICTRON ->
                         SpecDevices.create(type, client, unitId)!!.identify()
                     else -> throw UnsupportedOperationException()
                 }

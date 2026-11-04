@@ -55,6 +55,11 @@ class SpecReader(
     private val retryRejectedEvery: Int = 120,
     /** The model the user picked, for files with `model_choice: user` (ignored otherwise). */
     private val chosenModel: String? = null,
+    /**
+     * Further exception codes meaning "not on this device" (see [SpecHooks.notHere]), e.g. a gateway exception a
+     * device answers for a value its installation lacks. With these, a read that gets no register at all fails.
+     */
+    private val notHere: Set<Int> = emptySet(),
 ) {
     /** Registers read so far, by "table@unit". */
     private val image = HashMap<String, HashMap<Int, Int>>()
@@ -102,6 +107,8 @@ class SpecReader(
             // No answer (timeout, refused, or a gateway saying the device didn't respond): asleep if the file says so.
             if ((e is ModbusException && e.code !in NO_ANSWER) || !spec.connection.sleeps) throw e
         }
+        // Every register refused with a "not here" gateway exception: the device itself isn't answering.
+        if (notHere.isNotEmpty() && answered == 0 && !spec.connection.sleeps) throw IOException("${spec.manufacturer} ${spec.name}: no register answered")
         asleep = spec.connection.sleeps && answered == 0
         if (asleep) return emptyMap()
         return values()
@@ -196,7 +203,7 @@ class SpecReader(
             try {
                 put(b.first, b.second, request(b.first, b.second, b.third))
             } catch (e: ModbusException) {
-                if (e.code in NO_ANSWER) throw e // else: not on this device
+                if (e.code in NO_ANSWER && e.code !in notHere) throw e // else: not on this device
             }
         }
         val rest = all.filter { r -> fixed.none { inside(r, it) } }
@@ -225,8 +232,8 @@ class SpecReader(
                     put(key, a, request(key, a, n))
                     continue
                 } catch (e: ModbusException) {
-                    if (e.code in NO_ANSWER) throw e // the gateway got no answer: asking point by point won't help
-                    remember = e.code in NOT_HERE
+                    if (e.code in NO_ANSWER && e.code !in notHere) throw e // the gateway got no answer: asking point by point won't help
+                    remember = e.code in NOT_HERE || e.code in notHere
                     if (remember) rejectedBlocks += block
                 }
             }
@@ -240,8 +247,8 @@ class SpecReader(
                 try {
                     for ((k2, a2, n2) in blocks(listOf(r), gap = 0)) put(k2, a2, request(k2, a2, n2))
                 } catch (e: ModbusException) {
-                    if (e.code in NO_ANSWER) throw e
-                    if (e.code in NOT_HERE) rejected += r // not on this device
+                    if (e.code in NO_ANSWER && e.code !in notHere) throw e
+                    if (e.code in NOT_HERE || e.code in notHere) rejected += r // not on this device
                 }
             }
         }

@@ -52,6 +52,7 @@ object SpecDevices {
         DeviceType.GO_E to listOf("goe-charger"),
         DeviceType.NIBE_S to listOf("nibe-s-series"),
         DeviceType.HOVAL_TOPTRONIC to listOf("hoval-toptronic-e"),
+        DeviceType.VICTRON to listOf("victron-gx-system"),
     )
 
     /**
@@ -85,6 +86,7 @@ object SpecDevices {
         "growatt-sph" to SpecHooks { v, r -> growatt(v, r) },
         "growatt-tl-x" to SpecHooks { v, r -> growatt(v, r) },
         "growatt-wit" to SpecHooks { v, r -> growatt(v, r) },
+        "victron-gx-system" to VictronGx,
         "kostal-plenticore" to Inverters1Hooks.KOSTAL_PLENTICORE,
         "sma-inverter" to Inverters1Hooks.SMA,
         "sungrow-shx" to Inverters1Hooks.SUNGROW_SHX,
@@ -351,6 +353,21 @@ object SpecDevices {
         copy(battery = (battery ?: BatteryState(0, null, null, "Idle")).copy(powerW = p, mode = batteryMode(p)))
 
     fun hooks(id: String): SpecHooks = HOOK_FACTORIES[id]?.invoke() ?: HOOKS[id] ?: SpecHooks.NONE
+
+    /**
+     * Victron GX system service. A value the installation lacks (a third phase, registers older firmware doesn't have)
+     * is refused with gateway exception 10 or 11, not 2. A Dynamic ESS error (5404) only counts while Dynamic ESS
+     * is active (5400), which a problem rule can't say.
+     */
+    private object VictronGx : SpecHooks {
+        override val notHere = setOf(10, 11)
+        override fun adjust(values: Map<String, SpecValue>, reading: DeviceReading): DeviceReading {
+            val error = values.n("x.dynamic_ess_error_code")?.toInt()
+            if (values.n("x.dynamic_ess_active") != 1.0 || error == null || error == 0) return reading
+            val text = values["x.dynamic_ess_error_code"]?.enumText ?: "Error code"
+            return reading.copy(problems = reading.problems + DeviceProblem(DeviceProblem.Kind.WARNING, "Dynamic ESS: $text ($error)"))
+        }
+    }
 
     /**
      * The models the user picks from, (id, name), for a type whose spec file can't tell its models apart over
