@@ -11,8 +11,13 @@ Serves, on 127.0.0.1 only:
 
 Modes:
   default   the envelopes of store/tests/vectors.json, as they are (standard library only)
-  --fresh   envelopes made now with the vectors' software key: a plant with devices, today's day item, today's
-            blocks up to now and a live envelope with the current time on every request (needs python3-cryptography)
+  --fresh   envelopes made now with the vectors' software key (needs python3-cryptography): a plant with four
+            devices (hybrid inverter, grid meter, heat pump, weather sensor) and their channel catalogs, day items of
+            the last 40 days, plant and device hour blocks of the last 3 days up to now, a fault log of 14 entries
+            (one still going on), and a live envelope with the current time on every request
+
+Every observer request is counted in Data.requests as (op, [[kind, name], …] for fetch), so tests can check how
+much the web view asks for.
 
 The read token is the vectors' one; any other gives 403. On start it prints the observer link.
 """
@@ -135,6 +140,101 @@ def sample(t):
     return round(pv), round(load), round(battery), round(grid), round(soc)
 
 
+def device_values(t):
+    """Device channel values at t, consistent with sample(t)."""
+    pv, load, battery, grid, soc = sample(t)
+    h = datetime.fromtimestamp(t).hour + datetime.fromtimestamp(t).minute / 60
+    outside = 4 + 6 * math.sin(math.pi * (h - 9) / 12)
+    return {'pv': pv, 'load': load, 'battery': battery, 'grid': grid, 'soc': soc, 'outside': outside,
+            'irradiance': max(0.0, pv / 5.2), 'wind': 2 + 1.5 * math.sin(t / 1300),
+            'heat': 900 + 300 * math.sin(t / 2000) if 6 < h < 22 else 0.0}
+
+
+def ch(fn):
+    return lambda t: fn(device_values(t))
+
+
+# Per device: (key, label, unit, exponent, value at t or None for catalog-only channels), as Collector sends them.
+CATALOGS = {
+    'inv1': [
+        ('r:pv_power', 'Solar power', 'W', 0, ch(lambda v: v['pv'])),
+        ('r:load_power', 'Load power', 'W', 0, ch(lambda v: v['load'])),
+        ('r:temperature', 'Temperature', '°C', -1, ch(lambda v: 30 + v['pv'] / 400)),
+        ('r:battery_power', 'Battery power (+ discharge)', 'W', 0, ch(lambda v: v['battery'])),
+        ('r:battery_soc', 'Battery state of charge', '%', 0, ch(lambda v: v['soc'])),
+        ('r:battery_voltage', 'Battery voltage', 'V', -1, ch(lambda v: 48 + v['soc'] / 20)),
+        ('r:pv1_voltage', 'PV1 voltage', 'V', -1, ch(lambda v: 380 + v['pv'] / 100 if v['pv'] else 0)),
+        ('r:pv1_power', 'PV1 power', 'W', 0, ch(lambda v: v['pv'] * 0.55)),
+        ('r:pv2_power', 'PV2 power', 'W', 0, ch(lambda v: v['pv'] * 0.45)),
+        ('r:today_pv', 'Solar yield today', 'kWh', -2, None),
+        ('d:Battery:BMS temperature', 'BMS temperature (Battery)', '°C', -1, ch(lambda v: 22 + v['soc'] / 20)),
+        ('d:Battery:Cycles', 'Cycles (Battery)', '', -2, None),
+    ],
+    'meter1': [
+        ('r:grid_power', 'Grid power (+ export)', 'W', 0, ch(lambda v: v['grid'])),
+        ('r:L1_voltage', 'L1 voltage', 'V', -1, ch(lambda v: 231 + v['grid'] / 2000)),
+        ('r:L1_current', 'L1 current', 'A', -2, ch(lambda v: abs(v['grid']) / 3 / 231)),
+        ('r:L1_frequency', 'L1 frequency', 'Hz', -2, ch(lambda v: 50 + math.sin(v['wind']) / 50)),
+    ],
+    'hp1': [
+        ('r:load_power', 'Load power', 'W', 0, ch(lambda v: v['heat'])),
+        ('d:Heat pump:Flow temperature', 'Flow temperature (Heat pump)', '°C', -1, ch(lambda v: 30 + v['heat'] / 100)),
+        ('d:Heat pump:Return temperature', 'Return temperature (Heat pump)', '°C', -1, ch(lambda v: 26 + v['heat'] / 120)),
+    ],
+    # A sensor (ModbusSpec "other" kind): no power at all, only measurements on their own axes.
+    'sensor1': [
+        ('d:Device:Solar irradiance', 'Solar irradiance (Device)', 'W/m²', -2, ch(lambda v: v['irradiance'])),
+        ('d:Device:Wind speed', 'Wind speed (Device)', 'm/s', -2, ch(lambda v: v['wind'])),
+        ('d:Device:Cell temperature of sensor', 'Cell temperature of sensor (Device)', '°C', -1, ch(lambda v: v['outside'] + v['irradiance'] / 60)),
+        ('d:Device:External temperature', 'External temperature (Device)', '°C', -1, ch(lambda v: v['outside'])),
+    ],
+}
+
+
+def events(now):
+    """A fault log like the app keeps it (observer protocol "Event"): kinds, severities, devices, situations."""
+    n = int(now)
+    reading = json.dumps({
+        'time': n - 3 * 86400, 'app': '1.0 (test)',
+        'device': {'name': 'Inverter', 'type': 'GOODWE_ET', 'type_name': 'GoodWe ET hybrid', 'host': '192.168.1.20',
+                   'port': 502, 'unit_id': 247, 'serial': 'GW-SECRET-123'},
+        'reading': {'status': 'Fault', 'problems': [{'kind': 'FAULT', 'text': 'Isolation fault'}], 'pv_w': 0, 'grid_w': -400,
+                    'load_w': 400, 'temperature_c': 41.25, 'battery': {'w': 0, 'soc': 55, 'v': 51.2, 'mode': 'Idle'},
+                    'phases': [{'name': 'L1', 'v': 231.4, 'a': 1.7, 'hz': 50.01, 'w': 400}],
+                    'details': [{'title': 'Measurements', 'rows': [['Isolation resistance', '0.2 MΩ']]}]},
+        'plant': {'off_grid': False, 'pv_w': 0, 'grid_w': -400, 'load_w': 400, 'battery_w': 0, 'battery_soc': 55,
+                  'devices': [{'name': 'Inverter', 'answered': True}, {'name': 'Grid meter', 'answered': False, 'error': 'TIMEOUT'}]},
+        'network': {'local_network': True, 'internet': True, 'subnets': ['192.168.1.0/24']},
+    })
+    lost = json.dumps({'error': {'kind': 'TIMEOUT', 'message': 'Read timed out after 5000 ms'},
+                       'device': {'name': 'Grid meter', 'type_name': 'Eastron SDM630'}, 'network': {'local_network': True, 'internet': False}})
+    plan = [  # id, kind, severity, device, detail, started (seconds ago), duration (s, None: still going on)
+        (1, 'NOT_ANSWERING', 'ALARM', 'Grid meter', None, 30 * 86400, 600),
+        (2, 'MAINS_LOST', 'WARNING', 'Inverter', 'Grid loss', 26 * 86400, 2 * 3600 + 300),
+        (3, 'BACKUP_MODE', 'WARNING', 'Inverter', 'Off-grid mode', 26 * 86400 + 60, 2 * 3600),
+        (4, 'DEVICE_WARNING', 'WARNING', 'Inverter', 'Battery temperature high', 21 * 86400, 1800),
+        (5, 'ASLEEP', 'INFO', 'Inverter', None, 20 * 86400, 10 * 3600),
+        (6, 'NO_INTERNET', 'INFO', None, None, 18 * 86400, 3 * 86400 + 4 * 3600),
+        (7, 'DEVICE_FAULT', 'ALARM', 'Inverter', 'Isolation fault', 3 * 86400, 45 * 60),
+        (8, 'NOT_ANSWERING', 'ALARM', 'Heat pump', None, 2 * 86400, 120),
+        (9, 'LOGIN_FAILED', 'ALARM', 'Heat pump', None, 2 * 86400 - 3600, 300),
+        (10, 'DEVICE_WARNING', 'WARNING', 'Heat pump', 'Compressor start delay', 36 * 3600, 900),
+        (11, 'NOT_READY', 'WARNING', 'Weather sensor', None, 20 * 3600, 240),
+        (12, 'SOMETHING_NEW', 'WARNING', 'Weather sensor', 'A kind this page does not know', 10 * 3600, 60),
+        (13, 'DEVICE_WARNING', 'WARNING', 'Inverter', 'Battery temperature high', 3 * 3600, None),
+        (14, 'ASLEEP', 'INFO', 'Inverter', None, 40 * 3600, 9 * 3600),
+    ]
+    out = []
+    for i, kind, severity, device, detail, ago, dur in plan:
+        started = n - ago
+        out.append({'id': i, 'key': '%s:%s' % (kind, device or ''), 'kind': kind, 'severity': severity,
+                    'deviceId': None, 'deviceName': device, 'detail': detail, 'percent': None, 'started': started,
+                    'ended': None if dur is None else started + dur,
+                    'details': reading if i == 7 else lost if i in (1, 8) else None,
+                    'endDetails': lost if i == 1 else None})
+    return out
+
+
 class Data:
     def __init__(self, fresh):
         self.vectors = json.load(open(VECTORS))
@@ -142,6 +242,7 @@ class Data:
         self.token = self.vectors['readToken']
         self.spki = unb64(self.vectors['publicKey'])
         self.items = {}  # (kind, name) -> envelope bytes (not live)
+        self.requests = []  # (op, pairs or None) of every observer request
         self.live = None
         self.signer = None
         if not fresh:
@@ -153,35 +254,53 @@ class Data:
                     self.items[(e['kind'], e['name'])] = env
             return
         self.signer = Signer(self.vectors)
+        self.fresh_items(time.time())
+
+    def fresh_items(self, now):
         plant = {
             'name': 'Home', 'offGrid': False,
             'devices': [
-                {'id': 'inv1', 'name': 'Inverter', 'type': 'LG_ESS', 'meterRole': 'GRID', 'hiddenProblems': ['Fan check']},
-                {'id': 'meter1', 'name': 'Grid meter', 'type': 'SDM630', 'meterRole': 'GRID'},
+                {'id': 'inv1', 'name': 'Inverter', 'type': 'GOODWE_ET', 'meterRole': 'GRID', 'hiddenProblems': ['Fan check']},
+                {'id': 'meter1', 'name': 'Grid meter', 'type': 'EASTRON', 'meterRole': 'GRID'},
+                {'id': 'hp1', 'name': 'Heat pump', 'type': 'NIBE_S', 'meterRole': 'GRID'},
+                {'id': 'sensor1', 'name': 'Weather sensor', 'type': 'MODBUS_SPEC_CONSUMER', 'specId': 'victron/gx-meteo'},
             ],
-            'chartChannels': [],
+            # The owner's chart channel: the web view's default selection.
+            'chartChannels': [{'deviceId': 'sensor1', 'key': 'd:Device:External temperature', 'slot': 0}],
+            'channels': {k: [list(c[:3]) for c in v] for k, v in CATALOGS.items()},
         }
         self.put(5, 'plant', json.dumps(plant).encode())
         self.put(6, 'stores', json.dumps([]).encode())
-        now = time.time()
-        midnight = datetime.fromtimestamp(now).replace(hour=0, minute=0, second=0, microsecond=0)
-        hour = int(midnight.timestamp()) // 3600 * 3600
-        # A device block that the web view must ignore.
-        self.put(1, 'b%d.inv1' % hour, encode_block(hour, [('r:pv_power', 0, [1.0] * 60)]))
-        while hour <= now:
-            cols = {k: [] for k in ('pv', 'load', 'battery', 'grid', 'soc')}
-            for i in range(60):
-                t = hour + i * 60
-                s = sample(t) if t <= now else None
-                for k, v in zip(cols, s or [None] * 5):
-                    cols[k].append(v)
-            self.put(1, 'b%d' % hour, encode_block(hour, [(k, 0, v) for k, v in cols.items()]))
-            hour += 3600
+        today = datetime.fromtimestamp(now).replace(hour=0, minute=0, second=0, microsecond=0)
+        rnd = random.Random(42)
+        # Day items: the last 40 days (today's as the live values have it).
         self.today = {'pv': 18.4, 'export': 7.9, 'import': 1.2, 'load': 9.6}
-        day = datetime.fromtimestamp(now).strftime('%Y-%m-%d')
-        self.put(2, 'd' + day, json.dumps({'day': day, 'plant': self.today}).encode())
-        yesterday = (datetime.fromtimestamp(now) - timedelta(days=1)).strftime('%Y-%m-%d')
-        self.put(2, 'd' + yesterday, json.dumps({'day': yesterday, 'plant': {'pv': 1}}).encode())
+        for back in range(40):
+            day = (today - timedelta(days=back)).strftime('%Y-%m-%d')
+            if back == 0:
+                totals = self.today
+            elif back == 12:
+                continue  # a day the tablet was off
+            else:
+                pv = round(rnd.uniform(4, 24), 2)
+                load = round(rnd.uniform(8, 14), 2)
+                totals = {'pv': pv, 'export': round(max(0.0, pv - load * 0.6) * 0.7, 2),
+                          'import': round(max(0.5, load - pv * 0.5) * 0.6, 2), 'load': load}
+            self.put(2, 'd' + day, json.dumps({'day': day, 'plant': totals}).encode())
+        # Hour blocks: the plant and every device, for the last 3 days up to now.
+        hour = int((today - timedelta(days=2)).timestamp()) // 3600 * 3600
+        while hour <= now:
+            ts = [hour + i * 60 for i in range(60)]
+            rows = [sample(t) if t <= now else None for t in ts]
+            cols = list(zip(*[r or (None,) * 5 for r in rows]))
+            self.put(1, 'b%d' % hour, encode_block(hour, [(k, 0, list(v)) for k, v in zip(('pv', 'load', 'battery', 'grid', 'soc'), cols)]))
+            for device, catalog in CATALOGS.items():
+                chans = [(key, exp, [f(t) if t <= now else None for t in ts]) for key, _, _, exp, f in catalog if f]
+                self.put(1, 'b%d.%s' % (hour, device), encode_block(hour, chans))
+            hour += 3600
+        # The fault log: entries over the last weeks, one still going on.
+        for e in events(now):
+            self.put(3, 'e%d' % e['id'], json.dumps(e).encode())
 
     def put(self, kind, name, content):
         self.items[(kind, name)] = self.signer.envelope(kind, name, content)
@@ -261,6 +380,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         if r is True:
             return
         op, q = r
+        self.data.requests.append((op, None))
         if op == 'key':
             return self.answer(200, self.data.spki)
         if op == 'live':
@@ -284,6 +404,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         length = int(self.headers.get('Content-Length') or 0)
         body = self.rfile.read(length) if length else b''
         if op == 'watch':
+            self.data.requests.append(('watch', None))
             return self.answer(204)
         if op == 'fetch':
             try:
@@ -291,6 +412,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 assert isinstance(pairs, list) and len(pairs) <= 200
             except Exception:
                 return self.error(400, 'body')
+            self.data.requests.append(('fetch', pairs))
             envs = [self.data.items[(k, n)] for k, n in pairs if (k, n) in self.data.items]
             return self.answer(200, frames(envs))
         return self.error(400, 'route')

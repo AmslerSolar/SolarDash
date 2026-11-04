@@ -12,8 +12,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>SolarDash</title>
-<link rel="stylesheet" href="style.css" integrity="sha384-DQQN9EdBEaBpTQ3VFZYWytEGc5HTyk8kkcITIWo60uDMzgOLev3P1T4udEqXVRj1">
-<script src="app.js" defer integrity="sha384-GZc+gIM+THWWG4YXCbXmvIedQIPQ6eD1jqImbesO5kaW8Bfluyxvzk6WnZXWfxbd"></script>
+<link rel="stylesheet" href="style.css" integrity="sha384-fQTKF7yI7yxiif2qDxnPzwR4h+By4YZpDs7ckhpimf7x2qSul2Id0wjcb5JiSnGc">
+<script src="app.js" defer integrity="sha384-IWxQ1m2f4oTreGy2EfI1ocvnABnpO7NHjvfhFXmhZjT36mCXIAUzAgC7u6xEdfOP"></script>
 </head>
 <body>
 <main>
@@ -84,19 +84,63 @@
       </dl>
     </section>
 
-    <section class="chart-box">
-      <h2 data-t="chartTitle">Over the day</h2>
-      <svg id="chart" class="chart" role="img" aria-labelledby="chart-title"><title id="chart-title" data-t="chartA11y">Day chart</title></svg>
-      <p id="chart-empty" class="chart-empty" data-t="chartEmpty" hidden>No history for this day yet.</p>
-      <ul class="legend">
-        <li><span class="swatch s-pv"></span><span data-t="solar">Solar</span></li>
-        <li><span class="swatch s-load"></span><span data-t="home">Home</span></li>
-        <li><span class="swatch s-grid"></span><span data-t="grid">Grid</span></li>
-        <li><span class="swatch s-battery"></span><span data-t="battery">Battery</span></li>
-      </ul>
-      <p class="note" data-t="chartNote"></p>
+    <section id="history" class="history" aria-labelledby="history-title">
+      <h2 id="history-title" data-t="historyTitle">History</h2>
+      <div id="periods" class="periods" role="group" data-t-label="periods">
+        <button type="button" data-period="day" data-t="period_day">Day</button>
+        <button type="button" data-period="week" data-t="period_week">Week</button>
+        <button type="button" data-period="month" data-t="period_month">Month</button>
+        <button type="button" data-period="year" data-t="period_year">Year</button>
+        <button type="button" data-period="lifetime" data-t="period_lifetime">Lifetime</button>
+      </div>
+      <div class="range-nav">
+        <button id="prev" type="button" class="icon-button" data-t-label="previous">‹</button>
+        <p id="range-label" class="range-label" aria-live="polite"></p>
+        <button id="next" type="button" class="icon-button" data-t-label="next">›</button>
+      </div>
+      <div class="range-actions">
+        <button id="to-today" type="button" class="secondary" data-t="toToday">Today</button>
+        <button id="table-toggle" type="button" class="secondary" data-t="showTable">Show table</button>
+      </div>
+      <ul id="legend" class="chips"></ul>
+      <div id="readout" class="readout" aria-live="polite" hidden></div>
+      <p id="history-state" class="history-state" hidden></p>
+      <div id="chart-wrap" class="chart-wrap" hidden>
+        <svg id="chart" class="chart" role="img" tabindex="0" aria-labelledby="chart-title"><title id="chart-title" data-t="chartA11y">History chart</title></svg>
+      </div>
+      <div id="history-table" class="history-table" hidden></div>
+      <div id="chart-tools" class="chart-tools" hidden>
+        <p class="note" data-t="chartHint"></p>
+        <button id="zoom-reset" type="button" class="secondary" data-t="zoomReset" hidden>Reset zoom</button>
+      </div>
+      <p id="sign-note" class="note" data-t="chartNote"></p>
+      <h3 data-t="totals">Totals</h3>
+      <dl id="period-totals" class="rows"></dl>
+    </section>
+
+    <section id="alarms" class="alarms" aria-labelledby="alarms-title">
+      <h2 id="alarms-title" data-t="alarmsTitle">Faults</h2>
+      <p id="alarms-loading" class="note" data-t="loading">Loading…</p>
+      <h3 data-t="logActive">Active</h3>
+      <ul id="alarms-active" class="events"></ul>
+      <h3 data-t="logPast">History</h3>
+      <ul id="alarms-past" class="events"></ul>
+      <button id="alarms-more" type="button" class="secondary" data-t="logMore" hidden>Show older entries</button>
     </section>
   </div>
+
+  <dialog id="picker" class="picker" aria-labelledby="picker-title">
+    <h2 id="picker-title" data-t="pickerTitle">Add channels</h2>
+    <div id="picker-devices" class="chips" role="group" data-t-label="pickerDevices"></div>
+    <p id="picker-search-row" class="picker-search"><label><span data-t="pickerSearch">Search</span> <input id="picker-search" type="search" autocomplete="off"></label></p>
+    <p id="picker-status" class="note"></p>
+    <div id="picker-list" class="picker-list"></div>
+    <p id="picker-refused" class="refused" role="alert" hidden></p>
+    <div class="dialog-buttons">
+      <button id="picker-cancel" type="button" class="secondary" data-t="cancel">Cancel</button>
+      <button id="picker-add" type="button" data-t="add">Add</button>
+    </div>
+  </dialog>
 
   <footer>
     <a id="open-app" class="button" href="solardash://observe" data-t="openApp">Open in SolarDash</a>

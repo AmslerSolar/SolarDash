@@ -3,11 +3,13 @@
 # Copyright (C) 2026 Amsler Solar GmbH
 """Runs the web view's tests headless in Chromium: the SRI check, o/test.html (pure functions against
 store/tests/vectors.json) and o/index.html end to end against fake_store.py (vectors as they are, fresh envelopes,
-German, wrong code, unreachable store, broken link). Prints PASS/FAIL lines; exit status 1 on any failure.
+German, wrong code, unreachable store, broken link; with fresh envelopes also the history: periods, navigation,
+what is fetched, channel picker, zoom, table, and the fault log). Prints PASS/FAIL lines; exit status 1 on any failure.
 
   python3 store/web/tools/run_tests.py [--chromium /usr/bin/chromium] [--screenshots DIR]
 
---screenshots writes phone, tablet and dark-mode screenshots of the fresh plant to DIR for a look by eye.
+--screenshots writes phone, tablet and dark-mode screenshots of the fresh plant to DIR for a look by eye, and of
+the history (week, month, year, zoomed day, table), the channel picker and the fault log.
 The fresh cases need python3-cryptography; without it they are skipped.
 """
 
@@ -130,11 +132,41 @@ class Browser:
             raise RuntimeError(r['exceptionDetails'].get('text'))
         return r['result'].get('value')
 
+    def wait(self, expression, timeout=10):
+        """Waits until the JavaScript expression is true; False after timeout."""
+        deadline = time.time() + timeout
+        while time.time() < deadline:
+            try:
+                if self.eval(expression) is True:
+                    return True
+            except RuntimeError:
+                pass
+            time.sleep(0.1)
+        return False
+
+    def center(self, selector):
+        """Scrolls the element into view; its centre in viewport coordinates."""
+        return self.eval("(() => { const e = document.querySelector(%s); e.scrollIntoView({block: 'center'}); "
+                         "const r = e.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2, r.width]; })()"
+                         % json.dumps(selector))
+
+    def mouse(self, kind, x, y, **kw):
+        self.send('Input.dispatchMouseEvent', dict({'type': kind, 'x': x, 'y': y}, **kw))
+
+    def touch(self, kind, points):
+        self.send('Input.dispatchTouchEvent', {'type': kind, 'touchPoints': [{'x': x, 'y': y, 'id': i} for i, (x, y) in enumerate(points)]})
+
     def dom(self):
         return self.eval('document.documentElement.outerHTML')
 
-    def screenshot(self, path):
-        data = self.send('Page.captureScreenshot', {'format': 'png', 'captureBeyondViewport': True})['data']
+    def screenshot(self, path, element=None):
+        """The whole page, or (element: an id) just that element."""
+        params = {'format': 'png', 'captureBeyondViewport': True}
+        if element:
+            r = self.eval("(() => { const r = document.getElementById(%s).getBoundingClientRect(); "
+                          "return [r.left + scrollX, r.top + scrollY, r.width, r.height]; })()" % json.dumps(element))
+            params['clip'] = {'x': r[0], 'y': r[1], 'width': r[2], 'height': r[3], 'scale': 1}
+        data = self.send('Page.captureScreenshot', params)['data']
         with open(path, 'wb') as f:
             f.write(base64.b64decode(data))
 
@@ -166,6 +198,218 @@ def check(case, dom, wants, unwanted=()):
         report(w in dom, '%s: has %s' % (case, w), 'not in the page')
     for u in unwanted:
         report(u not in dom, '%s: has no %s' % (case, u), 'found in the page')
+
+IDLE = "document.getElementById('history').getAttribute('aria-busy') === 'false'"
+
+
+def fetched(data, since):
+    """[[kind, name], …] the page fetched since request number since."""
+    return [pair for op, pairs in data.requests[since:] if op == 'fetch' for pair in pairs]
+
+
+def fetches(data, since):
+    return sum(1 for op, _ in data.requests[since:] if op == 'fetch')
+
+
+def history_cases(b, link, data, shots):
+    """The history and fault log with the fresh plant: periods, navigation, fetching, picker, zoom, faults."""
+    ready = SHOWN + " && " + IDLE + " && !document.getElementById('chart-wrap').hidden"
+    b.eval("localStorage.clear()")
+    data.requests.clear()
+    report(b.open(link, ready=ready), 'history: day chart shown')
+    dom = b.dom()
+    check('history, day', dom, [
+        'aria-pressed="true">Day<', 'class="line s-pv"', 'class="line s-load"', 'class="line s-soc dash-dashed"',
+        # The owner's chart channel (plant chartChannels) is the default selection: the weather sensor's temperature.
+        'class="line c-0 dash-dashdot"', 'External temper… · °C', 'Self-sufficiency', '>88 %<', '>Tap or point at the chart for values<',
+    ], ['data-toggle-energy'])
+    names = [n for k, n in fetched(data, 0) if k == 1]
+    report(bool(names) and all('.' not in n or n.endswith('.sensor1') for n in names),
+           'history, day: plant blocks and only the blocks of the device on the chart', str(names[:5]))
+    report(all(k != 3 for k, _ in fetched(data, 0)), 'faults: not fetched before they come into view')
+    report(len(names) <= 2 * 25, 'history, day: at most a day of blocks (%d)' % len(names))
+    report(b.eval("document.getElementById('next').disabled && document.getElementById('to-today').disabled") is True,
+           'history, day: no next day, no way to today from today')
+    report(b.eval(NO_SIDEWAYS_SCROLL) is True, 'history: no sideways scroll at 390 px')
+
+    # Hover shows the values at that time.
+    x, y, w = b.center('#chart')
+    b.mouse('mouseMoved', x, y)
+    report(b.wait("document.getElementById('readout').querySelectorAll('li').length >= 3"), 'history: hover shows values')
+
+    # Earlier days, and back to today.
+    label = b.eval("document.getElementById('range-label').textContent")
+    b.eval("document.getElementById('prev').click()")
+    report(b.wait(IDLE + " && document.getElementById('range-label').textContent !== %s && document.querySelector('#chart path.line.s-pv') !== null" % json.dumps(label)),
+           'history: the day before, with its curves')
+    report(b.eval("!document.getElementById('next').disabled && !document.getElementById('to-today').disabled") is True,
+           'history: next and today enabled on an earlier day')
+    for _ in range(5):
+        b.eval("document.getElementById('prev').click()")
+    report(b.wait(IDLE + " && !document.getElementById('history-state').hidden"), 'history: a day without samples says so')
+    check('history, empty day', b.dom(), ['No samples recorded on this day.'])
+    b.eval("document.getElementById('to-today').click()")
+    report(b.wait(IDLE + " && document.getElementById('range-label').textContent === %s" % json.dumps(label)), 'history: back to today')
+
+    # Week: curves over 7 days, fetched in few requests.
+    n = len(data.requests)
+    b.eval("document.querySelector('[data-period=week]').click()")
+    report(b.wait(IDLE + " && document.querySelector('#chart path.line.s-pv') !== null"), 'history, week: curves shown')
+    report(b.eval("document.getElementById('range-label').textContent").count('–') == 1, 'history, week: range label')
+    # The days before were seen already (cached): at most what is new is fetched.
+    report(fetches(data, n) <= 3, 'history, week: %d fetch requests' % fetches(data, n))
+    report(len([1 for k, _ in fetched(data, n) if k == 1]) <= 7 * 24 * 2 + 4, 'history, week: blocks of the plant and one device only')
+    if shots:
+        b.screenshot(os.path.join(shots, 'history-week.png'), 'history')
+
+    # Month and year: bars from day items only, never blocks.
+    for period, bars in (('month', 30), ('year', 1), ('lifetime', 1)):
+        n = len(data.requests)
+        b.eval("document.querySelector('[data-period=%s]').click()" % period)
+        ok = b.wait(IDLE + " && document.querySelectorAll('#chart path.bar.s-pv').length >= %d" % min(bars, 1))
+        report(ok, 'history, %s: solar bars shown' % period)
+        report(all(k == 2 for k, _ in fetched(data, n)), 'history, %s: only day items fetched' % period)
+        if shots and period != 'lifetime':
+            b.screenshot(os.path.join(shots, 'history-%s.png' % period), 'history')
+    report(b.eval("document.querySelectorAll('#chart path.bar.s-grid').length") == 0, 'history: export bars hidden at first, as in the app')
+    b.eval("document.querySelector('[data-period=month]').click()")
+    b.wait(IDLE)
+    report(b.eval("document.querySelectorAll('#chart path.bar.s-pv').length >= 4 && document.querySelectorAll('#chart path.bar.s-pv').length === "
+                  "document.querySelectorAll('#chart path.bar.s-load').length") is True, 'history, month: solar and consumption bars per day')
+    b.eval("document.querySelector('[data-toggle-energy=export]').click()")
+    report(b.wait("document.querySelectorAll('#chart path.bar.s-grid').length > 0"), 'history, month: export bars shown after a tap')
+    b.eval("document.getElementById('table-toggle').click()")
+    report(b.wait("!document.getElementById('history-table').hidden && document.querySelectorAll('#history-table tbody tr').length >= 3"),
+           'history, month: table instead of the chart')
+    b.eval("document.getElementById('table-toggle').click()")
+
+    # The choice survives a reload (localStorage, per plant).
+    b.open(link, ready=SHOWN + " && " + IDLE)
+    b.eval("document.querySelector('[data-period=month]').click()")
+    report(b.wait(IDLE + " && document.querySelectorAll('#chart path.bar.s-grid').length > 0"), 'history: the shown bars are remembered')
+
+    # Channel picker: add the inverter's temperature, then too many units, then remove.
+    b.eval("document.querySelector('[data-period=day]').click()")
+    b.wait(IDLE)
+    b.eval("document.getElementById('add-channel').click()")
+    report(b.wait("document.getElementById('picker').open"), 'picker: opens')
+    report(b.eval("document.querySelector('#picker-devices [aria-pressed=true]').dataset.device") == 'inv1', 'picker: the first device at first')
+    b.eval("document.querySelector('[data-device=sensor1]').click()")
+    check('picker, sensor', b.dom(), ['>Weather sensor<', '>Device<', 'Solar irradiance (W/m²)', 'Wind speed (m/s)', '0 selected · 2 of 3 free'])
+    report(b.eval("document.querySelector('#picker-list input[data-key=\"d:Device:External temperature\"]').checked && "
+                  "document.querySelector('#picker-list input[data-key=\"d:Device:External temperature\"]').disabled") is True,
+           'picker: a channel on the chart is checked and fixed')
+    b.eval("document.querySelector('[data-device=inv1]').click()")
+    check('picker, inverter', b.dom(), ['>Live values<', '>Battery<', 'Temperature (°C)', 'Solar power (kW)', '>Cycles<'])
+    if shots:
+        b.screenshot(os.path.join(shots, 'picker.png'))
+    # Hz (meter) and m/s (sensor) with the °C on the chart: five units, one too many.
+    b.eval("document.querySelector('[data-device=meter1]').click()")
+    b.eval("document.querySelector('#picker-list input[data-key=\"r:L1_frequency\"]').click()")
+    b.eval("document.querySelector('[data-device=sensor1]').click()")
+    b.eval("document.querySelector('#picker-list input[data-key=\"d:Device:Wind speed\"]').click()")
+    check('picker, two chosen', b.dom(), ['2 selected · 2 of 3 free'])
+    report(b.eval("document.querySelectorAll('#picker-list input:disabled').length") >= 3, 'picker: nothing more once the free slots are taken')
+    b.eval("document.getElementById('picker-add').click()")
+    check('picker, too many units', b.dom(), ['The chart shows at most 4 different units at once (kW, %, °C, Hz, m/s)'])
+    report(b.eval("document.getElementById('picker').open") is True, 'picker: stays open when refused')
+    b.eval("document.getElementById('picker-cancel').click()")
+    b.eval("document.getElementById('add-channel').click()")
+    b.eval("document.querySelector('[data-device=inv1]').click()")
+    b.eval("const s = document.getElementById('picker-search'); s.value = 'temp'; s.dispatchEvent(new Event('input'))")
+    report(b.eval("[...document.querySelectorAll('#picker-list input')].map(x => x.dataset.key).join()") == 'r:temperature,d:Battery:BMS temperature',
+           'picker: search', b.eval("[...document.querySelectorAll('#picker-list input')].map(x => x.dataset.key).join()"))
+    b.eval("document.querySelector('#picker-list input[data-key=\"r:temperature\"]').click()")
+    check('picker, one chosen', b.dom(), ['1 selected · 2 of 3 free'])
+    n = len(data.requests)
+    b.eval("document.getElementById('picker-add').click()")
+    report(b.wait(IDLE + " && !document.getElementById('picker').open && document.querySelector('#chart path.line.c-1') !== null"),
+           'picker: the added channel is drawn')
+    report(any(nm.endswith('.inv1') for k, nm in fetched(data, n)), "picker: the device's blocks are fetched when needed")
+    check('picker, added', b.dom(), ['Temperature · °C'])
+    b.eval("document.getElementById('add-channel').click()")
+    b.eval("document.getElementById('picker-cancel').click()")
+    report(b.eval("document.getElementById('picker').open") is False, 'picker: cancel closes it')
+    opened = len(data.requests)
+    b.open(link, ready=ready)
+    report(b.wait("document.querySelector('#chart path.line.c-1') !== null"), 'picker: added channels are remembered')
+    b.eval("document.querySelector('[data-remove=\"inv1|r:temperature\"]').click()")
+    report(b.wait("document.querySelector('#chart path.line.c-1') === null && !document.body.textContent.includes('Temperature · °C')"),
+           'picker: a channel can be removed')
+    b.eval("document.querySelector('[data-toggle=\"plant:pv\"]').click()")
+    report(b.wait("document.querySelector('#chart path.line.s-pv') === null"), 'history: a curve can be hidden')
+    b.eval("document.querySelector('[data-toggle=\"plant:pv\"]').click()")
+
+    # Zoom: wheel, pinch, drag, reset.
+    first = b.eval("[...document.querySelectorAll('#chart .axis text')].map(t => t.textContent).join('|')")
+    x, y, w = b.center('#chart')
+    b.mouse('mouseWheel', x, y, deltaX=0, deltaY=-600)
+    report(b.wait("!document.getElementById('zoom-reset').hidden"), 'zoom: the wheel zooms in')
+    zoomed = b.eval("[...document.querySelectorAll('#chart .axis text')].map(t => t.textContent).join('|')")
+    report(zoomed != first, 'zoom: finer time labels')
+    b.mouse('mousePressed', x, y, button='left', clickCount=1)
+    b.mouse('mouseMoved', x + 80, y, button='left', buttons=1)
+    b.mouse('mouseReleased', x + 80, y, button='left', clickCount=1)
+    report(b.wait("[...document.querySelectorAll('#chart .axis text')].map(t => t.textContent).join('|') !== %s" % json.dumps(zoomed)),
+           'zoom: a drag pans')
+    if shots:
+        b.screenshot(os.path.join(shots, 'history-day-zoomed.png'), 'history')
+    b.eval("document.getElementById('zoom-reset').click()")
+    report(b.wait("document.getElementById('zoom-reset').hidden"), 'zoom: reset')
+    x, y, w = b.center('#chart')
+    b.touch('touchStart', [(x - 40, y), (x + 40, y)])
+    b.touch('touchMove', [(x - 90, y), (x + 90, y)])
+    b.touch('touchMove', [(x - 130, y), (x + 130, y)])
+    b.touch('touchEnd', [])
+    report(b.wait("!document.getElementById('zoom-reset').hidden"), 'zoom: two fingers pinch in')
+    b.mouse('mousePressed', x, y, button='left', clickCount=2)
+    b.mouse('mouseReleased', x, y, button='left', clickCount=2)
+    report(b.wait("document.getElementById('zoom-reset').hidden"), 'zoom: a double-click resets')
+    b.eval("document.getElementById('table-toggle').click()")
+    report(b.wait("document.querySelectorAll('#history-table tbody tr').length >= 20"), 'history, day: hourly table')
+    if shots:
+        b.screenshot(os.path.join(shots, 'history-table.png'), 'history')
+    b.eval("document.getElementById('table-toggle').click()")
+
+    # The fault log: fetched once in view; active and past entries, details without addresses.
+    b.eval("document.getElementById('alarms').scrollIntoView()")
+    report(b.wait("document.getElementById('alarms').getAttribute('aria-busy') === 'false'"), 'faults: loaded once in view')
+    report(sum(1 for op, pairs in data.requests[opened:] if op == 'fetch' and any(k == 3 for k, _ in pairs)) == 1 and sum(1 for k, _ in fetched(data, n) if k == 3) == 14, 'faults: all 14 entries in one request')
+    dom = b.dom()
+    check('faults', dom, [
+        'Battery temperature high', 'still going on', 'No connection · Grid meter', 'Fault · Inverter', 'Isolation fault',
+        'SOMETHING_NEW · Weather sensor', 'Asleep · Inverter', 'No internet', '3 d 4 h', '45 min', '2 h 5 min',
+    ])
+    report(b.eval("document.querySelectorAll('#alarms-active li.event').length") == 1, 'faults: one still going on')
+    report(b.eval("document.querySelectorAll('#alarms-past li.event').length") == 13, 'faults: thirteen past ones')
+    report(b.eval("[...document.querySelectorAll('#alarms-past .when')].map(e => e.textContent).join('|').startsWith(document.querySelector('#alarms-past .when').textContent)") is True,
+           'faults: newest first')
+    b.eval("document.querySelector('#alarms-past li.sev-alarm [data-event=\"7\"]').click()")
+    dom = b.dom()
+    check('faults, details', dom, ['At the start: Reported by the device', 'Isolation resistance', '0.2 MΩ', '41.25 °C',
+                                   'GoodWe ET hybrid', 'no answer (TIMEOUT)', 'aria-expanded="true"'],
+          ['192.168.1.20', 'GW-SECRET-123', '192.168.1.0/24'])
+    if shots:
+        b.screenshot(os.path.join(shots, 'faults.png'), 'alarms')
+    b.eval("document.querySelector('[data-event=\"1\"]').click()")
+    check('faults, end', b.dom(), ['At the end: Error', 'Read timed out after 5000 ms'])
+    report(b.eval(NO_SIDEWAYS_SCROLL) is True, 'faults: no sideways scroll with details open')
+
+    # Narrow phone with the picker open, and German.
+    b.open(link, size=(320, 640), ready=ready)
+    report(b.eval(NO_SIDEWAYS_SCROLL) is True, 'history: no sideways scroll at 320 px')
+    b.eval("document.getElementById('add-channel').click()")
+    b.eval("document.querySelector('[data-device=inv1]').click()")
+    report(b.eval("document.getElementById('picker').getBoundingClientRect().right <= window.innerWidth && " + NO_SIDEWAYS_SCROLL) is True,
+           'picker: fits at 320 px')
+    if shots:
+        b.screenshot(os.path.join(shots, 'picker-320.png'))
+    b.open(link, lang='de-CH', ready=ready)
+    b.eval("document.getElementById('alarms').scrollIntoView()")
+    b.wait("document.getElementById('alarms').getAttribute('aria-busy') === 'false'")
+    check('history, German', b.dom(), ['>Verlauf<', '>Woche<', '>Gesamt<', '>Störungen<', 'Autarkie', 'Kanal hinzufügen…',
+                                       'dauert noch an', 'Kein Netzstrom', 'Ladestand · %'])
+    b.eval("localStorage.clear()")
 
 
 def main():
@@ -240,6 +484,7 @@ def main():
             report(b.open(link, lang='de-CH', ready=live_shown), 'fresh, German: page loads')
             check('fresh, German', b.dom(), ['lang="de"', '>Haus<', '>Einspeisung<', 'Aktualisiert ', '>Heute<', '>Lädt<',
                                              'In SolarDash öffnen', '>3.20 kW<'])
+            history_cases(b, link, data, a.screenshots)
             if a.screenshots:
                 os.makedirs(a.screenshots, exist_ok=True)
                 shots = (('phone', link, (390, 844), False, 'en-US'), ('phone-dark', link, (390, 844), True, 'en-US'),
@@ -248,6 +493,10 @@ def main():
                          ('error', fake_store.link(port, token='AAAAAAAAAAAAAAAAAAAAAA', data=data), (390, 844), False, 'en-US'))
                 for name, url, size, dark, lang in shots:
                     b.open(url, size=size, dark=dark, lang=lang, ready=SHOWN)
+                    # The fault log loads when it comes into view.
+                    b.eval("document.getElementById('alarms').scrollIntoView()")
+                    b.wait("document.getElementById('alarms').getAttribute('aria-busy') !== 'true'", 5)
+                    b.eval("window.scrollTo(0, 0)")
                     time.sleep(0.5)
                     path = os.path.join(a.screenshots, name + '.png')
                     b.screenshot(path)
