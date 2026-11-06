@@ -114,7 +114,10 @@ object SpecDevices {
     private val INPUT_FOR_HOLDING: Set<DeviceType> = setOf(DeviceType.SMA)
 
     /** Hooks that keep state per device: a new instance for every driver. */
-    private val HOOK_FACTORIES: Map<String, () -> SpecHooks> = mapOf("sungrow-sg" to { Inverters1Hooks.SungrowSg() })
+    private val HOOK_FACTORIES: Map<String, () -> SpecHooks> = mapOf(
+        "sungrow-sg" to { Inverters1Hooks.SungrowSg() },
+        "huawei-scharger" to { PowerFromEnergySteps() },
+    )
 
     val HOOKS: Map<String, SpecHooks> = mapOf(
         "goodwe-et" to SpecHooks { v, r -> goodWe(v, r) },
