@@ -58,8 +58,31 @@ data class PlantSnapshot(
 }
 
 object PlantAggregator {
+    /**
+     * Energy managers (ModbusSpec file ids) whose own figures already contain the devices read through them on other
+     * unit ids of the same host:port. Huawei EMMA: its PV, battery and daily PV are the SUN2000's (seen 2026-11-05:
+     * battery −7.7 kW on both, the plant total −15.3 kW). The network search's DeviceScanner.HUBS lists the same.
+     */
+    val ENERGY_MANAGERS = setOf("huawei-emma")
+
+    /**
+     * The devices whose figures an answering energy manager ([ENERGY_MANAGERS]) on the same host:port already
+     * contains. They aren't added to the plant totals, but keep their own values; without a reading from the manager
+     * they count again.
+     */
+    fun coveredByManager(statuses: List<DeviceStatus>): Set<String> {
+        val managers = statuses.filter { it.device.specId in ENERGY_MANAGERS && it.reading != null }.map { it.device }
+        if (managers.isEmpty()) return emptySet()
+        return statuses.map { it.device }.filter { d ->
+            d.type.kind != DeviceKind.CONSUMER &&
+                managers.any { m -> m.id != d.id && m.host == d.host && m.port == d.port && m.unitId != d.unitId }
+        }.map { it.id }.toSet()
+    }
+
     fun aggregate(statuses: List<DeviceStatus>, readAt: Instant = Instant.now()): PlantSnapshot {
+        val covered = coveredByManager(statuses)
         val all = statuses.mapNotNull { status -> status.reading?.let { status.device to normalized(status.device, it) } }
+            .filter { (d, _) -> d.id !in covered }
         fun isGridMeter(d: DeviceConfig) = d.type.kind == DeviceKind.METER && d.meterRole == MeterRole.GRID
         // Plant devices: producers, batteries and grid meters. PV and consumer sub-meters and consumer devices
         // are handled on their own below.

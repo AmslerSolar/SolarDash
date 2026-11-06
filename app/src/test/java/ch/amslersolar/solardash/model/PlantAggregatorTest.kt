@@ -125,4 +125,41 @@ class PlantAggregatorTest {
         assertEquals(1_000, s.gridPowerW)
         assertEquals(2_000, s.loadPowerW)
     }
+
+    // The plant on 2026-11-05 12:31: EMMA (unit 0) and the SUN2000 behind it (unit 2), a TRIO on its own gateway,
+    // the SCharger behind the EMMA as well.
+    private val emma = DeviceConfig(id = "emma", name = "EMMA", type = DeviceType.MODBUS_SPEC_INVERTER, host = "192.168.178.30", unitId = 0, specId = "huawei-emma")
+    private val sun2000 = DeviceConfig(id = "sun", name = "SUN2000", type = DeviceType.HUAWEI, host = "192.168.178.30", unitId = 2)
+    private val charger = DeviceConfig(id = "chg", name = "SCharger", type = DeviceType.MODBUS_SPEC_CONSUMER, host = "192.168.178.30", unitId = 4, specId = "huawei-scharger")
+    private val trio = DeviceConfig(id = "trio", name = "TRIO", type = DeviceType.AURORA, host = "192.168.178.66", port = 4196, unitId = 2)
+    private val emmaReading = DeviceReading(pvPowerW = 1_286, gridPowerW = -500, battery = battery(-7_711, 40), today = EnergyTotals(pvKwh = 3.1))
+    private val sunReading = DeviceReading(pvPowerW = 1_293, battery = battery(-7_627, 40), today = EnergyTotals(pvKwh = 9.8))
+    private val trioReading = DeviceReading(pvPowerW = 3_000, today = EnergyTotals(pvKwh = 7.0))
+
+    @Test
+    fun devicesBehindAnEnergyManagerArentCountedTwice() {
+        val s = PlantAggregator.aggregate(
+            listOf(ok(emma, emmaReading), ok(sun2000, sunReading), ok(charger, DeviceReading(loadPowerW = 7_000)), ok(trio, trioReading)),
+        )
+        assertEquals(setOf("sun"), PlantAggregator.coveredByManager(s.devices)) // the charger is a consumer anyway
+        assertEquals(1_286 + 3_000, s.pvPowerW)
+        assertEquals(-7_711, s.battery?.powerW)
+        assertEquals(3.1 + 7.0, s.today.pvKwh!!, 1e-9)
+        assertEquals(-500, s.gridPowerW)
+        assertEquals(sunReading, s.devices.single { it.device.id == "sun" }.reading) // its own values stay
+        assertEquals(listOf(7_000), s.consumers.map { it.powerW })
+    }
+
+    @Test
+    fun withoutTheManagersReadingTheDevicesBehindItCount() {
+        val s = PlantAggregator.aggregate(listOf(failed(emma), ok(sun2000, sunReading), ok(trio, trioReading)))
+        assertEquals(1_293 + 3_000, s.pvPowerW)
+        assertEquals(-7_627, s.battery?.powerW)
+    }
+
+    @Test
+    fun aDeviceOnAnotherAddressIsntCovered() {
+        val other = sun2000.copy(id = "other", host = "192.168.178.31")
+        assertEquals(emptySet<String>(), PlantAggregator.coveredByManager(listOf(ok(emma, emmaReading), ok(other, sunReading))))
+    }
 }

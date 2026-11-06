@@ -228,6 +228,12 @@ alarm, the screen isn't woken), and the box shows how many are hidden; the fault
 messages are kept per device (`DeviceConfig.hiddenProblems`, the exact texts) and listed in the device's edit form,
 where **Show again** brings one back.
 
+**Energy managers:** a Huawei EMMA's PV, battery and daily PV already contain the devices behind it (the SUN2000 on
+another unit id of the same host:port), so while the EMMA answers those devices keep their cards and history but
+aren't added to the plant totals again (`PlantAggregator.coveredByManager`). Seen before this: the plant's battery
+power was twice the EMMA's and the SUN2000's. Without an EMMA reading they count. The SUN2000's own "today" yield
+counts battery discharge too (13.9 kWh on a day with 6.4 kWh of PV); the EMMA's matches the PV.
+
 **Lost reads:** while a plant is polled, a device whose read fails keeps showing its last reading (up to 3 minutes
 old) until 3 reads in a row have failed; only then is it reported as not answering. A device that keeps answering
 but lost 3 or more reads within 10 minutes gets the warning "Unstable connection: some reads fail" (shown, logged
