@@ -234,6 +234,12 @@ aren't added to the plant totals again (`PlantAggregator.coveredByManager`). See
 power was twice the EMMA's and the SUN2000's. Without an EMMA reading they count. The SUN2000's own "today" yield
 counts battery discharge too (13.9 kWh on a day with 6.4 kWh of PV); the EMMA's matches the PV.
 
+**Huawei SCharger:** it has no charging power register (Huawei's SmartHEMS document lists none), so its power is
+derived from the total energy, which rises in steps of 0.2 kWh: one step over the time between two steps, at most one
+step over the time since the last one, 0 W ("Not charging") after 9 minutes without a step, unknown at the start and
+at the first step after a pause (`driver/spec/ChargerHooks.kt`). The full-screen (kiosk) view shows every EV charger's power and
+status with a charging-station icon, beside or under the energy flow.
+
 **Lost reads:** while a plant is polled, a device whose read fails keeps showing its last reading (up to 3 minutes
 old) until 3 reads in a row have failed; only then is it reported as not answering. A device that keeps answering
 but lost 3 or more reads within 10 minutes gets the warning "Unstable connection: some reads fail" (shown, logged

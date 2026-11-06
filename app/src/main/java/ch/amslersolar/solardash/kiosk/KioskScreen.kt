@@ -57,6 +57,11 @@ import ch.amslersolar.solardash.model.PlantSnapshot
 import ch.amslersolar.solardash.ui.EnergyFlowDiagram
 import ch.amslersolar.solardash.ui.PlantState
 import ch.amslersolar.solardash.ui.formatEnergy
+import ch.amslersolar.solardash.ui.formatPower
+import ch.amslersolar.solardash.ui.isCharger
+import ch.amslersolar.solardash.i18n.DetailTexts
+import ch.amslersolar.solardash.model.ConsumerLoad
+import androidx.compose.material.icons.outlined.EvStation
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -137,7 +142,11 @@ private fun Content(plantName: String, state: PlantState, status: PlantStatus?, 
                         Column(
                             Modifier.width(sideWidth).padding(start = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(28.dp),
-                        ) { TodayFigures(it, alignStart = true, large = false) }
+                        ) {
+                            val chargers = chargers(it)
+                            chargers.forEach { c -> Charger(c, named = chargers.size > 1, alignStart = true, large = false) }
+                            TodayFigures(it, alignStart = true, large = false)
+                        }
                     }
                 }
             } else {
@@ -146,6 +155,12 @@ private fun Content(plantName: String, state: PlantState, status: PlantStatus?, 
                     // Portrait: two by two under the flow.
                     val figures = todayFigures(it)
                     Column(Modifier.fillMaxWidth().padding(top = 24.dp), verticalArrangement = Arrangement.spacedBy(32.dp)) {
+                        val chargers = chargers(it)
+                        if (chargers.isNotEmpty()) {
+                            Row(Modifier.fillMaxWidth()) {
+                                chargers.forEach { c -> Charger(c, named = chargers.size > 1, Modifier.weight(1f), alignStart = false, large = true) }
+                            }
+                        }
                         figures.chunked(2).forEach { pair ->
                             Row(Modifier.fillMaxWidth()) {
                                 pair.forEach { (label, kwh) -> Figure(label, kwh, Modifier.weight(1f), alignStart = false, large = true) }
@@ -223,5 +238,31 @@ private fun Figure(@StringRes label: Int, kwh: Double?, modifier: Modifier, alig
         Text(formatEnergy(kwh), style = (if (large) type.displayMedium else type.displaySmall).copy(fontWeight = FontWeight.SemiBold))
         // Labels large enough to read from across the room, not just the figures.
         Text(stringResource(label), style = if (large) type.headlineSmall else type.titleLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+/** The plant's EV chargers, shown with their power: a car charging is most of the home load while it lasts. */
+private fun chargers(s: PlantSnapshot): List<ConsumerLoad> = s.consumers.filter { isCharger(it.device) }
+
+@Composable
+private fun Charger(c: ConsumerLoad, named: Boolean, modifier: Modifier = Modifier, alignStart: Boolean, large: Boolean) {
+    val type = MaterialTheme.typography
+    Column(modifier, horizontalAlignment = if (alignStart) Alignment.Start else Alignment.CenterHorizontally) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Outlined.EvStation, contentDescription = null, modifier = Modifier.size(if (large) 48.dp else 40.dp))
+            Text(
+                " " + (c.powerW?.let(::formatPower) ?: "–"),
+                style = (if (large) type.displayMedium else type.displaySmall).copy(fontWeight = FontWeight.SemiBold),
+            )
+        }
+        val label = if (named) c.device.name else stringResource(R.string.screens_charging_station)
+        val status = c.status?.takeIf { it.isNotBlank() }?.let(DetailTexts::tr)
+        Text(
+            listOfNotNull(label, status).joinToString(" · "),
+            style = if (large) type.headlineSmall else type.titleLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
 }

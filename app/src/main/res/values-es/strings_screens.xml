@@ -23,6 +23,7 @@
     <string name="screens_unit_id">ID de unidad %1$d</string>
     <string name="screens_bus_address">dirección %1$d</string>
     <string name="screens_in_the_home">En casa</string>
+    <string name="screens_charging_station">Punto de carga</string>
     <string name="screens_rest_of_home">Resto de la casa</string>
     <string name="screens_today">Hoy</string>
     <string name="screens_solar_yield">Producción solar</string>

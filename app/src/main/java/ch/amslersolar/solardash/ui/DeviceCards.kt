@@ -214,10 +214,16 @@ private fun SocBar(percent: Int, color: Color) {
     }
 }
 
+/** What the device is ("charger", "heat_pump" …): its ModbusSpec kind where it has one, else from its type. */
+fun deviceKind(device: DeviceConfig): String? =
+    (if (device.type in SpecDevices.GENERIC) SpecLibrary.current?.entry(device.specId)?.kind else null) ?: namedKind(device.type)
+
+/** An EV charger (wallbox, charging station). */
+fun isCharger(device: DeviceConfig): Boolean = deviceKind(device) == "charger"
+
 /** A drawing of what the device is: from its ModbusSpec kind where it has one, else from its type. */
 fun kindIcon(device: DeviceConfig): ImageVector {
-    val specKind = if (device.type in SpecDevices.GENERIC) SpecLibrary.current?.entry(device.specId)?.kind else null
-    return when (specKind ?: namedKind(device.type)) {
+    return when (deviceKind(device)) {
         "charger" -> Icons.Outlined.EvStation
         "heat_pump" -> Icons.Outlined.HeatPump
         "heating_rod", "boiler" -> Icons.Outlined.WaterDrop
