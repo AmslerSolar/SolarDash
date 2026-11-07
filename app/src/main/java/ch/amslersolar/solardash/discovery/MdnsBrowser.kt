@@ -43,11 +43,15 @@ data class MdnsService(
 
 /**
  * Listens for inverters that announce themselves. Seen on a real LG ESS Home 10: `_sunspec._tcp` on port 6502
- * named "LGE_ESS-<serial>", TXT "Device=LGEESS". `_modbus._tcp` is listened for in case other makes use it.
+ * named "LGE_ESS-<serial>", TXT "Device=LGEESS". An LG ESS with SunSpec switched off announces only
+ * `_pmsctrl._tcp` (port 80, same name; seen 2026-11-07): listened for to learn its MAC, its device password.
+ * `_modbus._tcp` is listened for in case other makes use it.
  * Holds a Wi-Fi multicast lock while browsing, since many phones drop multicast traffic otherwise.
  */
 object MdnsBrowser {
-    val SERVICE_TYPES = listOf("_sunspec._tcp.", "_modbus._tcp.")
+    /** The LG ESS's own control service (not Modbus). */
+    const val LG_CONTROL = "_pmsctrl._tcp"
+    val SERVICE_TYPES = listOf("_sunspec._tcp.", "_modbus._tcp.", "$LG_CONTROL.")
 
     /** Resolved services as they're found, until the collector stops. */
     fun browse(context: Context, types: List<String> = SERVICE_TYPES): Flow<MdnsService> = callbackFlow {

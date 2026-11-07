@@ -179,7 +179,11 @@ class LgEssDriver(host: String, port: Int, private val password: String) : Devic
         const val HOME = "/v1/user/essinfo/home"
         const val COMMON = "/v1/user/essinfo/common"
         const val SYSTEMINFO = "/v1/user/setting/systeminfo"
-        const val TIMEOUT_MS = 5_000
+        /**
+         * Also the TLS handshake: an LG ESS Home took 6.6–7.0 s for a full one (2026-11-07; resumed ones 0.07–0.2 s,
+         * and [trustingContext] keeps the session, so only the first request and one after the session expired wait).
+         */
+        const val TIMEOUT_MS = 15_000
         const val EXTRA_REFRESH_POLLS = 12
 
         /** Read-only extras for the detail view, refreshed about once a minute; missing ones (404) are skipped. */

@@ -524,4 +524,21 @@ class DeviceScannerTest {
         val found = latest(scanner.scan(listOf("192.168.0.33", "192.168.0.40"), emptyMap()).toList()).single { it.type == DeviceType.LG_ESS }
         assertEquals("d84fb8020d6b", found.password)
     }
+
+    @Test
+    fun anLgEssWithoutSunSpecIsFoundWithItsPasswordFromItsControlService() = runBlocking {
+        // Seen 2026-11-07: SunSpec off, so the LG announces only _pmsctrl._tcp on port 80, which isn't Modbus.
+        val probed = mutableListOf<Int>()
+        val control = MdnsService("LGE_ESS-DE2002BKRE05187B", "_pmsctrl._tcp", "192.168.1.169", 80, mac = "d8:4f:b8:02:0e:e7")
+        val scanner = DeviceScanner(
+            portOpen = { _, p -> p == 443 },
+            identify = { _, _, p, _ -> synchronized(probed) { probed += p }; throw java.io.IOException("no") },
+            mdns = { flowOf(control) },
+            web = { h, p -> if (p == 443) FoundDevice(h, p, DeviceType.LG_ESS, 1, "LG ESS") else null },
+        )
+        val found = latest(scanner.scan(listOf("192.168.1.169"), emptyMap()).toList())
+        assertEquals(listOf("192.168.1.169:443"), found.map { it.key }) // port 80 from the announcement isn't listed
+        assertEquals("d84fb8020ee7", found.single().password)
+        assertTrue(probed.isEmpty())
+    }
 }

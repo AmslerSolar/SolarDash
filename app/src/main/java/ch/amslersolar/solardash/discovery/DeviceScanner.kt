@@ -211,7 +211,7 @@ class DeviceScanner(
             }
             fun identifyWeb(host: String, port: Int) = all.launch {
                 val device = probes.withPermit {
-                    withTimeoutOrNull(WEB_TIMEOUT_MS) { runCatching { web(host, port) }.getOrElse { if (it is CancellationException) throw it; null } }
+                    withTimeoutOrNull(if (port == 443) TLS_WEB_TIMEOUT_MS else WEB_TIMEOUT_MS) { runCatching { web(host, port) }.getOrElse { if (it is CancellationException) throw it; null } }
                 }
                 // An LG ESS's password is its MAC, lowercase without colons; the announcement carrying it may still come.
                 if (device?.type == DeviceType.LG_ESS && !macs.containsKey(host)) withTimeoutOrNull(MDNS_WINDOW_MS) { mdnsDone.await() }
@@ -243,7 +243,13 @@ class DeviceScanner(
             }
             // mDNS and the port scan run side by side; whichever reaches a host:port first lists it.
             launch {
-                withTimeoutOrNull(MDNS_WINDOW_MS) { mdns().collect { s -> s.mac?.let { macs[s.host] = it }; opened(s.host, s.port, candidatesFor(s)) } }
+                withTimeoutOrNull(MDNS_WINDOW_MS) {
+                    mdns().collect { s ->
+                        s.mac?.let { macs[s.host] = it }
+                        // An LG ESS without SunSpec announces only its own control service (port 80, not Modbus): only its MAC counts.
+                        if (!s.type.startsWith(MdnsBrowser.LG_CONTROL)) opened(s.host, s.port, candidatesFor(s))
+                    }
+                }
                 mdnsDone.complete(Unit)
             }
             send(ScanEvent.Progress(0, hosts.size, ScanPhase.PING))
@@ -376,6 +382,12 @@ class DeviceScanner(
         const val MDNS_WINDOW_MS = 8_000L
         /** Web ports asked in every search; only recognised devices are listed (see [identifyWeb]). */
         val WEB_PORTS = listOf(80, 443)
+        /**
+         * On 443: an LG ESS took 6.6–7.0 s for the TLS handshake alone (2026-11-07), so its certificate check gets this
+         * long; the check runs beside the others, so a slow server only delays itself.
+         */
+        private const val TLS_WEB_TIMEOUT_MS = 20_000L
+        private const val TLS_HANDSHAKE_TIMEOUT_MS = 15_000
         /** A web server that takes longer than this for one small file isn't one of ours. */
         private const val WEB_TIMEOUT_MS = 4_000L
         const val MODBUS_PORT = 502
@@ -677,7 +689,7 @@ class DeviceScanner(
         private suspend fun serverCertificate(host: String, port: Int): X509Certificate? = withContext(Dispatchers.IO) {
             DeviceNetwork.current.socket(host).use { plain ->
                 plain.connect(InetSocketAddress(host, port), CONNECT_TIMEOUT_MS)
-                plain.soTimeout = PROBE_TIMEOUT_MS
+                plain.soTimeout = TLS_HANDSHAKE_TIMEOUT_MS
                 (LgEssDriver.trustingContext.socketFactory.createSocket(plain, host, port, false) as SSLSocket).use { tls ->
                     tls.startHandshake()
                     tls.session.peerCertificates.firstOrNull() as? X509Certificate
