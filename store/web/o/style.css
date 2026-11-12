@@ -132,15 +132,14 @@ button:focus-visible, .button:focus-visible { outline: 3px solid var(--fg); outl
 .flow-svg .node.solar circle { stroke: var(--solar); }
 .flow-svg .node.grid circle { stroke: var(--grid); }
 .flow-svg .node.grid.importing circle { stroke: var(--import); }
-.flow-svg .node.battery circle { stroke: var(--battery); }
+.flow-svg .node.battery circle { stroke: var(--gridline); }
+.flow-svg .node.battery .soc-ring { fill: none; stroke: var(--battery); }
 .flow-svg .node.home circle { stroke: var(--home); }
 .flow-svg text { fill: var(--fg); }
 .flow-svg .label { font-size: 17px; fill: var(--muted); }
 .flow-svg .value { font-size: 24px; font-weight: 700; }
 .flow-svg .sub { font-size: 18px; font-weight: 600; fill: var(--muted); }
 .flow-svg .soc { font-size: 22px; font-weight: 700; }
-.flow-svg .soc-bg { fill: var(--gridline); }
-.flow-svg .soc-fill { fill: var(--battery); }
 .flow-svg .hub { fill: var(--line); }
 
 .flow { fill: none; stroke: var(--gridline); stroke-width: 6; stroke-linecap: round; }

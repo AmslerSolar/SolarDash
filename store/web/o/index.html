@@ -12,8 +12,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>SolarDash</title>
-<link rel="stylesheet" href="style.css" integrity="sha384-fQTKF7yI7yxiif2qDxnPzwR4h+By4YZpDs7ckhpimf7x2qSul2Id0wjcb5JiSnGc">
-<script src="app.js" defer integrity="sha384-IWxQ1m2f4oTreGy2EfI1ocvnABnpO7NHjvfhFXmhZjT36mCXIAUzAgC7u6xEdfOP"></script>
+<link rel="stylesheet" href="style.css" integrity="sha384-RcpoQMOvHFbx1DaIbZP3YYk++5UkPdYmVGpYuhTMXRlNJVWyCoUoAEOKwoPXdGHn">
+<script src="app.js" defer integrity="sha384-9BmdA8dZNajm8sdOPWeSohv8f0v1nIjwfeWzK2FIcaufTA5L0B2rQd7PcjaR1+my"></script>
 </head>
 <body>
 <main>
@@ -38,12 +38,12 @@
     </section>
 
     <section class="flow-box">
-      <svg id="flow" class="flow-svg" viewBox="0 0 420 420" role="img" aria-labelledby="flow-title">
+      <svg id="flow" class="flow-svg" viewBox="0 0 420 450" role="img" aria-labelledby="flow-title">
         <title id="flow-title" data-t="flowTitle">Energy flow now</title>
-        <g><path id="f-pv" class="flow" d="M210 135 L210 215"/></g>
-        <g><path id="f-grid" class="flow" d="M132 215 L210 215"/></g>
-        <g><path id="f-bat" class="flow" d="M288 215 L210 215"/></g>
-        <g><path id="f-home" class="flow" d="M210 215 L210 290"/></g>
+        <g><path id="f-pv" class="flow" d="M210 138 L210 215"/></g>
+        <g><path id="f-grid" class="flow" d="M135 215 L210 215"/></g>
+        <g><path id="f-bat" class="flow" d="M210 287 L210 215"/></g>
+        <g><path id="f-home" class="flow" d="M210 215 L285 215"/></g>
         <circle class="hub" cx="210" cy="215" r="6"/>
 
         <g id="n-pv" class="node solar" role="img">
@@ -57,19 +57,19 @@
           <text id="v-grid" class="value" x="72" y="231" text-anchor="middle">–</text>
           <text id="s-grid" class="sub" x="72" y="302" text-anchor="middle"></text>
         </g>
-        <g id="n-bat" class="node battery" role="img">
-          <circle cx="348" cy="215" r="63"/>
-          <text class="label" x="348" y="197" text-anchor="middle" data-t="battery">Battery</text>
-          <text id="v-bat" class="value" x="348" y="231" text-anchor="middle">–</text>
-          <rect class="soc-bg" x="318" y="245" width="60" height="9" rx="3"/>
-          <rect id="soc-fill" class="soc-fill" x="318" y="245" width="0" height="9" rx="3"/>
-          <text id="soc" class="soc" x="348" y="306" text-anchor="middle"></text>
-          <text id="s-bat" class="sub" x="348" y="330" text-anchor="middle"></text>
-        </g>
         <g id="n-home" class="node home" role="img">
+          <circle cx="348" cy="215" r="63"/>
+          <text class="label" x="348" y="197" text-anchor="middle" data-t="home">Home</text>
+          <text id="v-home" class="value" x="348" y="231" text-anchor="middle">–</text>
+        </g>
+        <!-- As in the app: at the bottom, the charge as a ring around the circle and in % inside it. -->
+        <g id="n-bat" class="node battery" role="img">
           <circle cx="210" cy="350" r="63"/>
-          <text class="label" x="210" y="332" text-anchor="middle" data-t="home">Home</text>
-          <text id="v-home" class="value" x="210" y="366" text-anchor="middle">–</text>
+          <circle id="soc-ring" class="soc-ring" cx="210" cy="350" r="63" transform="rotate(-90 210 350)" stroke-dasharray="0 396"/>
+          <text class="label" x="210" y="324" text-anchor="middle" data-t="battery">Battery</text>
+          <text id="v-bat" class="value" x="210" y="355" text-anchor="middle">–</text>
+          <text id="soc" class="soc" x="210" y="384" text-anchor="middle"></text>
+          <text id="s-bat" class="sub" x="210" y="440" text-anchor="middle"></text>
         </g>
       </svg>
     </section>

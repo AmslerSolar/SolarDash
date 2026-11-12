@@ -1522,7 +1522,9 @@
         setText('s-bat', batW === null || Math.abs(batW) < 10 ? t('idle') : batW > 0 ? t('discharging') : t('charging'));
         $('n-bat').setAttribute('aria-label', t('battery') + ' ' + (soc === null ? '' : soc + ' % ') + (batW === null ? '' : Math.round(Math.abs(batW)) + ' W'));
         setFlow('f-bat', batW);
-        $('soc-fill').setAttribute('width', String(soc === null ? 0 : Math.max(0, Math.min(100, soc)) * 0.6));
+        // The ring's length (2π · 63 ≈ 396) filled as far as the charge.
+        const ring = 2 * Math.PI * 63;
+        $('soc-ring').setAttribute('stroke-dasharray', (soc === null ? 0 : Math.max(0, Math.min(100, soc)) / 100 * ring).toFixed(1) + ' ' + ring.toFixed(1));
 
         renderTotals();
         renderProblems();
