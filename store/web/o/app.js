@@ -1338,7 +1338,9 @@
     const nf1 = new Intl.NumberFormat(LOCALE, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
     const nf2 = new Intl.NumberFormat(LOCALE, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const nfd = [nf0, nf1, nf2];
-    const timeFmt = new Intl.DateTimeFormat(LOCALE, { hour: '2-digit', minute: '2-digit' });
+    /** Times always on the 24-hour clock, whatever the browser's language would pick. */
+    const H24 = { hourCycle: 'h23' };
+    const timeFmt = new Intl.DateTimeFormat(LOCALE, { hour: '2-digit', minute: '2-digit', ...H24 });
     const dateFmt = new Intl.DateTimeFormat(LOCALE, { day: 'numeric', month: 'short' });
     const yearDateFmt = new Intl.DateTimeFormat(LOCALE, { day: 'numeric', month: 'short', year: 'numeric' });
     const longDateFmt = new Intl.DateTimeFormat(LOCALE, { weekday: 'long', day: 'numeric', month: 'long' });
@@ -1349,9 +1351,9 @@
     const dayNumFmt = new Intl.DateTimeFormat(LOCALE, { day: 'numeric' });
     const monthYearFmt = new Intl.DateTimeFormat(LOCALE, { month: 'long', year: 'numeric' });
     const monthFmt = new Intl.DateTimeFormat(LOCALE, { month: 'short' });
-    const dayTimeFmt = new Intl.DateTimeFormat(LOCALE, { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-    const dateTimeFmt = new Intl.DateTimeFormat(LOCALE, { dateStyle: 'short', timeStyle: 'short' });
-    const shortTimeFmt = new Intl.DateTimeFormat(LOCALE, { timeStyle: 'short' });
+    const dayTimeFmt = new Intl.DateTimeFormat(LOCALE, { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', ...H24 });
+    const dateTimeFmt = new Intl.DateTimeFormat(LOCALE, { dateStyle: 'short', timeStyle: 'short', ...H24 });
+    const shortTimeFmt = new Intl.DateTimeFormat(LOCALE, { timeStyle: 'short', ...H24 });
     const thisYear = (d) => d.getFullYear() === new Date().getFullYear();
     /** A local date as a Date at noon (clear of DST changes), for formatting. */
     const dateOf = (day) => { const [y, m, d] = splitDay(day); return new Date(y, m - 1, d, 12); };

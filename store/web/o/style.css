@@ -83,7 +83,8 @@ h2 { font-size: 1.5rem; margin: 0 0 0.6rem; }
 section { margin: 1.2rem 0; }
 
 .status { font-size: 1.35rem; font-weight: 600; margin: 0; }
-.status.ok { color: var(--ok); }
+.status.ok { font-size: 0.85rem; font-weight: 400; color: var(--muted); }
+.status.ok::before { content: ''; display: inline-block; width: 0.5em; height: 0.5em; margin-right: 0.4em; border-radius: 50%; background: var(--ok); vertical-align: 0.1em; }
 .status.stale { color: var(--warn); }
 .status-note { margin: 0.3rem 0 0; color: var(--muted); }
 .loading { font-size: 1.5rem; }
