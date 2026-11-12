@@ -4,7 +4,8 @@
 """Checks (default) or updates (--write) the subresource-integrity hashes of app.js and style.css in o/index.html.
 
 Run with --write after every change to app.js or style.css, before uploading; the browser refuses a file whose
-hash doesn't match.
+hash doesn't match. Each link also carries ?v=<start of the hash>, so a browser that kept an older copy without
+asking the server (heuristic caching) fetches the new file instead of refusing the page.
 """
 
 import base64
@@ -17,16 +18,19 @@ O = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'o
 INDEX = os.path.join(O, 'index.html')
 
 
-def sri(name):
+def digest(name):
     with open(os.path.join(O, name), 'rb') as f:
-        return 'sha384-' + base64.b64encode(hashlib.sha384(f.read()).digest()).decode()
+        return hashlib.sha384(f.read()).digest()
 
 
 def fix(html):
     for name in ('app.js', 'style.css'):
         attr = 'src' if name.endswith('.js') else 'href'
-        pattern = re.compile(r'(%s="%s"[^>]*?integrity=")[^"]*(")' % (attr, re.escape(name)))
-        html, n = pattern.subn(lambda m: m.group(1) + sri(name) + m.group(2), html)
+        d = digest(name)
+        url = '%s?v=%s' % (name, d[:6].hex())
+        sri = 'sha384-' + base64.b64encode(d).decode()
+        pattern = re.compile(r'%s="%s(?:\?v=[0-9a-f]*)?"([^>]*?integrity=")[^"]*(")' % (attr, re.escape(name)))
+        html, n = pattern.subn(lambda m: '%s="%s"%s%s%s' % (attr, url, m.group(1), sri, m.group(2)), html)
         if n != 1:
             sys.exit('index.html: no single integrity attribute for ' + name)
     return html
