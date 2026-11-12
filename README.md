@@ -278,8 +278,8 @@ Android leaving the Wi-Fi when the app isn't running.
 The full-screen button on a plant's Dashboard tab shows the energy flow full screen, with today's totals.
 
 - **Dark after 30 s:** after 30 s without a touch the screen turns black and the backlight drops to its minimum.
-  The screen is kept on, so Android never locks it. A touch brings the energy flow back; that first touch
-  only wakes the screen and doesn't press anything.
+  The screen is kept on, so Android never locks it. A double tap brings the energy flow back (a single
+  touch doesn't, so a curtain or a sleeve won't wake it); those taps don't press anything.
 - **Recording:** a foreground service (notification "Kiosk mode", with an *End kiosk mode* button) keeps the
   plant polled and recorded once a minute. It holds a wake lock and a Wi-Fi lock, so this continues even when
   the screen really goes off (power button). The kiosk screen and the service share one poll, so devices that

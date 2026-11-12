@@ -40,7 +40,7 @@ import kotlinx.coroutines.launch
 /**
  * The energy flow full screen, for a wall-mounted tablet. The screen is kept on, so Android never locks it:
  * after [Kiosk.DIM_AFTER_MS] without a touch the page goes black and the backlight drops to its minimum, and
- * a touch brings the flow back. It also shows over the lock screen and turns the screen on, for when the
+ * a double tap brings the flow back. It also shows over the lock screen and turns the screen on, for when the
  * screen did go off (power button). Back or the × button ends kiosk mode.
  */
 class KioskActivity : ComponentActivity() {

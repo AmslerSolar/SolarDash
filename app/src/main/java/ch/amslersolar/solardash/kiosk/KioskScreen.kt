@@ -46,6 +46,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.AwaitPointerEventScope
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
@@ -68,8 +69,8 @@ import java.time.format.DateTimeFormatter
 private val TIME = DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDefault())
 
 /**
- * Full-screen energy flow with today's totals. While [dimmed] the page is black (nothing animates), and the
- * first touch only wakes it, so a tap meant to wake it never hits the × button.
+ * Full-screen energy flow with today's totals. While [dimmed] the page is black (nothing animates), and only a
+ * double tap wakes it; those taps never hit the × button.
  */
 @Composable
 fun KioskScreen(
@@ -89,20 +90,36 @@ fun KioskScreen(
             .pointerInput(Unit) {
                 awaitEachGesture {
                     val down = awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
-                    val wasDimmed = isDimmed
-                    touch()
-                    if (wasDimmed) {
-                        // Swallow the whole gesture that woke the screen.
-                        down.consume()
-                        do {
-                            val event = awaitPointerEvent(PointerEventPass.Initial)
-                            event.changes.forEach { it.consume() }
-                        } while (event.changes.any { it.pressed })
+                    if (!isDimmed) {
+                        touch()
+                        return@awaitEachGesture
                     }
+                    // Dark: only a double tap wakes it (a curtain, a sleeve or a ghost touch doesn't), and neither
+                    // tap reaches the page.
+                    down.consume()
+                    swallow()
+                    val second = withTimeoutOrNull(WAKE_DOUBLE_TAP_MS) {
+                        awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
+                    } ?: return@awaitEachGesture
+                    second.consume()
+                    touch()
+                    swallow()
                 }
             },
     ) {
         if (!dimmed) Content(plantName, state, status, onExit)
+    }
+}
+
+/** The second tap that wakes the dark screen comes within this; generous, for slow hands. */
+private const val WAKE_DOUBLE_TAP_MS = 600L
+
+/** Consumes the rest of the current gesture, until every finger is up. */
+private suspend fun AwaitPointerEventScope.swallow() {
+    while (true) {
+        val event = awaitPointerEvent(PointerEventPass.Initial)
+        event.changes.forEach { it.consume() }
+        if (event.changes.none { it.pressed }) return
     }
 }
 
