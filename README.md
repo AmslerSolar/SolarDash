@@ -217,7 +217,7 @@ a problem wakes the screen and keeps it on; a tap on the status line lists the d
 | No Wi-Fi | The tablet has no Wi-Fi/Ethernet and the plant has network devices (one alarm, not one per device) | alarm |
 | Wrong Wi-Fi | A device doesn't answer and its address is outside the tablet's network | alarm |
 | No connection | A device doesn't answer (timeout) | alarm |
-| Asleep | A PV inverter without battery stopped answering after its power fell below 50 W (night) | info |
+| Asleep | A PV inverter without battery stopped answering after its power fell below 2 % of the highest it was seen producing (50–500 W; night) | info |
 | Connection refused | Port closed, Modbus TCP off, or another client connected (single-client dongles) | alarm |
 | Login failed | LG ESS password, Enphase token | alarm |
 | Check device settings | The device answered with an error or unexpected data (unit id, type) | alarm |
@@ -248,7 +248,10 @@ status with a charging-station icon, beside or under the energy flow.
 **Lost reads:** while a plant is polled, a device whose read fails keeps showing its last reading (up to 3 minutes
 old) until 3 reads in a row have failed; only then is it reported as not answering. A device that keeps answering
 but lost 3 or more reads within 10 minutes gets the warning "Unstable connection: some reads fail" (shown, logged
-and hideable like its own warnings). Logic: `driver/ReadSmoothing.kt`.
+and hideable like its own warnings), except an inverter without battery below that same limit: at dawn and dusk those answer
+only now and then (ABB TRIO and Aurora every morning). The last reading of every device is kept for the whole app
+and taken from the history at start, so an inverter asleep at night shows as asleep, not as "no connection", also
+on a screen opened or an app restarted at night. Logic: `driver/ReadSmoothing.kt`.
 
 **Fault log:** every problem is recorded with its start and end time (`events` table in history.db, version 4),
 from live polling and from the background recorder. A problem must last 30 s to be logged and be gone 30 s to be

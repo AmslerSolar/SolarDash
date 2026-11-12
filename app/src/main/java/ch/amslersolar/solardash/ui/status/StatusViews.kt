@@ -57,7 +57,7 @@ import ch.amslersolar.solardash.net.LocalNetworks
 fun rememberPlantStatus(plant: Plant, snapshot: PlantSnapshot?): PlantStatus {
     val context = LocalContext.current
     val net by remember { LocalNetworks.get(context).state }.collectAsStateWithLifecycle()
-    val last = remember(plant.id) { LastReadings() }
+    val last = LastReadings.shared
     return remember(plant, snapshot, net) {
         PlantStatusRules.evaluate(plant, snapshot, net, last).also { last.update(snapshot) }
     }

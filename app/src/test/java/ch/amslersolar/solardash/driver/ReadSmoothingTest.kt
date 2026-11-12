@@ -64,6 +64,16 @@ class ReadSmoothingTest {
     }
 
     @Test
+    fun anInverterWithoutBatteryWakingUpGetsNoWarning() {
+        // ABB TRIO every morning at dawn: a few watts, every other read lost.
+        repeat(ReadSmoothing.UNSTABLE_FAILURES + 2) { poll(lost); poll(ok(12)) }
+        assertEquals(emptyList<DeviceProblem>(), poll(ok(12)).reading!!.problems)
+        // Producing, the same losses are a warning.
+        repeat(ReadSmoothing.UNSTABLE_FAILURES) { poll(lost); poll(ok(2300)) }
+        assertEquals(1, poll(ok(2300)).reading!!.problems.count { it.text == ReadSmoothing.UNSTABLE_TEXT })
+    }
+
+    @Test
     fun theWarningEndsWhenTheReadsStopFailing() {
         poll(ok(2300))
         repeat(ReadSmoothing.UNSTABLE_FAILURES) { poll(lost); poll(ok(2300)) }

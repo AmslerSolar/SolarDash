@@ -84,21 +84,60 @@ data class PlantStatus(val issues: List<Issue>, val hidden: List<Issue> = emptyL
 
 /**
  * The last successful reading of every device, across polls: a PV inverter that went quiet with almost no power
- * is asleep (night), not broken.
+ * is asleep (night), not broken. [shared] is kept for the whole process (screens, kiosk, fault log) and filled
+ * from the recorded history at start, so a screen opened or an app restarted at night knows it too.
  */
 class LastReadings {
-    private val last = HashMap<String, DeviceReading>()
+    private val last = java.util.concurrent.ConcurrentHashMap<String, DeviceReading>()
+    private val peaks = java.util.concurrent.ConcurrentHashMap<String, Int>()
+
+    /** Called when a device's highest solar power grows, to keep it across restarts. */
+    @Volatile var onPeak: ((deviceId: String, w: Int) -> Unit)? = null
 
     fun update(snapshot: PlantSnapshot?) {
-        snapshot?.devices?.forEach { s -> s.reading?.let { last[s.device.id] = it } }
+        snapshot?.devices?.forEach { s ->
+            s.reading?.let { r ->
+                last[s.device.id] = r
+                r.pvPowerW?.let { raisePeak(s.device.id, it, notify = true) }
+            }
+        }
     }
 
+    /** A reading from the history, unless a newer one is known. */
+    fun seed(deviceId: String, reading: DeviceReading) {
+        last.putIfAbsent(deviceId, reading)
+    }
+
+    /** A highest solar power from earlier (stored, or from the history). */
+    fun seedPeak(deviceId: String, w: Int) = raisePeak(deviceId, w, notify = false)
+
     operator fun get(deviceId: String): DeviceReading? = last[deviceId]
+
+    /** The highest solar power the device was seen producing: how large it is. */
+    fun peak(deviceId: String): Int? = peaks[deviceId]
+
+    private fun raisePeak(deviceId: String, w: Int, notify: Boolean) {
+        if (w <= 0 || w > Plausible.MAX_POWER_W) return
+        var raised = false
+        peaks.compute(deviceId) { _, old -> if (old == null || w > old) { raised = true; w } else old }
+        if (raised && notify) onPeak?.invoke(deviceId, w)
+    }
+
+    companion object {
+        val shared = LastReadings()
+    }
 }
 
 object PlantStatusRules {
-    /** Below this a PV inverter's last power counts as "the sun was gone" when it stops answering. */
-    private const val ASLEEP_BELOW_W = 50
+    /**
+     * Below this a PV inverter's last power counts as "the sun was gone" when it stops answering: 2 % of the highest
+     * solar power it was seen producing ([peakW], its size), at least 50 W and at most 500 W. A 27.6 kW TRIO that
+     * reached 25 kW goes quiet below 500 W, a 3 kW inverter below 60 W.
+     */
+    fun asleepBelowW(peakW: Int?): Int = ((peakW ?: 0) / 50).coerceIn(ASLEEP_MIN_W, ASLEEP_MAX_W)
+
+    private const val ASLEEP_MIN_W = 50
+    private const val ASLEEP_MAX_W = 500
 
     /** Issues made from a device's own [DeviceProblem]s. */
     val DEVICE_PROBLEMS = setOf(
@@ -149,6 +188,13 @@ object PlantStatusRules {
         return PlantStatus(issues.distinct().sortedByDescending { it.severity }, hidden.distinct())
     }
 
+    /**
+     * An inverter without a battery whose [reading] is near zero solar power: it may go quiet or answer only now
+     * and then (night, dawn, dusk), which is normal.
+     */
+    fun sleepy(device: DeviceConfig, reading: DeviceReading, peakW: Int?): Boolean =
+        device.type.kind == DeviceKind.INVERTER && reading.battery == null && (reading.pvPowerW ?: 0) < asleepBelowW(peakW)
+
     private fun connectionIssue(device: DeviceConfig, s: DeviceStatus, net: NetworkState, last: LastReadings): Issue? {
         val kind = s.errorKind ?: ConnectionError.OTHER
         val unreachable = kind == ConnectionError.TIMEOUT || kind == ConnectionError.UNREACHABLE
@@ -158,11 +204,7 @@ object PlantStatusRules {
                 return Issue(IssueKind.WRONG_NETWORK, device)
             }
             val before = last[device.id]
-            if (device.type.kind == DeviceKind.INVERTER && before != null && before.battery == null &&
-                (before.pvPowerW ?: 0) < ASLEEP_BELOW_W
-            ) {
-                return Issue(IssueKind.ASLEEP, device)
-            }
+            if (before != null && sleepy(device, before, last.peak(device.id))) return Issue(IssueKind.ASLEEP, device)
             return Issue(IssueKind.NOT_ANSWERING, device)
         }
         return when (kind) {

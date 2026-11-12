@@ -14,6 +14,7 @@ import ch.amslersolar.solardash.model.DetailSection
 import ch.amslersolar.solardash.model.DeviceInfo
 import ch.amslersolar.solardash.model.DeviceProblem
 import ch.amslersolar.solardash.model.DeviceReading
+import ch.amslersolar.solardash.model.PlantStatusRules
 import ch.amslersolar.solardash.model.EnergyTotals
 import ch.amslersolar.solardash.model.PhaseReading
 import java.io.IOException
@@ -40,6 +41,8 @@ class SpecDriver(
     model: String? = null,
     /** While asleep, the device is asked again only after this long (each attempt waits for timeouts). */
     private val sleepRetryMs: Long = 60_000,
+    /** The device's highest solar power seen elsewhere (LastReadings.shared), beside this driver's own. */
+    private val peakW: () -> Int? = { null },
 ) : DeviceDriver {
     constructor(spec: Spec, vocabulary: Vocabulary, client: ModbusTcpClient, unitId: Int, hooks: SpecHooks = SpecHooks.NONE, model: String? = null) : this(
         spec, vocabulary,
@@ -53,6 +56,7 @@ class SpecDriver(
     private val reader = SpecReader(spec, vocabulary, tables, unitId, minIntervalMs = requestGapMs ?: spec.connection.minIntervalMs, chosenModel = model, notHere = hooks.notHere)
     private val spec get() = reader.spec
     private var lastPvW: Int? = null
+    private var peakPvW = 0
     private var sleeping = false
     private var lastAttempt = 0L
 
@@ -67,15 +71,19 @@ class SpecDriver(
         lastAttempt = now
         val values = reader.read()
         // Powered by its panels and nothing answered: asleep (no sun), not a fault, if it was producing little when it
-        // last answered. Silence after a higher production, or before any reading, is a failure.
+        // last answered (the plant status's limit, PlantStatusRules.asleepBelowW, from its highest power seen).
+        // Silence after a higher production, or before any reading, is a failure.
         if (reader.asleep) {
-            if (!sleeping && (lastPvW ?: Int.MAX_VALUE) > SLEEP_MAX_W) throw IOException("${spec.manufacturer} ${spec.name}: no answer")
+            if (!sleeping && (lastPvW ?: Int.MAX_VALUE) >= PlantStatusRules.asleepBelowW(maxOf(peakPvW, peakW() ?: 0))) throw IOException("${spec.manufacturer} ${spec.name}: no answer")
             sleeping = true
             return SLEEPING
         }
         sleeping = false
         if (values.isEmpty()) throw SpecMismatchException("${spec.manufacturer} ${spec.name}: no register answered")
-        return hooks.adjust(values, reading(values)).also { lastPvW = it.pvPowerW }
+        return hooks.adjust(values, reading(values)).also { r ->
+            lastPvW = r.pvPowerW
+            r.pvPowerW?.let { peakPvW = maxOf(peakPvW, it) }
+        }
     }
 
     private fun reading(all: Map<String, SpecValue>): DeviceReading {
@@ -159,8 +167,6 @@ class SpecDriver(
 
     private companion object {
         val SLEEPING = DeviceReading(pvPowerW = 0, status = "Sleeping (no sun)")
-        /** Highest solar power at the last answer for which no answer then means asleep (dusk), not a failure. */
-        const val SLEEP_MAX_W = 500
     }
 
     private fun num(d: Double): String = when {

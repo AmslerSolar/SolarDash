@@ -240,8 +240,14 @@ object SpecDevices {
     /** Whether [type] reads through ModbusSpec. */
     fun handles(type: DeviceType) = type in SPEC_IDS || type in GENERIC
 
-    /** [invertGrid]: the device form's "invert grid sign", for SunSpec meters whose sign isn't the make's usual one. */
-    fun create(type: DeviceType, client: ModbusTcpClient, unitId: Int, model: String? = null, specId: String = "", invertGrid: Boolean = false): DeviceDriver? {
+    /**
+     * [invertGrid]: the device form's "invert grid sign", for SunSpec meters whose sign isn't the make's usual one.
+     * [peakW]: the device's highest solar power seen, for when silence means asleep (SpecDriver).
+     */
+    fun create(
+        type: DeviceType, client: ModbusTcpClient, unitId: Int, model: String? = null, specId: String = "", invertGrid: Boolean = false,
+        peakW: () -> Int? = { null },
+    ): DeviceDriver? {
         val ids = (if (type in GENERIC) listOf(specId).filter { it.isNotBlank() } else SPEC_IDS[type]) ?: return null
         if (ids.isEmpty()) return null
         val library = SpecLibrary.current ?: return null
@@ -263,7 +269,7 @@ object SpecDevices {
                 )
                 else SpecDriver(
                     spec, library.vocabulary, tables, unitId, hooks(id),
-                    requestGapMs = if (pollGap != null) 0 else null, model = model?.takeIf { it.isNotBlank() },
+                    requestGapMs = if (pollGap != null) 0 else null, model = model?.takeIf { it.isNotBlank() }, peakW = peakW,
                 )
             }
         }

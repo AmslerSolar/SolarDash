@@ -14,6 +14,7 @@ import ch.amslersolar.solardash.model.DeviceStatus
 import ch.amslersolar.solardash.model.MeterRole
 import ch.amslersolar.solardash.model.Plant
 import ch.amslersolar.solardash.model.PlantAggregator
+import ch.amslersolar.solardash.model.BatteryState
 import ch.amslersolar.solardash.model.Channel
 import ch.amslersolar.solardash.model.Channels
 import ch.amslersolar.solardash.model.DailyEnergy
@@ -500,6 +501,24 @@ class HistoryRepository(context: Context) : EventStore {
             for ((ts, v) in points) byTs.getOrPut(ts) { HashMap() }[key] = v
         }
         return byTs.map { (ts, m) -> ts to m }
+    }
+
+    /**
+     * A device's last recorded solar and battery power within [withinS] seconds, as a reading (for
+     * LastReadings.seed); null when nothing was recorded then.
+     */
+    suspend fun lastDeviceReading(deviceId: String, withinS: Long = 24 * 3600L): DeviceReading? {
+        val now = System.currentTimeMillis() / 1000
+        val (_, m) = deviceRows(deviceId, now - withinS, now).lastOrNull() ?: return null
+        val s = m.sample(0)
+        return DeviceReading(pvPowerW = s.pvW, battery = s.batteryW?.let { BatteryState(it, s.socPercent, null, "") })
+    }
+
+    /** A device's highest recorded solar power in the last [days] days (LastReadings.seedPeak); null without any. */
+    suspend fun peakDevicePv(deviceId: String, days: Int = 7): Int? {
+        val now = System.currentTimeMillis() / 1000
+        return channelSeries(deviceId, listOf("r:pv_power"), now - days * 86400L, now)["r:pv_power"]
+            ?.maxOfOrNull { it.second }?.let(Math::round)?.toInt()
     }
 
     private fun Map<String, Double>.sample(ts: Long) = Sample(

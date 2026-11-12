@@ -3,9 +3,12 @@
 
 package ch.amslersolar.solardash.driver
 
+import ch.amslersolar.solardash.model.DeviceConfig
 import ch.amslersolar.solardash.model.DeviceProblem
 import ch.amslersolar.solardash.model.DeviceReading
 import ch.amslersolar.solardash.model.DeviceStatus
+import ch.amslersolar.solardash.model.LastReadings
+import ch.amslersolar.solardash.model.PlantStatusRules
 
 /**
  * Smooths the reads of one plant's devices across polls, so a single lost answer isn't shown as a dropped
@@ -13,7 +16,9 @@ import ch.amslersolar.solardash.model.DeviceStatus
  * - A failed read shows the device's last reading instead (no older than [HOLD_MS]) until [REPORT_AFTER] reads in a
  *   row have failed; only then is the error reported (plant status, card, fault log).
  * - A device that keeps answering but lost [UNSTABLE_FAILURES] or more reads within [UNSTABLE_WINDOW_MS] gets the
- *   warning [UNSTABLE_TEXT] on its reading: shown in the plant status and logged like any device warning.
+ *   warning [UNSTABLE_TEXT] on its reading: shown in the plant status and logged like any device warning. Not an
+ *   inverter without a battery near zero power ([PlantStatusRules.sleepy], with its size from [LastReadings.shared]): at dawn and dusk such inverters answer
+ *   only now and then (ABB TRIO and Aurora every morning), which is normal.
  * Kept by a [PlantReader] for as long as it polls; a single read (background recording) starts fresh.
  */
 class ReadSmoothing(private val clock: () -> Long = System::currentTimeMillis) {
@@ -36,19 +41,20 @@ class ReadSmoothing(private val clock: () -> Long = System::currentTimeMillis) {
             h.failedInRow = 0
             h.last = reading
             h.lastAt = now
-            return status.copy(reading = flagged(reading, h))
+            return status.copy(reading = flagged(status.device, reading, h))
         }
         h.failedInRow++
         h.failures.addLast(now)
         val last = h.last
         if (h.failedInRow < REPORT_AFTER && last != null && now - h.lastAt <= HOLD_MS) {
-            return DeviceStatus(status.device, flagged(last, h), null)
+            return DeviceStatus(status.device, flagged(status.device, last, h), null)
         }
         return status
     }
 
-    private fun flagged(reading: DeviceReading, h: Health): DeviceReading {
+    private fun flagged(device: DeviceConfig, reading: DeviceReading, h: Health): DeviceReading {
         if (h.failures.size < UNSTABLE_FAILURES || reading.problems.any { it.text == UNSTABLE_TEXT }) return reading
+        if (PlantStatusRules.sleepy(device, reading, LastReadings.shared.peak(device.id))) return reading
         return reading.copy(problems = reading.problems + DeviceProblem(DeviceProblem.Kind.WARNING, UNSTABLE_TEXT))
     }
 

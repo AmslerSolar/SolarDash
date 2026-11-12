@@ -61,6 +61,28 @@ class PlantStatusTest {
 
         val unknown = PlantStatusRules.evaluate(plant(inverter), snapshot(failed(inverter, ConnectionError.TIMEOUT)), home)
         assertEquals(listOf(IssueKind.NOT_ANSWERING), kinds(unknown))
+
+        // After a restart at night: the last recorded reading counts too, but not over a newer one.
+        val seeded = LastReadings()
+        seeded.seed(inverter.id, DeviceReading(pvPowerW = 0))
+        assertEquals(listOf(IssueKind.ASLEEP), kinds(PlantStatusRules.evaluate(plant(inverter), snapshot(failed(inverter, ConnectionError.TIMEOUT)), home, seeded)))
+        seeded.update(snapshot(DeviceStatus(inverter, DeviceReading(pvPowerW = 3000), null)))
+        seeded.seed(inverter.id, DeviceReading(pvPowerW = 0))
+        assertEquals(listOf(IssueKind.NOT_ANSWERING), kinds(PlantStatusRules.evaluate(plant(inverter), snapshot(failed(inverter, ConnectionError.TIMEOUT)), home, seeded)))
+    }
+
+    @Test
+    fun theAsleepLimitFollowsTheInvertersSize() {
+        assertEquals(50, PlantStatusRules.asleepBelowW(null))
+        assertEquals(60, PlantStatusRules.asleepBelowW(3_000))
+        assertEquals(500, PlantStatusRules.asleepBelowW(25_000))
+        assertEquals(500, PlantStatusRules.asleepBelowW(100_000))
+        // A large inverter going quiet at dusk with 300 W left: asleep once its size is known.
+        val last = LastReadings()
+        last.update(snapshot(DeviceStatus(inverter, DeviceReading(pvPowerW = 25_000), null)))
+        last.update(snapshot(DeviceStatus(inverter, DeviceReading(pvPowerW = 300), null)))
+        assertEquals(25_000, last.peak(inverter.id))
+        assertEquals(listOf(IssueKind.ASLEEP), kinds(PlantStatusRules.evaluate(plant(inverter), snapshot(failed(inverter, ConnectionError.TIMEOUT)), home, last)))
     }
 
     @Test

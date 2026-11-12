@@ -40,7 +40,7 @@ interface EventStore {
  */
 class FaultLog(private val store: EventStore, private val settleS: Long = 30, private val appVersion: String = "") {
     private class Memory {
-        val last = LastReadings()
+        val last = LastReadings.shared
         val firstSeen = HashMap<String, Long>()
         /** The situation when a pending problem was first seen, stored once it's logged. */
         val firstDetails = HashMap<String, String>()

@@ -70,6 +70,15 @@ class ContentsTest {
     }
 
     @Test
+    fun serialNumbersInEventTextsAreHidden() {
+        val e = LoggedEvent(
+            plantId = "home", key = "k", kind = "DEVICE_FAULT", severity = "ALARM", deviceId = "cdd", deviceName = "ABB CDD",
+            detail = "Comm Fault (E501): microinverter 666808", percent = null, started = 1,
+        )
+        assertEquals("Comm Fault (E501): microinverter …", Contents.event(e).detail)
+    }
+
+    @Test
     fun brokenDetailsAreNotSent() {
         assertEquals(null, Contents.details("not json"))
     }

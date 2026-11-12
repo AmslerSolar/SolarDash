@@ -54,8 +54,8 @@ class SpecReaderInverters2Test {
         regs[0] = 4370; regs[1] = pv; regs[10] = 'A'.code; regs[11] = 'B'.code; regs[12] = 'C'.code; regs[40] = 7
     }
 
-    private fun driver(f: Fake, sleeps: Boolean = true, offset: Int = 0, retryMs: Long = 0) =
-        SpecDriver(spec(sleeps), Vocabulary(emptyMap()), SpecTables(f, f, offset), 1, requestGapMs = 0, sleepRetryMs = retryMs)
+    private fun driver(f: Fake, sleeps: Boolean = true, offset: Int = 0, retryMs: Long = 0, peakW: Int? = null) =
+        SpecDriver(spec(sleeps), Vocabulary(emptyMap()), SpecTables(f, f, offset), 1, requestGapMs = 0, sleepRetryMs = retryMs, peakW = { peakW })
 
     @Test
     fun addressOffsetIsAddedToEveryRequest() = runBlocking {
@@ -74,7 +74,7 @@ class SpecReaderInverters2Test {
             assertTrue(runCatching { driver(first).read() }.exceptionOrNull() is IOException)
             // Evening (120 W), then silence: asleep; it answers again in the morning.
             val f = device()
-            val d = driver(f)
+            val d = driver(f, peakW = 25_000)
             assertEquals(120, d.read().pvPowerW)
             f.silence = silence
             val night = d.read()
@@ -88,6 +88,12 @@ class SpecReaderInverters2Test {
             n.read()
             noon.silence = silence
             assertTrue(runCatching { n.read() }.exceptionOrNull() is IOException)
+            // 120 W is little for an inverter that produced 25 kW (limit 500 W), much for a small one (limit 50 W).
+            val small = device(pv = 120).also { it.silence = null }
+            val s = driver(small)
+            s.read()
+            small.silence = silence
+            assertTrue(runCatching { s.read() }.exceptionOrNull() is IOException)
         }
     }
 
@@ -106,7 +112,7 @@ class SpecReaderInverters2Test {
     @Test
     fun asleepDeviceIsAskedAgainOnlyAfterTheRetryInterval() = runBlocking {
         val f = device()
-        val d = driver(f, retryMs = 60_000)
+        val d = driver(f, retryMs = 60_000, peakW = 25_000)
         d.read()
         f.silence = SocketTimeoutException("timeout")
         assertEquals("Sleeping (no sun)", d.read().status)

@@ -3,6 +3,7 @@
 
 package ch.amslersolar.solardash.driver
 
+import ch.amslersolar.solardash.model.LastReadings
 import ch.amslersolar.solardash.driver.spec.SpecDevices
 import ch.amslersolar.solardash.driver.abb.AbbCddDriver
 import ch.amslersolar.solardash.driver.abb.AuroraDriver
@@ -35,7 +36,7 @@ interface DeviceDriver {
 object DeviceDrivers {
     /** Connections come from [connections], so devices behind the same gateway share one TCP connection. */
     fun create(config: DeviceConfig, connections: ModbusConnections): DeviceDriver =
-        (if (SpecDevices.handles(config.type)) SpecDevices.create(config.type, connections.get(config), config.unitId, config.model, config.specId, config.invertGrid) else null)
+        (if (SpecDevices.handles(config.type)) SpecDevices.create(config.type, connections.get(config), config.unitId, config.model, config.specId, config.invertGrid, peakW = { LastReadings.shared.peak(config.id) }) else null)
             ?: handWritten(config, connections)
 
     /** The hand-written drivers: everything not (yet) read through ModbusSpec. */

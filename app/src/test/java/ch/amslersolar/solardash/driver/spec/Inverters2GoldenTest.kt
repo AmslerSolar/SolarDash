@@ -46,15 +46,15 @@ class Inverters2GoldenTest {
      * The device type's drivers as [SpecDevices.create] makes them (spec ids × address offsets, the first whose
      * identify checks pass), on [tables].
      */
-    private fun typeDriver(type: DeviceType, unit: Int, tables: (Int) -> SpecTables): DeviceDriver =
+    private fun typeDriver(type: DeviceType, unit: Int, peakW: Int? = null, tables: (Int) -> SpecTables): DeviceDriver =
         ChoosingSpecDriver(SpecDevices.SPEC_IDS.getValue(type).flatMap { id ->
             (SpecDevices.ADDRESS_OFFSETS[type] ?: listOf(0)).map { off ->
-                SpecDriver(library.spec(id), library.vocabulary, tables(off), unit, SpecDevices.hooks(id), requestGapMs = 0, sleepRetryMs = 0)
+                SpecDriver(library.spec(id), library.vocabulary, tables(off), unit, SpecDevices.hooks(id), requestGapMs = 0, sleepRetryMs = 0, peakW = { peakW })
             }
         })
 
-    private fun typeDriver(type: DeviceType, unit: Int, holding: RegisterReader, input: RegisterReader = holding) =
-        typeDriver(type, unit) { SpecTables(holding, input, it) }
+    private fun typeDriver(type: DeviceType, unit: Int, holding: RegisterReader, input: RegisterReader = holding, peakW: Int? = null) =
+        typeDriver(type, unit, peakW) { SpecTables(holding, input, it) }
 
     @get:org.junit.Rule val testName = org.junit.rules.TestName()
     private val golden by lazy { InvertersGoldenRecords("Inverters2GoldenTest", testName.methodName) }
@@ -372,7 +372,7 @@ class Inverters2GoldenTest {
         f32(1122, 55.0, swap = true)
     }
 
-    private fun trio(fake: FakeTrio) = typeDriver(DeviceType.POWER_ONE, 2, fake)
+    private fun trio(fake: FakeTrio, peakW: Int? = null) = typeDriver(DeviceType.POWER_ONE, 2, fake, peakW = peakW)
 
     private fun trioSame(build: () -> FakeTrio) = same(trio(build()))
 
@@ -415,9 +415,9 @@ class Inverters2GoldenTest {
     @Test
     fun trioSleepsAfterSunsetOnly() = runBlocking {
         for (gateway in listOf(false, true)) {
-            // Evening, 120 W: then no answer is sleeping.
+            // Evening, 120 W from a TRIO-20 that produced 20 kW (limit 400 W): then no answer is sleeping.
             val b = trio20().apply { f32(148, 120.0); gatewayNoAnswer = gateway }
-            val new = trio(b)
+            val new = trio(b, peakW = 20_000)
             same(new)
             b.asleep = true
             same(new)

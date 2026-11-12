@@ -140,8 +140,10 @@ object Contents {
 
     private fun hide(text: String, host: String) = hide(text, listOf(host))
 
+    /** Device addresses ([hosts]) and numbers of six digits or more (serial numbers, e.g. a CDD's microinverters) become "…". */
     private fun hide(text: String, hosts: Collection<String>) =
         hosts.filter { it.isNotBlank() }.sortedByDescending { it.length }.fold(text) { t, h -> t.replace(h, "…") }
+            .replace(LONG_NUMBER, "…")
 
     /**
      * The fault log's situation (model/FaultDetails) without what stays on the plant: the device's address, port,

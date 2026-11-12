@@ -3,6 +3,10 @@
 
 package ch.amslersolar.solardash
 
+import ch.amslersolar.solardash.model.LastReadings
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import androidx.core.content.edit
 import ch.amslersolar.solardash.driver.spec.SpecLibrary
 import ch.amslersolar.solardash.model.FaultLog
 import ch.amslersolar.solardash.net.LocalNetworks
@@ -49,5 +53,18 @@ class SolarApp : Application() {
         SpecLibrary.current = SpecLibrary { name -> assets.open("modbusspec/$name").bufferedReader().use { it.readText() } }
         HistoryWorker.schedule(this)
         collector.start()
+        // Inverters that sleep: known as asleep at night right away, not as "no connection", by their last reading
+        // and their size, the highest solar power seen (LastReadings; the highest is kept across restarts).
+        val peaks = getSharedPreferences("solar_peaks", MODE_PRIVATE)
+        for ((id, w) in peaks.all) (w as? Int)?.let { LastReadings.shared.seedPeak(id, it) }
+        LastReadings.shared.onPeak = { id, w -> peaks.edit { putInt(id, w) } }
+        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+            runCatching {
+                for (d in repository.plants.first().flatMap { it.devices }) {
+                    history.lastDeviceReading(d.id)?.let { LastReadings.shared.seed(d.id, it) }
+                    history.peakDevicePv(d.id)?.let { LastReadings.shared.seedPeak(d.id, it) }
+                }
+            }
+        }
     }
 }
