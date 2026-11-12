@@ -2861,6 +2861,7 @@
 
     async function boot() {
         applyTexts();
+        window.addEventListener('hashchange', () => location.reload());
         if (!window.crypto || !crypto.subtle || typeof DecompressionStream === 'undefined') {
             showError('errNoCrypto');
             return;
@@ -2885,7 +2886,6 @@
         });
         let resizeTimer = null;
         window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(renderHistory, 200); });
-        window.addEventListener('hashchange', () => location.reload());
         setInterval(() => { if (visible() && state.live) renderStatus(); }, 15000);
         await start(true);
     }
