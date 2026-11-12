@@ -200,12 +200,18 @@ class LivePlants(
         null
     }
 
+    /**
+     * The higher of the devices' counters and the recorded day: the recorded day already holds the counters' highest
+     * value, and devices that sleep at night (or don't answer) drop out of the counters' sum.
+     */
     private fun withRecorded(devices: EnergyTotals, recorded: EnergyTotals?): EnergyTotals = if (recorded == null) devices else EnergyTotals(
-        pvKwh = devices.pvKwh ?: recorded.pvKwh,
-        exportKwh = devices.exportKwh ?: recorded.exportKwh,
-        importKwh = devices.importKwh ?: recorded.importKwh,
-        loadKwh = devices.loadKwh ?: recorded.loadKwh,
+        pvKwh = higher(devices.pvKwh, recorded.pvKwh),
+        exportKwh = higher(devices.exportKwh, recorded.exportKwh),
+        importKwh = higher(devices.importKwh, recorded.importKwh),
+        loadKwh = higher(devices.loadKwh, recorded.loadKwh),
     )
+
+    private fun higher(a: Double?, b: Double?): Double? = if (a == null) b else if (b == null) a else maxOf(a, b)
 
     private suspend fun logFaults(plantId: String, snapshot: PlantSnapshot) {
         val log = faultLog ?: return

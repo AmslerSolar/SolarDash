@@ -228,7 +228,7 @@ class Collector(
         }
 
         // The plant's description and the store list, when they changed.
-        val catalogs = plant.devices.associate { d -> d.id to history.channelCatalog(d.id) }.filterValues { it.isNotEmpty() }
+        val catalogs = plant.devices.associate { d -> d.id to catalog(d.id) }.filterValues { it.isNotEmpty() }
         val info = Contents.json.encodeToString(Contents.PlantInfo.serializer(), Contents.plant(plant, catalogs)).toByteArray()
         val stores = Contents.json.encodeToString(kotlinx.serialization.builtins.ListSerializer(String.serializer()), sharing.stores).toByteArray()
         val infoHash = Wire.b64(Wire.sha256(info))
@@ -298,7 +298,7 @@ class Collector(
             out += Block.name(hour) to Block(hour, channels).encode()
         }
         for (d in plant.devices) {
-            val catalog = history.channelCatalog(d.id)
+            val catalog = catalog(d.id)
             if (catalog.isEmpty()) continue
             val series = history.channelSeries(d.id, catalog.map { it.first }, hour, hour + 3599)
             val channels = catalog.mapNotNull { (key, _, unit) ->
@@ -315,6 +315,9 @@ class Collector(
         }
         return out
     }
+
+    /** A device's recorded channels as (key, label, unit), without those naming a serial number (Contents.privateChannel). */
+    private suspend fun catalog(deviceId: String) = history.channelCatalog(deviceId).filterNot { (key, label, _) -> Contents.privateChannel(key, label) }
 
     private suspend fun days(plantId: String, from: LocalDate, to: LocalDate): List<Pair<String, ByteArray>> =
         history.days(plantId, from, to).map { d ->

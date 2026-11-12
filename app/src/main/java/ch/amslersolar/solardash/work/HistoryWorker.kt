@@ -5,6 +5,7 @@ package ch.amslersolar.solardash.work
 
 import ch.amslersolar.solardash.net.LocalNetworks
 import android.content.Context
+import androidx.core.content.edit
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
@@ -35,6 +36,7 @@ class HistoryWorker(context: Context, params: WorkerParameters) : CoroutineWorke
             if (plant.sharing != null) {
                 try { app.collector.sync(plant.id) } catch (e: CancellationException) { throw e } catch (_: Exception) {}
             }
+            repairOnce(app, plant)
             if (plant.devices.isEmpty() || ActivePolling.isActive(plant.id)) continue
             try {
                 PlantReader(plant.devices).use {
@@ -49,6 +51,21 @@ class HistoryWorker(context: Context, params: WorkerParameters) : CoroutineWorke
             }
         }
         return Result.success()
+    }
+
+    /** Repairs of recorded history that run once per plant (see HistoryRepository.repairSolarDays). */
+    private suspend fun repairOnce(app: SolarApp, plant: ch.amslersolar.solardash.model.Plant) {
+        val prefs = app.getSharedPreferences("history_repairs", Context.MODE_PRIVATE)
+        val key = "solar_days_1:${plant.id}"
+        if (prefs.getBoolean(key, false)) return
+        try {
+            app.history.repairSolarDays(plant)
+            prefs.edit { putBoolean(key, true) }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (_: Exception) {
+            // Tried again with the next run.
+        }
     }
 
     companion object {

@@ -233,23 +233,27 @@ object AbbCddParser {
             ),
         )
         if (plant.inverters.isNotEmpty()) {
+            // Numbered by serial number, so the numbers stay put; the serial number is a row of each one's section
+            // (titles and labels become history channels, and serial numbers don't leave the plant).
+            val micros = plant.inverters.sortedBy { it["sn"].orEmpty() }
             sections += DetailSection(
-                "Microinverters (${plant.inverters.size})",
-                plant.inverters.map { inv ->
+                "Microinverters (${micros.size})",
+                micros.mapIndexed { i, inv ->
                     val value = if (neverReported(inv)) "${inv["invstat"] ?: "?"}, never reported" else listOfNotNull(
                         inv["invstat"],
                         Details.fmt(inv.num("Pout_W"), "W", 1),
                         Details.fmt(inv.num("Vin_V"), "V DC", 1),
                         inv["rssi"]?.let { "RSSI $it" },
                     ).joinToString(", ")
-                    (inv["sn"] ?: "?") to value
+                    "Microinverter ${i + 1}" to value
                 },
             )
-            plant.inverters.forEach { inv ->
+            micros.forEachIndexed { i, inv ->
                 val silent = neverReported(inv)
                 fun v(key: String, unit: String, decimals: Int) = if (silent) null else Details.fmt(inv.num(key), unit, decimals)
                 sections += Details.section(
-                    "Microinverter ${inv["sn"] ?: "?"}",
+                    "Microinverter ${i + 1}",
+                    "Serial number" to inv["sn"],
                     "Model" to inv["modeldesc"]?.takeIf { it != "???" },
                     "State" to inv["invstat"],
                     "Booster state" to inv["booststat"],

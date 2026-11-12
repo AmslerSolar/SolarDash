@@ -15,6 +15,18 @@ class HistoryTest {
     private fun sample(t: Long, pv: Int? = null, load: Int? = null, grid: Int? = null) = Sample(t, pv, load, null, grid, null)
 
     @Test
+    fun yesterdaysSolarCounterIsntTrustedAtWakeUp() {
+        // An ABB TRIO on a real site: 26.5 kWh (yesterday's) at 07:25 and 07:30, 0.1 from 07:35 on.
+        assertFalse(HistoryMath.pvCounterFresh(26.5, 26.5, 0, LocalTime.of(7, 25)))
+        assertFalse(HistoryMath.pvCounterFresh(26.5, 26.5, null, LocalTime.of(7, 30)))
+        assertTrue(HistoryMath.pvCounterFresh(0.1, 26.5, 0, LocalTime.of(7, 35)))
+        // First read while producing, from noon on, or 0: trusted.
+        assertTrue(HistoryMath.pvCounterFresh(4.2, 4.2, 900, LocalTime.of(10, 0)))
+        assertTrue(HistoryMath.pvCounterFresh(15.7, 15.7, 0, LocalTime.of(17, 0)))
+        assertTrue(HistoryMath.pvCounterFresh(0.0, 0.0, 0, LocalTime.of(6, 0)))
+    }
+
+    @Test
     fun integratesWithTrapezoidRule() {
         // 2 kW → 4 kW over 30 min = 1.5 kWh
         val e = HistoryMath.integrate(sample(0, pv = 2000), sample(900, pv = 4000))

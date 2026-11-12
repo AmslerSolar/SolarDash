@@ -8,6 +8,12 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import ch.amslersolar.solardash.model.DeviceKind
+import ch.amslersolar.solardash.model.DeviceReading
+import ch.amslersolar.solardash.model.DeviceStatus
+import ch.amslersolar.solardash.model.MeterRole
+import ch.amslersolar.solardash.model.Plant
+import ch.amslersolar.solardash.model.PlantAggregator
 import ch.amslersolar.solardash.model.Channel
 import ch.amslersolar.solardash.model.Channels
 import ch.amslersolar.solardash.model.DailyEnergy
@@ -38,7 +44,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
 
-private class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, "history.db", null, 7) {
+private class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, "history.db", null, 8) {
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
             """CREATE TABLE samples (
@@ -70,6 +76,9 @@ private class HistoryDatabase(context: Context) : SQLiteOpenHelper(context, "his
         }
         if (oldVersion < 6) createDeviceDailyTable(db)
         if (oldVersion < 7) removeImplausible(db)
+        // Device days worked out while yesterday's solar counter still counted (HistoryMath.pvCounterFresh): a cache,
+        // worked out again when needed.
+        if (oldVersion < 8) db.execSQL("DELETE FROM device_daily")
     }
 
     /**
@@ -528,16 +537,55 @@ class HistoryRepository(context: Context) : EventStore {
         return out
     }
 
+    /**
+     * Lowers days' solar yield that counted a device's yesterday's counter (see [HistoryMath.pvCounterFresh]):
+     * a day keeps its highest counter sum, so the stale morning value stayed. Where every producing device of
+     * [plant] has a recorded yield that day, the day gets their sum when that is lower. Devices an energy manager
+     * already contains count once, as in the live totals. Returns the days changed.
+     */
+    suspend fun repairSolarDays(plant: Plant): Int {
+        val statuses = plant.devices.map { DeviceStatus(it, DeviceReading(), null) }
+        val covered = PlantAggregator.coveredByManager(statuses)
+        val producers = plant.devices.filter {
+            it.id !in covered && (it.type.kind == DeviceKind.INVERTER || it.type.kind == DeviceKind.METER && it.meterRole == MeterRole.PV)
+        }
+        if (producers.isEmpty()) return 0
+        val stored = query { db ->
+            db.rawQuery("SELECT day, pv FROM daily WHERE plant_id = ? AND pv IS NOT NULL", arrayOf(plant.id)).use { c ->
+                c.map { LocalDate.parse(c.getString(0)) to c.getDouble(1) }
+            }
+        }
+        if (stored.isEmpty()) return 0
+        val from = stored.minOf { it.first }
+        val to = stored.maxOf { it.first }
+        val perDevice = producers.map { d -> deviceDays(d.id, from, to).associate { it.day to it.energy.pvKwh } }
+        val fixed = stored.mapNotNull { (day, pv) ->
+            val values = perDevice.map { it[day] }
+            if (values.any { it == null }) return@mapNotNull null
+            val sum = values.sumOf { it!! }
+            if (pv > sum + 0.05) day to sum else null
+        }
+        if (fixed.isNotEmpty()) write { w ->
+            for ((day, pv) in fixed) {
+                w.update("daily", ContentValues().apply { put("pv", pv) }, "plant_id = ? AND day = ?", arrayOf(plant.id, day.toString()))
+            }
+        }
+        return fixed.size
+    }
+
     private suspend fun deviceDay(deviceId: String, day: LocalDate): EnergyTotals {
         val from = day.atStartOfDay(zone).toEpochSecond()
         val to = day.plusDays(1).atStartOfDay(zone).toEpochSecond()
         var total: EnergyTotals? = null
         var prev: Sample? = null
+        var firstPv: Double? = null
         for ((ts, m) in deviceRows(deviceId, from, to)) {
             val sample = m.sample(ts)
             val time = java.time.Instant.ofEpochSecond(ts).atZone(zone).toLocalTime()
+            val pv = m["r:today_pv"]?.also { if (firstPv == null && HistoryMath.countersUsable(time)) firstPv = it }
             val counters = EnergyTotals(
-                pvKwh = m["r:today_pv"], exportKwh = m["r:today_export"], importKwh = m["r:today_import"], loadKwh = m["r:today_load"],
+                pvKwh = pv?.takeIf { HistoryMath.pvCounterFresh(it, firstPv, sample.pvW, time) },
+                exportKwh = m["r:today_export"], importKwh = m["r:today_import"], loadKwh = m["r:today_load"],
             ).takeIf { HistoryMath.countersUsable(time) }
             total = HistoryMath.merge(total, counters, HistoryMath.integrate(prev, sample))
             prev = sample

@@ -119,14 +119,19 @@ object PlantAggregator {
         }
         val grid = sumOrNull(gridReadings.map { it.second.gridPowerW })
 
-        // Home: the inverters' own load measurement when they're the whole plant (no meter, no standalone
-        // battery, no PV meter) and all report one; their PV and battery figures don't always add up (the LG
-        // HTTPS API's DC values can give a negative balance). Otherwise the balance, which can't be below zero.
+        // Home: the balance of PV, battery and grid, which can't be below zero. It includes what the inverters use
+        // themselves (their losses: a GoodWe ESA at 4 % of its rating turned 754 W of PV and battery into 583 W),
+        // since an inverter is a device in the house too, so the flow adds up. When the inverters are the whole
+        // plant (no meter, no standalone battery, no PV meter) and all measure the load, the home is at least
+        // that: their PV and battery figures don't always add up (the LG HTTPS API's DC values can give a
+        // balance below the measured load, even a negative one).
         val ownLoads = readings.map { it.second.loadPowerW }
+        val balance = grid?.let { maxOf(0, (pv ?: 0) + (battery?.powerW ?: 0) - it) }
         val load = when {
             gridSource == GridSource.INVERTERS && readings.all { it.first.type.kind == DeviceKind.INVERTER } &&
-                pvMeters.isEmpty() && readings.isNotEmpty() && ownLoads.all { it != null } -> ownLoads.sumOf { it!! }
-            grid != null -> maxOf(0, (pv ?: 0) + (battery?.powerW ?: 0) - grid)
+                pvMeters.isEmpty() && readings.isNotEmpty() && ownLoads.all { it != null } ->
+                maxOf(ownLoads.sumOf { it!! }, balance ?: 0)
+            balance != null -> balance
             else -> sumOrNull(ownLoads)
         }
 

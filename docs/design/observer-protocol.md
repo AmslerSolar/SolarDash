@@ -185,7 +185,9 @@ A fault log entry, as the app keeps it:
 Times in epoch seconds; `ended` stays `null` while the problem lasts (the event is sent again when it ends).
 `details` and `endDetails` are the situation at the start and end (the app's fault-log JSON) without the
 device's `host`, `port`, `unit_id`, `rtu_over_tcp` and `serial`, the tablet's `subnets`, and detail rows naming a
-serial number or MAC address; device addresses are replaced by `…` in every text. Live readings drop those rows too.
+serial number or MAC address; device addresses are replaced by `…` in every text. Live readings drop those rows too,
+and sections and rows whose title or label holds six digits or more (a serial number); device blocks and the channel
+catalog leave out channels named that way.
 
 ### Live
 

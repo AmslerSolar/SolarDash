@@ -96,7 +96,8 @@ object Contents {
         strings = r.pvStrings.map { Str(it.index, it.voltageV, it.currentA, it.powerW) },
         today = energy(r.today).takeIf { it != Energy() },
         problems = r.problems.map { Problem(it.kind.name, it.text) },
-        details = r.details.map { s -> Section(s.title, s.rows.filterNot { identifies(it.first) }.map { listOf(it.first, it.second) }) },
+        details = r.details.filterNot { private(it.title) }
+            .map { s -> Section(s.title, s.rows.filterNot { private(it.first) }.map { listOf(it.first, it.second) }) },
     )
 
     fun live(s: PlantSnapshot) = Live(
@@ -127,6 +128,15 @@ object Contents {
     private val IDENTIFYING = Regex("""(?i)serial|seriennummer|\bs/?n\b|\bmac\b""")
 
     fun identifies(label: String) = IDENTIFYING.containsMatchIn(label)
+
+    /** Six digits or more in a title or label: a serial number in it (ModbusSpec register addresses have five). */
+    private val LONG_NUMBER = Regex("""\d{6,}""")
+
+    /** Whether a detail section title or row label can't leave the plant: it names or contains a serial number. */
+    fun private(text: String) = identifies(text) || LONG_NUMBER.containsMatchIn(text)
+
+    /** Whether a recorded device channel ("d:<section>:<label>" key, label) can't leave the plant. */
+    fun privateChannel(key: String, label: String) = private(key) || private(label)
 
     private fun hide(text: String, host: String) = hide(text, listOf(host))
 

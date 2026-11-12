@@ -100,8 +100,10 @@ The edit icon on a device opens its settings (name, IP, port, unit id, password)
   average across batteries (no capacities yet). Don't add a battery that is already read through its inverter.
 - **Grid**: from the plant's power meters if it has any, otherwise the sum of the inverters' own grid values.
   If a configured meter doesn't respond, grid shows as unknown rather than silently using the inverters.
-- **Home**: the inverters' own load measurement when the plant is only inverters (no meter, no standalone
-  battery) and all report one; otherwise solar + battery − grid, never below zero.
+- **Home**: solar + battery − grid, never below zero, so the flow adds up. It includes what the inverters use
+  themselves (their losses, large at low power: about 170 W on a 15 kW GoodWe at 580 W), since an inverter is a
+  device in the house too. When the plant is only inverters (no meter, no standalone battery) and all measure
+  the load, home is at least that measurement (some report PV and battery figures that don't add up).
 - If any device doesn't respond, the plant screen says the totals are incomplete.
 
 ## History
@@ -112,7 +114,10 @@ The edit icon on a device opens its settings (name, IP, port, unit id, password)
   only one Modbus TCP client isn't opened twice.
 - **Daily energy:** taken from the devices' "today" counters when they report them; otherwise integrated from the
   samples. Gaps longer than 20 minutes aren't bridged. Counters are ignored for the first 15 minutes after
-  midnight, in case a device's clock resets later than the phone's.
+  midnight, in case a device's clock resets later than the phone's. A solar counter that still shows yesterday's
+  yield when the inverter wakes up (ABB Aurora / TRIO keep it until a few minutes later) is ignored until it
+  changes, the inverter produces, or noon; past days that counted it were lowered once. The shown day is the
+  higher of the counters and the recorded day, so inverters that sleep at night don't drop out of it.
 - **Device channels:** every numeric value a device shows (live values and detail-view rows) is stored once a
   minute while the plant is open, compressed per device. The background job records plant samples only, so
   channel history has gaps while the app is closed (Android runs background work at most every 15 minutes).

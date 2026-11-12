@@ -45,6 +45,17 @@ class PlantAggregatorTest {
     }
 
     @Test
+    fun theInvertersOwnUseCountsAsHomeLoad() {
+        // GoodWe GW15K-ETA-G20 on a real site: PV 225 W and battery 529 W in, 583 W AC out, house measured
+        // at 579 W, 2 W exported. The ~170 W in between is the inverter's own use, so it goes to the home.
+        val esa = device("esa", DeviceType.GOODWE_ET)
+        val s = PlantAggregator.aggregate(
+            listOf(ok(esa, DeviceReading(pvPowerW = 225, gridPowerW = 2, battery = battery(529, 36), loadPowerW = 579))),
+        )
+        assertEquals(752, s.loadPowerW)
+    }
+
+    @Test
     fun balancedLoadIsNeverNegative() {
         val s = PlantAggregator.aggregate(
             listOf(

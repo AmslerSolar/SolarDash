@@ -60,8 +60,16 @@
    "description": "Lifetime energy exported to the grid",
    "unit": "kWh"
   },
+  "grid_export_energy_today": {
+   "description": "Energy exported to the grid today",
+   "unit": "kWh"
+  },
   "grid_import_energy": {
    "description": "Lifetime energy imported from the grid",
+   "unit": "kWh"
+  },
+  "grid_import_energy_today": {
+   "description": "Energy imported from the grid today",
    "unit": "kWh"
   },
   "grid_power": {

@@ -51,7 +51,7 @@ class PlantReader(devices: List<DeviceConfig>, private val smoothing: ReadSmooth
 
     suspend fun read(): PlantSnapshot {
         val statuses = coroutineScope {
-            drivers.map { (device, driver) -> async { smoothing.apply(readDevice(device, driver)) } }.awaitAll()
+            drivers.map { (device, driver) -> async { DayCounters.check(smoothing.apply(readDevice(device, driver))) } }.awaitAll()
         }
         return PlantAggregator.aggregate(statuses)
     }

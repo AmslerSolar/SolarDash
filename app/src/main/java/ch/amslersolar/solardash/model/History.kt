@@ -31,6 +31,15 @@ object HistoryMath {
 
     fun countersUsable(time: LocalTime): Boolean = time >= COUNTERS_FROM
 
+    /**
+     * Whether a device's "today" solar counter of [value] can be trusted. Inverters that sleep at night can keep
+     * yesterday's total until a few minutes after they wake up (an ABB TRIO reported 26.5 kWh at 07:25 and 0.1 at
+     * 07:35); since a day keeps its highest counter, that gave yesterday's yield again. A counter is trusted when
+     * it is 0, differs from the device's [first] value of the day, while the device produces, or from noon on.
+     */
+    fun pvCounterFresh(value: Double, first: Double?, pvW: Int?, time: LocalTime): Boolean =
+        value == 0.0 || first != null && value != first || (pvW ?: 0) > 0 || time >= LocalTime.NOON
+
     /** Energy between two consecutive samples (trapezoid rule). A metric is null when it can't be computed. */
     fun integrate(prev: Sample?, cur: Sample): EnergyTotals {
         if (prev == null) return EnergyTotals()

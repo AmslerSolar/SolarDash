@@ -1,6 +1,6 @@
 {
- "modbusspec_commit": "0b2d1eb2d17e54efb4cdcc69a2b5e3277b979cf7",
- "date": "2026-11-06T15:40:11+01:00",
+ "modbusspec_commit": "27f5ada128ad3bdae10cca7544914d2a37937044",
+ "date": "2026-11-12T22:10:18+01:00",
  "files": [
   "devices/meter/eastron/sdm.yaml",
   "devices/charger/keba/kecontact-p30.yaml",
@@ -428,6 +428,7 @@
   "devices/inverter/solax/inverter.yaml",
   "devices/inverter/solax/lv.yaml",
   "devices/inverter/solax/mega-forth.yaml",
+  "devices/inverter/solax/neo-lv.yaml",
   "devices/inverter/solax/x3-mic-g2.yaml",
   "devices/inverter/solectria/sgi-xtm.yaml",
   "devices/inverter/solectria/xgi.yaml",

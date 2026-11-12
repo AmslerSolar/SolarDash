@@ -53,6 +53,23 @@ class ContentsTest {
     }
 
     @Test
+    fun serialNumbersInTitlesAndChannelsStayOnThePlant() {
+        val r = DeviceReading(
+            details = listOf(
+                DetailSection("Microinverter 709994", listOf("Power" to "20 W")),
+                DetailSection("Alarm log", listOf("E501 Comm Fault, 700004" to "active", "W021" to "past")),
+                DetailSection("Registers", listOf("Gw a 48000 Batterie1 Ladung max" to "4700")),
+            ),
+        )
+        assertEquals(listOf("Alarm log", "Registers"), Contents.reading(r).details.map { it.title })
+        assertEquals(listOf(listOf("W021", "past")), Contents.reading(r).details[0].rows)
+        assertTrue(Contents.privateChannel("d:Inverter:Serial number", "Serial number (Inverter)"))
+        assertTrue(Contents.privateChannel("d:Microinverter 709994:Power", "Power (Microinverter 709994)"))
+        assertFalse(Contents.privateChannel("d:Microinverter 3:Power", "Power (Microinverter 3)"))
+        assertFalse(Contents.privateChannel("r:pv_power", "PV power"))
+    }
+
+    @Test
     fun brokenDetailsAreNotSent() {
         assertEquals(null, Contents.details("not json"))
     }

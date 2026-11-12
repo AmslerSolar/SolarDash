@@ -86,10 +86,12 @@ class AbbCddDriverTest {
         assertEquals("2026-11-02 10:38:26", cddRows["CDD time"])
 
         val overview = byTitle.getValue("Microinverters (5)").rows.toMap()
-        assertEquals("RUN, 8.2 W, 38.9 V DC, RSSI 31", overview["700001"])
-        assertEquals("START-UP, never reported", overview["700004"])
+        // Numbered by serial number, which is a row of each unit's section.
+        assertEquals("RUN, 8.2 W, 38.9 V DC, RSSI 31", overview["Microinverter 1"])
+        assertEquals("START-UP, never reported", overview["Microinverter 4"])
 
-        val running = byTitle.getValue("Microinverter 700002").rows.toMap()
+        val running = byTitle.getValue("Microinverter 2").rows.toMap()
+        assertEquals("700002", running["Serial number"])
         assertEquals("20.9 W", running["Power"])
         assertEquals("37.7 V", running["DC voltage"])
         assertEquals("236.1 V", running["AC voltage"])
@@ -100,7 +102,7 @@ class AbbCddDriverTest {
         assertEquals("C111 / B158 / 001", running["Firmware (micro / DSP / RF)"])
 
         // A unit that never answered: no zero readings, just its state, alarm registers and "never".
-        val silent = byTitle.getValue("Microinverter 700004").rows.toMap()
+        val silent = byTitle.getValue("Microinverter 4").rows.toMap()
         assertEquals("never", silent["Last report"])
         assertEquals("0x8000", silent["MCU alarms"])
         assertNull(silent["Power"])

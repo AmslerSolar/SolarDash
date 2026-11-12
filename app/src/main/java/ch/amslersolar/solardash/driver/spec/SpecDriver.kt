@@ -126,7 +126,11 @@ class SpecDriver(
             loadPowerW = if (consumer) w("consumer_power") else w("load_power"),
             temperatureC = n("temperature"),
             status = v["state"]?.let { it.enumText ?: it.text ?: it.number?.let(::num) },
-            today = EnergyTotals(pvKwh = n("pv_energy_today")),
+            today = EnergyTotals(
+                pvKwh = n("pv_energy_today"),
+                exportKwh = if (consumer) null else n("grid_export_energy_today"),
+                importKwh = if (consumer) null else n("grid_import_energy_today"),
+            ),
             lifetimePvKwh = n("pv_energy"),
             details = details(all),
             problems = problems,
