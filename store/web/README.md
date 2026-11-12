@@ -34,9 +34,10 @@ History, as in the app (`ui/history/`):
 | Month | energy bars per day (solar, consumption; export and import hidden at first) | the month's day items |
 | Year, Lifetime | energy bars per month / year, summed from day items (like `HistoryRepository.months/years`) | day items only, never blocks |
 
-Previous / next / Today navigate (no next past today); the period follows the live values until the viewer
-navigates away. Below the chart: the Totals card (yield, consumption, export, import, self-sufficiency,
-self-consumption) and a table view (hourly average power for a day, energy per day / month / year otherwise).
+Previous / next navigate (no next past today); the period follows the live values until the viewer navigates
+away. On phones the channel chips sit in one row that scrolls sideways and the chart runs nearly edge to edge. Below
+the chart: the values at the tapped time or bar, and the Totals card (yield, consumption, export, import,
+self-sufficiency, self-consumption).
 Fetched items stay in memory; beyond 2500 decoded blocks the oldest outside the period are dropped and fetched again
 when needed (the seq tracker then takes the same seq again, never an older one).
 

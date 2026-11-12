@@ -4,12 +4,12 @@
 """Runs the web view's tests headless in Chromium: the SRI check, o/test.html (pure functions against
 store/tests/vectors.json) and o/index.html end to end against fake_store.py (vectors as they are, fresh envelopes,
 German, wrong code, unreachable store, broken link; with fresh envelopes also the history: periods, navigation,
-what is fetched, channel picker, zoom, table, and the fault log). Prints PASS/FAIL lines; exit status 1 on any failure.
+what is fetched, channel picker, zoom, and the fault log). Prints PASS/FAIL lines; exit status 1 on any failure.
 
   python3 store/web/tools/run_tests.py [--chromium /usr/bin/chromium] [--screenshots DIR]
 
 --screenshots writes phone, tablet and dark-mode screenshots of the fresh plant to DIR for a look by eye, and of
-the history (week, month, year, zoomed day, table), the channel picker and the fault log.
+the history (week, month, year, zoomed day), the channel picker and the fault log.
 The fresh cases need python3-cryptography; without it they are skipped.
 """
 
@@ -221,15 +221,15 @@ def history_cases(b, link, data, shots):
     check('history, day', dom, [
         'aria-pressed="true">Day<', 'class="line s-pv"', 'class="line s-load"', 'class="line s-soc dash-dashed"',
         # The owner's chart channel (plant chartChannels) is the default selection: the weather sensor's temperature.
-        'class="line c-0 dash-dashdot"', 'External temper… · °C', 'Self-sufficiency', '>88 %<', '>Tap or point at the chart for values<',
+        'class="line c-0 dash-dashdot"', 'External temper… · °C', 'Self-sufficiency', '>88 %<',
     ], ['data-toggle-energy'])
     names = [n for k, n in fetched(data, 0) if k == 1]
     report(bool(names) and all('.' not in n or n.endswith('.sensor1') for n in names),
            'history, day: plant blocks and only the blocks of the device on the chart', str(names[:5]))
     report(all(k != 3 for k, _ in fetched(data, 0)), 'faults: not fetched before they come into view')
     report(len(names) <= 2 * 25, 'history, day: at most a day of blocks (%d)' % len(names))
-    report(b.eval("document.getElementById('next').disabled && document.getElementById('to-today').disabled") is True,
-           'history, day: no next day, no way to today from today')
+    report(b.eval("document.getElementById('next').disabled && document.getElementById('readout').hidden") is True,
+           'history, day: no next day, no readout before a tap')
     report(b.eval(NO_SIDEWAYS_SCROLL) is True, 'history: no sideways scroll at 390 px')
 
     # Hover shows the values at that time.
@@ -242,13 +242,13 @@ def history_cases(b, link, data, shots):
     b.eval("document.getElementById('prev').click()")
     report(b.wait(IDLE + " && document.getElementById('range-label').textContent !== %s && document.querySelector('#chart path.line.s-pv') !== null" % json.dumps(label)),
            'history: the day before, with its curves')
-    report(b.eval("!document.getElementById('next').disabled && !document.getElementById('to-today').disabled") is True,
-           'history: next and today enabled on an earlier day')
+    report(b.eval("!document.getElementById('next').disabled") is True, 'history: next enabled on an earlier day')
     for _ in range(5):
         b.eval("document.getElementById('prev').click()")
     report(b.wait(IDLE + " && !document.getElementById('history-state').hidden"), 'history: a day without samples says so')
     check('history, empty day', b.dom(), ['No samples recorded on this day.'])
-    b.eval("document.getElementById('to-today').click()")
+    for _ in range(6):
+        b.eval("document.getElementById('next').click()")
     report(b.wait(IDLE + " && document.getElementById('range-label').textContent === %s" % json.dumps(label)), 'history: back to today')
 
     # Week: curves over 7 days, fetched in few requests.
@@ -278,10 +278,6 @@ def history_cases(b, link, data, shots):
                   "document.querySelectorAll('#chart path.bar.s-load').length") is True, 'history, month: solar and consumption bars per day')
     b.eval("document.querySelector('[data-toggle-energy=export]').click()")
     report(b.wait("document.querySelectorAll('#chart path.bar.s-grid').length > 0"), 'history, month: export bars shown after a tap')
-    b.eval("document.getElementById('table-toggle').click()")
-    report(b.wait("!document.getElementById('history-table').hidden && document.querySelectorAll('#history-table tbody tr').length >= 3"),
-           'history, month: table instead of the chart')
-    b.eval("document.getElementById('table-toggle').click()")
 
     # The choice survives a reload (localStorage, per plant).
     b.open(link, ready=SHOWN + " && " + IDLE)
@@ -365,11 +361,6 @@ def history_cases(b, link, data, shots):
     b.mouse('mousePressed', x, y, button='left', clickCount=2)
     b.mouse('mouseReleased', x, y, button='left', clickCount=2)
     report(b.wait("document.getElementById('zoom-reset').hidden"), 'zoom: a double-click resets')
-    b.eval("document.getElementById('table-toggle').click()")
-    report(b.wait("document.querySelectorAll('#history-table tbody tr').length >= 20"), 'history, day: hourly table')
-    if shots:
-        b.screenshot(os.path.join(shots, 'history-table.png'), 'history')
-    b.eval("document.getElementById('table-toggle').click()")
 
     # The fault log: fetched once in view; active and past entries, details without addresses.
     b.eval("document.getElementById('alarms').scrollIntoView()")

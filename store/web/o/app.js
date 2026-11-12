@@ -46,15 +46,10 @@
             allTime: 'All time',
             previous: 'Previous',
             next: 'Next',
-            toToday: 'Today',
-            showTable: 'Show table',
-            showChart: 'Show chart',
             exported: 'Exported',
             imported: 'Imported',
             soc: 'Battery charge',
             chartA11y: 'History chart',
-            tapChart: 'Tap or point at the chart for values',
-            tapBar: 'Tap or point at a bar for values',
             noSamplesDay: 'No samples recorded on this day.',
             noSamplesWeek: 'No samples recorded in this week.',
             noDays: 'No totals recorded in this period.',
@@ -66,10 +61,6 @@
             solarYield: 'Solar yield',
             selfSufficiency: 'Self-sufficiency',
             selfConsumption: 'Self-consumption',
-            hourlyPower: 'Hourly average power',
-            energy: 'Energy',
-            consShort: 'Cons.',
-            time: 'Time',
             addChannel: 'Add channel…',
             removeChannel: 'Remove {x}',
             pickerTitle: 'Add channels',
@@ -190,15 +181,10 @@
             allTime: 'Gesamte Laufzeit',
             previous: 'Zurück',
             next: 'Weiter',
-            toToday: 'Heute',
-            showTable: 'Tabelle anzeigen',
-            showChart: 'Diagramm anzeigen',
             exported: 'Eingespeist',
             imported: 'Bezogen',
             soc: 'Ladestand',
             chartA11y: 'Verlaufsdiagramm',
-            tapChart: 'Für Werte ins Diagramm tippen oder zeigen',
-            tapBar: 'Für Werte auf einen Balken tippen oder zeigen',
             noSamplesDay: 'An diesem Tag wurden keine Werte aufgezeichnet.',
             noSamplesWeek: 'In dieser Woche wurden keine Werte aufgezeichnet.',
             noDays: 'In diesem Zeitraum wurden keine Summen aufgezeichnet.',
@@ -210,10 +196,6 @@
             solarYield: 'Solarertrag',
             selfSufficiency: 'Autarkie',
             selfConsumption: 'Eigenverbrauch',
-            hourlyPower: 'Mittlere Leistung pro Stunde',
-            energy: 'Energie',
-            consShort: 'Verbr.',
-            time: 'Zeit',
             addChannel: 'Kanal hinzufügen…',
             removeChannel: '{x} entfernen',
             pickerTitle: 'Kanäle hinzufügen',
@@ -1431,7 +1413,6 @@
             period: 'day',
             anchor: null, // a date in the period shown
             follow: true, // the period holds the latest live values: it moves on with them
-            table: false,
             vp: viewport(1),
             vpKey: '',
             selected: null, // epoch ms (day, week) or slot index (bars)
@@ -1742,8 +1723,6 @@
         setText('range-label', rangeLabel(hs.period, hs.anchor));
         $('prev').disabled = hs.period === 'lifetime';
         $('next').disabled = !hasNext(hs.period, hs.anchor, today);
-        $('to-today').disabled = inPeriod(hs.period, hs.anchor, today);
-        setText('table-toggle', t(hs.table ? 'showChart' : 'showTable'));
         const m = hs.period === 'day' || hs.period === 'week' ? powerModel() : energyModel();
         const key = hs.period + ':' + hs.anchor;
         if (hs.vpKey !== key) {
@@ -1758,11 +1737,9 @@
         const note = hs.loading > 0 ? t('historyLoading') : hs.failed ? t('historyFailed') : m.empty ? t(m.emptyKey) : '';
         setText('history-state', note);
         show('history-state', note !== '');
-        show('chart-wrap', !hs.table && !m.empty);
-        show('history-table', hs.table && !m.empty);
-        show('chart-tools', !hs.table && !m.empty);
-        if (hs.table) renderTable(m);
-        else if (!m.empty) renderChart();
+        show('chart-wrap', !m.empty);
+        show('chart-tools', !m.empty);
+        if (!m.empty) renderChart();
         renderReadout();
         renderPeriodTotals(m.totals);
     }
@@ -1811,13 +1788,12 @@
     function renderReadout() {
         const box = clear($('readout'));
         const hs = state.hist, m = state.model;
-        if (!m || hs.table || m.empty) { box.hidden = true; return; }
-        box.hidden = false;
+        // Below the chart, so a tap doesn't move the chart under the finger; nothing until a time or bar is picked.
+        box.hidden = !m || m.empty || hs.selected === null;
+        if (box.hidden) return;
         const values = [];
         let title;
-        if (hs.selected === null) {
-            title = t(m.kind === 'power' ? 'tapChart' : 'tapBar');
-        } else if (m.kind === 'power') {
+        if (m.kind === 'power') {
             title = (hs.period === 'week' ? dayTimeFmt : timeFmt).format(new Date(hs.selected));
             for (const l of m.lines) {
                 if (hs.sel.hidden.includes(l.key)) continue;
@@ -1856,44 +1832,6 @@
         }
     }
 
-    /** The accessible alternative to the chart: hourly averages for a day, energy per day / month / year otherwise. */
-    function renderTable(m) {
-        const box = clear($('history-table'));
-        const table = h('table', null, null, box);
-        const head = h('tr', null, null, h('thead', null, null, table));
-        const body = h('tbody', null, null, table);
-        const cell = (row, name, text, cls) => h(name, cls, text, row);
-        if (m.kind === 'power' && state.hist.period === 'day') {
-            h('caption', null, t('hourlyPower'), table);
-            for (const c of [t('time'), t('solar'), t('consShort')]) cell(head, 'th', c).scope = 'col';
-            const byHour = new Map();
-            for (const name of ['pv', 'load']) {
-                for (const [ms, v] of m.lines.find((l) => l.key === 'plant:' + name).points) {
-                    const hour = new Date(ms).getHours();
-                    if (!byHour.has(hour)) byHour.set(hour, { pv: [], load: [] });
-                    byHour.get(hour)[name].push(v);
-                }
-            }
-            const avg = (list) => (list.length ? (list.reduce((a, b) => a + b, 0) / list.length) * 1000 : null);
-            for (const hour of [...byHour.keys()].sort((a, b) => a - b)) {
-                const row = h('tr', null, null, body);
-                cell(row, 'th', String(hour).padStart(2, '0') + ':00').scope = 'row';
-                cell(row, 'td', formatPower(avg(byHour.get(hour).pv)));
-                cell(row, 'td', formatPower(avg(byHour.get(hour).load)));
-            }
-            return;
-        }
-        h('caption', null, t('energy'), table);
-        for (const c of ['', t('solar'), t('consumption'), t('exported'), t('imported')]) cell(head, 'th', c).scope = 'col';
-        const period = state.hist.period;
-        for (const s of m.slots) {
-            if (ENERGY_KEYS.every((k) => s.energy[k] === null)) continue;
-            const row = h('tr', null, null, body);
-            cell(row, 'th', s.label || slotLabels(period, s.key)[0]).scope = 'row';
-            for (const k of ['pv', 'load', 'export', 'import']) cell(row, 'td', formatEnergy(s.energy[k]));
-        }
-    }
-
     // ------------------------------------------------------------------------------------------------ chart
 
     function el(name, attrs, parent) {
@@ -1921,7 +1859,7 @@
         if (frame) return;
         frame = requestAnimationFrame(() => {
             frame = 0;
-            if (!state.model || state.hist.table || state.model.empty) return;
+            if (!state.model || state.model.empty) return;
             renderChart();
             renderReadout();
         });
@@ -1946,15 +1884,11 @@
         const lines = m.lines.filter((l) => !hs.sel.hidden.includes(l.key));
         const units = [];
         for (const l of lines) if (l.points.length && !units.includes(l.unit) && units.length < MAX_AXES) units.push(l.unit);
-        const axisW = Math.round(font * 3.3);
-        const left = axisW * Math.max(1, Math.ceil(units.length / 2));
-        const right = width - (units.length > 1 ? axisW * Math.floor(units.length / 2) : 10);
         const top = Math.round(font * 1.7), bottom = height - Math.round(font * 1.9);
         const dur = m.end - m.start, span = vp.end - vp.start;
         const from = m.start + vp.start * dur, to = m.start + vp.end * dur;
-        const x = (ms) => left + ((ms - m.start) / dur - vp.start) / span * (right - left);
 
-        const drawn = new Map(lines.map((l) => [l, thinPoints(l.points, from, to, Math.round(right - left))]));
+        const drawn = new Map(lines.map((l) => [l, thinPoints(l.points, from, to, width)]));
         const scales = new Map();
         for (const u of units) {
             if (u === '%') { scales.set(u, PERCENT_SCALE); continue; }
@@ -1967,13 +1901,22 @@
             // Power and energy keep zero in view; other quantities (V, °C, Hz) fit their own range.
             scales.set(u, niceScale(lo, hi, 4, u.startsWith('k') || u === 'W' || lo <= 0));
         }
+        // Each axis as wide as its longest label, so the plot gets the rest.
+        const axisW = units.map((u) => {
+            const sc = scales.get(u);
+            const longest = Math.max(u === 'value' ? 0 : u.length, ...sc.ticks.map((v) => axisTick(v, sc.step).length));
+            return Math.ceil(font * 0.6 * longest) + 6;
+        });
+        const left = units.length ? axisW[0] + (axisW[2] || 0) : 6;
+        const right = width - (units.length > 1 ? axisW[1] + (axisW[3] || 0) : 6);
+        const x = (ms) => left + ((ms - m.start) / dur - vp.start) / span * (right - left);
         const y = (sc, v) => bottom - ((v - sc.min) / (sc.max - sc.min)) * (bottom - top);
 
         const axis = el('g', { class: 'axis' }, svg);
         units.forEach((u, i) => {
             const sc = scales.get(u);
             const onLeft = i % 2 === 0;
-            const edge = onLeft ? left - (i >= 2 ? axisW : 0) : right + (i >= 2 ? axisW : 0);
+            const edge = onLeft ? left - (i >= 2 ? axisW[0] : 0) : right + (i >= 2 ? axisW[1] : 0);
             const tx = onLeft ? edge - 4 : edge + 4;
             const anchor = onLeft ? 'end' : 'start';
             for (const v of sc.ticks) {
@@ -2739,8 +2682,6 @@
         $('next').addEventListener('click', () => {
             if (hs.anchor && hasNext(hs.period, hs.anchor, localDate(Date.now()))) goTo(hs.period, shiftAnchor(hs.period, hs.anchor, 1));
         });
-        $('to-today').addEventListener('click', () => goTo(hs.period, localDate(Date.now())));
-        $('table-toggle').addEventListener('click', () => { hs.table = !hs.table; renderHistory(); });
         $('zoom-reset').addEventListener('click', resetZoom);
         $('legend').addEventListener('click', (e) => {
             const b = e.target.closest('button');

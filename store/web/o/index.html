@@ -12,8 +12,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>SolarDash</title>
-<link rel="stylesheet" href="style.css?v=b4afce220cbc" integrity="sha384-tK/OIgy8yT/nVXvyHTtPnIF/q28msed9qqHxnnYuVkyLr28gR7YOXTT9Z+90puUJ">
-<script src="app.js?v=db57d886609a" defer integrity="sha384-21fYhmCa+EFwRoBC6JUdhS51ohI1OJXGM+L00g/l70LYO63iqd43CJyw7lsOqWcV"></script>
+<link rel="stylesheet" href="style.css?v=663081d18de1" integrity="sha384-ZjCB0Y3hPVkltZiqiAC5JSDoZ216yqJDtMX7v7fGEsixBhxvDF4W1jiil1uszFL3">
+<script src="app.js?v=1f0513aa595d" defer integrity="sha384-HwUTqlldJ7RofE1EoBYJxHzVLIPvVyjJFPaB3/A27961lirN/KZDTIlizPzz4KH8"></script>
 </head>
 <body>
 <main>
@@ -98,17 +98,12 @@
         <p id="range-label" class="range-label" aria-live="polite"></p>
         <button id="next" type="button" class="icon-button" data-t-label="next">›</button>
       </div>
-      <div class="range-actions">
-        <button id="to-today" type="button" class="secondary" data-t="toToday">Today</button>
-        <button id="table-toggle" type="button" class="secondary" data-t="showTable">Show table</button>
-      </div>
       <ul id="legend" class="chips"></ul>
-      <div id="readout" class="readout" aria-live="polite" hidden></div>
       <p id="history-state" class="history-state" hidden></p>
       <div id="chart-wrap" class="chart-wrap" hidden>
         <svg id="chart" class="chart" role="img" tabindex="0" aria-labelledby="chart-title"><title id="chart-title" data-t="chartA11y">History chart</title></svg>
       </div>
-      <div id="history-table" class="history-table" hidden></div>
+      <div id="readout" class="readout" aria-live="polite" hidden></div>
       <div id="chart-tools" class="chart-tools" hidden>
         <p class="note" data-t="chartHint"></p>
         <button id="zoom-reset" type="button" class="secondary" data-t="zoomReset" hidden>Reset zoom</button>

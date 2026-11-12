@@ -177,7 +177,7 @@ button:focus-visible, .button:focus-visible { outline: 3px solid var(--fg); outl
 .total dd { margin: 0; font-size: 1.3rem; font-weight: 700; overflow-wrap: anywhere; }
 @media (min-width: 30rem) { .totals dl { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
-/* History (the app's History tab): periods, navigation, legend chips, chart, table, totals */
+/* History (the app's History tab): periods, navigation, legend chips, chart, totals */
 h3 { font-size: 1.2rem; margin: 1rem 0 0.4rem; }
 
 button.secondary, .chip, .icon-button, .periods button {
@@ -197,7 +197,6 @@ button.secondary { padding: 0.4rem 1rem; font-size: 1.05rem; }
 .range-nav { display: flex; align-items: center; gap: 0.5rem; margin: 0.7rem 0 0.4rem; }
 .icon-button { flex: none; width: 3rem; padding: 0; font-size: 1.8rem; line-height: 1; border-radius: 50%; }
 .range-label { flex: 1; min-width: 0; margin: 0; text-align: center; font-weight: 700; overflow-wrap: anywhere; }
-.range-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-bottom: 0.7rem; }
 
 .chips { list-style: none; padding: 0; margin: 0.4rem 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .chip-item { display: flex; align-items: stretch; max-width: 100%; }
@@ -215,6 +214,14 @@ button.secondary { padding: 0.4rem 1rem; font-size: 1.05rem; }
     background: var(--surface); color: var(--fg); border: 2px solid var(--line); border-left-width: 1px;
     border-radius: 0 1.4rem 1.4rem 0;
 }
+/* Phones: the channels in one row that scrolls sideways, smaller, so the chart stays near the top. */
+@media (max-width: 47.99rem) {
+    .chips { flex-wrap: nowrap; overflow-x: auto; margin: 0.4rem -1rem; padding: 0 1rem 0.2rem; scrollbar-width: none; }
+    .chips::-webkit-scrollbar { display: none; }
+    .chip-item { flex: none; max-width: none; }
+    .chip { min-height: 2.2rem; padding: 0.1rem 0.6rem; font-size: 0.85rem; gap: 0.3rem; white-space: nowrap; }
+    .chip-remove { min-height: 2.2rem; padding: 0 0.55rem; font-size: 1.1rem; }
+}
 .sample { flex: none; }
 .dot { display: inline-block; flex: none; width: 0.75rem; height: 0.75rem; border-radius: 50%; background: var(--c); }
 
@@ -228,13 +235,14 @@ button.secondary { padding: 0.4rem 1rem; font-size: 1.05rem; }
 .c-1 { --c: var(--chan1); }
 .c-2 { --c: var(--chan2); }
 
-.readout { min-height: 3.2rem; margin: 0.3rem 0; font-size: 1.05rem; }
+.readout { margin: 0.3rem 0; font-size: 1.05rem; }
 .readout strong { display: block; }
 .readout ul { list-style: none; padding: 0; margin: 0.1rem 0 0; display: flex; flex-wrap: wrap; gap: 0.1rem 1rem; }
 .readout li { display: flex; align-items: center; gap: 0.35rem; }
 .history-state { color: var(--muted); }
 
 .chart-wrap { width: 100%; }
+@media (max-width: 47.99rem) { .chart-wrap { width: auto; margin: 0 -0.8rem; } } /* phones: nearly edge to edge */
 .chart { width: 100%; height: auto; display: block; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
 .chart:focus-visible { outline: 3px solid var(--fg); outline-offset: 2px; }
 .chart text { fill: var(--muted); }
@@ -258,11 +266,6 @@ button.secondary { padding: 0.4rem 1rem; font-size: 1.05rem; }
 .chart-tools .note { margin: 0.3rem 0; flex: 1 1 14rem; }
 .note { color: var(--muted); font-size: 1rem; }
 
-.history-table { overflow-x: auto; }
-.history-table table { border-collapse: collapse; width: 100%; font-size: 1rem; }
-.history-table caption { text-align: left; font-weight: 700; padding-bottom: 0.3rem; }
-.history-table th, .history-table td { padding: 0.35rem 0.5rem; border-bottom: 1px solid var(--gridline); text-align: right; white-space: nowrap; }
-.history-table th[scope="row"], .history-table thead th:first-child { text-align: left; white-space: normal; }
 
 .rows { margin: 0; }
 .rows .row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 1rem; padding: 0.35rem 0; border-bottom: 1px solid var(--gridline); }
