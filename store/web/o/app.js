@@ -34,7 +34,6 @@
             todayTitle: 'Today',
             consumption: 'Consumption',
             flowTitle: 'Energy flow now',
-            chartNote: 'Grid above 0: export, below 0: import. Battery above 0: discharging, below 0: charging.',
             // History (the app's History tab)
             historyTitle: 'History',
             periods: 'Period',
@@ -55,7 +54,6 @@
             noDays: 'No totals recorded in this period.',
             historyLoading: 'Loading the history…',
             historyFailed: 'Part of the history could not be loaded; it is tried again shortly.',
-            chartHint: 'Scroll or pinch to zoom, drag to pan, double-click or double-tap to reset',
             zoomReset: 'Reset zoom',
             totals: 'Totals',
             solarYield: 'Solar yield',
@@ -170,7 +168,6 @@
             todayTitle: 'Heute',
             consumption: 'Verbrauch',
             flowTitle: 'Energiefluss jetzt',
-            chartNote: 'Netz über 0: Einspeisung, unter 0: Bezug. Batterie über 0: entlädt, unter 0: lädt.',
             historyTitle: 'Verlauf',
             periods: 'Zeitraum',
             period_day: 'Tag',
@@ -190,7 +187,6 @@
             noDays: 'In diesem Zeitraum wurden keine Summen aufgezeichnet.',
             historyLoading: 'Der Verlauf wird geladen …',
             historyFailed: 'Ein Teil des Verlaufs konnte nicht geladen werden; die Seite versucht es gleich wieder.',
-            chartHint: 'Mit Mausrad oder zwei Fingern zoomen, ziehen zum Verschieben, Doppelklick oder doppeltippen setzt zurück',
             zoomReset: 'Zoom zurücksetzen',
             totals: 'Summen',
             solarYield: 'Solarertrag',
@@ -1732,7 +1728,6 @@
         }
         state.model = m;
         $('history').setAttribute('aria-busy', String(hs.loading > 0));
-        show('sign-note', m.kind === 'power');
         renderLegend(m);
         const note = hs.loading > 0 ? t('historyLoading') : hs.failed ? t('historyFailed') : m.empty ? t(m.emptyKey) : '';
         setText('history-state', note);

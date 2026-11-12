@@ -262,8 +262,7 @@ button.secondary { padding: 0.4rem 1rem; font-size: 1.05rem; }
 .chart .dot { fill: var(--c); }
 .chart .bar { fill: var(--c); }
 
-.chart-tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; }
-.chart-tools .note { margin: 0.3rem 0; flex: 1 1 14rem; }
+.chart-tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 0.5rem; }
 .note { color: var(--muted); font-size: 1rem; }
 
 
