@@ -1848,6 +1848,15 @@
         return { width, height, font: width < 480 ? 13 : 15 };
     }
 
+    /** Width of a label in the chart's font, for axes just as wide as they need (canvas measureText; estimated without). */
+    function textMeasure(svg, font) {
+        const ctx = (textMeasure.canvas ||= document.createElement('canvas')).getContext('2d');
+        if (!ctx) return (s) => s.length * font * 0.6;
+        const cs = getComputedStyle(svg);
+        ctx.font = font + 'px ' + cs.fontFamily;
+        return (s) => ctx.measureText(s).width;
+    }
+
     let frame = 0;
     /** Redraws the chart and readout on the next frame (gestures and hover come faster than that). */
     function scheduleChart() {
@@ -1896,11 +1905,14 @@
             // Power and energy keep zero in view; other quantities (V, °C, Hz) fit their own range.
             scales.set(u, niceScale(lo, hi, 4, u.startsWith('k') || u === 'W' || lo <= 0));
         }
-        // Each axis as wide as its longest label, so the plot gets the rest.
+        // Each axis as wide as its longest label, so the plot gets the rest. The % axis tops out at "99", a digit
+        // narrower than "100".
+        const tick = (u, v, sc) => (u === '%' && v === 100 ? '99' : axisTick(v, sc.step));
+        const measure = textMeasure(svg, font);
         const axisW = units.map((u) => {
             const sc = scales.get(u);
-            const longest = Math.max(u === 'value' ? 0 : u.length, ...sc.ticks.map((v) => axisTick(v, sc.step).length));
-            return Math.ceil(font * 0.6 * longest) + 6;
+            const widest = Math.max(...sc.ticks.map((v) => measure(tick(u, v, sc))), u === 'value' ? 0 : measure(u) * 1.1); // the unit is bold
+            return Math.ceil(widest) + 5;
         });
         const left = units.length ? axisW[0] + (axisW[2] || 0) : 6;
         const right = width - (units.length > 1 ? axisW[1] + (axisW[3] || 0) : 6);
@@ -1912,12 +1924,12 @@
             const sc = scales.get(u);
             const onLeft = i % 2 === 0;
             const edge = onLeft ? left - (i >= 2 ? axisW[0] : 0) : right + (i >= 2 ? axisW[1] : 0);
-            const tx = onLeft ? edge - 4 : edge + 4;
+            const tx = onLeft ? edge - 3 : edge + 3;
             const anchor = onLeft ? 'end' : 'start';
             for (const v of sc.ticks) {
                 const yy = y(sc, v);
                 if (i === 0) el('line', { x1: left, x2: right, y1: yy, y2: yy, class: Math.abs(v) < sc.step / 2 ? 'zero' : 'gridline' }, axis);
-                text(axis, tx, yy + font * 0.35, axisTick(v, sc.step), { 'text-anchor': anchor, 'font-size': font });
+                text(axis, tx, yy + font * 0.35, tick(u, v, sc), { 'text-anchor': anchor, 'font-size': font });
             }
             if (u !== 'value') text(axis, tx, font, u, { 'text-anchor': anchor, 'font-size': font, class: 'unit' });
         });
