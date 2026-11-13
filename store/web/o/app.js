@@ -1579,10 +1579,8 @@
         { key: 'pv', text: 'solar', cls: 's-pv' }, { key: 'load', text: 'consumption', cls: 's-load' },
         { key: 'export', text: 'exported', cls: 's-grid' }, { key: 'import', text: 'imported', cls: 's-import' },
     ];
-    /** Plant power solid, battery charge dashed, each added channel its own pattern (the app's Dash). */
-    const CHANNEL_DASHES = ['dashdot', 'dotted', 'dashdotdot'];
-
-    const lineClass = (l) => 'line ' + l.cls + (l.dash === 'solid' ? '' : ' dash-' + l.dash);
+    /** Every curve is a thin solid line; the colour alone tells them apart (battery charge and each channel have their own). */
+    const lineClass = (l) => 'line ' + l.cls;
 
     const devicesOf = () => arr(state.plant && state.plant.devices).filter((d) => obj(d) && str(d.id));
 
@@ -1659,11 +1657,11 @@
         const { start, end, hours } = hoursOf(hs.period, hs.anchor);
         const plantBlocks = hours.map((s) => state.blocks.get('b' + s)).filter(Boolean);
         const lines = PLANT_LINES.map((p) => ({
-            key: 'plant:' + p.name, label: t(p.text), full: t(p.text), unit: 'kW', cls: p.cls, dash: 'solid',
+            key: 'plant:' + p.name, label: t(p.text), full: t(p.text), unit: 'kW', cls: p.cls,
             points: seriesOf(plantBlocks, p.name, 1e-3),
         }));
         // Some devices report nonsense outside 0–100 % (seen on LG before the scale fix); it is left out, as in the app.
-        lines.push({ key: 'plant:soc', label: t('soc'), full: t('soc'), unit: '%', cls: 's-soc', dash: 'dashed', points: seriesOf(plantBlocks, 'soc', 1, (v) => v >= 0 && v <= 100) });
+        lines.push({ key: 'plant:soc', label: t('soc'), full: t('soc'), unit: '%', cls: 's-soc', points: seriesOf(plantBlocks, 'soc', 1, (v) => v >= 0 && v <= 100) });
         for (const c of chartChannels()) {
             const entry = catalogOf(state.plant, c.deviceId).find((e) => e[0] === c.key);
             const [unit, factor] = displayUnit(entry ? entry[2] : '');
@@ -1672,7 +1670,7 @@
             const blocks = hours.map((s) => state.blocks.get('b' + s + '.' + c.deviceId)).filter(Boolean);
             lines.push({
                 key: c.deviceId + '|' + c.key, channel: c, label: shorten(name), full: name + ' — ' + deviceName(c.deviceId) + section,
-                unit, cls: 'c-' + (c.slot % 3), dash: CHANNEL_DASHES[c.slot % 3], points: seriesOf(blocks, c.key, factor),
+                unit, cls: 'c-' + (c.slot % 3), points: seriesOf(blocks, c.key, factor),
             });
         }
         const b = periodBounds(hs.period, hs.anchor);
@@ -1739,7 +1737,7 @@
         renderPeriodTotals(m.totals);
     }
 
-    /** A short sample of a curve in its colour and pattern, so the legend matches the chart. */
+    /** A short sample of a curve in its colour, so the legend matches the chart. */
     function lineSample(line) {
         const svg = el('svg', { class: 'sample', viewBox: '0 0 22 10', width: 22, height: 10, 'aria-hidden': 'true' });
         el('line', { x1: 1, x2: 21, y1: 5, y2: 5, class: lineClass(line) }, svg);
@@ -1844,11 +1842,11 @@
 
     function chartSize(svg) {
         const width = Math.max(240, Math.round(svg.getBoundingClientRect().width || svg.parentNode.clientWidth || 600));
-        const height = Math.round(Math.max(240, Math.min(380, width * 0.58)));
+        const height = Math.min(width, 480); // a square on phones; wide screens stop at 480
         return { width, height, font: width < 480 ? 13 : 15 };
     }
 
-    /** Width of a label in the chart's font, for axes just as wide as they need (canvas measureText; estimated without). */
+    /** Width of a label in the chart's font, for the patch behind it (canvas measureText; estimated without). */
     function textMeasure(svg, font) {
         const ctx = (textMeasure.canvas ||= document.createElement('canvas')).getContext('2d');
         if (!ctx) return (s) => s.length * font * 0.6;
@@ -1880,6 +1878,7 @@
     /**
      * Curves over a day or a week with one y-axis per unit (up to four, PowerChart): the first unit on the left, the
      * second on the right, then a second left and a second right axis. Each axis fits its visible data; % is 0–100.
+     * The curves use the whole width; the scales are drawn over them, each label on a patch of the background.
      */
     function drawPower(svg, m) {
         const hs = state.hist, vp = hs.vp;
@@ -1905,34 +1904,15 @@
             // Power and energy keep zero in view; other quantities (V, °C, Hz) fit their own range.
             scales.set(u, niceScale(lo, hi, 4, u.startsWith('k') || u === 'W' || lo <= 0));
         }
-        // Each axis as wide as its longest label, so the plot gets the rest. The % axis tops out at "99", a digit
-        // narrower than "100".
-        const tick = (u, v, sc) => (u === '%' && v === 100 ? '99' : axisTick(v, sc.step));
-        const measure = textMeasure(svg, font);
-        const axisW = units.map((u) => {
-            const sc = scales.get(u);
-            const widest = Math.max(...sc.ticks.map((v) => measure(tick(u, v, sc))), u === 'value' ? 0 : measure(u) * 1.1); // the unit is bold
-            return Math.ceil(widest) + 5;
-        });
-        const left = units.length ? axisW[0] + (axisW[2] || 0) : 6;
-        const right = width - (units.length > 1 ? axisW[1] + (axisW[3] || 0) : 6);
+        const left = 0, right = width;
         const x = (ms) => left + ((ms - m.start) / dur - vp.start) / span * (right - left);
         const y = (sc, v) => bottom - ((v - sc.min) / (sc.max - sc.min)) * (bottom - top);
 
         const axis = el('g', { class: 'axis' }, svg);
-        units.forEach((u, i) => {
-            const sc = scales.get(u);
-            const onLeft = i % 2 === 0;
-            const edge = onLeft ? left - (i >= 2 ? axisW[0] : 0) : right + (i >= 2 ? axisW[1] : 0);
-            const tx = onLeft ? edge - 3 : edge + 3;
-            const anchor = onLeft ? 'end' : 'start';
-            for (const v of sc.ticks) {
-                const yy = y(sc, v);
-                if (i === 0) el('line', { x1: left, x2: right, y1: yy, y2: yy, class: Math.abs(v) < sc.step / 2 ? 'zero' : 'gridline' }, axis);
-                text(axis, tx, yy + font * 0.35, tick(u, v, sc), { 'text-anchor': anchor, 'font-size': font });
-            }
-            if (u !== 'value') text(axis, tx, font, u, { 'text-anchor': anchor, 'font-size': font, class: 'unit' });
-        });
+        if (units.length) {
+            const sc = scales.get(units[0]);
+            for (const v of sc.ticks) el('line', { x1: left, x2: right, y1: y(sc, v), y2: y(sc, v), class: Math.abs(v) < sc.step / 2 ? 'zero' : 'gridline' }, axis);
+        }
         drawTimeAxis(axis, m, x, { left, right, top, bottom, font, from, to });
 
         const clip = el('clipPath', { id: 'plot-clip' }, svg);
@@ -1945,7 +1925,7 @@
             if (!sc) continue;
             const { d, dots } = linePath(drawn.get(l), x, (v) => y(sc, v));
             if (d) el('path', { d, class: lineClass(l) }, g);
-            for (const [cx, cy] of dots) el('circle', { cx, cy, r: 2.5, class: 'dot ' + l.cls }, g);
+            for (const [cx, cy] of dots) el('circle', { cx, cy, r: 1.8, class: 'dot ' + l.cls }, g);
         }
         if (hs.selected !== null) {
             const xx = x(hs.selected);
@@ -1958,6 +1938,29 @@
                 el('circle', { cx: x(p[0]), cy: y(sc, p[1]), r: 4, class: 'dot ' + l.cls }, g);
             }
         }
+
+        // The scales, over the curves: first unit at the left edge, second at the right, the third and fourth inside those.
+        const scale = el('g', { class: 'axis' }, svg);
+        const measure = textMeasure(svg, font);
+        const pad = 4, patchH = Math.round(font * 1.35);
+        const columnW = units.map((u) => Math.max(u === 'value' ? 0 : measure(u) * 1.1, ...scales.get(u).ticks.map((v) => measure(axisTick(v, scales.get(u).step)))) + 2 * pad); // the unit is bold
+        units.forEach((u, i) => {
+            const sc = scales.get(u);
+            const onLeft = i % 2 === 0;
+            const inset = 3 + (i >= 2 ? columnW[i - 2] + 3 : 0);
+            const edge = onLeft ? inset : width - inset;
+            const tx = onLeft ? edge + pad : edge - pad;
+            const anchor = onLeft ? 'start' : 'end';
+            for (const v of sc.ticks) {
+                const s = axisTick(v, sc.step);
+                const w = measure(s) + 2 * pad;
+                // The lowest and highest label stay inside the plot, clear of the times below and the unit above.
+                const cy = clamp(y(sc, v), top + patchH / 2, bottom - patchH / 2);
+                el('rect', { x: onLeft ? edge : edge - w, y: cy - patchH / 2, width: w, height: patchH, rx: patchH / 2, class: 'tick-bg' }, scale);
+                text(scale, tx, cy + font * 0.35, s, { 'text-anchor': anchor, 'font-size': font });
+            }
+            if (u !== 'value') text(scale, tx, font, u, { 'text-anchor': anchor, 'font-size': font, class: 'unit' });
+        });
         state.geom = { left, right, width };
     }
 
@@ -1983,7 +1986,7 @@
             const xx = x(ms);
             if (xx < b.left - 1 || xx > b.right + 1) continue;
             const w = s.length * b.font * 0.6;
-            const lx = clamp(xx - w / 2, b.left - 4, b.right + 8 - w);
+            const lx = clamp(xx - w / 2, b.left + 3, b.right - 3 - w);
             // Labels pushed inward at the edges could otherwise collide with their neighbour.
             if (lx < lastRight + 6) continue;
             text(axis, lx + w / 2, b.bottom + b.font * 1.3, s, { 'text-anchor': 'middle', 'font-size': b.font });

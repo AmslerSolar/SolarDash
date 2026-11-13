@@ -19,9 +19,10 @@
     --button: #8a5a00;
     --button-fg: #ffffff;
     --chip-on: #fbe9c6;
-    --chan0: #2f2fee;
-    --chan1: #f04c5c;
-    --chan2: #7d32ae;
+    --soc: #4a962a;
+    --chan0: #6a3fd6;
+    --chan1: #d0218f;
+    --chan2: #8a5a2b;
     --sev-alarm: #b00020;
     --sev-warn: #e65100;
     --sev-info: #3d3d3d;
@@ -47,9 +48,10 @@
         --button: #f2a900;
         --button-fg: #111111;
         --chip-on: #3d3218;
-        --chan0: #6a13ec;
-        --chan1: #d926b5;
-        --chan2: #8c2c96;
+        --soc: #7ccf4f;
+        --chan0: #a98bff;
+        --chan1: #f06cc0;
+        --chan2: #c99a6b;
         --sev-alarm: #ff6b6b;
         --sev-warn: #ff8a3d;
         --sev-info: #c8c8c8;
@@ -225,10 +227,12 @@ button.secondary { padding: 0.4rem 1rem; font-size: 1.05rem; }
 .sample { flex: none; }
 .dot { display: inline-block; flex: none; width: 0.75rem; height: 0.75rem; border-radius: 50%; background: var(--c); }
 
-/* Series colours (the app's ui/theme/Theme.kt): one custom property per series, used by lines, dots and bars. */
+/* Series colours: one custom property per series, used by lines, dots and bars. The plant's are the app's
+   (ui/theme/Theme.kt); battery charge and the channels have their own, as the chart draws no dashed lines. */
 .s-pv { --c: var(--solar); }
 .s-load { --c: var(--home); }
-.s-battery, .s-soc { --c: var(--battery); }
+.s-battery { --c: var(--battery); }
+.s-soc { --c: var(--soc); }
 .s-grid { --c: var(--grid); }
 .s-import { --c: var(--import); }
 .c-0 { --c: var(--chan0); }
@@ -242,23 +246,20 @@ button.secondary { padding: 0.4rem 1rem; font-size: 1.05rem; }
 .history-state { color: var(--muted); }
 
 .chart-wrap { width: 100%; }
-@media (max-width: 47.99rem) { .chart-wrap { width: auto; margin: 0 -0.8rem; } } /* phones: nearly edge to edge */
+@media (max-width: 47.99rem) { .chart-wrap { width: auto; margin: 0 -1rem; } } /* phones: edge to edge */
 .chart { width: 100%; height: auto; display: block; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
 .chart:focus-visible { outline: 3px solid var(--fg); outline-offset: 2px; }
 .chart text { fill: var(--muted); }
 .chart .unit { font-weight: 600; }
 .chart .gridline { stroke: var(--gridline); stroke-width: 1; }
 .chart .zero { stroke: var(--line); stroke-width: 1.5; }
-.chart .now { stroke: var(--line); stroke-width: 1; stroke-dasharray: 4 4; }
+.chart .now { stroke: var(--line); stroke-width: 1; }
+.chart .tick-bg { fill: var(--bg); opacity: 0.8; }
 .chart .cursor { stroke: var(--line); stroke-width: 1.5; }
 .chart .halo { fill: var(--bg); }
 .chart .selected { fill: var(--gridline); opacity: 0.6; }
-.line { fill: none; stroke: var(--c); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.line { fill: none; stroke: var(--c); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
 .sample .line { stroke-width: 2.5; stroke-linecap: butt; }
-.dash-dashed { stroke-dasharray: 8 6; }
-.dash-dashdot { stroke-dasharray: 10 4 2 4; }
-.dash-dotted { stroke-dasharray: 1 5; stroke-linecap: round; }
-.dash-dashdotdot { stroke-dasharray: 10 4 2 4 2 4; }
 .chart .dot { fill: var(--c); }
 .chart .bar { fill: var(--c); }
 

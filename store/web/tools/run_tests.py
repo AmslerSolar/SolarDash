@@ -219,9 +219,9 @@ def history_cases(b, link, data, shots):
     report(b.open(link, ready=ready), 'history: day chart shown')
     dom = b.dom()
     check('history, day', dom, [
-        'aria-pressed="true">Day<', 'class="line s-pv"', 'class="line s-load"', 'class="line s-soc dash-dashed"',
+        'aria-pressed="true">Day<', 'class="line s-pv"', 'class="line s-load"', 'class="line s-soc"',
         # The owner's chart channel (plant chartChannels) is the default selection: the weather sensor's temperature.
-        'class="line c-0 dash-dashdot"', 'External temper… · °C', 'Self-sufficiency', '>88 %<',
+        'class="line c-0"', 'External temper… · °C', 'Self-sufficiency', '>88 %<',
     ], ['data-toggle-energy'])
     names = [n for k, n in fetched(data, 0) if k == 1]
     report(bool(names) and all('.' not in n or n.endswith('.sensor1') for n in names),
