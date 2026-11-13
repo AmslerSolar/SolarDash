@@ -1156,32 +1156,31 @@
 
     /**
      * The points to draw between from and to (and one either side): null where samples are more than maxGap apart;
-     * with more than two per bucket, each bucket's lowest and highest only (so peaks stay, at any zoom).
+     * with more than one per bucket, each bucket's average (at its average time). So values that jump every minute
+     * draw as a line and not as a filled band; zooming in narrows the buckets and brings the detail back. The
+     * buckets lie on a fixed grid in time, so a window moving over them keeps the same averages (no flicker).
      */
     function thinPoints(points, from, to, buckets, maxGap = MAX_GAP_MS) {
         const lo = Math.max(0, firstAt(points, from) - 1);
         const hi = Math.min(points.length, firstAt(points, to + 1) + 1);
-        const thin = hi - lo > 2 * buckets;
+        const thin = hi - lo > buckets;
         const width = (to - from) / Math.max(1, buckets);
         const out = [];
-        let bucket = null, min = null, max = null, prev = null;
+        let bucket = null, n = 0, sumT = 0, sumV = 0, prev = null;
         const flush = () => {
-            if (min !== null) {
-                if (min === max) out.push(min);
-                else if (min[0] < max[0]) out.push(min, max);
-                else out.push(max, min);
-            }
-            min = max = null;
+            if (n) out.push([sumT / n, sumV / n]);
+            n = sumT = sumV = 0;
         };
         for (let i = lo; i < hi; i++) {
             const p = points[i];
             if (prev && p[0] - prev[0] > maxGap) { flush(); out.push(null); }
             prev = p;
             if (!thin) { out.push(p); continue; }
-            const k = Math.floor((p[0] - from) / width);
-            if (min === null || k !== bucket) { flush(); bucket = k; min = max = p; continue; }
-            if (p[1] < min[1]) min = p;
-            if (p[1] > max[1]) max = p;
+            const k = Math.floor(p[0] / width);
+            if (k !== bucket) { flush(); bucket = k; }
+            n++;
+            sumT += p[0];
+            sumV += p[1];
         }
         flush();
         return out;
@@ -1423,6 +1422,8 @@
             sel: null, // the chart selection (channels, hidden curves and bars)
         },
         model: null,
+        modelKey: '', // what state.model was built from, so a swipe rebuilds it only when the data changed
+        scales: null, // the chart's y-axes, held still while the window is panned
         geom: null,
         picker: null,
         failures: 0,
@@ -1755,6 +1756,7 @@
             }
         }
         state.model = m;
+        state.modelKey = '';
         $('history').setAttribute('aria-busy', String(hs.loading > 0));
         renderLegend(m);
         const note = hs.loading > 0 ? t('historyLoading') : hs.failed ? t('historyFailed') : m.empty ? t(m.emptyKey) : '';
@@ -1828,11 +1830,13 @@
         let title;
         if (m.kind === 'power') {
             title = (hs.period === 'week' ? dayTimeFmt : timeFmt).format(new Date(at));
+            // Every shown curve keeps its row, with "–" where it has no sample: the list doesn't jump while swiping.
             for (const l of m.lines) {
                 if (hs.sel.hidden.includes(l.key)) continue;
                 const p = nearestPoint(l.points, at);
-                if (p) values.push([l.cls, l.label, formatValue(p[1], l.unit)]);
+                values.push([l.cls, l.label, p ? formatValue(p[1], l.unit) : '–']);
             }
+            if (!values.some((v) => v[2] !== '–')) values.length = 0;
         } else {
             const s = m.slots[hs.selected];
             title = s ? s.label : '';
@@ -1912,7 +1916,12 @@
         const hs = state.hist;
         setText('range-label', rangeLabel(hs.period, hs.anchor));
         $('next').disabled = !hasNext(hs.period, hs.anchor, localDate(Date.now()));
-        state.model = powerModel();
+        // The curves are rebuilt only when their data changed, not on every finger move: panning stays smooth.
+        const key = hs.period + ':' + hs.anchor + ':' + hs.reach.join() + ':' + state.blocks.size + ':' + hs.sel.channels.length;
+        if (!state.model || state.modelKey !== key) {
+            state.modelKey = key;
+            state.model = powerModel();
+        }
         scheduleChart();
     }
 
@@ -1976,7 +1985,8 @@
         const dur = m.end - m.start, span = vp.end - vp.start;
         const from = m.start + vp.start * dur, to = m.start + vp.end * dur;
 
-        const drawn = new Map(lines.map((l) => [l, thinPoints(l.points, from, to, width)]));
+        // One point per two pixels at most: denser, a restless value fills the plot instead of drawing a line.
+        const drawn = new Map(lines.map((l) => [l, thinPoints(l.points, from, to, Math.round(width / 2))]));
         const scales = new Map();
         for (const u of units) {
             if (u === '%') { scales.set(u, PERCENT_SCALE); continue; }
@@ -1988,6 +1998,14 @@
             if (lo === Infinity) { lo = 0; hi = 1; }
             // Power and energy keep zero in view; other quantities (V, °C, Hz) fit their own range.
             scales.set(u, niceScale(lo, hi, 4, u.startsWith('k') || u === 'W' || lo <= 0));
+        }
+        // While the window is moved at the same zoom the axes stay as they were: a rescaling axis makes the curves
+        // jump under the finger. A pinch (the span changes) fits them anew, and so does the end of the gesture.
+        const held = state.scales;
+        if (hs.dragging && held && Math.abs(held.span - span) < 1e-9) {
+            for (const u of units) if (held.byUnit.has(u)) scales.set(u, held.byUnit.get(u));
+        } else {
+            state.scales = { span, byUnit: scales };
         }
         const left = 0, right = width;
         const x = (ms) => left + ((ms - m.start) / dur - vp.start) / span * (right - left);
@@ -2074,10 +2092,10 @@
             const xx = x(ms);
             if (xx < b.left - 1 || xx > b.right + 1) continue;
             const w = s.length * b.font * 0.6;
-            const lx = clamp(xx - w / 2, b.left + 3, b.right - 3 - w);
-            // Labels pushed inward at the edges could otherwise collide with their neighbour.
-            if (lx < lastRight + 6) continue;
-            text(axis, lx + w / 2, b.bottom + b.font * 1.3, s, Object.assign({ 'text-anchor': 'middle', 'font-size': b.font }, strong ? { class: 'unit' } : {}));
+            const lx = xx - w / 2;
+            // A label that doesn't fit waits until it does: pushed to the edge, it would jump while the window moves.
+            if (lx < b.left + 1 || lx + w > b.right - 1 || lx < lastRight + 6) continue;
+            text(axis, xx, b.bottom + b.font * 1.3, s, Object.assign({ 'text-anchor': 'middle', 'font-size': b.font }, strong ? { class: 'unit' } : {}));
             lastRight = lx + w;
         }
     }

@@ -49,7 +49,9 @@ fitted to its own range. The default is the owner's `chartChannels`; the viewer'
 `localStorage` (`solardash.chart.<plant id>`; any storage error just means the default).
 
 Swipe: a sideways drag on the curves (day, week) moves the time window with the finger, on into the periods before
-and after (forward up to the end of today, or now in the middle), and it stays where it is let go. The date above
+and after (forward up to the end of today, or now in the middle), and it stays where it is let go. Nothing jumps
+under the finger: the y-axes keep their scale until the gesture ends, the averaged points lie on a fixed grid in
+time, time labels wait until they fit, and the curves are rebuilt only when their data changed. The date above
 and the totals follow the window's middle; midnight carries the date on the time axis. A day's blocks come with
 those of the day before, so a swipe back has its curves at once; further neighbours are fetched as they come into
 view. The first view has the latest values in the middle. Bars (month, year, lifetime) stay in their period.

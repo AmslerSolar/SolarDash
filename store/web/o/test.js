@@ -475,15 +475,22 @@
             eq(d, 'M0.0 1.0M60.0 2.0M120.0 3.0L180.0 4.0');
             eq(dots.length, 2, 'lone samples are dots');
         });
-        await test('thinning keeps each bucket\'s lowest and highest, and the gaps; nearest point', () => {
+        await test('thinning averages each bucket and keeps the gaps; nearest point', () => {
             const pts = [];
             for (let i = 0; i < 10000; i++) pts.push([i * 60000, i === 5000 ? 999 : Math.sin(i / 50)]);
             const out = SD.thinPoints(pts, 0, 9999 * 60000, 100);
-            assert(out.length <= 202, 'thinned to ' + out.length);
-            assert(out.some((p) => p && p[1] === 999), 'the peak stays');
+            assert(out.length <= 101, 'thinned to ' + out.length);
+            const top = Math.max(...out.map((p) => p[1]));
+            assert(top > 5 && top < 20, 'a one-minute peak is averaged into its bucket of 100 minutes: ' + top);
+            eq(SD.thinPoints([[0, 1], [60000, 3], [120000, 5], [180000, 7]], 0, 240000, 2).join(' '), '30000,2 150000,6', 'each bucket\'s average, at its average time');
             for (let i = 1; i < out.length; i++) assert(out[i][0] > out[i - 1][0], 'in time order');
             const gap = pts.slice(0, 100).concat(pts.slice(200, 300));
             eq(SD.thinPoints(gap, 0, 300 * 60000, 2).filter((p) => p === null).length, 1, 'a 100-minute gap breaks the line');
+            // The buckets lie on a fixed grid in time: a window moving over them keeps the same points (no flicker).
+            const w1 = SD.thinPoints(pts, 1000 * 60000, 2000 * 60000, 100);
+            const w2 = SD.thinPoints(pts, 1003 * 60000, 2003 * 60000, 100);
+            const inside = (p) => p && p[0] > 1100 * 60000 && p[0] < 1900 * 60000;
+            eq(w1.filter(inside).join(' '), w2.filter(inside).join(' '), 'the same points after a small shift');
             const part = SD.thinPoints(pts, 100 * 60000, 110 * 60000, 1000);
             eq(part[0][0], 99 * 60000, 'one point before the window');
             eq(part[part.length - 1][0], 111 * 60000, 'one after');

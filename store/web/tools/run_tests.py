@@ -445,6 +445,13 @@ def history_cases(b, link, data, shots):
     b.touch('touchMove', [(x + 60, y)])
     report(b.wait(middle + " && document.querySelector('#readout strong').textContent !== %s" % json.dumps(title)),
            'touch: a swipe moves the curves under the cursor, its time follows')
+    # The y-axes stand still while the finger moves; a rescaling axis would make the curves jump.
+    axes = "[...document.querySelectorAll('#chart g.axis')[1].querySelectorAll('text')].map(t => t.textContent).join('|')"
+    seen = set()
+    for dx in (40, 44, 48, 52, 56, 60):
+        b.touch('touchMove', [(x + dx, y)])
+        seen.add(b.eval(axes))
+    report(len(seen) == 1, 'touch: the scales stand still while swiping', str(seen)[:140])
     b.touch('touchEnd', [])
     b.touch('touchStart', [(x - 100, y)])
     b.touch('touchEnd', [])
