@@ -54,7 +54,9 @@ and the totals follow the window's middle; midnight carries the date on the time
 those of the day before, so a swipe back has its curves at once; further neighbours are fetched as they come into
 view. The first view has the latest values in the middle. Bars (month, year, lifetime) stay in their period.
 Zoom: mouse wheel or pinch around the pointer, drag to pan once zoomed, double-click / double-tap or "Reset zoom";
-hover or tap shows the values at that time (or of that bar); keys: arrows, + / −, 0.
+hover or tap shows the values at that time (or of that bar); keys: arrows, + / −, 0. On touch screens
+(`pointer: coarse`) the cursor of the curves is fixed in the middle of the chart instead, with its values below:
+the curves move under it, and on the first load it stands on the latest values.
 
 Fault log (`FaultLogActivity`): the `e<id>` events, fetched once the section comes into view (newest 1000, in
 chunks of 200), then only changed ones. Active (not ended) and past entries, newest first, with severity, times,

@@ -103,14 +103,16 @@ class Browser:
                     raise RuntimeError('%s: %s' % (method, answer['error']))
                 return answer.get('result', {})
 
-    def open(self, url, size=(390, 844), dark=False, lang='en-US', ready='true', timeout=20):
-        """Opens url in a new tab and waits until the JavaScript expression ready is true."""
+    def open(self, url, size=(390, 844), dark=False, lang='en-US', ready='true', timeout=20, touch=False):
+        """Opens url in a new tab (touch: as a touch screen, pointer: coarse) and waits until the JavaScript expression ready is true."""
         if self.session:
             self.send('Target.closeTarget', {'targetId': self.target}, session=False)
         self.target = self.send('Target.createTarget', {'url': 'about:blank'}, session=False)['targetId']
         self.session = self.send('Target.attachToTarget', {'targetId': self.target, 'flatten': True}, session=False)['sessionId']
         w, h = size
         self.send('Emulation.setDeviceMetricsOverride', {'width': w, 'height': h, 'deviceScaleFactor': 1, 'mobile': w < 600})
+        if touch:
+            self.send('Emulation.setTouchEmulationEnabled', {'enabled': True, 'maxTouchPoints': 5})
         self.send('Emulation.setEmulatedMedia', {'features': [{'name': 'prefers-color-scheme', 'value': 'dark' if dark else 'light'}]})
         self.send('Emulation.setLocaleOverride', {'locale': lang})
         ua = self.send('Browser.getVersion', session=False)['userAgent'].replace('HeadlessChrome', 'Chrome')
@@ -430,6 +432,27 @@ def history_cases(b, link, data, shots):
                                        'dauert noch an', 'Kein Netzstrom', 'Ladestand · %'])
     b.eval("localStorage.clear()")
 
+    # A touch screen: the cursor is fixed in the middle with the values there, and the curves move under it.
+    b.open(link, ready=ready, touch=True)
+    report(b.eval("matchMedia('(pointer: coarse)').matches") is True, 'touch: the page sees a touch screen')
+    middle = ("(() => { const c = document.getElementById('chart'), l = c.querySelector('.cursor'); "
+              "return l !== null && Math.abs(l.getAttribute('x1') / c.viewBox.baseVal.width - 0.5) < 0.01; })()")
+    report(b.wait(middle + " && document.querySelectorAll('#readout li').length >= 3"), 'touch: on first load the cursor is in the middle, with the latest values')
+    title = b.eval("document.querySelector('#readout strong').textContent")
+    x, y, w = b.center('#chart')
+    b.touch('touchStart', [(x - 60, y)])
+    b.touch('touchMove', [(x - 20, y)])
+    b.touch('touchMove', [(x + 60, y)])
+    report(b.wait(middle + " && document.querySelector('#readout strong').textContent !== %s" % json.dumps(title)),
+           'touch: a swipe moves the curves under the cursor, its time follows')
+    b.touch('touchEnd', [])
+    b.touch('touchStart', [(x - 100, y)])
+    b.touch('touchEnd', [])
+    time.sleep(0.3)
+    report(b.eval(middle) is True, 'touch: a tap leaves the cursor in the middle')
+    if shots:
+        b.screenshot(os.path.join(shots, 'history-touch.png'), 'history')
+
 
 def main():
     ap = argparse.ArgumentParser()
@@ -511,7 +534,7 @@ def main():
                          ('tablet-dark', link, (1024, 768), True, 'de-CH'),
                          ('error', fake_store.link(port, token='AAAAAAAAAAAAAAAAAAAAAA', data=data), (390, 844), False, 'en-US'))
                 for name, url, size, dark, lang in shots:
-                    b.open(url, size=size, dark=dark, lang=lang, ready=SHOWN)
+                    b.open(url, size=size, dark=dark, lang=lang, ready=SHOWN, touch=name.startswith('phone'))
                     # The fault log loads when it comes into view.
                     b.eval("document.getElementById('alarms').scrollIntoView()")
                     b.wait("document.getElementById('alarms').getAttribute('aria-busy') !== 'true'", 5)

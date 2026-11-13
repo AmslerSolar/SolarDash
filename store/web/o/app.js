@@ -1808,19 +1808,29 @@
         }
     }
 
+    /** Touch screens (phones, tablets): the cursor of the curves is fixed in the middle and the curves move under it. */
+    const centredCursor = () => !!(window.matchMedia && matchMedia('(pointer: coarse)').matches);
+
+    /** The time the curves' cursor is at: the middle of the window on touch screens, else where the mouse or keys put it (or null). */
+    function cursorTime(m) {
+        const hs = state.hist;
+        return centredCursor() ? m.start + ((hs.vp.start + hs.vp.end) / 2) * (m.end - m.start) : hs.selected;
+    }
+
     function renderReadout() {
         const box = clear($('readout'));
         const hs = state.hist, m = state.model;
-        // Below the chart, so a tap doesn't move the chart under the finger; nothing until a time or bar is picked.
-        box.hidden = !m || blank(m) || hs.selected === null;
+        // Below the chart, so it never moves the chart under the finger; nothing until a time or bar is picked.
+        const at = m && m.kind === 'power' ? cursorTime(m) : hs.selected;
+        box.hidden = !m || blank(m) || at === null;
         if (box.hidden) return;
         const values = [];
         let title;
         if (m.kind === 'power') {
-            title = (hs.period === 'week' ? dayTimeFmt : timeFmt).format(new Date(hs.selected));
+            title = (hs.period === 'week' ? dayTimeFmt : timeFmt).format(new Date(at));
             for (const l of m.lines) {
                 if (hs.sel.hidden.includes(l.key)) continue;
-                const p = nearestPoint(l.points, hs.selected);
+                const p = nearestPoint(l.points, at);
                 if (p) values.push([l.cls, l.label, formatValue(p[1], l.unit)]);
             }
         } else {
@@ -2002,15 +2012,15 @@
             if (d) el('path', { d, class: lineClass(l) }, g);
             for (const [cx, cy] of dots) el('circle', { cx, cy, r: 1.8, class: 'dot ' + l.cls }, g);
         }
-        if (hs.selected !== null) {
-            const xx = x(hs.selected);
+        const at = cursorTime(m);
+        if (at !== null) {
+            const xx = x(at);
             el('line', { x1: xx, x2: xx, y1: top, y2: bottom, class: 'cursor' }, g);
-            for (const l of lines) {
-                const sc = scales.get(l.unit);
-                const p = sc && nearestPoint(l.points, hs.selected);
-                if (!p) continue;
-                el('circle', { cx: x(p[0]), cy: y(sc, p[1]), r: 6, class: 'halo' }, g);
-                el('circle', { cx: x(p[0]), cy: y(sc, p[1]), r: 4, class: 'dot ' + l.cls }, g);
+            if (centredCursor()) {
+                // The fixed cursor's marks: above the plot and on its foot (clear of the time labels below).
+                const a = Math.round(font * 0.45), f = (v) => v.toFixed(1);
+                el('path', { d: 'M' + f(xx - a) + ' ' + f(top - 2 * a) + 'H' + f(xx + a) + 'L' + f(xx) + ' ' + f(top) + 'Z', class: 'cursor-mark' }, g);
+                el('path', { d: 'M' + f(xx - a) + ' ' + f(bottom) + 'H' + f(xx + a) + 'L' + f(xx) + ' ' + f(bottom - 2 * a) + 'Z', class: 'cursor-mark' }, g);
             }
         }
 
@@ -2155,6 +2165,7 @@
         };
         const selectAt = (f) => {
             const hs = state.hist, m = state.model;
+            if (m.kind === 'power' && centredCursor()) return; // the cursor stays in the middle
             const at = hs.vp.start + f * (hs.vp.end - hs.vp.start);
             hs.selected = m.kind === 'power' ? m.start + at * (m.end - m.start) : clamp(Math.floor(at * m.slots.length), 0, m.slots.length - 1);
             scheduleChart();
