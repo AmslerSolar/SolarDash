@@ -227,7 +227,10 @@ def history_cases(b, link, data, shots):
     report(bool(names) and all('.' not in n or n.endswith('.sensor1') for n in names),
            'history, day: plant blocks and only the blocks of the device on the chart', str(names[:5]))
     report(all(k != 3 for k, _ in fetched(data, 0)), 'faults: not fetched before they come into view')
-    report(len(names) <= 2 * 25, 'history, day: at most a day of blocks (%d)' % len(names))
+    report(len(names) <= 2 * 49, 'history, day: at most the day and the day before, to swipe back to (%d blocks)' % len(names))
+    report(b.eval("(() => { const c = document.getElementById('chart'), n = c.querySelector('.now'); "
+                  "return n !== null && Math.abs(n.getAttribute('x1') / c.viewBox.baseVal.width - 0.5) < 0.02; })()") is True,
+           'history, day: the first view has now in the middle')
     report(b.eval("document.getElementById('next').disabled && document.getElementById('readout').hidden") is True,
            'history, day: no next day, no readout before a tap')
     report(b.eval(NO_SIDEWAYS_SCROLL) is True, 'history: no sideways scroll at 390 px')
@@ -353,6 +356,31 @@ def history_cases(b, link, data, shots):
     b.eval("document.getElementById('zoom-reset').click()")
     report(b.wait("document.getElementById('zoom-reset').hidden"), 'zoom: reset')
     x, y, w = b.center('#chart')
+
+    # A sideways drag moves the curves on into the day before; let go past the middle and that day is shown.
+    label = b.eval("document.getElementById('range-label').textContent")
+    n0 = len(data.requests)
+    b.mouse('mousePressed', x - w * 0.3, y, button='left', clickCount=1)
+    b.mouse('mouseMoved', x, y, button='left', buttons=1)
+    b.mouse('mouseMoved', x + w * 0.3, y, button='left', buttons=1)
+    report(b.wait("document.getElementById('range-label').textContent !== %s" % json.dumps(label)), 'swipe: the date follows the finger')
+    b.mouse('mouseReleased', x + w * 0.3, y, button='left', clickCount=1)
+    report(b.wait(IDLE + " && !document.getElementById('next').disabled && document.getElementById('history-state').hidden && "
+                  "document.querySelector('#chart path.line.s-pv') !== null"), 'swipe: the day before is shown')
+    times = "[...document.querySelectorAll('#chart .axis text')].map(t => t.textContent + '@' + t.getAttribute('x')).join('|')"
+    left = b.eval(times)
+    time.sleep(0.5)
+    report(b.eval(times) == left and b.eval("document.getElementById('zoom-reset').hidden") is True, 'swipe: the window stays where it was let go')
+    report(fetches(data, n0) <= 3, 'swipe: %d fetch requests' % fetches(data, n0))
+    b.mouse('mousePressed', x + w * 0.3, y, button='left', clickCount=1)
+    b.mouse('mouseMoved', x, y, button='left', buttons=1)
+    b.mouse('mouseMoved', x - w * 0.3, y, button='left', buttons=1)
+    b.mouse('mouseReleased', x - w * 0.3, y, button='left', clickCount=1)
+    report(b.wait(IDLE + " && document.getElementById('range-label').textContent === %s" % json.dumps(label)), 'swipe: and back to today')
+    b.mouse('mousePressed', x, y, button='left', clickCount=1)
+    b.mouse('mouseMoved', x - w * 0.3, y, button='left', buttons=1)
+    b.mouse('mouseReleased', x - w * 0.3, y, button='left', clickCount=1)
+    report(b.eval("document.getElementById('range-label').textContent") == label, 'swipe: not past today')
     b.touch('touchStart', [(x - 40, y), (x + 40, y)])
     b.touch('touchMove', [(x - 90, y), (x + 90, y)])
     b.touch('touchMove', [(x - 130, y), (x + 130, y)])

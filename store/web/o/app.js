@@ -1116,12 +1116,15 @@
         return { start: 0, end: 1, minSpan: clamp(minSpan, 1e-6, 1) };
     }
 
-    /** Zooms by zoom around anchor (a fraction of the plot width) and pans by pan (a fraction of it too). */
-    function zoomViewport(vp, anchor, zoom, pan) {
+    /**
+     * Zooms by zoom around anchor (a fraction of the plot width) and pans by pan (a fraction of it too). The window
+     * stays within lo..hi: 0..1 is the period itself, beyond are its neighbours (a day or week swiped over).
+     */
+    function zoomViewport(vp, anchor, zoom, pan, lo = 0, hi = 1) {
         const span = vp.end - vp.start;
         const next = clamp(span / (zoom > 0 && Number.isFinite(zoom) ? zoom : 1), vp.minSpan, 1);
         const a = clamp(anchor, 0, 1);
-        const start = clamp(vp.start + a * span - a * next - pan * next, 0, 1 - next);
+        const start = clamp(vp.start + a * span - a * next - pan * next, lo, hi - next);
         return { start, end: start + next, minSpan: vp.minSpan };
     }
 
@@ -1409,6 +1412,8 @@
             period: 'day',
             anchor: null, // a date in the period shown
             follow: true, // the period holds the latest live values: it moves on with them
+            reach: [-1, 0], // neighbouring periods drawn and fetched too (-1 before, 1 after): baseReach, and what a swipe reached
+            dragging: false, // a gesture is moving the time window: only the chart follows until it ends
             vp: viewport(1),
             vpKey: '',
             selected: null, // epoch ms (day, week) or slot index (bars)
@@ -1613,13 +1618,26 @@
         return { start, end, hours };
     }
 
+    /** A day comes with the day before, so a swipe back has its curves at once; a week's neighbours wait for the swipe. */
+    const baseReach = (period) => (period === 'day' ? [-1, 0] : [0, 0]);
+
+    /** The hours whose blocks the chart draws: the period shown and its neighbours within reach. */
+    function reachHours() {
+        const hs = state.hist;
+        const out = new Set();
+        for (let k = hs.reach[0]; k <= hs.reach[1]; k++) {
+            for (const s of hoursOf(hs.period, k ? shiftAnchor(hs.period, hs.anchor, k) : hs.anchor).hours) out.add(s);
+        }
+        return [...out];
+    }
+
     /** Block names the period shown needs: the plant's and those of the devices with a channel on the chart. */
     function rangeBlockNames() {
         const hs = state.hist;
         if (hs.period !== 'day' && hs.period !== 'week') return [];
         const devices = [...new Set(chartChannels().map((c) => c.deviceId))];
         const out = [];
-        for (const s of hoursOf(hs.period, hs.anchor).hours) {
+        for (const s of reachHours()) {
             out.push('b' + s);
             for (const d of devices) out.push('b' + s + '.' + d);
         }
@@ -1654,7 +1672,8 @@
     /** Day and week: curves of the plant (kW, %) and the added channels, each in its display unit. */
     function powerModel() {
         const hs = state.hist;
-        const { start, end, hours } = hoursOf(hs.period, hs.anchor);
+        const { start, end } = hoursOf(hs.period, hs.anchor);
+        const hours = reachHours();
         const plantBlocks = hours.map((s) => state.blocks.get('b' + s)).filter(Boolean);
         const lines = PLANT_LINES.map((p) => ({
             key: 'plant:' + p.name, label: t(p.text), full: t(p.text), unit: 'kW', cls: p.cls,
@@ -1677,7 +1696,7 @@
         const slots = hs.period === 'week' ? daysOf(b.first, b.last).map((d) => ({ key: d, energy: dayTotals(d) || energyOf(null) })) : [];
         return {
             kind: 'power', start, end, lines, slots, totals: periodTotals(),
-            empty: lines.every((l) => l.points.length === 0), emptyKey: hs.period === 'day' ? 'noSamplesDay' : 'noSamplesWeek',
+            empty: lines.every((l) => !l.points.some((p) => p[0] >= start && p[0] < end)), emptyKey: hs.period === 'day' ? 'noSamplesDay' : 'noSamplesWeek',
             minSpan: 1800000 / (end - start), // half an hour at most, whatever the period
         };
     }
@@ -1709,9 +1728,13 @@
         };
     }
 
+    /** Bars without data leave no chart; curves keep theirs, so a swipe can go on over a day without samples. */
+    const blank = (m) => m.empty && m.kind !== 'power';
+
     function renderHistory() {
         const hs = state.hist;
         if (!hs.anchor || !hs.sel) return;
+        if (hs.dragging) { renderDrag(); return; } // e.g. a resize in the middle of a swipe
         const today = localDate(Date.now());
         for (const b of document.querySelectorAll('#periods button')) b.setAttribute('aria-pressed', String(b.dataset.period === hs.period));
         setText('range-label', rangeLabel(hs.period, hs.anchor));
@@ -1720,9 +1743,16 @@
         const m = hs.period === 'day' || hs.period === 'week' ? powerModel() : energyModel();
         const key = hs.period + ':' + hs.anchor;
         if (hs.vpKey !== key) {
+            const first = hs.vpKey === '';
             hs.vpKey = key;
             hs.vp = viewport(m.minSpan);
             hs.selected = null;
+            // The first view has the latest values in the middle: the last 12 hours to their left, on into the day before.
+            const latest = state.live ? state.liveAt : Date.now();
+            if (first && hs.period === 'day' && latest >= m.start && latest < m.end) {
+                const start = (latest - m.start) / (m.end - m.start) - 0.5;
+                hs.vp = { start, end: start + 1, minSpan: hs.vp.minSpan };
+            }
         }
         state.model = m;
         $('history').setAttribute('aria-busy', String(hs.loading > 0));
@@ -1730,9 +1760,9 @@
         const note = hs.loading > 0 ? t('historyLoading') : hs.failed ? t('historyFailed') : m.empty ? t(m.emptyKey) : '';
         setText('history-state', note);
         show('history-state', note !== '');
-        show('chart-wrap', !m.empty);
-        show('chart-tools', !m.empty);
-        if (!m.empty) renderChart();
+        show('chart-wrap', !blank(m));
+        show('chart-tools', !blank(m));
+        if (!blank(m)) renderChart();
         renderReadout();
         renderPeriodTotals(m.totals);
     }
@@ -1782,7 +1812,7 @@
         const box = clear($('readout'));
         const hs = state.hist, m = state.model;
         // Below the chart, so a tap doesn't move the chart under the finger; nothing until a time or bar is picked.
-        box.hidden = !m || m.empty || hs.selected === null;
+        box.hidden = !m || blank(m) || hs.selected === null;
         if (box.hidden) return;
         const values = [];
         let title;
@@ -1861,10 +1891,55 @@
         if (frame) return;
         frame = requestAnimationFrame(() => {
             frame = 0;
-            if (!state.model || state.model.empty) return;
+            if (!state.model || blank(state.model)) return;
             renderChart();
             renderReadout();
         });
+    }
+
+    /** While a gesture moves the time window only the date and the chart follow; the rest comes when it ends. */
+    function renderDrag() {
+        const hs = state.hist;
+        setText('range-label', rangeLabel(hs.period, hs.anchor));
+        $('next').disabled = !hasNext(hs.period, hs.anchor, localDate(Date.now()));
+        state.model = powerModel();
+        scheduleChart();
+    }
+
+    let loadTimer = 0;
+    /**
+     * After the window of a day or week moved: the period under its middle becomes the one shown (date, totals; the
+     * window keeps its place in time), and a neighbour coming into view is drawn from the cache and fetched.
+     */
+    function slideWindow() {
+        const hs = state.hist, m = state.model;
+        const mid = (hs.vp.start + hs.vp.end) / 2;
+        const by = mid < 0 ? -1 : mid > 1 ? 1 : 0;
+        if (by) {
+            const dur = m.end - m.start, from = m.start + hs.vp.start * dur, spanMs = (hs.vp.end - hs.vp.start) * dur;
+            hs.anchor = shiftAnchor(hs.period, hs.anchor, by);
+            hs.follow = inPeriod(hs.period, hs.anchor, state.day || localDate(Date.now()));
+            hs.reach = [Math.min(baseReach(hs.period)[0], clamp(hs.reach[0] - by, -1, 0)), clamp(hs.reach[1] - by, 0, 1)];
+            const b = hoursOf(hs.period, hs.anchor), len = b.end - b.start;
+            const start = (from - b.start) / len;
+            hs.vp = { start, end: start + spanMs / len, minSpan: clamp(1800000 / len, 1e-6, 1) };
+            hs.vpKey = hs.period + ':' + hs.anchor;
+        }
+        const lo = hs.vp.start < -1e-6 ? -1 : 0, hi = hs.vp.end > 1 + 1e-6 ? 1 : 0;
+        const wider = lo < hs.reach[0] || hi > hs.reach[1];
+        if (wider) hs.reach = [Math.min(lo, hs.reach[0]), Math.max(hi, hs.reach[1])];
+        if (!by && !wider) { scheduleChart(); return; }
+        renderDrag();
+        clearTimeout(loadTimer);
+        loadTimer = setTimeout(() => loadHistory(true), 120);
+    }
+
+    /** The gesture ended: the window stays where it is, and everything else catches up (totals, legend, notes). */
+    function settle() {
+        const hs = state.hist;
+        hs.dragging = false;
+        renderHistory();
+        loadHistory(true);
     }
 
     function renderChart() {
@@ -1919,7 +1994,7 @@
         el('rect', { x: left, y: 0, width: right - left, height }, clip);
         const g = el('g', { 'clip-path': 'url(#plot-clip)' }, svg);
         const now = Date.now();
-        if (now > m.start && now < m.end) el('line', { x1: x(now), x2: x(now), y1: top, y2: bottom, class: 'now' }, g);
+        if (now > from && now < to) el('line', { x1: x(now), x2: x(now), y1: top, y2: bottom, class: 'now' }, g);
         for (const l of lines) {
             const sc = scales.get(l.unit);
             if (!sc) continue;
@@ -1969,27 +2044,30 @@
         const tick = tickMinutes((b.to - b.from) / 60000, Math.floor((b.right - b.left) / (b.font * 3.6)));
         const labels = [];
         if (tick >= 1440) {
-            for (const d of daysOf(localDate(m.start), localDate(m.end - 1))) {
+            for (const d of daysOf(localDate(b.from), localDate(b.to - 1))) {
                 const { start, end } = dayBounds(d);
-                if (start > m.start) el('line', { x1: x(start), x2: x(start), y1: b.top, y2: b.bottom, class: 'gridline' }, axis);
+                if (start > b.from) el('line', { x1: x(start), x2: x(start), y1: b.top, y2: b.bottom, class: 'gridline' }, axis);
                 labels.push([(start + end) / 2, weekdayFmt.format(dateOf(d))]);
             }
         } else {
-            for (let ms = m.start; ms <= m.end; ms += tick * 60000) {
+            // From the midnight before the window, so a window swiped past the day's ends has its labels too.
+            for (let ms = dayBounds(localDate(b.from)).start; ms <= b.to; ms += tick * 60000) {
                 const xx = x(ms);
-                if (xx >= b.left - 1 && xx <= b.right + 1) el('line', { x1: xx, x2: xx, y1: b.top, y2: b.bottom, class: 'gridline' }, axis);
-                labels.push([ms, timeFmt.format(new Date(ms))]);
+                // Midnight stands out and carries the date: the window may lie across two days.
+                const midnight = new Date(ms).getHours() === 0 && new Date(ms).getMinutes() === 0;
+                if (xx >= b.left - 1 && xx <= b.right + 1) el('line', { x1: xx, x2: xx, y1: b.top, y2: b.bottom, class: midnight ? 'midnight' : 'gridline' }, axis);
+                labels.push([ms, midnight ? dateFmt.format(new Date(ms)) : timeFmt.format(new Date(ms)), midnight]);
             }
         }
         let lastRight = -Infinity;
-        for (const [ms, s] of labels) {
+        for (const [ms, s, strong] of labels) {
             const xx = x(ms);
             if (xx < b.left - 1 || xx > b.right + 1) continue;
             const w = s.length * b.font * 0.6;
             const lx = clamp(xx - w / 2, b.left + 3, b.right - 3 - w);
             // Labels pushed inward at the edges could otherwise collide with their neighbour.
             if (lx < lastRight + 6) continue;
-            text(axis, lx + w / 2, b.bottom + b.font * 1.3, s, { 'text-anchor': 'middle', 'font-size': b.font });
+            text(axis, lx + w / 2, b.bottom + b.font * 1.3, s, Object.assign({ 'text-anchor': 'middle', 'font-size': b.font }, strong ? { class: 'unit' } : {}));
             lastRight = lx + w;
         }
     }
@@ -2057,14 +2135,15 @@
 
     /**
      * The chart's gestures (the app's chartGestures): the mouse wheel or two fingers zoom around the pointer, a
-     * horizontal drag pans once zoomed (vertical drags still scroll the page), hover or tap shows the values,
+     * horizontal drag moves the chart (curves on into the days before and after, bars once zoomed; vertical drags
+     * still scroll the page), hover or tap shows the values,
      * double-click or double-tap resets the zoom. Keys: arrows move the cursor, + and − zoom, 0 resets.
      */
     function setupChartGestures() {
         const svg = $('chart');
         const pointers = new Map();
         let down = null, moved = false, lastTap = 0, lastTapX = 0;
-        const ready = () => state.model && state.geom && !state.model.empty;
+        const ready = () => state.model && state.geom && !blank(state.model);
         const plotPx = () => {
             const r = svg.getBoundingClientRect();
             return ((state.geom.right - state.geom.left) * r.width) / state.geom.width || 1;
@@ -2080,17 +2159,25 @@
             hs.selected = m.kind === 'power' ? m.start + at * (m.end - m.start) : clamp(Math.floor(at * m.slots.length), 0, m.slots.length - 1);
             scheduleChart();
         };
+        // Curves (day, week) move past the period's ends into the days around, up to today; bars stay in their period.
         const zoom = (anchor, factor, pan) => {
-            const before = state.hist.vp;
-            state.hist.vp = zoomViewport(before, anchor, factor, pan);
-            const changed = Math.abs(before.start - state.hist.vp.start) > 1e-9 || Math.abs(before.end - state.hist.vp.end) > 1e-9;
-            if (changed) scheduleChart();
-            return changed;
+            const hs = state.hist, before = hs.vp, power = state.model.kind === 'power';
+            // Forward as far as the end of today, or now in the middle of the window.
+            const m = state.model, span = before.end - before.start;
+            const hi = !power ? 1 : hasNext(hs.period, hs.anchor, localDate(Date.now())) ? 2 : Math.max(1, (Date.now() - m.start) / (m.end - m.start) + span / 2);
+            hs.vp = zoomViewport(before, anchor, factor, pan, power ? -1 : 0, hi);
+            const changed = Math.abs(before.start - hs.vp.start) > 1e-9 || Math.abs(before.end - hs.vp.end) > 1e-9;
+            if (!changed) return false;
+            if (power) { hs.dragging = true; slideWindow(); } else scheduleChart();
+            return true;
         };
+        let settleTimer = 0;
+        const settleSoon = () => { clearTimeout(settleTimer); settleTimer = setTimeout(() => { if (!pointers.size && state.hist.dragging) settle(); }, 250); };
 
         svg.addEventListener('pointerdown', (e) => {
             if (!ready() || (e.pointerType === 'mouse' && e.button !== 0)) return;
             try { svg.setPointerCapture(e.pointerId); } catch (err) { /* already gone */ }
+            clearTimeout(settleTimer);
             pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
             if (pointers.size === 1) { down = { x: e.clientX, y: e.clientY }; moved = false; } else moved = true; // a pinch is no tap
         });
@@ -2116,11 +2203,13 @@
             p.x = e.clientX;
             p.y = e.clientY;
             if (Math.abs(e.clientX - down.x) > 6 || Math.abs(e.clientY - down.y) > 6) moved = true;
-            if (isZoomed(state.hist.vp) && Math.abs(dx) >= Math.abs(dy)) zoom(0.5, 1, dx / plotPx());
-            else if (e.pointerType === 'mouse') selectAt(fraction(e.clientX));
+            // A sideways drag moves the chart with the finger; up and down the page scrolls (touch-action: pan-y).
+            if (moved && Math.abs(dx) >= Math.abs(dy) && zoom(0.5, 1, dx / plotPx())) return;
+            if (e.pointerType === 'mouse') selectAt(fraction(e.clientX));
         });
         const end = (e) => {
             if (!pointers.delete(e.pointerId)) return;
+            if (!pointers.size && state.hist.dragging) settle();
             if (pointers.size || moved || e.type !== 'pointerup' || !ready()) return;
             selectAt(fraction(e.clientX));
             if (e.pointerType === 'mouse') return; // the mouse has dblclick
@@ -2139,12 +2228,13 @@
                 ? zoom(0.5, 1, -dx / plotPx())
                 : zoom(fraction(e.clientX), Math.exp(-dy * (e.ctrlKey ? 0.01 : 0.002)), 0);
             if (changed) e.preventDefault();
+            if (state.hist.dragging) settleSoon();
         }, { passive: false });
         svg.addEventListener('keydown', (e) => {
             if (!ready()) return;
             const hs = state.hist, m = state.model;
-            if (e.key === '+' || e.key === '=') zoom(0.5, 1.5, 0);
-            else if (e.key === '-') zoom(0.5, 1 / 1.5, 0);
+            if (e.key === '+' || e.key === '=') { zoom(0.5, 1.5, 0); if (hs.dragging) settle(); }
+            else if (e.key === '-') { zoom(0.5, 1 / 1.5, 0); if (hs.dragging) settle(); }
             else if (e.key === '0' || e.key === 'Escape') resetZoom();
             else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
                 const by = e.key === 'ArrowLeft' ? -1 : 1;
@@ -2622,13 +2712,17 @@
     }
 
     /** Fetches what the period shown lacks (only what the index has and the page hasn't), then draws it. */
-    async function loadHistory() {
+    async function loadHistory(quiet = false) {
         if (!state.client) return;
+        const hs = state.hist;
+        // Quiet (and while a gesture moves the chart): no "Loading…" note, which would push the chart from under the finger.
+        quiet = quiet || hs.dragging;
         const want = wanted();
         if (want.length) {
-            const hs = state.hist;
-            hs.loading++;
-            renderHistory();
+            if (!quiet) {
+                hs.loading++;
+                renderHistory();
+            }
             try {
                 applyItems(await fetchChecked(state.client, want));
                 hs.failed = false;
@@ -2637,10 +2731,11 @@
                 hs.failedAt = Date.now();
                 console.warn('History:', e.message);
             } finally {
-                hs.loading--;
+                if (!quiet) hs.loading--;
             }
             trimBlocks();
         }
+        if (hs.dragging) { renderDrag(); return; }
         renderTotals();
         renderHistory();
     }
@@ -2677,6 +2772,7 @@
         const hs = state.hist;
         hs.period = period;
         hs.anchor = anchor;
+        hs.reach = baseReach(period);
         hs.follow = inPeriod(period, anchor, state.day || localDate(Date.now()));
         renderHistory();
         loadHistory();

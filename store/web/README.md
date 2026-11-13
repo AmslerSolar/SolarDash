@@ -48,6 +48,11 @@ weather station: irradiance W/m², wind m/s, temperatures °C) are channels like
 fitted to its own range. The default is the owner's `chartChannels`; the viewer's choice is kept per plant in
 `localStorage` (`solardash.chart.<plant id>`; any storage error just means the default).
 
+Swipe: a sideways drag on the curves (day, week) moves the time window with the finger, on into the periods before
+and after (forward up to the end of today, or now in the middle), and it stays where it is let go. The date above
+and the totals follow the window's middle; midnight carries the date on the time axis. A day's blocks come with
+those of the day before, so a swipe back has its curves at once; further neighbours are fetched as they come into
+view. The first view has the latest values in the middle. Bars (month, year, lifetime) stay in their period.
 Zoom: mouse wheel or pinch around the pointer, drag to pan once zoomed, double-click / double-tap or "Reset zoom";
 hover or tap shows the values at that time (or of that bar); keys: arrows, + / −, 0.
 
@@ -87,9 +92,9 @@ and loads `o/index.html` against the fake store: the vectors as they are (index 
 plant (live, day, blocks, messages; also in German and at 320 px), a wrong code, an unreachable store and broken
 links, and the history with the fresh plant: periods and navigation, which items each period fetches (no blocks for
 month / year, faults only once in view), the picker (default from `chartChannels`, adding, the unit limit, removing,
-remembered after a reload), hiding curves and bars, wheel / drag / pinch / double-click zoom, the table and the fault
+remembered after a reload), hiding curves and bars, wheel / drag / pinch / double-click zoom, the swipe over days, and the fault
 log with its details (and without the device address or serial). `--screenshots DIR` saves phone, tablet, dark,
-error, history (week, month, year, zoomed day, table), picker and fault log screenshots.
+error, history (week, month, year, zoomed day), picker and fault log screenshots.
 
 By hand: `python3 store/web/tools/fake_store.py --fresh` prints a link to open in a browser
 (`http://127.0.0.1:8765/…`, a secure context, so WebCrypto works) and the self-test address.

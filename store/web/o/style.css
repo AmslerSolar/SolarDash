@@ -253,6 +253,7 @@ button.secondary { padding: 0.4rem 1rem; font-size: 1.05rem; }
 .chart .unit { font-weight: 600; }
 .chart .gridline { stroke: var(--gridline); stroke-width: 1; }
 .chart .zero { stroke: var(--line); stroke-width: 1.5; }
+.chart .midnight { stroke: var(--gridline); stroke-width: 3; }
 .chart .now { stroke: var(--line); stroke-width: 1; }
 .chart .tick-bg { fill: var(--bg); opacity: 0.8; }
 .chart .cursor { stroke: var(--line); stroke-width: 1.5; }
