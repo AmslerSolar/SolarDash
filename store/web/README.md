@@ -55,7 +55,8 @@ time, time labels wait until they fit, and the curves are rebuilt only when thei
 and the totals follow the window's middle; midnight carries the date on the time axis. A day's blocks come with
 those of the day before, so a swipe back has its curves at once; further neighbours are fetched as they come into
 view. The first view has the latest values in the middle. Bars (month, year, lifetime) stay in their period.
-Zoom: mouse wheel or pinch around the pointer, drag to pan once zoomed, double-click / double-tap or "Reset zoom";
+Zoom: mouse wheel or pinch around the pointer (two fingers on the chart never scroll the page, which would fly on
+when they leave), drag to pan once zoomed, double-click / double-tap or "Reset zoom";
 hover or tap shows the values at that time (or of that bar); keys: arrows, + / −, 0. On touch screens
 (`pointer: coarse`) the cursor of the curves is fixed in the middle of the chart instead, with its values below:
 the curves move under it, and on the first load it stands on the latest values.

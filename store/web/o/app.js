@@ -2203,6 +2203,20 @@
         let settleTimer = 0;
         const settleSoon = () => { clearTimeout(settleTimer); settleTimer = setTimeout(() => { if (!pointers.size && state.hist.dragging) settle(); }, 250); };
 
+        /**
+         * A second finger is a pinch, never a scroll: without this the page scrolls along with the zoom and flings
+         * on when the fingers leave (touch-action: pan-y lets the browser pan on two fingers as well).
+         */
+        const noScroll = (e) => {
+            if (e.touches.length < 2) return;
+            svg.style.touchAction = 'none';
+            if (e.cancelable) e.preventDefault();
+        };
+        svg.addEventListener('touchstart', noScroll, { passive: false });
+        svg.addEventListener('touchmove', noScroll, { passive: false });
+        const lifted = (e) => { if (!e.touches.length) svg.style.touchAction = ''; }; // one finger scrolls the page again
+        svg.addEventListener('touchend', lifted);
+        svg.addEventListener('touchcancel', lifted);
         svg.addEventListener('pointerdown', (e) => {
             if (!ready() || (e.pointerType === 'mouse' && e.button !== 0)) return;
             try { svg.setPointerCapture(e.pointerId); } catch (err) { /* already gone */ }
